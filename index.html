@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luz Estelar Oficial — Horóscopo Técnico Diario</title>
+    <meta name="description" content="Horóscopo técnico diario basado en datos astronómicos reales. 12 signos del zodíaco con biorritmo astral, tránsitos planetarios y contexto cultural.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 50%, #0a0a2e 100%);
+            color: #e8e0f0;
+            min-height: 100vh;
+        }
+        .stars {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+            background-size: 200px 100px;
+            z-index: 0;
+            opacity: 0.4;
+        }
+        .container {
+            position: relative; z-index: 1;
+            max-width: 800px; margin: 0 auto; padding: 40px 20px;
+        }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #ffd700, #ffaa00, #ffd700);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .subtitle { font-size: 1.1em; color: #b8a0d0; font-style: italic; }
+        .section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 16px; padding: 30px; margin-bottom: 25px;
+        }
+        .section h2 {
+            color: #ffd700; font-size: 1.4em; margin-bottom: 15px;
+        }
+        .section p { line-height: 1.8; color: #d0c8e0; margin-bottom: 12px; }
+        .platforms { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px; }
+        .platform {
+            background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 12px; padding: 15px 25px; text-decoration: none;
+            color: #ffd700; font-weight: bold; transition: all 0.3s;
+        }
+        .platform:hover { background: rgba(255,215,0,0.2); transform: translateY(-2px); }
+        .signs {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px; margin-top: 20px;
+        }
+        .sign {
+            text-align: center; padding: 12px; border-radius: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.1);
+        }
+        .sign .emoji { font-size: 1.8em; }
+        .sign .name { font-size: 0.85em; color: #b8a0d0; margin-top: 4px; }
+        footer {
+            text-align: center; margin-top: 50px; padding-top: 20px;
+            border-top: 1px solid rgba(255,215,0,0.1); color: #8070a0; font-size: 0.9em;
+        }
+        footer a { color: #b8a0d0; text-decoration: underline; }
+        @media (max-width: 600px) { h1 { font-size: 1.8em; } }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="container">
+        <header>
+            <h1>Luz Estelar Oficial</h1>
+            <p class="subtitle">Horóscopo Técnico Diario — Basado en Datos Astronómicos Reales</p>
+        </header>
+
+        <div class="section">
+            <h2>Sobre Nosotros</h2>
+            <p>Luz Estelar es un servicio de horóscopo técnico diario que traduce los tránsitos planetarios reales en lecturas accesibles para los 12 signos del zodíaco.</p>
+            <p>Cada día, recopilamos datos astronómicos en tiempo real — posiciones planetarias, fases lunares, aspectos y retrógrados — y generamos un análisis completo que incluye biorritmo astral personalizado en las áreas de amor, trabajo, salud y energía.</p>
+            <p>Nuestro contenido se publica diariamente en múltiples plataformas para que puedas acceder a tu lectura donde prefieras.</p>
+        </div>
+
+        <div class="section">
+            <h2>Los 12 Signos</h2>
+            <div class="signs">
+                <div class="sign"><div class="emoji">♈</div><div class="name">Aries</div></div>
+                <div class="sign"><div class="emoji">♉</div><div class="name">Tauro</div></div>
+                <div class="sign"><div class="emoji">♊</div><div class="name">Géminis</div></div>
+                <div class="sign"><div class="emoji">♋</div><div class="name">Cáncer</div></div>
+                <div class="sign"><div class="emoji">♌</div><div class="name">Leo</div></div>
+                <div class="sign"><div class="emoji">♍</div><div class="name">Virgo</div></div>
+                <div class="sign"><div class="emoji">♎</div><div class="name">Libra</div></div>
+                <div class="sign"><div class="emoji">♏</div><div class="name">Escorpio</div></div>
+                <div class="sign"><div class="emoji">♐</div><div class="name">Sagitario</div></div>
+                <div class="sign"><div class="emoji">♑</div><div class="name">Capricornio</div></div>
+                <div class="sign"><div class="emoji">♒</div><div class="name">Acuario</div></div>
+                <div class="sign"><div class="emoji">♓</div><div class="name">Piscis</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Nuestras Plataformas</h2>
+            <p>Encuentra tu horóscopo diario en:</p>
+            <div class="platforms">
+                <a class="platform" href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a>
+                <a class="platform" href="https://www.facebook.com/profile.php?id=1028673273666619" target="_blank">Facebook</a>
+                <a class="platform" href="https://www.instagram.com/luzestelaroficial" target="_blank">Instagram</a>
+                <a class="platform" href="https://www.tiktok.com/@luzestelaroficial" target="_blank">TikTok</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Que Incluye Cada Lectura</h2>
+            <p><strong>Datos Astronómicos Reales:</strong> Posición exacta del Sol, Luna y planetas calculados con Swiss Ephemeris.</p>
+            <p><strong>Biorritmo Astral:</strong> Puntuación del 1 al 10 en Amor, Trabajo, Salud y Energía, calibrada con los aspectos planetarios del día.</p>
+            <p><strong>Contexto Cultural:</strong> Integración de festividades, lunaciones y ciclos estacionales relevantes.</p>
+            <p><strong>Tránsitos Relevantes:</strong> Aspectos mayores, retrógrados activos y su influencia por signo.</p>
+        </div>
+
+        <footer>
+            <p>Los astros inclinan, pero no obligan. El poder está en ti.</p>
+            <p style="margin-top: 10px;">
+                <a href="privacy-policy.html">Política de Privacidad</a> |
+                <a href="terms-of-service.html">Términos de Servicio</a>
+            </p>
+            <p style="margin-top: 10px;">&copy; 2026 Luz Estelar Oficial. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>
