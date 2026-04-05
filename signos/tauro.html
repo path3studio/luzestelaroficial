@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tauro — Personalidad, Compatibilidad y Mas | Luz Estelar Oficial</title>
+    <meta name="description" content="Todo sobre Tauro: personalidad, compatibilidad, carrera, salud y mas. Guia astrologica completa basada en datos astronomicos reales.">
+    <meta property="og:title" content="Tauro — Luz Estelar Oficial">
+    <meta property="og:description" content="Guia completa de Tauro: personalidad, amor, carrera y salud.">
+    <meta property="og:url" content="https://luzestelaroficial.com/signos/tauro.html">
+    <link rel="icon" type="image/png" href="../app_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;overflow-x:hidden;}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+        .starfield canvas{width:100%;height:100%;}
+        nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,6,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
+        nav .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+        nav .logo{font-family:'Cormorant Garamond',serif;font-size:1.4em;font-weight:700;color:var(--gold);text-decoration:none;}
+        nav .nav-links{display:flex;gap:28px;}
+        nav .nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.88em;font-weight:400;transition:color 0.2s;}
+        nav .nav-links a:hover{color:var(--gold);}
+        .content{position:relative;z-index:1;}
+        .hero-sign{padding:120px 24px 60px;text-align:center;}
+        .hero-sign .symbol{font-family:'Noto Sans Symbols 2',serif;font-size:5em;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 15px rgba(212,168,73,0.4));}
+        .hero-sign h1{font-family:'Cormorant Garamond',serif;font-size:3.5em;font-weight:700;color:#fff;margin:10px 0;}
+        .hero-sign .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:0.9em;color:var(--text-dim);}
+        .hero-sign .meta span{display:flex;align-items:center;gap:6px;}
+        .hero-sign .meta .dot{width:8px;height:8px;border-radius:50%;}
+        section{padding:60px 24px;}
+        .section-inner{max-width:800px;margin:0 auto;}
+        .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:36px 32px;margin-bottom:30px;}
+        .card h2{font-family:'Cormorant Garamond',serif;font-size:1.8em;font-weight:700;color:#fff;margin-bottom:16px;}
+        .card h2 .icon{margin-right:10px;}
+        .card p{font-size:0.95em;line-height:1.85;color:var(--text-dim);margin-bottom:14px;}
+        .card p:last-child{margin-bottom:0;}
+        .card ul{list-style:none;padding:0;}
+        .card ul li{padding:10px 0;border-bottom:1px solid var(--glass-border);font-size:0.92em;line-height:1.7;color:var(--text-dim);}
+        .card ul li:last-child{border-bottom:none;}
+        .card ul li strong{color:var(--gold);}
+        .compat-good{border-left:3px solid #2E8B57;padding-left:14px;}
+        .compat-challenge{border-left:3px solid #e74c3c;padding-left:14px;}
+        .sign-nav{display:flex;justify-content:space-between;max-width:800px;margin:40px auto;padding:0 24px;}
+        .sign-nav a{color:var(--gold);text-decoration:none;font-size:0.95em;transition:opacity 0.2s;}
+        .sign-nav a:hover{opacity:0.7;}
+        .cta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:30px;}
+        .cta-card{background:linear-gradient(135deg,rgba(212,168,73,0.08),rgba(124,92,191,0.06));border:1px solid rgba(212,168,73,0.2);border-radius:16px;padding:24px;text-align:center;text-decoration:none;color:#fff;transition:transform 0.3s;}
+        .cta-card:hover{transform:translateY(-3px);}
+        .cta-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2em;margin-bottom:8px;}
+        .cta-card p{font-size:0.85em;color:var(--text-dim);}
+        footer{text-align:center;padding:40px 24px;border-top:1px solid var(--glass-border);color:var(--text-dim);font-size:0.85em;}
+        footer a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+        footer a:hover{color:var(--gold);}
+        footer .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:16px;}
+        @media(max-width:768px){
+            .hero-sign h1{font-size:2.4em;}
+            .hero-sign .symbol{font-size:3.5em;}
+            .card{padding:24px 20px;}
+            .card h2{font-size:1.4em;}
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+    <nav><div class="nav-inner"><a href="../" class="logo">Luz Estelar</a><div class="nav-links"><a href="../">Inicio</a><a href="../#signos">Signos</a><a href="../#plataformas">Plataformas</a><a href="../#analisis">Analisis</a></div></div></nav>
+    <div class="content">
+        <div class="hero-sign">
+            <div class="symbol">&#9801;&#xFE0E;</div>
+            <h1>Tauro</h1>
+            <div class="meta">
+                <span>20 de abril - 20 de mayo</span>
+                <span><span class="dot" style="background:#2E8B57"></span> Tierra</span>
+                <span>Planeta: Venus</span>
+                <span>Fijo</span>
+            </div>
+        </div>
+        <section><div class="section-inner">
+            <div class="card">
+                <h2>Personalidad</h2>
+                                <p>Tauro es el constructor del zodiaco. Donde Aries inicia, Tauro consolida y da forma material a las ideas. Gobernado por Venus, el planeta del amor y la belleza, posee una sensibilidad estetica que se manifiesta en todo lo que toca: desde la decoracion de su hogar hasta la eleccion de sus alimentos.</p>
+                <p>La estabilidad es el pilar central de la personalidad taurina. Necesita seguridad material y emocional para sentirse en paz. Esta necesidad lo convierte en un trabajador incansable y un ahorrador disciplinado, pero tambien puede llevarlo a la rigidez y al apego excesivo a lo material.</p>
+                <p>Su lado luminoso brilla en la lealtad inquebrantable, la paciencia y la capacidad de crear belleza y confort. Su sombra incluye la terquedad legendaria, la resistencia al cambio y una tendencia a la posesividad tanto en relaciones como con objetos materiales. El aprendizaje de Tauro es soltar el control y confiar en que el cambio puede traer abundancia.</p>
+            </div>
+            <div class="card">
+                <h2>Elemento y Planeta Regente</h2>
+                <p>Como signo de Tierra, Tauro esta profundamente conectado con el mundo fisico y sensorial. La tierra representa solidez, fertilidad y permanencia. Tauro manifiesta estas cualidades en su deseo de construir cosas duraderas, ya sean fortunas, hogares o relaciones.</p>
+                <p>Venus, diosa del amor y la belleza, otorga a Tauro su refinamiento sensorial y su apreciacion por los placeres de la vida. A diferencia de Libra (el otro signo venusino), Tauro expresa a Venus de forma terrenal: a traves de la comida, el tacto, la musica y la naturaleza.</p>
+            </div>
+            <div class="card">
+                <h2>Amor y Relaciones</h2>
+                <p>Tauro ama con profundidad y constancia. No se enamora facilmente, pero cuando lo hace, es para siempre. En las relaciones busca seguridad, lealtad y contacto fisico. Es un amante sensual que expresa el amor a traves de gestos tangibles: regalos, comidas preparadas con cariño y presencia constante.</p>
+                <h3 style="font-family:'Cormorant Garamond',serif;color:#fff;margin:20px 0 12px;font-size:1.15em;">Mejores compatibilidades</h3>
+                <ul>                    <li class="compat-good"><strong>Virgo</strong> — Ambos de tierra, comparten valores practicos y lealtad profunda.</li>
+                    <li class="compat-good"><strong>Cancer</strong> — La nutricion emocional de Cancer complementa la estabilidad de Tauro.</li>
+                    <li class="compat-good"><strong>Piscis</strong> — El romanticismo de Piscis despierta la sensibilidad oculta de Tauro.</li></ul>
+                <h3 style="font-family:'Cormorant Garamond',serif;color:#fff;margin:20px 0 12px;font-size:1.15em;">Relaciones desafiantes</h3>
+                <ul>                    <li class="compat-challenge"><strong>Leo</strong> — Ambos fijos, ninguno cede. Choques de voluntad constantes.</li>
+                    <li class="compat-challenge"><strong>Acuario</strong> — La imprevisibilidad de Acuario desestabiliza a Tauro.</li></ul>
+            </div>
+            <div class="card">
+                <h2>Carrera y Dinero</h2>
+                <p>Tauro prospera en entornos estables donde puede construir algo tangible a largo plazo. Su paciencia y ojo estetico son activos valiosos en muchas profesiones.</p>
+                <ul>                    <li><strong>Gastronomia y chef</strong> — Su paladar refinado y amor por la comida son naturales</li>
+                    <li><strong>Banca y finanzas</strong> — La seguridad y los numeros le atraen instintivamente</li>
+                    <li><strong>Arquitectura</strong> — Combina su sentido estetico con la construccion tangible</li>
+                    <li><strong>Agricultura y jardineria</strong> — Su conexion con la tierra es literal</li>
+                    <li><strong>Diseño de interiores</strong> — Venus le da un ojo estetico excepcional</li>
+                    <li><strong>Administracion de bienes raices</strong> — Entiende el valor de la propiedad</li></ul>
+            </div>
+            <div class="card">
+                <h2>Salud y Bienestar</h2>
+                <p>Tauro rige el cuello, la garganta y la tiroides. Es propenso a problemas de garganta, tiroides y tension cervical. Su amor por la buena comida puede llevarlo a excesos que afectan el metabolismo.</p>
+                <ul>                    <li>Cuidar la alimentacion sin privarse, buscando equilibrio</li>
+                    <li>Ejercicios de cuello y hombros para liberar tension</li>
+                    <li>Cantar o practicar ejercicios vocales para la salud de la garganta</li>
+                    <li>Actividad fisica regular para contrarrestar su tendencia sedentaria</li></ul>
+            </div>
+            <div class="card">
+                <h2>Tu siguiente paso</h2>
+                <div class="cta-row">
+                    <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" class="cta-card">
+                        <h3>Horoscopo Diario</h3>
+                        <p>Recibe tu lectura diaria personalizada en video cada mañana.</p>
+                    </a>
+                    <a href="../#analisis" class="cta-card">
+                        <h3>Analisis Profundo</h3>
+                        <p>Carta natal, analisis de nombre y pronostico de 3 meses.</p>
+                    </a>
+                </div>
+            </div>
+        </div></section>
+        <div class="sign-nav">
+            <a href="aries.html">&larr; Aries</a>
+            <a href="../#signos">Todos los signos</a>
+            <a href="geminis.html">Geminis &rarr;</a>
+        </div>
+        <footer>
+            <div class="footer-links"><a href="../">Inicio</a><a href="../privacy-policy.html">Privacidad</a><a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a></div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+    <script>
+        (function(){var c=document.getElementById('stars');var ctx=c.getContext('2d');var w,h,stars=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}function init(){resize();stars=[];for(var i=0;i<150;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.3,a:Math.random()*0.5+0.15,speed:Math.random()*0.15+0.02,phase:Math.random()*Math.PI*2});}}function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}init();draw();window.addEventListener('resize',init);})();
+    </script>
+</body>
+</html>

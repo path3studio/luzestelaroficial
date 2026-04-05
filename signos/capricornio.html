@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capricornio — Personalidad, Compatibilidad y Mas | Luz Estelar Oficial</title>
+    <meta name="description" content="Todo sobre Capricornio: personalidad, compatibilidad, carrera, salud y mas. Guia astrologica completa basada en datos astronomicos reales.">
+    <meta property="og:title" content="Capricornio — Luz Estelar Oficial">
+    <meta property="og:description" content="Guia completa de Capricornio: personalidad, amor, carrera y salud.">
+    <meta property="og:url" content="https://luzestelaroficial.com/signos/capricornio.html">
+    <link rel="icon" type="image/png" href="../app_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;overflow-x:hidden;}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+        .starfield canvas{width:100%;height:100%;}
+        nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,6,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
+        nav .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+        nav .logo{font-family:'Cormorant Garamond',serif;font-size:1.4em;font-weight:700;color:var(--gold);text-decoration:none;}
+        nav .nav-links{display:flex;gap:28px;}
+        nav .nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.88em;font-weight:400;transition:color 0.2s;}
+        nav .nav-links a:hover{color:var(--gold);}
+        .content{position:relative;z-index:1;}
+        .hero-sign{padding:120px 24px 60px;text-align:center;}
+        .hero-sign .symbol{font-family:'Noto Sans Symbols 2',serif;font-size:5em;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 15px rgba(212,168,73,0.4));}
+        .hero-sign h1{font-family:'Cormorant Garamond',serif;font-size:3.5em;font-weight:700;color:#fff;margin:10px 0;}
+        .hero-sign .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:0.9em;color:var(--text-dim);}
+        .hero-sign .meta span{display:flex;align-items:center;gap:6px;}
+        .hero-sign .meta .dot{width:8px;height:8px;border-radius:50%;}
+        section{padding:60px 24px;}
+        .section-inner{max-width:800px;margin:0 auto;}
+        .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:36px 32px;margin-bottom:30px;}
+        .card h2{font-family:'Cormorant Garamond',serif;font-size:1.8em;font-weight:700;color:#fff;margin-bottom:16px;}
+        .card h2 .icon{margin-right:10px;}
+        .card p{font-size:0.95em;line-height:1.85;color:var(--text-dim);margin-bottom:14px;}
+        .card p:last-child{margin-bottom:0;}
+        .card ul{list-style:none;padding:0;}
+        .card ul li{padding:10px 0;border-bottom:1px solid var(--glass-border);font-size:0.92em;line-height:1.7;color:var(--text-dim);}
+        .card ul li:last-child{border-bottom:none;}
+        .card ul li strong{color:var(--gold);}
+        .compat-good{border-left:3px solid #2E8B57;padding-left:14px;}
+        .compat-challenge{border-left:3px solid #e74c3c;padding-left:14px;}
+        .sign-nav{display:flex;justify-content:space-between;max-width:800px;margin:40px auto;padding:0 24px;}
+        .sign-nav a{color:var(--gold);text-decoration:none;font-size:0.95em;transition:opacity 0.2s;}
+        .sign-nav a:hover{opacity:0.7;}
+        .cta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:30px;}
+        .cta-card{background:linear-gradient(135deg,rgba(212,168,73,0.08),rgba(124,92,191,0.06));border:1px solid rgba(212,168,73,0.2);border-radius:16px;padding:24px;text-align:center;text-decoration:none;color:#fff;transition:transform 0.3s;}
+        .cta-card:hover{transform:translateY(-3px);}
+        .cta-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2em;margin-bottom:8px;}
+        .cta-card p{font-size:0.85em;color:var(--text-dim);}
+        footer{text-align:center;padding:40px 24px;border-top:1px solid var(--glass-border);color:var(--text-dim);font-size:0.85em;}
+        footer a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+        footer a:hover{color:var(--gold);}
+        footer .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:16px;}
+        @media(max-width:768px){
+            .hero-sign h1{font-size:2.4em;}
+            .hero-sign .symbol{font-size:3.5em;}
+            .card{padding:24px 20px;}
+            .card h2{font-size:1.4em;}
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+    <nav><div class="nav-inner"><a href="../" class="logo">Luz Estelar</a><div class="nav-links"><a href="../">Inicio</a><a href="../#signos">Signos</a><a href="../#plataformas">Plataformas</a><a href="../#analisis">Analisis</a></div></div></nav>
+    <div class="content">
+        <div class="hero-sign">
+            <div class="symbol">&#9809;&#xFE0E;</div>
+            <h1>Capricornio</h1>
+            <div class="meta">
+                <span>22 de diciembre - 19 de enero</span>
+                <span><span class="dot" style="background:#2E8B57"></span> Tierra</span>
+                <span>Planeta: Saturno</span>
+                <span>Cardinal</span>
+            </div>
+        </div>
+        <section><div class="section-inner">
+            <div class="card">
+                <h2>Personalidad</h2>
+                                <p>Capricornio es el estratega del zodiaco. Gobernado por Saturno, el planeta de la disciplina y el tiempo, posee una madurez que a menudo se manifiesta desde edades tempranas. Mientras otros signos buscan gratificacion inmediata, Capricornio piensa en decadas, construyendo pacientemente las estructuras que sostendran su exito futuro.</p>
+                <p>La ambicion capricorniana no es vanidosa sino estrategica. No busca fama sino logros tangibles y duraderos. Es el signo que sacrifica el placer presente por la seguridad futura, que trabaja en silencio mientras otros presumen, y que llega a la cima cuando todos pensaban que habia desaparecido.</p>
+                <p>Su luz brilla en la disciplina, la responsabilidad y la capacidad de convertir visiones a largo plazo en realidad concreta. Su sombra incluye la rigidez emocional, la tendencia al pesimismo y una autoexigencia que puede llevar al agotamiento. El camino de Capricornio es aprender que el descanso y la vulnerabilidad no son debilidad.</p>
+            </div>
+            <div class="card">
+                <h2>Elemento y Planeta Regente</h2>
+                <p>Como signo de Tierra cardinal, Capricornio es la montaña: solida, imponente y construida para durar milenios. Es la tierra como estructura, como cimiento sobre el cual se construyen civilizaciones. La paciencia geologica de Capricornio es su mayor ventaja competitiva.</p>
+                <p>Saturno, el señor de los anillos y el tiempo, otorga a Capricornio su sentido del deber, la paciencia y la capacidad de trabajar dentro de limitaciones para crear algo extraordinario. Saturno enseña a traves de restricciones, y Capricornio aprende esta leccion mejor que nadie.</p>
+            </div>
+            <div class="card">
+                <h2>Amor y Relaciones</h2>
+                <p>Capricornio ama con seriedad y compromiso. No se involucra en relaciones frívolas: cuando elige a alguien, es porque ve potencial a largo plazo. Es leal, protector y expresa el amor construyendo una vida estable para ambos. Con el tiempo se vuelve mas tierno y expresivo.</p>
+                <h3 style="font-family:'Cormorant Garamond',serif;color:#fff;margin:20px 0 12px;font-size:1.15em;">Mejores compatibilidades</h3>
+                <ul>                    <li class="compat-good"><strong>Tauro</strong> — Ambos de tierra, construyen juntos con paciencia y pragmatismo.</li>
+                    <li class="compat-good"><strong>Virgo</strong> — Comparten la etica de trabajo y el respeto por la competencia.</li>
+                    <li class="compat-good"><strong>Escorpio</strong> — La intensidad y ambicion de ambos crea una alianza poderosa.</li></ul>
+                <h3 style="font-family:'Cormorant Garamond',serif;color:#fff;margin:20px 0 12px;font-size:1.15em;">Relaciones desafiantes</h3>
+                <ul>                    <li class="compat-challenge"><strong>Aries</strong> — La impulsividad de Aries choca con la cautela de Capricornio.</li>
+                    <li class="compat-challenge"><strong>Libra</strong> — La indecision de Libra frustra la naturaleza resolutiva de Capricornio.</li></ul>
+            </div>
+            <div class="card">
+                <h2>Carrera y Dinero</h2>
+                <p>Capricornio nacio para liderar y construir. Su vision a largo plazo y disciplina lo hacen excepcional en roles de alta responsabilidad.</p>
+                <ul>                    <li><strong>Direccion ejecutiva (CEO)</strong> — Nacio para estar en la cima</li>
+                    <li><strong>Ingenieria civil</strong> — Construir estructuras duraderas es su metafora vital</li>
+                    <li><strong>Politica y gobierno</strong> — La estrategia y el poder lo atraen</li>
+                    <li><strong>Banca de inversion</strong> — Piensa en terminos de decadas, no trimestres</li>
+                    <li><strong>Arquitectura</strong> — Diseña legados tangibles</li>
+                    <li><strong>Administracion publica</strong> — El servicio estructurado es su vocacion</li></ul>
+            </div>
+            <div class="card">
+                <h2>Salud y Bienestar</h2>
+                <p>Capricornio rige los huesos, las rodillas, las articulaciones y la piel. Es propenso a problemas articulares, rigidez osea y afecciones cutaneas relacionadas con el estres.</p>
+                <ul>                    <li>Suplementar calcio y vitamina D para la salud osea</li>
+                    <li>Cuidar las rodillas con ejercicio de bajo impacto</li>
+                    <li>No ignorar señales del cuerpo por priorizar el trabajo</li>
+                    <li>Hidratacion y cuidado de la piel contra la sequedad</li></ul>
+            </div>
+            <div class="card">
+                <h2>Tu siguiente paso</h2>
+                <div class="cta-row">
+                    <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" class="cta-card">
+                        <h3>Horoscopo Diario</h3>
+                        <p>Recibe tu lectura diaria personalizada en video cada mañana.</p>
+                    </a>
+                    <a href="../#analisis" class="cta-card">
+                        <h3>Analisis Profundo</h3>
+                        <p>Carta natal, analisis de nombre y pronostico de 3 meses.</p>
+                    </a>
+                </div>
+            </div>
+        </div></section>
+        <div class="sign-nav">
+            <a href="sagitario.html">&larr; Sagitario</a>
+            <a href="../#signos">Todos los signos</a>
+            <a href="acuario.html">Acuario &rarr;</a>
+        </div>
+        <footer>
+            <div class="footer-links"><a href="../">Inicio</a><a href="../privacy-policy.html">Privacidad</a><a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a></div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+    <script>
+        (function(){var c=document.getElementById('stars');var ctx=c.getContext('2d');var w,h,stars=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}function init(){resize();stars=[];for(var i=0;i<150;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.3,a:Math.random()*0.5+0.15,speed:Math.random()*0.15+0.02,phase:Math.random()*Math.PI*2});}}function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}init();draw();window.addEventListener('resize',init);})();
+    </script>
+</body>
+</html>
