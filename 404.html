@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Luz Estelar Oficial</title>
+    <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #06061a; color: #c8c8d4; font-family: 'Inter', sans-serif; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; overflow: hidden; position: relative; }
+        body::before, body::after { content: ''; position: fixed; border-radius: 50%; pointer-events: none; }
+        body::before { width: 2px; height: 2px; top: 12%; left: 22%; background: white;
+            box-shadow: 40vw 8vh 0 0 rgba(255,255,255,.5), 72vw 18vh 0 0 rgba(255,255,255,.3),
+            15vw 65vh 0 0 rgba(255,255,255,.4), 85vw 42vh 0 1px rgba(212,168,73,.25),
+            50vw 80vh 0 0 rgba(255,255,255,.35), 30vw 30vh 0 0 rgba(255,255,255,.2),
+            90vw 70vh 0 0 rgba(255,255,255,.45), 60vw 55vh 0 1px rgba(240,208,120,.2),
+            8vw 88vh 0 0 rgba(255,255,255,.3), 45vw 15vh 0 0 rgba(255,255,255,.25); }
+        body::after { width: 200px; height: 200px; top: 10%; right: -60px;
+            background: radial-gradient(circle, rgba(212,168,73,.04) 0%, transparent 70%); }
+        .container { position: relative; z-index: 1; padding: 2rem; max-width: 520px; }
+        .code { font-family: 'Cormorant Garamond', serif; font-size: clamp(6rem, 15vw, 10rem);
+            font-weight: 700; line-height: 1; background: linear-gradient(135deg, #d4a849, #f0d078);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.4rem;
+            color: #e0d6c2; margin: .6rem 0 1rem; }
+        p { font-size: .95rem; line-height: 1.6; margin-bottom: 2rem; font-weight: 300; }
+        .btn { display: inline-block; padding: .75rem 2.2rem; border: 1px solid #d4a849; color: #06061a;
+            background: linear-gradient(135deg, #d4a849, #f0d078); font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: .9rem; border-radius: 6px; text-decoration: none; transition: opacity .2s; }
+        .btn:hover { opacity: .85; }
+        .secondary { display: block; margin-top: 1.2rem; color: #d4a849; font-size: .85rem; text-decoration: none; }
+        .secondary:hover { text-decoration: underline; }
+        footer { position: absolute; bottom: 1.5rem; font-size: .75rem; color: #555; font-weight: 300; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="code">404</div>
+        <h2>Los astros no encontraron esta pagina</h2>
+        <p>Parece que esta ruta no existe en nuestro mapa estelar.</p>
+        <a href="/" class="btn">Volver al Inicio</a>
+        <a href="/#signos" class="secondary">Explorar los 12 Signos</a>
+    </div>
+    <footer>&copy; 2026 Luz Estelar Oficial &mdash; Path3 Studio</footer>
+</body>
+</html>
