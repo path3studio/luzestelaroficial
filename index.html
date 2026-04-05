@@ -449,6 +449,7 @@
             <a href="#" class="logo">Luz Estelar</a>
             <div class="nav-links" id="navLinks">
                 <a href="#inicio">Inicio</a>
+                <a href="#energia">Energia</a>
                 <a href="#signos">Signos</a>
                 <a href="#aprende">Aprende</a>
                 <a href="#plataformas">Plataformas</a>
@@ -471,6 +472,34 @@
                     <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" class="btn btn-primary">Ver en YouTube</a>
                     <a href="#signos" class="btn btn-outline">Explorar Signos</a>
                 </div>
+            </div>
+        </section>
+
+        <!-- ── Daily Energy ──────────────────────────── -->
+        <section id="energia" style="background:var(--bg-mid);padding:60px 24px;">
+            <div class="section-inner" style="text-align:center;">
+                <div class="fade-in">
+                    <p class="section-label">Hoy</p>
+                    <h2 class="section-title" id="energyDate"></h2>
+                </div>
+                <div class="fade-in" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:30px;">
+                    <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:24px;text-align:center;">
+                        <div id="moonPhaseIcon" style="font-size:2.4em;margin-bottom:8px;"></div>
+                        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1em;font-weight:600;color:#fff;" id="moonPhaseName"></div>
+                        <div style="font-size:0.82em;color:var(--text-dim);margin-top:4px;" id="moonPhaseDesc"></div>
+                    </div>
+                    <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:24px;text-align:center;">
+                        <div style="font-family:'Noto Sans Symbols 2',serif;font-size:2.4em;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="sunSignIcon"></div>
+                        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1em;font-weight:600;color:#fff;" id="sunSignName"></div>
+                        <div style="font-size:0.82em;color:var(--text-dim);margin-top:4px;">Temporada Solar Actual</div>
+                    </div>
+                    <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:24px;text-align:center;">
+                        <div style="font-size:2.4em;margin-bottom:8px;">&#x2728;</div>
+                        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1em;font-weight:600;color:#fff;" id="dayEnergy"></div>
+                        <div style="font-size:0.82em;color:var(--text-dim);margin-top:4px;" id="dayEnergyDesc"></div>
+                    </div>
+                </div>
+                <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" style="display:inline-block;margin-top:24px;color:var(--gold);font-size:0.9em;text-decoration:none;border-bottom:1px solid rgba(212,168,73,0.3);padding-bottom:2px;transition:border-color 0.3s;">Ver lectura completa en YouTube &rarr;</a>
             </div>
         </section>
 
@@ -670,6 +699,81 @@
             }
             init(); draw();
             window.addEventListener('resize', init);
+        })();
+
+        // ── Daily energy widget ──
+        (function(){
+            // Moon phase calculation
+            var now = new Date();
+            var year = now.getFullYear(), month = now.getMonth()+1, day = now.getDate();
+            // Reference: Jan 6, 2000 = New Moon
+            var refNew = new Date(2000, 0, 6).getTime();
+            var diff = (now.getTime() - refNew) / (1000*60*60*24);
+            var cycle = 29.53058770576;
+            var phase = ((diff % cycle) + cycle) % cycle;
+            var illum = Math.round((1 - Math.cos(2 * Math.PI * phase / cycle)) / 2 * 100);
+
+            var phaseNames = [
+                {name:'Luna Nueva',icon:'\uD83C\uDF11',desc:'Momento de introspección y nuevos comienzos'},
+                {name:'Creciente',icon:'\uD83C\uDF12',desc:'Energia para tomar accion y construir'},
+                {name:'Cuarto Creciente',icon:'\uD83C\uDF13',desc:'Decisiones importantes, superar obstaculos'},
+                {name:'Gibosa Creciente',icon:'\uD83C\uDF14',desc:'Refinar planes, ajustar el rumbo'},
+                {name:'Luna Llena',icon:'\uD83C\uDF15',desc:'Culminacion, claridad y resultados'},
+                {name:'Gibosa Menguante',icon:'\uD83C\uDF16',desc:'Gratitud, compartir lo aprendido'},
+                {name:'Cuarto Menguante',icon:'\uD83C\uDF17',desc:'Soltar, perdonar, dejar ir'},
+                {name:'Menguante',icon:'\uD83C\uDF18',desc:'Descanso, preparacion para el nuevo ciclo'}
+            ];
+            var phaseIdx = Math.floor(phase / cycle * 8) % 8;
+            var p = phaseNames[phaseIdx];
+            document.getElementById('moonPhaseIcon').textContent = p.icon;
+            document.getElementById('moonPhaseName').textContent = p.name + ' (' + illum + '%)';
+            document.getElementById('moonPhaseDesc').textContent = p.desc;
+
+            // Sun sign (approximate dates)
+            var sunSigns = [
+                {s:'Capricornio',sym:'\u2651\uFE0E',start:[1,1],end:[1,19]},
+                {s:'Acuario',sym:'\u2652\uFE0E',start:[1,20],end:[2,18]},
+                {s:'Piscis',sym:'\u2653\uFE0E',start:[2,19],end:[3,20]},
+                {s:'Aries',sym:'\u2648\uFE0E',start:[3,21],end:[4,19]},
+                {s:'Tauro',sym:'\u2649\uFE0E',start:[4,20],end:[5,20]},
+                {s:'Geminis',sym:'\u264A\uFE0E',start:[5,21],end:[6,20]},
+                {s:'Cancer',sym:'\u264B\uFE0E',start:[6,21],end:[7,22]},
+                {s:'Leo',sym:'\u264C\uFE0E',start:[7,23],end:[8,22]},
+                {s:'Virgo',sym:'\u264D\uFE0E',start:[8,23],end:[9,22]},
+                {s:'Libra',sym:'\u264E\uFE0E',start:[9,23],end:[10,22]},
+                {s:'Escorpio',sym:'\u264F\uFE0E',start:[10,23],end:[11,21]},
+                {s:'Sagitario',sym:'\u2650\uFE0E',start:[11,22],end:[12,21]},
+                {s:'Capricornio',sym:'\u2651\uFE0E',start:[12,22],end:[12,31]}
+            ];
+            var m = now.getMonth()+1, d = now.getDate();
+            var sun = sunSigns.find(function(ss){
+                var after = (m > ss.start[0]) || (m === ss.start[0] && d >= ss.start[1]);
+                var before = (m < ss.end[0]) || (m === ss.end[0] && d <= ss.end[1]);
+                return after && before;
+            });
+            if(sun){
+                document.getElementById('sunSignIcon').textContent = sun.sym;
+                document.getElementById('sunSignName').textContent = 'Sol en ' + sun.s;
+            }
+
+            // Day energy based on day of week
+            var dayEnergies = [
+                {name:'Dia de la Luna',desc:'Emociones, intuicion y cuidado personal'},
+                {name:'Dia de Marte',desc:'Accion, coraje y determinacion'},
+                {name:'Dia de Mercurio',desc:'Comunicacion, negocios e intelecto'},
+                {name:'Dia de Jupiter',desc:'Expansion, abundancia y buena fortuna'},
+                {name:'Dia de Venus',desc:'Amor, belleza y armonia'},
+                {name:'Dia de Saturno',desc:'Disciplina, estructura y responsabilidad'},
+                {name:'Dia del Sol',desc:'Vitalidad, creatividad y expresion personal'}
+            ];
+            var de = dayEnergies[now.getDay()];
+            document.getElementById('dayEnergy').textContent = de.name;
+            document.getElementById('dayEnergyDesc').textContent = de.desc;
+
+            // Date
+            var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+            var dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+            document.getElementById('energyDate').textContent = dias[now.getDay()] + ' ' + now.getDate() + ' de ' + meses[now.getMonth()] + ', ' + now.getFullYear();
         })();
 
         // ── Mobile hamburger menu ──
