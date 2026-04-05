@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Identidad de Marca — Luz Estelar Oficial</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4a849;
+            --gold-light: #f0d078;
+            --gold-deep: #c89030;
+            --gold-dim: rgba(212,168,73,0.15);
+            --bg-deep: #06061a;
+            --bg-mid: #0c0c2a;
+            --text: #e0dce8;
+            --text-dim: #9890a8;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --accent-purple: #7c5cbf;
+            --purple-dim: rgba(124,92,191,0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* ── Navegacion ──────────────────────────────────── */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(6,6,26,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 24px;
+        }
+        .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em; font-weight: 700; color: var(--gold);
+            text-decoration: none; letter-spacing: 0.02em;
+        }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .nav-links a {
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.82em; font-weight: 400;
+            transition: color 0.2s; letter-spacing: 0.02em;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* ── Contenido principal ─────────────────────────── */
+        .content { position: relative; z-index: 1; }
+        section { padding: 80px 24px; }
+        section:nth-child(even) { background: var(--bg-mid); }
+        .section-inner { max-width: 1000px; margin: 0 auto; }
+
+        .section-label {
+            font-size: 0.72em; font-weight: 600; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+        }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.4em; font-weight: 700; line-height: 1.15;
+            margin-bottom: 20px; color: #fff;
+        }
+        .section-desc {
+            font-size: 1em; line-height: 1.8; color: var(--text-dim);
+            max-width: 700px; margin-bottom: 40px;
+        }
+
+        /* ── Hero / Cabecera ─────────────────────────────── */
+        .hero {
+            min-height: 50vh; display: flex; align-items: center;
+            justify-content: center; text-align: center;
+            padding-top: 100px; padding-bottom: 60px;
+            background: var(--bg-deep);
+            position: relative;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, var(--bg-mid));
+        }
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.4em; font-weight: 700; line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .hero h1 .gold {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .tagline {
+            font-size: 1.1em; color: var(--text-dim);
+            font-style: italic; font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Tarjetas Glass ──────────────────────────────── */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 32px 28px;
+            backdrop-filter: blur(12px);
+        }
+
+        /* ── Seccion Logo ────────────────────────────────── */
+        .logo-showcase {
+            display: flex; flex-wrap: wrap; gap: 40px;
+            align-items: center; justify-content: center;
+            margin-top: 30px;
+        }
+        .logo-primary {
+            width: 220px; height: 220px;
+            border-radius: 28px;
+            background: radial-gradient(circle at 50% 50%, rgba(212,168,73,0.15) 0%, var(--bg-deep) 70%);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            box-shadow: 0 0 60px rgba(212,168,73,0.15), 0 0 120px rgba(212,168,73,0.05);
+        }
+        .logo-primary img {
+            width: 140px; height: 140px;
+            filter: drop-shadow(0 0 20px rgba(212,168,73,0.6)) drop-shadow(0 0 50px rgba(212,168,73,0.2));
+        }
+        .logo-specs { max-width: 400px; }
+        .logo-specs h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em; font-weight: 600; color: #fff; margin-bottom: 12px;
+        }
+        .spec-item {
+            display: flex; align-items: baseline; gap: 10px;
+            margin-bottom: 10px; font-size: 0.92em;
+        }
+        .spec-item .label {
+            color: var(--gold); font-weight: 500;
+            min-width: 130px; flex-shrink: 0;
+        }
+        .spec-item .value { color: var(--text-dim); }
+
+        .logo-sizes {
+            display: flex; gap: 30px; align-items: flex-end;
+            margin-top: 30px; flex-wrap: wrap;
+        }
+        .logo-size-demo {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 8px;
+        }
+        .logo-size-demo img {
+            filter: drop-shadow(0 0 8px rgba(212,168,73,0.4));
+        }
+        .logo-size-demo span {
+            font-size: 0.75em; color: var(--text-dim);
+        }
+
+        /* ── Paleta de Colores ───────────────────────────── */
+        .color-group { margin-bottom: 40px; }
+        .color-group-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35em; font-weight: 600; color: #fff;
+            margin-bottom: 16px;
+        }
+        .color-swatches {
+            display: flex; flex-wrap: wrap; gap: 14px;
+        }
+        .swatch {
+            width: 140px; border-radius: 14px; overflow: hidden;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            transition: transform 0.2s;
+        }
+        .swatch:hover { transform: translateY(-3px); }
+        .swatch-color {
+            height: 80px; width: 100%;
+        }
+        .swatch-info {
+            padding: 12px;
+        }
+        .swatch-name {
+            font-size: 0.82em; font-weight: 500; color: #fff;
+            margin-bottom: 4px;
+        }
+        .swatch-hex {
+            font-size: 0.72em; color: var(--text-dim);
+            font-family: 'Inter', monospace;
+        }
+
+        .gradient-demo {
+            height: 60px; border-radius: 14px;
+            margin-top: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ── Elementos Zodiacales ────────────────────────── */
+        .element-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px; margin-top: 16px;
+        }
+        .element-card {
+            border-radius: 16px; padding: 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+        }
+        .element-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15em; font-weight: 600; margin-bottom: 12px;
+        }
+        .element-colors {
+            display: flex; gap: 8px;
+        }
+        .element-dot {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.55em; color: rgba(0,0,0,0.6); font-weight: 600;
+        }
+        .element-labels {
+            margin-top: 10px;
+            font-size: 0.75em; color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* ── Tipografia ──────────────────────────────────── */
+        .type-specimen { margin-bottom: 40px; }
+        .type-specimen-header {
+            display: flex; align-items: baseline; gap: 16px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .type-family {
+            font-size: 0.78em; font-weight: 500; color: var(--gold);
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+        .type-meta {
+            font-size: 0.75em; color: var(--text-dim);
+        }
+        .type-samples { margin-top: 14px; }
+        .type-sample {
+            margin-bottom: 12px; padding: 20px 24px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+        }
+        .type-sample .size-label {
+            font-size: 0.68em; color: var(--text-dim);
+            margin-bottom: 6px; font-family: 'Inter', sans-serif;
+            font-weight: 400;
+        }
+
+        /* ── Signos del Zodiaco ──────────────────────────── */
+        .zodiac-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px; margin-top: 30px;
+        }
+        .zodiac-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .zodiac-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(212,168,73,0.08), transparent 70%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .zodiac-card:hover::before { opacity: 1; }
+        .zodiac-card:hover {
+            border-color: rgba(212,168,73,0.3);
+            transform: translateY(-3px);
+        }
+        .zodiac-symbol {
+            font-family: 'Noto Sans Symbols 2', serif;
+            font-size: 3em;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            /* Force text rendering, not emoji */
+            font-variant-emoji: text;
+        }
+        .zodiac-card .sign-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05em; font-weight: 600; color: #fff;
+            margin-top: 8px; position: relative;
+        }
+        .zodiac-card .sign-dates {
+            font-size: 0.75em; color: var(--text-dim);
+            margin-top: 4px; position: relative;
+        }
+        .zodiac-card .sign-element {
+            font-size: 0.68em; margin-top: 6px;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            position: relative; font-weight: 600;
+        }
+        .sign-element.fuego { color: #FF4500; }
+        .sign-element.tierra { color: #2E8B57; }
+        .sign-element.aire { color: #4169E1; }
+        .sign-element.agua { color: #1E90FF; }
+
+        /* ── Glass Morphism Demo ─────────────────────────── */
+        .glass-demos {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; margin-top: 30px;
+        }
+        .glass-demo-card {
+            padding: 28px 24px;
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-demo-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2em; font-weight: 600; color: #fff;
+            margin-bottom: 10px;
+        }
+        .glass-demo-card p {
+            font-size: 0.88em; color: var(--text-dim); line-height: 1.7;
+        }
+        .glass-standard {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+        }
+        .glass-elevated {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(16px);
+        }
+        .glass-accent {
+            background: linear-gradient(135deg, rgba(124,92,191,0.1), rgba(212,168,73,0.08));
+            border: 1px solid rgba(124,92,191,0.2);
+            backdrop-filter: blur(12px);
+        }
+
+        .css-block {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 20px;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.78em;
+            line-height: 1.8;
+            color: var(--text-dim);
+            overflow-x: auto;
+        }
+        .css-block .prop { color: #87CEEB; }
+        .css-block .val { color: var(--gold-light); }
+        .css-block .comment { color: #5a5a7a; }
+
+        /* ── Reglas de Uso ────────────────────────────────── */
+        .rules-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; margin-top: 30px;
+        }
+        .rule-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 28px 24px;
+        }
+        .rule-card .rule-icon {
+            font-size: 1.6em; margin-bottom: 14px;
+        }
+        .rule-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15em; font-weight: 600; color: #fff;
+            margin-bottom: 10px;
+        }
+        .rule-card p {
+            font-size: 0.88em; color: var(--text-dim); line-height: 1.7;
+        }
+        .rule-do { border-left: 3px solid #2E8B57; }
+        .rule-dont { border-left: 3px solid #FF4500; }
+        .rule-do .rule-label {
+            font-size: 0.7em; font-weight: 600; letter-spacing: 0.12em;
+            text-transform: uppercase; color: #2E8B57; margin-bottom: 8px;
+        }
+        .rule-dont .rule-label {
+            font-size: 0.7em; font-weight: 600; letter-spacing: 0.12em;
+            text-transform: uppercase; color: #FF4500; margin-bottom: 8px;
+        }
+
+        /* ── Footer ──────────────────────────────────────── */
+        footer {
+            text-align: center; padding: 40px 24px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim); font-size: 0.85em;
+        }
+
+        /* ── Responsive ──────────────────────────────────── */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.4em; }
+            .section-title { font-size: 1.9em; }
+            .zodiac-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .zodiac-card { padding: 16px 10px; }
+            .zodiac-symbol { font-size: 2.2em; }
+            section { padding: 60px 16px; }
+            .nav-links { gap: 12px; }
+            .nav-links a { font-size: 0.72em; }
+            .logo-showcase { flex-direction: column; text-align: center; }
+            .swatch { width: 120px; }
+        }
+        @media (max-width: 480px) {
+            .zodiac-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-links { display: none; }
+            .color-swatches { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Navegacion ──────────────────────────────── -->
+    <nav>
+        <div class="nav-inner">
+            <a href="#top" class="nav-brand">Luz Estelar &mdash; Guia de Marca</a>
+            <div class="nav-links">
+                <a href="#logo">Logo</a>
+                <a href="#colores">Colores</a>
+                <a href="#tipografia">Tipografia</a>
+                <a href="#signos">Signos</a>
+                <a href="#glass">Glass Morphism</a>
+                <a href="#reglas">Reglas</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <!-- ── Hero ──────────────────────────────── -->
+        <section class="hero" id="top">
+            <div style="position:relative; z-index:2; max-width: 700px;">
+                <p class="section-label" style="margin-bottom:16px;">Guia de Identidad de Marca</p>
+                <h1><span class="gold">Luz Estelar</span> Oficial</h1>
+                <p class="tagline">Referencia visual y normativa para mantener la coherencia de marca en todas las plataformas y materiales.</p>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 1. LOGO                                    -->
+        <!-- ══════════════════════════════════════════ -->
+        <section id="logo">
+            <div class="section-inner">
+                <p class="section-label">Seccion 1</p>
+                <h2 class="section-title">Logo</h2>
+                <p class="section-desc">El logo principal de Luz Estelar es una estrella 3D metalica. Se presenta siempre sobre fondo oscuro con un resplandor dorado sutil que refuerza la identidad cosmica de la marca.</p>
+
+                <div class="logo-showcase">
+                    <div class="logo-primary">
+                        <img src="app_icon.png" alt="Luz Estelar Logo">
+                    </div>
+                    <div class="logo-specs">
+                        <h3>Especificaciones</h3>
+                        <div class="spec-item">
+                            <span class="label">Tipo:</span>
+                            <span class="value">Estrella 3D metalica con acabado dorado</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="label">Fondo:</span>
+                            <span class="value">Siempre oscuro (#06061a o similar)</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="label">Resplandor:</span>
+                            <span class="value">Gold glow via drop-shadow y radial-gradient</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="label">Tamano minimo:</span>
+                            <span class="value">48px &times; 48px</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="label">Espacio libre:</span>
+                            <span class="value">Minimo 50% del ancho del logo a cada lado</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="label">Archivo:</span>
+                            <span class="value">app_icon.png</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.2em; color:#fff; margin-top:50px; margin-bottom:20px;">Tamanos de Referencia</h3>
+                <div class="logo-sizes">
+                    <div class="logo-size-demo">
+                        <img src="app_icon.png" alt="48px" style="width:48px; height:48px;">
+                        <span>48px &mdash; Minimo</span>
+                    </div>
+                    <div class="logo-size-demo">
+                        <img src="app_icon.png" alt="64px" style="width:64px; height:64px;">
+                        <span>64px &mdash; Icono</span>
+                    </div>
+                    <div class="logo-size-demo">
+                        <img src="app_icon.png" alt="96px" style="width:96px; height:96px;">
+                        <span>96px &mdash; Medio</span>
+                    </div>
+                    <div class="logo-size-demo">
+                        <img src="app_icon.png" alt="140px" style="width:140px; height:140px;">
+                        <span>140px &mdash; Hero</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 2. PALETA DE COLORES                       -->
+        <!-- ══════════════════════════════════════════ -->
+        <section id="colores">
+            <div class="section-inner">
+                <p class="section-label">Seccion 2</p>
+                <h2 class="section-title">Paleta de Colores</h2>
+                <p class="section-desc">Los colores de Luz Estelar evocan el espacio profundo iluminado por destellos dorados. El oro es el acento dominante; el purpura cosmico se usa como complemento secundario.</p>
+
+                <!-- Colores Primarios -->
+                <div class="color-group">
+                    <h3 class="color-group-title">Colores Primarios</h3>
+                    <div class="color-swatches">
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#06061a;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Deep Space</div>
+                                <div class="swatch-hex">#06061a<br>Fondos principales</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#0c0c2a;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Midnight</div>
+                                <div class="swatch-hex">#0c0c2a<br>Secciones alternadas</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#ffffff; border-bottom:1px solid var(--glass-border);"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Pure White</div>
+                                <div class="swatch-hex">#ffffff<br>Encabezados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Oro de Marca -->
+                <div class="color-group">
+                    <h3 class="color-group-title">Oro de Marca</h3>
+                    <div class="color-swatches">
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#f0d078;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Gold Light</div>
+                                <div class="swatch-hex">#f0d078</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#d4a849;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Gold Primary</div>
+                                <div class="swatch-hex">#d4a849</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#c89030;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Gold Deep</div>
+                                <div class="swatch-hex">#c89030</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:rgba(212,168,73,0.15); border:1px dashed rgba(212,168,73,0.3);"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Gold Dim</div>
+                                <div class="swatch-hex">rgba(212,168,73,0.15)<br>Rellenos sutiles</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gradient-demo" style="background: linear-gradient(135deg, #f0d078, #d4a849, #c89030); margin-top:20px;"></div>
+                    <p style="font-size:0.78em; color:var(--text-dim); margin-top:8px;">Gradiente de marca: <span style="font-family:monospace;">linear-gradient(135deg, #f0d078, #d4a849, #c89030)</span></p>
+                </div>
+
+                <!-- Acento -->
+                <div class="color-group">
+                    <h3 class="color-group-title">Acento</h3>
+                    <div class="color-swatches">
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#7c5cbf;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Cosmic Purple</div>
+                                <div class="swatch-hex">#7c5cbf</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:rgba(124,92,191,0.2); border:1px dashed rgba(124,92,191,0.4);"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Purple Dim</div>
+                                <div class="swatch-hex">rgba(124,92,191,0.2)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Texto -->
+                <div class="color-group">
+                    <h3 class="color-group-title">Texto</h3>
+                    <div class="color-swatches">
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#e0dce8;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Primary Text</div>
+                                <div class="swatch-hex">#e0dce8<br>Texto principal</div>
+                            </div>
+                        </div>
+                        <div class="swatch">
+                            <div class="swatch-color" style="background:#9890a8;"></div>
+                            <div class="swatch-info">
+                                <div class="swatch-name">Dim Text</div>
+                                <div class="swatch-hex">#9890a8<br>Texto secundario</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Elementos Zodiacales -->
+                <div class="color-group">
+                    <h3 class="color-group-title">Colores por Elemento Zodiacal</h3>
+                    <div class="element-row">
+                        <div class="element-card">
+                            <h4 style="color:#FF4500;">Fuego</h4>
+                            <div class="element-colors">
+                                <div class="element-dot" style="background:#FF4500;" title="Primario">1</div>
+                                <div class="element-dot" style="background:#FF8C00;" title="Secundario">2</div>
+                                <div class="element-dot" style="background:#FFD700;" title="Acento">3</div>
+                            </div>
+                            <div class="element-labels">
+                                1. #FF4500 Primario<br>
+                                2. #FF8C00 Secundario<br>
+                                3. #FFD700 Acento
+                            </div>
+                        </div>
+                        <div class="element-card">
+                            <h4 style="color:#2E8B57;">Tierra</h4>
+                            <div class="element-colors">
+                                <div class="element-dot" style="background:#2E8B57;" title="Primario">1</div>
+                                <div class="element-dot" style="background:#8FBC8F;" title="Secundario">2</div>
+                                <div class="element-dot" style="background:#DAA520;" title="Acento">3</div>
+                            </div>
+                            <div class="element-labels">
+                                1. #2E8B57 Primario<br>
+                                2. #8FBC8F Secundario<br>
+                                3. #DAA520 Acento
+                            </div>
+                        </div>
+                        <div class="element-card">
+                            <h4 style="color:#4169E1;">Aire</h4>
+                            <div class="element-colors">
+                                <div class="element-dot" style="background:#4169E1;" title="Primario">1</div>
+                                <div class="element-dot" style="background:#87CEEB; color:rgba(0,0,0,0.5);" title="Secundario">2</div>
+                                <div class="element-dot" style="background:#E0E8FF; color:rgba(0,0,0,0.5);" title="Acento">3</div>
+                            </div>
+                            <div class="element-labels">
+                                1. #4169E1 Primario<br>
+                                2. #87CEEB Secundario<br>
+                                3. #E0E8FF Acento
+                            </div>
+                        </div>
+                        <div class="element-card">
+                            <h4 style="color:#1E90FF;">Agua</h4>
+                            <div class="element-colors">
+                                <div class="element-dot" style="background:#1E90FF;" title="Primario">1</div>
+                                <div class="element-dot" style="background:#00CED1;" title="Secundario">2</div>
+                                <div class="element-dot" style="background:#7FFFD4; color:rgba(0,0,0,0.5);" title="Acento">3</div>
+                            </div>
+                            <div class="element-labels">
+                                1. #1E90FF Primario<br>
+                                2. #00CED1 Secundario<br>
+                                3. #7FFFD4 Acento
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 3. TIPOGRAFIA                              -->
+        <!-- ══════════════════════════════════════════ -->
+        <section id="tipografia">
+            <div class="section-inner">
+                <p class="section-label">Seccion 3</p>
+                <h2 class="section-title">Tipografia</h2>
+                <p class="section-desc">Tres familias tipograficas cubren todas las necesidades de la marca: una serif elegante para encabezados, una sans-serif legible para cuerpo, y una serif decorativa exclusiva para titulos de video.</p>
+
+                <!-- Cormorant Garamond -->
+                <div class="type-specimen">
+                    <div class="type-specimen-header">
+                        <span class="type-family">Cormorant Garamond</span>
+                        <span class="type-meta">Serif &mdash; Encabezados &mdash; Pesos 600, 700</span>
+                    </div>
+                    <div class="type-samples">
+                        <div class="type-sample">
+                            <div class="size-label">42px / Weight 700 &mdash; Titulo principal</div>
+                            <div style="font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:700; color:#fff; line-height:1.15;">
+                                Luz Estelar Oficial
+                            </div>
+                        </div>
+                        <div class="type-sample">
+                            <div class="size-label">28px / Weight 700 &mdash; Titulo de seccion</div>
+                            <div style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:700; color:#fff; line-height:1.2;">
+                                Astrologia tecnica, no predicciones genericas
+                            </div>
+                        </div>
+                        <div class="type-sample">
+                            <div class="size-label">20px / Weight 600 &mdash; Subtitulo</div>
+                            <div style="font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; color:#fff; line-height:1.3;">
+                                Tu lectura diaria te espera en cada signo
+                            </div>
+                        </div>
+                        <div class="type-sample">
+                            <div class="size-label">18px / Italic &mdash; Citas</div>
+                            <div style="font-family:'Cormorant Garamond',serif; font-size:18px; font-style:italic; color:var(--gold-light); line-height:1.5;">
+                                Los astros inclinan, pero no obligan. El poder esta en ti.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inter -->
+                <div class="type-specimen">
+                    <div class="type-specimen-header">
+                        <span class="type-family">Inter</span>
+                        <span class="type-meta">Sans-serif &mdash; Cuerpo y UI &mdash; Pesos 300, 400, 500</span>
+                    </div>
+                    <div class="type-samples">
+                        <div class="type-sample">
+                            <div class="size-label">16px / Weight 400 &mdash; Texto de cuerpo</div>
+                            <div style="font-family:'Inter',sans-serif; font-size:16px; font-weight:400; color:var(--text); line-height:1.8;">
+                                Cada lectura nace de calculos astronomicos reales: posiciones planetarias al grado exacto, aspectos mayores, fases lunares y contexto cultural del dia. Publicamos contenido diario en cuatro plataformas para que tu horoscopo este siempre al alcance.
+                            </div>
+                        </div>
+                        <div class="type-sample">
+                            <div class="size-label">14px / Weight 300 &mdash; Texto secundario</div>
+                            <div style="font-family:'Inter',sans-serif; font-size:14px; font-weight:300; color:var(--text-dim); line-height:1.7;">
+                                Posiciones exactas del Sol, Luna y 8 planetas calculadas con Swiss Ephemeris. Grados, signos y casas en tiempo real para cada signo del zodiaco.
+                            </div>
+                        </div>
+                        <div class="type-sample">
+                            <div class="size-label">12px / Weight 500 &mdash; Etiquetas y labels</div>
+                            <div style="font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--gold); letter-spacing:0.12em; text-transform:uppercase;">
+                                Nuestro Metodo &nbsp;&bull;&nbsp; Proximamente &nbsp;&bull;&nbsp; Donde Encontrarnos
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cinzel -->
+                <div class="type-specimen">
+                    <div class="type-specimen-header">
+                        <span class="type-family">Cinzel</span>
+                        <span class="type-meta">Serif Decorativa &mdash; Solo titulos de video y thumbnails &mdash; Pesos 600, 700</span>
+                    </div>
+                    <div class="type-samples">
+                        <div class="type-sample">
+                            <div class="size-label">36px / Weight 700 &mdash; Titulo de video</div>
+                            <div style="font-family:'Cinzel',serif; font-size:36px; font-weight:700; line-height:1.2;">
+                                <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-deep)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+                                    HOROSCOPO DE HOY
+                                </span>
+                            </div>
+                        </div>
+                        <div class="type-sample">
+                            <div class="size-label">24px / Weight 600 &mdash; Subtitulo de thumbnail</div>
+                            <div style="font-family:'Cinzel',serif; font-size:24px; font-weight:600; color:#fff; line-height:1.3;">
+                                Aries &mdash; 5 de Abril 2026
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 4. SIGNOS DEL ZODIACO                      -->
+        <!-- ══════════════════════════════════════════ -->
+        <section id="signos">
+            <div class="section-inner">
+                <p class="section-label">Seccion 4</p>
+                <h2 class="section-title">Simbolos del Zodiaco</h2>
+                <p class="section-desc">Los 12 signos se representan con glifos Unicode renderizados como texto dorado (nunca como emoji). Se aplica el selector de variacion de texto (&#xFE0E;) y la fuente Noto Sans Symbols 2 para asegurar una representacion consistente.</p>
+
+                <div class="css-block" style="margin-bottom:30px;">
+                    <span class="comment">/* Renderizado de simbolos zodiacales */</span><br>
+                    <span class="prop">font-family</span>: <span class="val">'Noto Sans Symbols 2', serif</span>;<br>
+                    <span class="prop">font-variant-emoji</span>: <span class="val">text</span>;<br>
+                    <span class="prop">background</span>: <span class="val">linear-gradient(135deg, #f0d078, #d4a849, #c89030)</span>;<br>
+                    <span class="prop">-webkit-background-clip</span>: <span class="val">text</span>;<br>
+                    <span class="prop">-webkit-text-fill-color</span>: <span class="val">transparent</span>;<br>
+                    <span class="comment">/* Agregar &#xFE0E; (U+FE0E) despues de cada simbolo */</span>
+                </div>
+
+                <div class="zodiac-grid">
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9800;&#xFE0E;</div>
+                        <div class="sign-name">Aries</div>
+                        <div class="sign-dates">21 mar &ndash; 19 abr</div>
+                        <div class="sign-element fuego">Fuego</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9801;&#xFE0E;</div>
+                        <div class="sign-name">Tauro</div>
+                        <div class="sign-dates">20 abr &ndash; 20 may</div>
+                        <div class="sign-element tierra">Tierra</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9802;&#xFE0E;</div>
+                        <div class="sign-name">Geminis</div>
+                        <div class="sign-dates">21 may &ndash; 20 jun</div>
+                        <div class="sign-element aire">Aire</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9803;&#xFE0E;</div>
+                        <div class="sign-name">Cancer</div>
+                        <div class="sign-dates">21 jun &ndash; 22 jul</div>
+                        <div class="sign-element agua">Agua</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9804;&#xFE0E;</div>
+                        <div class="sign-name">Leo</div>
+                        <div class="sign-dates">23 jul &ndash; 22 ago</div>
+                        <div class="sign-element fuego">Fuego</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9805;&#xFE0E;</div>
+                        <div class="sign-name">Virgo</div>
+                        <div class="sign-dates">23 ago &ndash; 22 sep</div>
+                        <div class="sign-element tierra">Tierra</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9806;&#xFE0E;</div>
+                        <div class="sign-name">Libra</div>
+                        <div class="sign-dates">23 sep &ndash; 22 oct</div>
+                        <div class="sign-element aire">Aire</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9807;&#xFE0E;</div>
+                        <div class="sign-name">Escorpio</div>
+                        <div class="sign-dates">23 oct &ndash; 21 nov</div>
+                        <div class="sign-element agua">Agua</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9808;&#xFE0E;</div>
+                        <div class="sign-name">Sagitario</div>
+                        <div class="sign-dates">22 nov &ndash; 21 dic</div>
+                        <div class="sign-element fuego">Fuego</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9809;&#xFE0E;</div>
+                        <div class="sign-name">Capricornio</div>
+                        <div class="sign-dates">22 dic &ndash; 19 ene</div>
+                        <div class="sign-element tierra">Tierra</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9810;&#xFE0E;</div>
+                        <div class="sign-name">Acuario</div>
+                        <div class="sign-dates">20 ene &ndash; 18 feb</div>
+                        <div class="sign-element aire">Aire</div>
+                    </div>
+                    <div class="zodiac-card">
+                        <div class="zodiac-symbol">&#9811;&#xFE0E;</div>
+                        <div class="sign-name">Piscis</div>
+                        <div class="sign-dates">19 feb &ndash; 20 mar</div>
+                        <div class="sign-element agua">Agua</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 5. GLASS MORPHISM                          -->
+        <!-- ══════════════════════════════════════════ -->
+        <section id="glass">
+            <div class="section-inner">
+                <p class="section-label">Seccion 5</p>
+                <h2 class="section-title">Glass Morphism</h2>
+                <p class="section-desc">Todos los componentes de tarjeta usan un estilo de vidrio esmerilado que refuerza la estetica cosmica. Hay tres niveles de elevacion segun la importancia del contenido.</p>
+
+                <div class="glass-demos">
+                    <div class="glass-demo-card glass-standard">
+                        <h4>Estandar</h4>
+                        <p>Tarjetas de contenido general, zodiac cards, feature cards. El nivel base de vidrio esmerilado.</p>
+                        <div class="css-block" style="margin-top:14px;">
+                            <span class="prop">background</span>: <span class="val">rgba(255,255,255,0.04)</span>;<br>
+                            <span class="prop">border</span>: <span class="val">1px solid rgba(255,255,255,0.08)</span>;<br>
+                            <span class="prop">border-radius</span>: <span class="val">16px - 18px</span>;<br>
+                            <span class="prop">backdrop-filter</span>: <span class="val">blur(12px)</span>;
+                        </div>
+                    </div>
+                    <div class="glass-demo-card glass-elevated">
+                        <h4>Elevado</h4>
+                        <p>Tarjetas destacadas, modales, tooltips. Mayor opacidad y blur para crear profundidad visual.</p>
+                        <div class="css-block" style="margin-top:14px;">
+                            <span class="prop">background</span>: <span class="val">rgba(255,255,255,0.06)</span>;<br>
+                            <span class="prop">border</span>: <span class="val">1px solid rgba(255,255,255,0.12)</span>;<br>
+                            <span class="prop">border-radius</span>: <span class="val">18px - 24px</span>;<br>
+                            <span class="prop">backdrop-filter</span>: <span class="val">blur(16px)</span>;
+                        </div>
+                    </div>
+                    <div class="glass-demo-card glass-accent">
+                        <h4>Acento</h4>
+                        <p>Secciones especiales como "Proximamente" o contenido premium. Combina purpura y oro en el gradiente.</p>
+                        <div class="css-block" style="margin-top:14px;">
+                            <span class="prop">background</span>: <span class="val">linear-gradient(135deg, rgba(124,92,191,0.1), rgba(212,168,73,0.08))</span>;<br>
+                            <span class="prop">border</span>: <span class="val">1px solid rgba(124,92,191,0.2)</span>;<br>
+                            <span class="prop">border-radius</span>: <span class="val">24px</span>;<br>
+                            <span class="prop">backdrop-filter</span>: <span class="val">blur(12px)</span>;
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.2em; color:#fff; margin-top:50px; margin-bottom:16px;">Variables CSS Compartidas</h3>
+                <div class="css-block">
+                    <span class="prop">--glass</span>: <span class="val">rgba(255,255,255,0.04)</span>;<br>
+                    <span class="prop">--glass-border</span>: <span class="val">rgba(255,255,255,0.08)</span>;<br><br>
+                    <span class="comment">/* Hover en tarjetas */</span><br>
+                    <span class="prop">transition</span>: <span class="val">transform 0.3s, border-color 0.3s</span>;<br>
+                    <span class="comment">/* :hover */</span><br>
+                    <span class="prop">transform</span>: <span class="val">translateY(-3px)</span>;<br>
+                    <span class="prop">border-color</span>: <span class="val">rgba(212,168,73,0.25)</span>;
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- 6. REGLAS DE USO                           -->
+        <!-- ══════════════════════════════════════════ -->
+        <section id="reglas">
+            <div class="section-inner">
+                <p class="section-label">Seccion 6</p>
+                <h2 class="section-title">Reglas de Uso</h2>
+                <p class="section-desc">Directrices fundamentales para mantener la coherencia visual de Luz Estelar en todas las plataformas y materiales.</p>
+
+                <div class="rules-grid">
+                    <div class="rule-card rule-do">
+                        <div class="rule-label">Correcto</div>
+                        <h4>Fondos oscuros siempre</h4>
+                        <p>Usar exclusivamente fondos oscuros (#06061a, #0c0c2a o tonos similares). El contenido de Luz Estelar vive en el espacio profundo.</p>
+                    </div>
+                    <div class="rule-card rule-dont">
+                        <div class="rule-label">Incorrecto</div>
+                        <h4>Fondos claros o blancos</h4>
+                        <p>Nunca usar fondos blancos, crema o grises claros. Esto rompe completamente la identidad cosmica de la marca.</p>
+                    </div>
+                    <div class="rule-card rule-do">
+                        <div class="rule-label">Correcto</div>
+                        <h4>Oro como acento primario</h4>
+                        <p>El dorado es el color de acento dominante. Usarlo en titulos, iconos, bordes hover y elementos de enfasis.</p>
+                    </div>
+                    <div class="rule-card rule-dont">
+                        <div class="rule-label">Incorrecto</div>
+                        <h4>Otros colores calidos como primario</h4>
+                        <p>Nunca usar rojo, naranja o amarillo saturado como color de acento principal. Estos se reservan solo para los elementos zodiacales (Fuego).</p>
+                    </div>
+                    <div class="rule-card rule-do">
+                        <div class="rule-label">Correcto</div>
+                        <h4>Simbolos como texto</h4>
+                        <p>Renderizar los simbolos zodiacales como glifos de texto con la fuente Noto Sans Symbols 2 y el selector de variacion &#xFE0E;.</p>
+                    </div>
+                    <div class="rule-card rule-dont">
+                        <div class="rule-label">Incorrecto</div>
+                        <h4>Simbolos como emoji</h4>
+                        <p>No permitir que los simbolos zodiacales se rendericen como emojis de color. Esto pierde la estetica dorada y elegante de la marca.</p>
+                    </div>
+                    <div class="rule-card rule-do">
+                        <div class="rule-label">Correcto</div>
+                        <h4>Tamanos minimos de fuente</h4>
+                        <p>Texto de cuerpo: minimo 14px. Etiquetas y labels: minimo 12px. Esto garantiza legibilidad sobre fondos oscuros.</p>
+                    </div>
+                    <div class="rule-card rule-do">
+                        <div class="rule-label">Correcto</div>
+                        <h4>Imagenes cosmicas y celestiales</h4>
+                        <p>Toda imagen, ilustracion o fondo debe evocar el cosmos: estrellas, nebulosas, constelaciones, gradientes espaciales. La marca vive en el universo.</p>
+                    </div>
+                </div>
+
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.2em; color:#fff; margin-top:50px; margin-bottom:16px;">Resumen de Variables CSS</h3>
+                <div class="css-block">
+                    <span class="prop">:root</span> {<br>
+                    &nbsp;&nbsp;<span class="comment">/* Fondos */</span><br>
+                    &nbsp;&nbsp;<span class="prop">--bg-deep</span>: <span class="val">#06061a</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--bg-mid</span>: <span class="val">#0c0c2a</span>;<br><br>
+                    &nbsp;&nbsp;<span class="comment">/* Oro de marca */</span><br>
+                    &nbsp;&nbsp;<span class="prop">--gold-light</span>: <span class="val">#f0d078</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--gold</span>: <span class="val">#d4a849</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--gold-deep</span>: <span class="val">#c89030</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--gold-dim</span>: <span class="val">rgba(212,168,73,0.15)</span>;<br><br>
+                    &nbsp;&nbsp;<span class="comment">/* Acento */</span><br>
+                    &nbsp;&nbsp;<span class="prop">--accent-purple</span>: <span class="val">#7c5cbf</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--purple-dim</span>: <span class="val">rgba(124,92,191,0.2)</span>;<br><br>
+                    &nbsp;&nbsp;<span class="comment">/* Texto */</span><br>
+                    &nbsp;&nbsp;<span class="prop">--text</span>: <span class="val">#e0dce8</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--text-dim</span>: <span class="val">#9890a8</span>;<br><br>
+                    &nbsp;&nbsp;<span class="comment">/* Glass */</span><br>
+                    &nbsp;&nbsp;<span class="prop">--glass</span>: <span class="val">rgba(255,255,255,0.04)</span>;<br>
+                    &nbsp;&nbsp;<span class="prop">--glass-border</span>: <span class="val">rgba(255,255,255,0.08)</span>;<br>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Footer ────────────────────────────────── -->
+        <footer>
+            <p>&copy; 2026 Luz Estelar Oficial &mdash; Guia de Identidad de Marca &mdash; Documento interno de referencia.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
