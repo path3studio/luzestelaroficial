@@ -244,6 +244,32 @@
         footer a:hover { color: var(--gold); }
         footer .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
 
+        /* Error message */
+        .form-error {
+            display: none; padding: 14px 18px; border-radius: 12px;
+            background: rgba(231,76,60,0.1);
+            border: 1px solid rgba(231,76,60,0.3);
+            color: #e74c3c; font-size: 0.9em; line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .form-error.visible { display: block; }
+
+        /* Cancelled banner */
+        .cancelled-banner {
+            max-width: 800px; margin: 0 auto 0; padding: 14px 20px;
+            border-radius: 12px;
+            background: rgba(212,168,73,0.08);
+            border: 1px solid rgba(212,168,73,0.2);
+            color: var(--text-dim); font-size: 0.9em; text-align: center;
+        }
+
+        /* Button disabled state */
+        .btn-submit:disabled {
+            opacity: 0.65; cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2em; }
@@ -332,12 +358,20 @@
             </div>
         </section>
 
+        <!-- Cancelled Payment Banner -->
+        <section id="cancelledSection" style="padding-top: 10px; padding-bottom: 0; display: none;">
+            <div class="section-inner">
+                <div class="cancelled-banner">Tu pago fue cancelado. Puedes intentar de nuevo cuando quieras.</div>
+            </div>
+        </section>
+
         <!-- Order Form -->
         <section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="card">
                     <h2>Solicita tu analisis</h2>
                     <form id="orderForm" novalidate>
+                        <div id="formError" class="form-error"></div>
                         <div class="form-group">
                             <label for="nombre">Nombre completo *</label>
                             <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
@@ -488,10 +522,35 @@
             });
         });
 
+        // Show cancelled banner if returning from Stripe
+        (function(){
+            var params = new URLSearchParams(window.location.search);
+            if(params.get('cancelled') === 'true'){
+                var banner = document.getElementById('cancelledSection');
+                if(banner) banner.style.display = 'block';
+                // Clean URL without reloading
+                if(window.history.replaceState){
+                    var cleanUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrl);
+                }
+            }
+        })();
+
+        // API endpoint
+        var API_URL = 'https://luzestelar-consulta-api.path3studio.workers.dev';
+
         // Form validation and submit
-        document.getElementById('orderForm').addEventListener('submit', function(e){
+        document.getElementById('orderForm').addEventListener('submit', async function(e){
             e.preventDefault();
             var form = this;
+            var errorDiv = document.getElementById('formError');
+            var submitBtn = form.querySelector('.btn-submit');
+
+            // Hide previous errors
+            errorDiv.classList.remove('visible');
+            errorDiv.textContent = '';
+
+            // Validate required fields
             var valid = true;
             var required = form.querySelectorAll('[required]');
             required.forEach(function(input){
@@ -511,14 +570,56 @@
             if(!valid){
                 var firstInvalid = form.querySelector('.invalid');
                 if(firstInvalid) firstInvalid.focus();
+                errorDiv.textContent = 'Por favor, completa todos los campos requeridos correctamente.';
+                errorDiv.classList.add('visible');
                 return;
             }
-            alert('Proximamente \u2014 Estamos preparando esta experiencia para ti.\n\nDejanos tu correo en contacto@luzestelaroficial.com y te avisaremos cuando este disponible.');
+
+            // Show loading state
+            var originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Procesando...';
+            submitBtn.disabled = true;
+
+            try {
+                var response = await fetch(API_URL + '/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: form.nombre.value.trim(),
+                        fecha_nacimiento: form.nacimiento.value,
+                        hora_nacimiento: form.hora.value || 'No especificada',
+                        lugar_nacimiento: form.lugar.value.trim(),
+                        email: form.correo.value.trim(),
+                        mensaje: form.mensaje.value.trim() || ''
+                    })
+                });
+
+                var data = await response.json();
+
+                if(response.ok && data.checkout_url){
+                    window.location.href = data.checkout_url;
+                } else {
+                    var msg = data.error || 'Hubo un error al procesar tu solicitud. Por favor, intenta de nuevo.';
+                    errorDiv.textContent = msg;
+                    errorDiv.classList.add('visible');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch(err) {
+                errorDiv.textContent = 'Error de conexion. Verifica tu internet e intenta de nuevo.';
+                errorDiv.classList.add('visible');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
 
         // Remove invalid class on input
         document.querySelectorAll('#orderForm input, #orderForm textarea').forEach(function(el){
-            el.addEventListener('input', function(){ this.classList.remove('invalid'); });
+            el.addEventListener('input', function(){
+                this.classList.remove('invalid');
+                var errorDiv = document.getElementById('formError');
+                if(errorDiv) { errorDiv.classList.remove('visible'); errorDiv.textContent = ''; }
+            });
         });
     </script>
 </body>

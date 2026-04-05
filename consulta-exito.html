@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso — Luz Estelar Oficial</title>
+    <meta name="description" content="Tu solicitud de Analisis Profundo Personalizado ha sido recibida exitosamente. Recibiras tu carta natal, analisis y audio en 24-48 horas.">
+    <meta property="og:title" content="Pago Exitoso — Luz Estelar Oficial">
+    <meta property="og:description" content="Gracias por tu confianza. Tu Analisis Profundo Personalizado esta en camino.">
+    <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+    <meta property="og:url" content="https://luzestelaroficial.com/consulta-exito.html">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/consulta-exito.html">
+    <meta name="theme-color" content="#d4a849">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4a849;
+            --gold-light: #f0d078;
+            --gold-deep: #c89030;
+            --gold-dim: rgba(212,168,73,0.15);
+            --bg-deep: #06061a;
+            --bg-mid: #0c0c2a;
+            --text: #e0dce8;
+            --text-dim: #9890a8;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --accent-purple: #7c5cbf;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Starfield */
+        .starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .starfield canvas { width: 100%; height: 100%; }
+
+        /* Navigation */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(6,6,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        nav .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 24px;
+        }
+        nav .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4em; font-weight: 700; color: var(--gold);
+            text-decoration: none;
+        }
+        nav .nav-links { display: flex; gap: 28px; }
+        nav .nav-links a {
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.88em; font-weight: 400; transition: color 0.2s;
+        }
+        nav .nav-links a:hover { color: var(--gold); }
+
+        /* Content */
+        .content { position: relative; z-index: 1; }
+
+        /* Success Section */
+        .success-section {
+            padding: 160px 24px 60px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 80vh;
+        }
+        .success-card {
+            max-width: 640px; width: 100%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 48px 40px;
+            backdrop-filter: blur(12px);
+            text-align: center;
+        }
+
+        /* Checkmark Icon */
+        .success-icon {
+            width: 80px; height: 80px;
+            margin: 0 auto 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(212,168,73,0.15), rgba(212,168,73,0.06));
+            border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .success-icon::after {
+            content: '';
+            display: block;
+            width: 22px; height: 38px;
+            border: solid var(--gold); border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+            margin-top: -6px;
+        }
+        .success-icon-glow {
+            position: absolute; inset: -8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212,168,73,0.12) 0%, transparent 70%);
+            animation: pulse-glow 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+
+        .success-card h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.4em; font-weight: 700; color: #fff;
+            line-height: 1.2; margin-bottom: 12px;
+        }
+        .success-card .lead {
+            font-size: 1.05em; color: var(--gold); margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        /* Steps */
+        .steps { text-align: left; margin-bottom: 32px; }
+        .step {
+            display: flex; align-items: flex-start; gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .step:last-child { border-bottom: none; }
+        .step-number {
+            flex-shrink: 0; width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85em; font-weight: 700; color: var(--bg-deep);
+            margin-top: 2px;
+        }
+        .step-content {
+            font-size: 0.92em; line-height: 1.7; color: var(--text-dim);
+        }
+        .step-content strong {
+            color: #fff; display: block; margin-bottom: 2px;
+        }
+
+        /* Deliverables list */
+        .deliverables {
+            list-style: none; padding: 0; margin-top: 8px;
+        }
+        .deliverables li {
+            padding: 4px 0; font-size: 0.9em; color: var(--text-dim);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .deliverables li::before {
+            content: '';
+            display: inline-block; width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            flex-shrink: 0;
+        }
+
+        /* Contact box */
+        .contact-box {
+            margin-top: 28px; padding: 18px 24px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.08), rgba(124,92,191,0.06));
+            border: 1px solid rgba(212,168,73,0.15);
+            font-size: 0.88em; color: var(--text-dim);
+        }
+        .contact-box a {
+            color: var(--gold); text-decoration: none; font-weight: 500;
+        }
+        .contact-box a:hover { text-decoration: underline; }
+
+        /* Back button */
+        .btn-back {
+            display: inline-block; margin-top: 28px;
+            padding: 14px 36px; border-radius: 14px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15em; font-weight: 700; color: var(--bg-deep);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212,168,73,0.3);
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            max-width: 640px; margin: 0 auto;
+            padding: 24px; border-radius: 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+        }
+        .disclaimer p {
+            font-size: 0.8em; line-height: 1.8; color: rgba(152,144,168,0.7);
+            margin-bottom: 6px;
+        }
+        .disclaimer p:last-child { margin-bottom: 0; }
+        .disclaimer a { color: var(--gold); text-decoration: none; }
+        .disclaimer a:hover { text-decoration: underline; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 24px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim); font-size: 0.85em;
+        }
+        footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--gold); }
+        footer .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .success-section { padding: 120px 18px 40px; }
+            .success-card { padding: 32px 22px; }
+            .success-card h1 { font-size: 1.8em; }
+            .success-icon { width: 64px; height: 64px; }
+            .success-icon::after { width: 17px; height: 30px; border-width: 0 3px 3px 0; margin-top: -4px; }
+            nav .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+
+    <nav>
+        <div class="nav-inner">
+            <a href="./" class="logo">Luz Estelar</a>
+            <div class="nav-links">
+                <a href="./">Inicio</a>
+                <a href="./#signos">Signos</a>
+                <a href="./#aprende">Aprende</a>
+                <a href="./#plataformas">Plataformas</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <div class="success-section">
+            <div class="success-card">
+                <div class="success-icon">
+                    <div class="success-icon-glow"></div>
+                </div>
+                <h1>Gracias por tu confianza!</h1>
+                <p class="lead">Tu pago ha sido procesado exitosamente</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>Solicitud recibida</strong>
+                            Hemos recibido tu solicitud y pago exitosamente.
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>Analisis en proceso</strong>
+                            Nuestro equipo esta generando tu Analisis Profundo Personalizado.
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>Entrega en 24-48 horas</strong>
+                            En las proximas 24-48 horas recibiras en tu email:
+                            <ul class="deliverables">
+                                <li>PDF con tu Carta Natal completa</li>
+                                <li>Analisis de tu nombre</li>
+                                <li>Pronostico personalizado de 3 meses</li>
+                                <li>Audio narrado por Luz Estelar</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-box">
+                    Dudas? Escribenos a <a href="mailto:contacto@luzestelaroficial.com">contacto@luzestelaroficial.com</a>
+                </div>
+
+                <a href="./" class="btn-back">Volver al Inicio</a>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <section style="padding: 0 24px 50px;">
+            <div class="disclaimer">
+                <p>Este es un producto interpretativo basado en calculos astronomicos y tradicion astrologica. No constituye asesoramiento profesional en salud, finanzas ni relaciones.</p>
+                <p>Las interpretaciones se basan en posiciones planetarias reales y tradicion astrologica milenaria. Lo que resuena contigo es lo que necesitas en este momento.</p>
+                <p>Al realizar tu compra, aceptas nuestros <a href="terms-of-service.html">Terminos de Servicio</a> y <a href="privacy-policy.html">Politica de Privacidad</a>.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="privacy-policy.html">Privacidad</a>
+                <a href="terms-of-service.html">Terminos</a>
+                <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a>
+            </div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Animated starfield
+        (function(){
+            var c = document.getElementById('stars');
+            var ctx = c.getContext('2d');
+            var w, h, stars = [];
+            function resize(){ w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+            function init(){
+                resize(); stars = [];
+                for(var i = 0; i < 180; i++){
+                    stars.push({
+                        x: Math.random()*w, y: Math.random()*h,
+                        r: Math.random()*1.5+0.3, a: Math.random()*0.5+0.15,
+                        speed: Math.random()*0.15+0.02, phase: Math.random()*Math.PI*2
+                    });
+                }
+            }
+            function draw(){
+                ctx.clearRect(0,0,w,h);
+                var t = Date.now()*0.001;
+                stars.forEach(function(s){
+                    var f = 0.5+0.5*Math.sin(t*s.speed*6+s.phase);
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255,255,255,'+s.a*f+')';
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            init(); draw();
+            window.addEventListener('resize', init);
+        })();
+    </script>
+</body>
+</html>
