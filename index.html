@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #d4a849;
@@ -202,7 +202,14 @@
         }
         .zodiac-card:hover::before { opacity: 1; }
         .zodiac-card:hover { border-color: rgba(212,168,73,0.3); transform: translateY(-3px); }
-        .zodiac-card .symbol { font-size: 2.2em; margin-bottom: 8px; position: relative; }
+        .zodiac-card .symbol {
+            font-family: 'Noto Sans Symbols 2', serif;
+            font-size: 2.4em; margin-bottom: 8px; position: relative;
+            background: linear-gradient(180deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px rgba(212,168,73,0.3));
+        }
         .zodiac-card .sign-name {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.05em; font-weight: 600; color: #fff; position: relative;
@@ -398,18 +405,18 @@
                     <h2 class="section-title">Tu lectura diaria te espera</h2>
                 </div>
                 <div class="zodiac-grid fade-in">
-                    <div class="zodiac-card"><div class="symbol">&#9800;</div><div class="sign-name">Aries</div><div class="sign-dates">21 mar - 19 abr</div><div class="sign-element">Fuego</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9801;</div><div class="sign-name">Tauro</div><div class="sign-dates">20 abr - 20 may</div><div class="sign-element">Tierra</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9802;</div><div class="sign-name">Geminis</div><div class="sign-dates">21 may - 20 jun</div><div class="sign-element">Aire</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9803;</div><div class="sign-name">Cancer</div><div class="sign-dates">21 jun - 22 jul</div><div class="sign-element">Agua</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9804;</div><div class="sign-name">Leo</div><div class="sign-dates">23 jul - 22 ago</div><div class="sign-element">Fuego</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9805;</div><div class="sign-name">Virgo</div><div class="sign-dates">23 ago - 22 sep</div><div class="sign-element">Tierra</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9806;</div><div class="sign-name">Libra</div><div class="sign-dates">23 sep - 22 oct</div><div class="sign-element">Aire</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9807;</div><div class="sign-name">Escorpio</div><div class="sign-dates">23 oct - 21 nov</div><div class="sign-element">Agua</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9808;</div><div class="sign-name">Sagitario</div><div class="sign-dates">22 nov - 21 dic</div><div class="sign-element">Fuego</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9809;</div><div class="sign-name">Capricornio</div><div class="sign-dates">22 dic - 19 ene</div><div class="sign-element">Tierra</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9810;</div><div class="sign-name">Acuario</div><div class="sign-dates">20 ene - 18 feb</div><div class="sign-element">Aire</div></div>
-                    <div class="zodiac-card"><div class="symbol">&#9811;</div><div class="sign-name">Piscis</div><div class="sign-dates">19 feb - 20 mar</div><div class="sign-element">Agua</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9800;&#xFE0E;</div><div class="sign-name">Aries</div><div class="sign-dates">21 mar - 19 abr</div><div class="sign-element">Fuego</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9801;&#xFE0E;</div><div class="sign-name">Tauro</div><div class="sign-dates">20 abr - 20 may</div><div class="sign-element">Tierra</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9802;&#xFE0E;</div><div class="sign-name">Geminis</div><div class="sign-dates">21 may - 20 jun</div><div class="sign-element">Aire</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9803;&#xFE0E;</div><div class="sign-name">Cancer</div><div class="sign-dates">21 jun - 22 jul</div><div class="sign-element">Agua</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9804;&#xFE0E;</div><div class="sign-name">Leo</div><div class="sign-dates">23 jul - 22 ago</div><div class="sign-element">Fuego</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9805;&#xFE0E;</div><div class="sign-name">Virgo</div><div class="sign-dates">23 ago - 22 sep</div><div class="sign-element">Tierra</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9806;&#xFE0E;</div><div class="sign-name">Libra</div><div class="sign-dates">23 sep - 22 oct</div><div class="sign-element">Aire</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9807;&#xFE0E;</div><div class="sign-name">Escorpio</div><div class="sign-dates">23 oct - 21 nov</div><div class="sign-element">Agua</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9808;&#xFE0E;</div><div class="sign-name">Sagitario</div><div class="sign-dates">22 nov - 21 dic</div><div class="sign-element">Fuego</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9809;&#xFE0E;</div><div class="sign-name">Capricornio</div><div class="sign-dates">22 dic - 19 ene</div><div class="sign-element">Tierra</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9810;&#xFE0E;</div><div class="sign-name">Acuario</div><div class="sign-dates">20 ene - 18 feb</div><div class="sign-element">Aire</div></div>
+                    <div class="zodiac-card"><div class="symbol">&#9811;&#xFE0E;</div><div class="sign-name">Piscis</div><div class="sign-dates">19 feb - 20 mar</div><div class="sign-element">Agua</div></div>
                 </div>
             </div>
         </section>
