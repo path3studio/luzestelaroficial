@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gold: #d4a849;
+        --gold-light: #f0d078;
+        --gold-deep: #c89030;
+        --gold-dim: rgba(212,168,73,0.15);
+        --bg-deep: #06061a;
+        --bg-mid: #0c0c2a;
+        --text: #e0dce8;
+        --text-dim: #9890a8;
+        --glass: rgba(255,255,255,0.04);
+        --glass-border: rgba(255,255,255,0.08);
+        --accent-purple: #7c5cbf;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg-deep);
+    }
+
+    .thumbnail {
+        width: 1280px;
+        height: 720px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ── Background gradient ────────────────────────── */
+    .bg-base {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 60% 50% at 50% 45%, rgba(12,12,42,0.9) 0%, transparent 70%),
+            radial-gradient(ellipse 40% 35% at 50% 40%, rgba(212,168,73,0.04) 0%, transparent 60%),
+            linear-gradient(180deg, #06061a 0%, #0a0a28 40%, #080822 70%, #06061a 100%);
+    }
+
+    /* ── Center glow orb ────────────────────────────── */
+    .glow-orb {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+        width: 600px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212,168,73,0.06) 0%, rgba(124,92,191,0.03) 40%, transparent 70%);
+        pointer-events: none;
+    }
+    .glow-orb-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+        width: 300px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212,168,73,0.08) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    /* ── Star dots (CSS positioned) ─────────────────── */
+    .star {
+        position: absolute;
+        border-radius: 50%;
+        background: white;
+        pointer-events: none;
+    }
+    .star--gold {
+        background: var(--gold);
+    }
+
+    /* ── Corner accents ─────────────────────────────── */
+    .corner-accent {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        pointer-events: none;
+    }
+    .corner-accent--tl {
+        top: 24px; left: 24px;
+        border-top: 1px solid rgba(212,168,73,0.35);
+        border-left: 1px solid rgba(212,168,73,0.35);
+    }
+    .corner-accent--tr {
+        top: 24px; right: 24px;
+        border-top: 1px solid rgba(212,168,73,0.35);
+        border-right: 1px solid rgba(212,168,73,0.35);
+    }
+    .corner-accent--bl {
+        bottom: 24px; left: 24px;
+        border-bottom: 1px solid rgba(212,168,73,0.35);
+        border-left: 1px solid rgba(212,168,73,0.35);
+    }
+    .corner-accent--br {
+        bottom: 24px; right: 24px;
+        border-bottom: 1px solid rgba(212,168,73,0.35);
+        border-right: 1px solid rgba(212,168,73,0.35);
+    }
+
+    /* ── Top gold border line ───────────────────────── */
+    .top-line {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 5%, rgba(212,168,73,0.4) 50%, transparent 95%);
+    }
+    .bottom-line {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 10%, rgba(212,168,73,0.2) 50%, transparent 90%);
+    }
+
+    /* ── Logo: top-left ─────────────────────────────── */
+    .logo {
+        position: absolute;
+        top: 34px;
+        left: 40px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        z-index: 10;
+    }
+
+    /* ── Content stack (centered) ───────────────────── */
+    .content {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-top: -30px;
+        width: 100%;
+        padding: 0 40px;
+    }
+
+    /* ── "HOROSCOPO DEL DIA" label ──────────────────── */
+    .label {
+        font-family: 'Inter', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 20px;
+        font-variant: small-caps;
+    }
+
+    /* ── Decorative line above date ─────────────────── */
+    .divider-top {
+        width: 120px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212,168,73,0.5), transparent);
+        margin-bottom: 24px;
+    }
+
+    /* ── Main date text ─────────────────────────────── */
+    .date {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 66px;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1.05;
+        letter-spacing: 0.01em;
+        text-shadow:
+            0 0 60px rgba(212,168,73,0.15),
+            0 2px 4px rgba(0,0,0,0.5);
+        margin-bottom: 20px;
+    }
+
+    /* ── Decorative line below date ─────────────────── */
+    .divider-bottom {
+        width: 200px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212,168,73,0.4), transparent);
+        margin-bottom: 10px;
+    }
+
+    /* ── Small diamond ornament ──────────────────────── */
+    .diamond {
+        width: 6px;
+        height: 6px;
+        background: var(--gold);
+        transform: rotate(45deg);
+        opacity: 0.5;
+        margin-bottom: 10px;
+    }
+
+    /* ── Zodiac row at bottom ───────────────────────── */
+    .zodiac-row {
+        position: absolute;
+        bottom: 50px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 10;
+        font-family: 'Noto Sans Symbols 2', 'Apple Symbols', 'Segoe UI Symbol', sans-serif;
+        font-size: 24px;
+        color: var(--gold);
+        opacity: 0.65;
+        text-shadow: 0 0 10px rgba(212,168,73,0.3);
+        font-variant-emoji: text;
+        letter-spacing: 0.3em;
+        line-height: 1;
+    }
+
+    /* ── Subtle vignette overlay ─────────────────────── */
+    .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 80% 65% at 50% 42%, transparent 45%, rgba(6,6,26,0.4) 100%);
+        pointer-events: none;
+        z-index: 1;
+    }
+</style>
+</head>
+<body>
+<div class="thumbnail">
+
+    <!-- Background layers -->
+    <div class="bg-base"></div>
+    <div class="glow-orb"></div>
+    <div class="glow-orb-inner"></div>
+    <div class="vignette"></div>
+
+    <!-- Decorative borders -->
+    <div class="top-line"></div>
+    <div class="bottom-line"></div>
+
+    <!-- Corner accents -->
+    <div class="corner-accent corner-accent--tl"></div>
+    <div class="corner-accent corner-accent--tr"></div>
+    <div class="corner-accent corner-accent--bl"></div>
+    <div class="corner-accent corner-accent--br"></div>
+
+    <!-- Logo -->
+    <div class="logo">Luz Estelar</div>
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="label">Horoscopo del Dia</div>
+        <div class="divider-top"></div>
+        <div class="date" id="dateText">5 de Abril</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:-12px;margin-bottom:14px;">2026</div>
+        <div class="divider-bottom"></div>
+        <div class="diamond"></div>
+    </div>
+
+    <!-- Zodiac symbols row (text variation selectors ︎ force text rendering) -->
+    <div class="zodiac-row">♈︎ ♉︎ ♊︎ ♋︎ ♌︎ ♍︎ ♎︎ ♏︎ ♐︎ ♑︎ ♒︎ ♓︎</div>
+
+    <!-- Stars generated via JS for deterministic placement -->
+    <script>
+        // Seeded pseudo-random for deterministic star placement
+        function mulberry32(a) {
+            return function() {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                var t = Math.imul(a ^ (a >>> 15), 1 | a);
+                t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+        var rand = mulberry32(42);
+        var thumbnail = document.querySelector('.thumbnail');
+
+        for (var i = 0; i < 200; i++) {
+            var star = document.createElement('div');
+            star.className = rand() > 0.85 ? 'star star--gold' : 'star';
+            var size = rand() < 0.7 ? 1 : (rand() < 0.9 ? 2 : 3);
+            var x = rand() * 1280;
+            var y = rand() * 720;
+            var opacity = rand() * 0.4 + 0.08;
+
+            // Keep stars dimmer near center so they don't compete with text
+            var dx = (x - 640) / 640;
+            var dy = (y - 360) / 360;
+            var distFromCenter = Math.sqrt(dx * dx + dy * dy);
+            if (distFromCenter < 0.4) {
+                opacity *= 0.3;
+            }
+
+            star.style.cssText =
+                'left:' + x.toFixed(1) + 'px;' +
+                'top:' + y.toFixed(1) + 'px;' +
+                'width:' + size + 'px;' +
+                'height:' + size + 'px;' +
+                'opacity:' + opacity.toFixed(3) + ';';
+            thumbnail.appendChild(star);
+        }
+    </script>
+
+</div>
+</body>
+</html>

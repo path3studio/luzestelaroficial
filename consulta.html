@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Profundo Personalizado — Luz Estelar Oficial</title>
+    <meta name="description" content="Tu carta natal completa, analisis de tu nombre, pronostico de 3 meses y audio narrado por Luz Estelar. Entregado como PDF profesional y MP3 personalizado.">
+    <meta property="og:title" content="Analisis Profundo Personalizado — Luz Estelar Oficial">
+    <meta property="og:description" content="Carta natal, numerologia, pronostico de 3 meses y audio narrado. Tu guia cosmica personalizada.">
+    <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+    <meta property="og:url" content="https://luzestelaroficial.com/consulta.html">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/consulta.html">
+    <meta name="theme-color" content="#d4a849">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4a849;
+            --gold-light: #f0d078;
+            --gold-dim: rgba(212,168,73,0.15);
+            --bg-deep: #06061a;
+            --bg-mid: #0c0c2a;
+            --text: #e0dce8;
+            --text-dim: #9890a8;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --accent-purple: #7c5cbf;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Starfield */
+        .starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .starfield canvas { width: 100%; height: 100%; }
+
+        /* Navigation */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(6,6,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        nav .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 24px;
+        }
+        nav .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4em; font-weight: 700; color: var(--gold);
+            text-decoration: none;
+        }
+        nav .nav-links { display: flex; gap: 28px; }
+        nav .nav-links a {
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.88em; font-weight: 400; transition: color 0.2s;
+        }
+        nav .nav-links a:hover { color: var(--gold); }
+
+        /* Content */
+        .content { position: relative; z-index: 1; }
+
+        /* Hero */
+        .hero {
+            padding: 140px 24px 60px; text-align: center;
+        }
+        .hero .badge {
+            display: inline-block; padding: 6px 18px; border-radius: 20px;
+            background: var(--gold-dim); color: var(--gold);
+            font-size: 0.78em; font-weight: 600; letter-spacing: 0.12em;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2em; font-weight: 700; color: #fff;
+            line-height: 1.15; margin-bottom: 18px;
+        }
+        .hero .subtitle {
+            font-size: 1.08em; line-height: 1.8; color: var(--text-dim);
+            max-width: 600px; margin: 0 auto;
+        }
+
+        /* Section shared */
+        section { padding: 50px 24px; }
+        .section-inner { max-width: 800px; margin: 0 auto; }
+
+        /* Cards */
+        .card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 18px; padding: 36px 32px; margin-bottom: 30px;
+            backdrop-filter: blur(12px);
+        }
+        .card h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8em; font-weight: 700; color: #fff; margin-bottom: 24px;
+        }
+
+        /* Included items */
+        .included-list { list-style: none; padding: 0; }
+        .included-list li {
+            display: flex; align-items: flex-start; gap: 16px;
+            padding: 16px 0; border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95em; line-height: 1.7; color: var(--text-dim);
+        }
+        .included-list li:last-child { border-bottom: none; }
+        .included-list .icon {
+            font-family: 'Noto Sans Symbols 2', serif;
+            font-size: 1.4em; flex-shrink: 0; width: 36px; text-align: center;
+            background: linear-gradient(180deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .included-list strong { color: #fff; display: block; margin-bottom: 2px; }
+
+        /* Delivery note */
+        .delivery-note {
+            margin-top: 20px; padding: 16px 20px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.08), rgba(124,92,191,0.06));
+            border: 1px solid rgba(212,168,73,0.15);
+            font-size: 0.88em; color: var(--text-dim); text-align: center;
+        }
+        .delivery-note strong { color: var(--gold); }
+
+        /* Price card */
+        .price-card {
+            text-align: center; padding: 48px 32px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.06), rgba(124,92,191,0.04));
+            border: 1px solid rgba(212,168,73,0.2);
+        }
+        .price-card .price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.6em; font-weight: 700; line-height: 1;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 12px;
+        }
+        .price-card .price-note {
+            font-size: 0.92em; color: var(--text-dim); line-height: 1.7;
+        }
+
+        /* Form */
+        .form-group { margin-bottom: 22px; }
+        .form-group label {
+            display: block; font-size: 0.88em; font-weight: 500;
+            color: var(--text); margin-bottom: 8px;
+        }
+        .form-group .hint {
+            font-size: 0.8em; color: var(--text-dim); margin-top: 4px; font-weight: 300;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%; padding: 14px 16px; border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(152,144,168,0.5);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,168,73,0.12);
+        }
+        .form-group input.invalid,
+        .form-group textarea.invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231,76,60,0.15);
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        /* Submit button */
+        .btn-submit {
+            display: block; width: 100%; padding: 18px 32px;
+            border: none; border-radius: 14px; cursor: pointer;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em; font-weight: 700; color: var(--bg-deep);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212,168,73,0.3);
+        }
+
+        /* FAQ */
+        .faq-item { border-bottom: 1px solid var(--glass-border); }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 20px 0; background: none; border: none;
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95em;
+            font-weight: 500; cursor: pointer; text-align: left;
+            transition: color 0.2s;
+        }
+        .faq-question:hover { color: var(--gold); }
+        .faq-question .arrow {
+            font-size: 0.8em; transition: transform 0.3s; flex-shrink: 0; margin-left: 16px;
+            color: var(--gold);
+        }
+        .faq-question.active .arrow { transform: rotate(180deg); }
+        .faq-answer {
+            max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+        }
+        .faq-answer p {
+            padding: 0 0 20px; font-size: 0.9em; line-height: 1.8; color: var(--text-dim);
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            margin-top: 40px; padding: 24px; border-radius: 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+        }
+        .disclaimer p {
+            font-size: 0.8em; line-height: 1.8; color: rgba(152,144,168,0.7);
+            margin-bottom: 6px;
+        }
+        .disclaimer p:last-child { margin-bottom: 0; }
+        .disclaimer a { color: var(--gold); text-decoration: none; }
+        .disclaimer a:hover { text-decoration: underline; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 24px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim); font-size: 0.85em;
+        }
+        footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--gold); }
+        footer .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2em; }
+            .hero { padding: 120px 18px 40px; }
+            .card { padding: 24px 20px; }
+            .card h2 { font-size: 1.4em; }
+            .price-card .price { font-size: 2.8em; }
+            .included-list li { gap: 12px; }
+            nav .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+
+    <nav>
+        <div class="nav-inner">
+            <a href="./" class="logo">Luz Estelar</a>
+            <div class="nav-links">
+                <a href="./">Inicio</a>
+                <a href="./#signos">Signos</a>
+                <a href="./#aprende">Aprende</a>
+                <a href="./#plataformas">Plataformas</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="badge">Experiencia personalizada</div>
+            <h1>Analisis Profundo<br>Personalizado</h1>
+            <p class="subtitle">Tu carta natal completa, la energia de tu nombre y un pronostico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.</p>
+        </div>
+
+        <!-- What's Included -->
+        <section>
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Que incluye tu analisis</h2>
+                    <ul class="included-list">
+                        <li>
+                            <span class="icon">&#x2609;&#xFE0E;</span>
+                            <div>
+                                <strong>Carta Natal Completa</strong>
+                                Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretacion.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="icon">&#x2728;</span>
+                            <div>
+                                <strong>Analisis de tu Nombre</strong>
+                                Numerologia, fonetica, etimologia y compatibilidad entre tu nombre y tu carta astral.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="icon">&#x1F52D;</span>
+                            <div>
+                                <strong>Pronostico de 3 Meses</strong>
+                                Transitos clave, dias favorables y recomendaciones personalizadas por area de vida.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="icon">&#x1F399;</span>
+                            <div>
+                                <strong>Audio Narrado por Luz Estelar</strong>
+                                Una lectura personalizada en audio para que puedas escuchar tu analisis donde quieras.
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="delivery-note">
+                        <strong>Formato de entrega:</strong> PDF profesional + audio MP3, enviados a tu correo electronico en 24-48 horas.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Price -->
+        <section style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="card price-card">
+                    <div class="price">$19.99 USD</div>
+                    <p class="price-note">Pago unico. Incluye carta natal, analisis de nombre, pronostico de 3 meses, PDF profesional y audio narrado personalizado.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Form -->
+        <section style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Solicita tu analisis</h2>
+                    <form id="orderForm" novalidate>
+                        <div class="form-group">
+                            <label for="nombre">Nombre completo *</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nacimiento">Fecha de nacimiento *</label>
+                            <input type="date" id="nacimiento" name="nacimiento" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hora">Hora de nacimiento *</label>
+                            <input type="time" id="hora" name="hora" required>
+                            <p class="hint">Si no la conoces, escribe 12:00 y lo indicaremos en tu analisis.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="lugar">Lugar de nacimiento *</label>
+                            <input type="text" id="lugar" name="lugar" placeholder="Ciudad, Pais" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">Correo electronico *</label>
+                            <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+                            <p class="hint">Aqui recibirás tu PDF y audio personalizado.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje adicional (opcional)</label>
+                            <textarea id="mensaje" name="mensaje" placeholder="Algun tema especifico que te gustaria explorar? Relaciones, carrera, salud..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit" data-stripe-link="">Continuar al Pago</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Preguntas Frecuentes</h2>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button">
+                            Cuanto tarda en llegar mi analisis?
+                            <span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="faq-answer"><p>Tu analisis sera entregado en un plazo de 24 a 48 horas habiles a la direccion de correo electronico que indiques en el formulario. Recibiras tanto el PDF como el audio MP3 en un mismo correo.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button">
+                            Necesito saber mi hora exacta de nacimiento?
+                            <span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="faq-answer"><p>La hora de nacimiento permite calcular tu Ascendente y las casas astrologicas con mayor precision. Si no la conoces, puedes escribir 12:00 como hora aproximada. En ese caso, tu analisis se enfocara en las posiciones planetarias por signo (que no dependen de la hora) e indicaremos que el Ascendente es aproximado.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button">
+                            Puedo regalarlo a alguien?
+                            <span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="faq-answer"><p>Si. Simplemente completa el formulario con los datos de nacimiento de la persona que recibira el analisis. En el campo de correo electronico puedes poner tu direccion para recibir el PDF y audio, y luego compartirlo tu mismo como regalo.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button">
+                            Que metodo de pago aceptan?
+                            <span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="faq-answer"><p>Aceptamos pagos con tarjeta de credito y debito a traves de Stripe, una plataforma de pagos segura utilizada por millones de empresas en todo el mundo. Tu informacion financiera nunca pasa por nuestros servidores.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button">
+                            Puedo pedir un reembolso?
+                            <span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="faq-answer"><p>Dado que se trata de un producto digital personalizado que requiere trabajo individual de investigacion y produccion, no ofrecemos reembolsos una vez entregado el analisis. Si tienes alguna duda antes de comprar, escribenos a contacto@luzestelaroficial.com.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disclaimer -->
+        <section style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="disclaimer">
+                    <p>Este es un producto interpretativo basado en calculos astronomicos y tradicion astrologica. No constituye asesoramiento profesional en salud, finanzas ni relaciones.</p>
+                    <p>Las interpretaciones se basan en posiciones planetarias reales y tradicion astrologica milenaria. Lo que resuena contigo es lo que necesitas en este momento.</p>
+                    <p>No se ofrecen reembolsos una vez entregado el producto digital.</p>
+                    <p>Al realizar tu compra, aceptas nuestros <a href="terms-of-service.html">Terminos de Servicio</a> y <a href="privacy-policy.html">Politica de Privacidad</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="privacy-policy.html">Privacidad</a>
+                <a href="terms-of-service.html">Terminos</a>
+                <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a>
+            </div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Animated starfield
+        (function(){
+            var c = document.getElementById('stars');
+            var ctx = c.getContext('2d');
+            var w, h, stars = [];
+            function resize(){ w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+            function init(){
+                resize(); stars = [];
+                for(var i = 0; i < 180; i++){
+                    stars.push({
+                        x: Math.random()*w, y: Math.random()*h,
+                        r: Math.random()*1.5+0.3, a: Math.random()*0.5+0.15,
+                        speed: Math.random()*0.15+0.02, phase: Math.random()*Math.PI*2
+                    });
+                }
+            }
+            function draw(){
+                ctx.clearRect(0,0,w,h);
+                var t = Date.now()*0.001;
+                stars.forEach(function(s){
+                    var f = 0.5+0.5*Math.sin(t*s.speed*6+s.phase);
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255,255,255,'+s.a*f+')';
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            init(); draw();
+            window.addEventListener('resize', init);
+        })();
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var answer = this.nextElementSibling;
+                var isOpen = this.classList.contains('active');
+                // Close all
+                document.querySelectorAll('.faq-question').forEach(function(b){
+                    b.classList.remove('active');
+                    b.nextElementSibling.style.maxHeight = null;
+                });
+                // Open clicked if was closed
+                if(!isOpen){
+                    this.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                }
+            });
+        });
+
+        // Form validation and submit
+        document.getElementById('orderForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            var form = this;
+            var valid = true;
+            var required = form.querySelectorAll('[required]');
+            required.forEach(function(input){
+                input.classList.remove('invalid');
+                if(!input.value.trim()){
+                    input.classList.add('invalid');
+                    valid = false;
+                }
+                if(input.type === 'email' && input.value.trim()){
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if(!emailPattern.test(input.value.trim())){
+                        input.classList.add('invalid');
+                        valid = false;
+                    }
+                }
+            });
+            if(!valid){
+                var firstInvalid = form.querySelector('.invalid');
+                if(firstInvalid) firstInvalid.focus();
+                return;
+            }
+            alert('Proximamente \u2014 Estamos preparando esta experiencia para ti.\n\nDejanos tu correo en contacto@luzestelaroficial.com y te avisaremos cuando este disponible.');
+        });
+
+        // Remove invalid class on input
+        document.querySelectorAll('#orderForm input, #orderForm textarea').forEach(function(el){
+            el.addEventListener('input', function(){ this.classList.remove('invalid'); });
+        });
+    </script>
+</body>
+</html>
