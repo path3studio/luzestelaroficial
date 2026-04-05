@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    * { margin: 0; padding: 0; }
+    body { width: 2560px; height: 1440px; overflow: hidden; }
+    .banner {
+        width: 2560px; height: 1440px;
+        background: linear-gradient(135deg, #03031a 0%, #0a0a2e 30%, #0c0c35 50%, #080825 70%, #03031a 100%);
+        position: relative; display: flex; align-items: center; justify-content: center;
+        font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    /* Stars */
+    .star {
+        position: absolute; border-radius: 50%; background: white;
+    }
+
+    /* Subtle glow orbs */
+    .orb1 {
+        position: absolute; top: 30%; left: 20%;
+        width: 600px; height: 600px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(212,168,73,0.04) 0%, transparent 70%);
+    }
+    .orb2 {
+        position: absolute; bottom: 20%; right: 15%;
+        width: 500px; height: 500px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(124,92,191,0.04) 0%, transparent 70%);
+    }
+
+    /* Top/bottom subtle gradient borders */
+    .banner::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent 10%, rgba(212,168,73,0.3) 50%, transparent 90%);
+    }
+    .banner::after {
+        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent 10%, rgba(212,168,73,0.3) 50%, transparent 90%);
+    }
+
+    /* Safe area guide (hidden by default) */
+    .safe-area {
+        position: absolute;
+        width: 1546px; height: 423px;
+        /* border: 1px dashed rgba(255,0,0,0.15); */
+    }
+
+    /* Content — centered in safe area */
+    .content {
+        display: flex; align-items: center; gap: 60px;
+        position: relative; z-index: 2;
+    }
+    .logo-img {
+        width: 240px; height: 240px;
+        filter: drop-shadow(0 0 40px rgba(212,168,73,0.4)) drop-shadow(0 0 80px rgba(212,168,73,0.2));
+        mix-blend-mode: lighten;
+    }
+    .text-group { display: flex; flex-direction: column; }
+    .title {
+        font-size: 96px; font-weight: 700; line-height: 1.05; letter-spacing: 0.02em;
+        background: linear-gradient(135deg, #f0d078 0%, #d4a849 40%, #c89030 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .subtitle {
+        font-size: 32px; font-weight: 400; font-style: italic;
+        color: rgba(152,144,168,0.8); margin-top: 12px;
+        letter-spacing: 0.08em;
+    }
+
+    /* Decorative line */
+    .accent-line {
+        width: 80px; height: 2px; margin-top: 24px;
+        background: linear-gradient(90deg, #d4a849, transparent);
+    }
+
+    /* Small zodiac symbols along bottom safe edge */
+    .zodiac-strip {
+        position: absolute; bottom: 380px;
+        display: flex; gap: 48px; justify-content: center;
+        width: 100%; z-index: 1;
+        color: rgba(212,168,73,0.12); font-size: 36px;
+        letter-spacing: 0.3em;
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+    <div class="orb1"></div>
+    <div class="orb2"></div>
+    <div class="safe-area"></div>
+
+    <div class="content">
+        <img src="app_icon.png" alt="Luz Estelar" class="logo-img">
+        <div class="text-group">
+            <div class="title">Luz Estelar Oficial</div>
+            <div class="subtitle">Horoscopo Tecnico Diario</div>
+            <div class="accent-line"></div>
+        </div>
+    </div>
+
+    <div class="zodiac-strip">
+        &#9800; &#9801; &#9802; &#9803; &#9804; &#9805; &#9806; &#9807; &#9808; &#9809; &#9810; &#9811;
+    </div>
+
+    <script>
+        // Generate static stars
+        const banner = document.querySelector('.banner');
+        for(let i = 0; i < 300; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2.5 + 0.5;
+            star.style.cssText = `
+                left: ${Math.random() * 2560}px;
+                top: ${Math.random() * 1440}px;
+                width: ${size}px; height: ${size}px;
+                opacity: ${Math.random() * 0.5 + 0.1};
+            `;
+            banner.appendChild(star);
+        }
+    </script>
+</div>
+</body>
+</html>
