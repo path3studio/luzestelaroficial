@@ -376,6 +376,15 @@
             .zodiac-card .symbol { font-size: 1.6em; }
             .coming-soon-card { padding: 30px 20px; }
             section { padding: 60px 16px; }
+            .cta-analisis {
+                display: block; width: 100%; min-height: 48px;
+                text-align: center; padding: 16px 24px; font-size: 1.05em;
+            }
+            .learn-grid { grid-template-columns: 1fr; }
+            #energia .section-inner > .fade-in[style*="grid"] {
+                grid-template-columns: 1fr !important;
+            }
+            footer .footer-links { flex-wrap: wrap; gap: 16px; }
         }
         @media (max-width: 480px) {
             .zodiac-grid { grid-template-columns: repeat(2, 1fr); }
