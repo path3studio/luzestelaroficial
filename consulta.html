@@ -360,38 +360,11 @@
             <div class="section-inner">
                 <div class="card">
                     <h2>Que incluye tu analisis</h2>
-                    <ul class="included-list">
-                        <li>
-                            <span class="icon">&#x2609;&#xFE0E;</span>
-                            <div>
-                                <strong>Carta Natal Completa</strong>
-                                Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretacion.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="icon">&#x2728;</span>
-                            <div>
-                                <strong>Analisis de tu Nombre</strong>
-                                Numerologia, fonetica, etimologia y compatibilidad entre tu nombre y tu carta astral.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="icon">&#x1F52D;</span>
-                            <div>
-                                <strong>Pronostico de 3 Meses</strong>
-                                Transitos clave, dias favorables y recomendaciones personalizadas por area de vida.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="icon">&#x1F399;</span>
-                            <div>
-                                <strong>Audio Narrado por Luz Estelar</strong>
-                                Una lectura personalizada en audio para que puedas escuchar tu analisis donde quieras.
-                            </div>
-                        </li>
+                    <ul class="included-list" id="includedList">
+                        <!-- Populated dynamically by switchPlan() -->
                     </ul>
-                    <div class="delivery-note">
-                        <strong>Formato de entrega:</strong> PDF profesional + audio MP3, enviados a tu correo electronico en 24-48 horas.
+                    <div class="delivery-note" id="deliveryNote">
+                        <!-- Populated dynamically by switchPlan() -->
                     </div>
                 </div>
             </div>
@@ -596,7 +569,14 @@
                 badge: 'Tu primer mapa estelar',
                 title: 'Carta Natal Esencial',
                 subtitle: 'Tu carta natal completa con posiciones planetarias, Ascendente, Medio Cielo y aspectos principales. Entregado como PDF profesional.',
-                priceNote: 'Pago unico. Incluye carta natal completa, interpretacion solar y lunar, y PDF profesional con sello de autenticidad.'
+                priceNote: 'Pago unico. Incluye carta natal completa, interpretacion solar y lunar, y PDF profesional con sello de autenticidad.',
+                delivery: '<strong>Formato de entrega:</strong> PDF profesional enviado a tu correo electronico en 24-48 horas.',
+                items: [
+                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente, Medio Cielo y los 10 planetas en sus signos y casas.' },
+                    { icon: '\u2728', title: 'Aspectos Planetarios', desc: 'Conjunciones, trígonos, cuadraturas y oposiciones entre tus planetas natales.' },
+                    { icon: '\u2600\uFE0E', title: 'Interpretacion Solar y Lunar', desc: 'Tu esencia (Sol) y tus emociones (Luna) analizadas en profundidad.' },
+                    { icon: '\uD83D\uDCDC', title: 'PDF Profesional', desc: 'Documento con graficos, tablas y tu interpretacion personalizada, con sello de autenticidad.' }
+                ]
             },
             profundo: {
                 name: 'Profundo',
@@ -604,7 +584,15 @@
                 badge: 'Experiencia personalizada',
                 title: 'Analisis Profundo Personalizado',
                 subtitle: 'Tu carta natal completa, la energia de tu nombre y un pronostico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.',
-                priceNote: 'Pago unico. Incluye carta natal, analisis de nombre, pronostico de 3 meses, PDF profesional y audio narrado personalizado.'
+                priceNote: 'Pago unico. Incluye carta natal, analisis de nombre, pronostico de 3 meses, PDF profesional y audio narrado personalizado.',
+                delivery: '<strong>Formato de entrega:</strong> PDF profesional (11+ paginas) + audio MP3, enviados a tu correo electronico en 24 horas.',
+                items: [
+                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretacion.' },
+                    { icon: '\u2728', title: 'Analisis de tu Nombre', desc: 'Numerologia, fonetica, etimologia y compatibilidad entre tu nombre y tu carta astral.' },
+                    { icon: '\uD83D\uDD2D', title: 'Pronostico de 3 Meses', desc: 'Transitos clave, dias favorables y recomendaciones personalizadas por area de vida.' },
+                    { icon: '\u2764\uFE0F', title: 'Amor, Carrera y Salud', desc: 'Analisis detallado de las areas mas importantes de tu vida segun tu carta natal.' },
+                    { icon: '\uD83C\uDF99', title: 'Audio Narrado por Luz Estelar', desc: 'Una lectura personalizada en audio para que puedas escuchar tu analisis donde quieras.' }
+                ]
             },
             estelar: {
                 name: 'Estelar',
@@ -612,7 +600,18 @@
                 badge: 'La experiencia completa',
                 title: 'Experiencia Estelar Completa',
                 subtitle: 'Todo del plan Profundo mas retorno solar, compatibilidad de pareja, pronostico de 6 meses, audio extendido y actualizaciones trimestrales.',
-                priceNote: 'Pago unico. Incluye todo del plan Profundo + compatibilidad, retorno solar, pronostico de 6 meses y entrega prioritaria en 12h.'
+                priceNote: 'Pago unico. Incluye todo del plan Profundo + compatibilidad, retorno solar, pronostico de 6 meses y entrega prioritaria en 12h.',
+                delivery: '<strong>Entrega prioritaria:</strong> PDF profesional completo + audio extendido, enviados a tu correo electronico en 12 horas.',
+                items: [
+                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretacion.' },
+                    { icon: '\u2728', title: 'Analisis de tu Nombre', desc: 'Numerologia, fonetica, etimologia y compatibilidad entre tu nombre y tu carta astral.' },
+                    { icon: '\uD83D\uDD2D', title: 'Pronostico de 6 Meses', desc: 'El doble de cobertura: transitos, dias favorables y recomendaciones extendidas.' },
+                    { icon: '\u2764\uFE0F', title: 'Amor, Carrera y Salud', desc: 'Analisis detallado de las areas mas importantes de tu vida segun tu carta natal.' },
+                    { icon: '\uD83D\uDCAB', title: 'Compatibilidad de Pareja', desc: 'Sinastria completa: como interactuan tus planetas con los de tu pareja o persona de interes.' },
+                    { icon: '\u2600\uFE0E', title: 'Retorno Solar', desc: 'Tu carta del proximo cumpleanos: las energias y temas que definiran tu ano personal.' },
+                    { icon: '\uD83C\uDF99', title: 'Audio Extendido por Luz Estelar', desc: 'Narracion completa de todas las secciones, incluyendo compatibilidad y retorno solar.' },
+                    { icon: '\uD83D\uDD04', title: 'Actualizacion Trimestral', desc: 'Cada 3 meses recibiras un nuevo pronostico personalizado durante el primer ano, sin costo adicional.' }
+                ]
             }
         };
 
@@ -641,7 +640,21 @@
             // Set active tab
             var tabs = document.querySelectorAll('.plan-tab');
             tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.plan === currentPlan); });
+
+            // Render included items for initial plan
+            renderPlanItems(cfg);
         })();
+
+        function renderPlanItems(cfg){
+            var list = document.getElementById('includedList');
+            var note = document.getElementById('deliveryNote');
+            if(list){
+                list.innerHTML = cfg.items.map(function(item){
+                    return '<li><span class="icon">' + item.icon + '</span><div><strong>' + item.title + '</strong>' + item.desc + '</div></li>';
+                }).join('');
+            }
+            if(note) note.innerHTML = cfg.delivery;
+        }
 
         function switchPlan(plan){
             if(!PLAN_CONFIG[plan]) return;
@@ -660,6 +673,9 @@
             if(priceEl) priceEl.textContent = cfg.price;
             if(priceNote) priceNote.textContent = cfg.priceNote;
             document.title = cfg.title + ' — Luz Estelar Oficial';
+
+            // Update included items
+            renderPlanItems(cfg);
 
             // Update active tab
             document.querySelectorAll('.plan-tab').forEach(function(t){
