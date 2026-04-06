@@ -288,6 +288,10 @@
             0%, 100% { box-shadow: 0 4px 20px rgba(212,168,73,0.35), 0 0 40px rgba(212,168,73,0.15); }
             50% { box-shadow: 0 4px 28px rgba(212,168,73,0.5), 0 0 60px rgba(212,168,73,0.25); }
         }
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(34,197,94,0.4); }
+            50% { box-shadow: 0 0 18px rgba(34,197,94,0.7); }
+        }
         .layers {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px; margin-top: 30px;
@@ -660,8 +664,9 @@
         <section id="analisis">
             <div class="section-inner">
                 <div class="coming-soon-card fade-in">
-                    <span class="badge" style="background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:var(--bg-deep);">Disponible</span>
+                    <span class="badge" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700;font-size:0.85em;padding:6px 16px;letter-spacing:1px;animation:badgePulse 2s ease-in-out infinite;">NUEVO</span>
                     <h3>Analisis Profundo Personalizado</h3>
+                    <p style="color:var(--gold-light);font-size:1.05em;margin-bottom:4px;font-weight:500;">Precio de lanzamiento — por tiempo limitado</p>
                     <p>Tu carta natal completa, analisis de tu nombre, pronostico de 3 meses y biorritmo personalizado. Entregado como PDF profesional y audio narrado por Luz Estelar.</p>
                     <div class="layers">
                         <div class="layer">
@@ -680,7 +685,7 @@
                             <p>3 meses de transitos clave, dias favorables y recomendaciones por area de vida.</p>
                         </div>
                     </div>
-                    <a href="consulta.html" class="cta-analisis">Solicitar mi Analisis — $19.99 USD</a>
+                    <a href="consulta.html" class="cta-analisis">Solicitar mi Analisis — <span style="text-decoration:line-through;opacity:0.6;font-weight:400;">$39.99</span> $19.99 USD</a>
                 </div>
             </div>
         </section>
