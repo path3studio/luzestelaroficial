@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Estelar Personalizado — Luz Estelar Oficial</title>
+    <meta name="description" content="El cielo exacto de tu fecha especial. Mapa de estrellas personalizado para bodas, nacimientos y momentos unicos. Multiples formatos para pantalla e impresion.">
+    <meta property="og:title" content="Mapa Estelar Personalizado — Luz Estelar Oficial">
+    <meta property="og:description" content="El cielo exacto de tu fecha especial. Estrellas reales, constelaciones y tu mensaje personalizado.">
+    <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/mapa-estelar.html">
+    <meta name="theme-color" content="#d4a849">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4a849;
+            --gold-light: #f0d078;
+            --gold-dim: rgba(212,168,73,0.15);
+            --bg-deep: #06061a;
+            --bg-mid: #0c0c2a;
+            --text: #e0dce8;
+            --text-dim: #9890a8;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --accent-purple: #7c5cbf;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Starfield */
+        .starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .starfield canvas { width: 100%; height: 100%; }
+
+        /* Navigation */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(6,6,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        nav .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 24px;
+        }
+        nav .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4em; font-weight: 700; color: var(--gold);
+            text-decoration: none;
+        }
+        nav .nav-links { display: flex; gap: 28px; }
+        nav .nav-links a {
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.88em; font-weight: 400; transition: color 0.2s;
+        }
+        nav .nav-links a:hover { color: var(--gold); }
+        nav .nav-links a.active { color: var(--gold); font-weight: 600; }
+
+        .content { position: relative; z-index: 1; }
+
+        /* Hero */
+        .hero { padding: 140px 24px 40px; text-align: center; }
+        .hero .badge {
+            display: inline-block; padding: 6px 18px; border-radius: 20px;
+            background: var(--gold-dim); color: var(--gold);
+            font-size: 0.78em; font-weight: 600; letter-spacing: 0.12em;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2em; font-weight: 700; color: #fff;
+            line-height: 1.15; margin-bottom: 18px;
+        }
+        .hero .subtitle {
+            font-size: 1.08em; line-height: 1.8; color: var(--text-dim);
+            max-width: 600px; margin: 0 auto;
+        }
+
+        section { padding: 40px 24px; }
+        .section-inner { max-width: 800px; margin: 0 auto; }
+
+        .card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 18px; padding: 36px 32px; margin-bottom: 30px;
+            backdrop-filter: blur(12px);
+        }
+        .card h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8em; font-weight: 700; color: #fff; margin-bottom: 24px;
+        }
+
+        /* Occasions */
+        .occasions {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            margin-bottom: 24px;
+        }
+        .occasion-item {
+            text-align: center; padding: 16px 10px; border-radius: 12px;
+            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+            transition: all 0.3s;
+        }
+        .occasion-item .icon { font-size: 1.6em; display: block; margin-bottom: 6px; }
+        .occasion-item .label { font-size: 0.82em; color: var(--text-dim); }
+
+        /* Format selector */
+        .format-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            margin-bottom: 16px;
+        }
+        .format-option {
+            position: relative; cursor: pointer;
+        }
+        .format-option input { position: absolute; opacity: 0; pointer-events: none; }
+        .format-option .format-label {
+            display: block; text-align: center; padding: 14px 8px;
+            border-radius: 10px; border: 1.5px solid var(--glass-border);
+            background: rgba(255,255,255,0.02);
+            transition: all 0.25s; font-size: 0.82em;
+        }
+        .format-option .format-label .fmt-icon { display: block; font-size: 1.4em; margin-bottom: 4px; }
+        .format-option .format-label .fmt-name { display: block; color: var(--text); font-weight: 500; }
+        .format-option .format-label .fmt-size { display: block; font-size: 0.78em; color: var(--text-dim); margin-top: 2px; }
+        .format-option input:checked + .format-label {
+            border-color: var(--gold);
+            background: rgba(212,168,73,0.08);
+        }
+        .format-option input:checked + .format-label .fmt-name { color: var(--gold); }
+        .format-option .format-label:hover { border-color: rgba(212,168,73,0.4); }
+
+        /* Custom size fields */
+        .custom-size {
+            display: none; gap: 12px; margin-bottom: 16px;
+            align-items: center;
+        }
+        .custom-size.visible { display: flex; }
+        .custom-size input {
+            flex: 1; padding: 12px 14px; border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 0.9em;
+            outline: none;
+        }
+        .custom-size input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,168,73,0.12); }
+        .custom-size span { color: var(--text-dim); font-size: 0.9em; }
+
+        /* Price card */
+        .price-card {
+            text-align: center; padding: 40px 32px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.06), rgba(124,92,191,0.04));
+            border: 1px solid rgba(212,168,73,0.2);
+        }
+        .price-card .price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2em; font-weight: 700; line-height: 1;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
+        }
+        .price-card .price-note {
+            font-size: 0.9em; color: var(--text-dim); line-height: 1.7;
+        }
+        .price-extra {
+            display: inline-block; margin-top: 10px; padding: 4px 14px;
+            border-radius: 20px; background: rgba(76,175,80,0.12);
+            color: #81c784; font-size: 0.78em; font-weight: 600;
+        }
+
+        /* Form */
+        .form-group { margin-bottom: 22px; }
+        .form-group label {
+            display: block; font-size: 0.88em; font-weight: 500;
+            color: var(--text); margin-bottom: 8px;
+        }
+        .form-group .hint {
+            font-size: 0.8em; color: var(--text-dim); margin-top: 4px; font-weight: 300;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%; padding: 14px 16px; border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(152,144,168,0.5);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,168,73,0.12);
+        }
+        .form-group input.invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231,76,60,0.15);
+        }
+
+        .btn-submit {
+            display: block; width: 100%; padding: 18px 32px;
+            border: none; border-radius: 14px; cursor: pointer;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em; font-weight: 700; color: var(--bg-deep);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212,168,73,0.3);
+        }
+        .btn-submit:disabled {
+            opacity: 0.65; cursor: not-allowed;
+            transform: none !important; box-shadow: none !important;
+        }
+
+        .form-error {
+            display: none; padding: 14px 18px; border-radius: 12px;
+            background: rgba(231,76,60,0.1);
+            border: 1px solid rgba(231,76,60,0.3);
+            color: #e74c3c; font-size: 0.9em; line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .form-error.visible { display: block; }
+
+        /* Delivery note */
+        .delivery-note {
+            margin-top: 20px; padding: 16px 20px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.08), rgba(124,92,191,0.06));
+            border: 1px solid rgba(212,168,73,0.15);
+            font-size: 0.88em; color: var(--text-dim); text-align: center;
+        }
+        .delivery-note strong { color: var(--gold); }
+
+        /* Disclaimer */
+        .disclaimer {
+            margin-top: 30px; padding: 24px; border-radius: 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+        }
+        .disclaimer p {
+            font-size: 0.8em; line-height: 1.8; color: rgba(152,144,168,0.7);
+            margin-bottom: 6px;
+        }
+        .disclaimer p:last-child { margin-bottom: 0; }
+        .disclaimer a { color: var(--gold); text-decoration: none; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 24px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim); font-size: 0.85em;
+        }
+        footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--gold); }
+        footer .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2em; }
+            .hero { padding: 120px 18px 30px; }
+            .card { padding: 24px 20px; }
+            .occasions { grid-template-columns: repeat(2, 1fr); }
+            .format-grid { grid-template-columns: repeat(2, 1fr); }
+            nav .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">Luz Estelar</a>
+            <div class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="planes.html">Planes</a>
+                <a href="mapa-estelar.html" class="active">Mapa Estelar</a>
+                <a href="consulta.html">Consulta</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="hero">
+            <div class="badge">Nuevo producto</div>
+            <h1>Mapa Estelar<br>Personalizado</h1>
+            <p class="subtitle">El cielo exacto de tu fecha especial. Estrellas reales, constelaciones y tu mensaje personalizado, calculado al segundo exacto desde la ubicacion que elijas.</p>
+        </div>
+
+        <!-- Occasions -->
+        <section style="padding-top:0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Para cada momento especial</h2>
+                    <div class="occasions">
+                        <div class="occasion-item">
+                            <span class="icon">&#x1F476;</span>
+                            <span class="label">Nacimiento</span>
+                        </div>
+                        <div class="occasion-item">
+                            <span class="icon">&#x1F48D;</span>
+                            <span class="label">Boda</span>
+                        </div>
+                        <div class="occasion-item">
+                            <span class="icon">&#x2764;&#xFE0F;</span>
+                            <span class="label">Aniversario</span>
+                        </div>
+                        <div class="occasion-item">
+                            <span class="icon">&#x1F31F;</span>
+                            <span class="label">Primer encuentro</span>
+                        </div>
+                        <div class="occasion-item">
+                            <span class="icon">&#x1F393;</span>
+                            <span class="label">Graduacion</span>
+                        </div>
+                        <div class="occasion-item">
+                            <span class="icon">&#x2728;</span>
+                            <span class="label">Cualquier fecha</span>
+                        </div>
+                    </div>
+                    <div class="delivery-note">
+                        <strong>Que recibes:</strong> Imagen digital en alta resolucion (PNG) lista para imprimir o usar como fondo de pantalla. Entregada a tu correo en 24-48 horas.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Price -->
+        <section style="padding-top:0;">
+            <div class="section-inner">
+                <div class="card price-card">
+                    <div class="price">$14.99 USD</div>
+                    <p class="price-note">Incluye todos los formatos seleccionados en una sola compra.</p>
+                    <span class="price-extra">+$4.99 por medida personalizada</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Form -->
+        <section style="padding-top:0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Crea tu mapa estelar</h2>
+                    <form id="orderForm" novalidate>
+                        <div id="formError" class="form-error"></div>
+
+                        <div class="form-group">
+                            <label for="titulo">Titulo o mensaje personalizado *</label>
+                            <input type="text" id="titulo" name="titulo" placeholder="La noche que nos conocimos" required>
+                            <p class="hint">Este texto aparecera debajo de tu mapa estelar.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha">Fecha del evento *</label>
+                            <input type="date" id="fecha" name="fecha" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hora">Hora (opcional)</label>
+                            <input type="time" id="hora" name="hora">
+                            <p class="hint">Si no la recuerdas, usaremos las 21:00 (cielo nocturno).</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lugar">Lugar del evento *</label>
+                            <input type="text" id="lugar" name="lugar" placeholder="Ciudad de Mexico, Mexico" required>
+                            <p class="hint">Ciudad y pais donde ocurrio el evento.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Formatos deseados *</label>
+                            <p class="hint" style="margin-bottom:10px;">Selecciona uno o mas formatos. Todos se incluyen en tu compra.</p>
+                            <div class="format-grid">
+                                <label class="format-option">
+                                    <input type="checkbox" name="formatos" value="phone" checked>
+                                    <span class="format-label">
+                                        <span class="fmt-icon">&#x1F4F1;</span>
+                                        <span class="fmt-name">Celular</span>
+                                        <span class="fmt-size">1080x1920</span>
+                                    </span>
+                                </label>
+                                <label class="format-option">
+                                    <input type="checkbox" name="formatos" value="desktop">
+                                    <span class="format-label">
+                                        <span class="fmt-icon">&#x1F5A5;</span>
+                                        <span class="fmt-name">Escritorio</span>
+                                        <span class="fmt-size">2560x1440</span>
+                                    </span>
+                                </label>
+                                <label class="format-option">
+                                    <input type="checkbox" name="formatos" value="tv">
+                                    <span class="format-label">
+                                        <span class="fmt-icon">&#x1F4FA;</span>
+                                        <span class="fmt-name">Televisor 4K</span>
+                                        <span class="fmt-size">3840x2160</span>
+                                    </span>
+                                </label>
+                                <label class="format-option">
+                                    <input type="checkbox" name="formatos" value="small">
+                                    <span class="format-label">
+                                        <span class="fmt-icon">&#x1F5BC;</span>
+                                        <span class="fmt-name">Cuadro chico</span>
+                                        <span class="fmt-size">8x10" (300dpi)</span>
+                                    </span>
+                                </label>
+                                <label class="format-option">
+                                    <input type="checkbox" name="formatos" value="medium">
+                                    <span class="format-label">
+                                        <span class="fmt-icon">&#x1F5BC;</span>
+                                        <span class="fmt-name">Cuadro mediano</span>
+                                        <span class="fmt-size">12x18" (300dpi)</span>
+                                    </span>
+                                </label>
+                                <label class="format-option">
+                                    <input type="checkbox" name="formatos" value="large">
+                                    <span class="format-label">
+                                        <span class="fmt-icon">&#x1F5BC;</span>
+                                        <span class="fmt-name">Cuadro grande</span>
+                                        <span class="fmt-size">16x24" (300dpi)</span>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Custom size toggle -->
+                            <label class="format-option" style="display:block; margin-bottom:10px;">
+                                <input type="checkbox" name="formatos" value="custom" id="customCheck">
+                                <span class="format-label" style="display:inline-block; width:auto; padding:10px 20px;">
+                                    <span class="fmt-name">&#x2795; Medida personalizada (+$4.99)</span>
+                                </span>
+                            </label>
+                            <div class="custom-size" id="customSize">
+                                <input type="number" id="customW" placeholder="Ancho (px)" min="500" max="10000">
+                                <span>&times;</span>
+                                <input type="number" id="customH" placeholder="Alto (px)" min="500" max="10000">
+                                <span>px</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="correo">Correo electronico *</label>
+                            <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+                            <p class="hint">Aqui recibirás tus imagenes en alta resolucion.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notas">Notas adicionales (opcional)</label>
+                            <input type="text" id="notas" name="notas" placeholder="Algun detalle extra que quieras incluir...">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Continuar al Pago</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disclaimer -->
+        <section style="padding-top:0;">
+            <div class="section-inner">
+                <div class="disclaimer">
+                    <p>Las posiciones estelares son calculadas con datos astronomicos reales del catalogo Hipparcos usando la libreria Skyfield. Las constelaciones mostradas dependen del hemisferio y la hora del evento.</p>
+                    <p>Las imagenes se entregan en formato digital (PNG). No incluyen impresion fisica ni enmarcado.</p>
+                    <p>Al realizar tu compra, aceptas nuestros <a href="terms-of-service.html">Terminos de Servicio</a> y <a href="privacy-policy.html">Politica de Privacidad</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-links">
+                <a href="index.html">Inicio</a>
+                <a href="planes.html">Planes</a>
+                <a href="mapa-estelar.html">Mapa Estelar</a>
+                <a href="consulta.html">Consulta</a>
+                <a href="privacy-policy.html">Privacidad</a>
+                <a href="terms-of-service.html">Terminos</a>
+            </div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Starfield
+        (function(){
+            var c = document.getElementById('stars');
+            var ctx = c.getContext('2d');
+            var w, h, stars = [];
+            function resize(){ w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+            function init(){
+                resize(); stars = [];
+                for(var i = 0; i < 180; i++){
+                    stars.push({
+                        x: Math.random()*w, y: Math.random()*h,
+                        r: Math.random()*1.5+0.3, a: Math.random()*0.5+0.15,
+                        speed: Math.random()*0.15+0.02, phase: Math.random()*Math.PI*2
+                    });
+                }
+            }
+            function draw(){
+                ctx.clearRect(0,0,w,h);
+                var t = Date.now()*0.001;
+                stars.forEach(function(s){
+                    var f = 0.5+0.5*Math.sin(t*s.speed*6+s.phase);
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255,255,255,'+s.a*f+')';
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            init(); draw();
+            window.addEventListener('resize', init);
+        })();
+
+        // Custom size toggle
+        document.getElementById('customCheck').addEventListener('change', function(){
+            document.getElementById('customSize').classList.toggle('visible', this.checked);
+        });
+
+        // API
+        var API_URL = 'https://luzestelar-consulta-api.path3studio.workers.dev';
+
+        // Form submit
+        document.getElementById('orderForm').addEventListener('submit', async function(e){
+            e.preventDefault();
+            var form = this;
+            var errorDiv = document.getElementById('formError');
+            var submitBtn = form.querySelector('.btn-submit');
+
+            errorDiv.classList.remove('visible');
+            errorDiv.textContent = '';
+
+            // Validate
+            var valid = true;
+            ['titulo','fecha','lugar','correo'].forEach(function(id){
+                var el = document.getElementById(id);
+                el.classList.remove('invalid');
+                if(!el.value.trim()){
+                    el.classList.add('invalid');
+                    valid = false;
+                }
+            });
+
+            // Validate email
+            var emailEl = document.getElementById('correo');
+            if(emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())){
+                emailEl.classList.add('invalid');
+                valid = false;
+            }
+
+            // Validate at least one format
+            var formatos = [];
+            form.querySelectorAll('input[name="formatos"]:checked').forEach(function(cb){
+                formatos.push(cb.value);
+            });
+            if(formatos.length === 0){
+                errorDiv.textContent = 'Selecciona al menos un formato.';
+                errorDiv.classList.add('visible');
+                return;
+            }
+
+            // Custom size validation
+            if(formatos.includes('custom')){
+                var cw = parseInt(document.getElementById('customW').value);
+                var ch = parseInt(document.getElementById('customH').value);
+                if(!cw || !ch || cw < 500 || ch < 500 || cw > 10000 || ch > 10000){
+                    errorDiv.textContent = 'Medida personalizada: minimo 500px, maximo 10000px por lado.';
+                    errorDiv.classList.add('visible');
+                    return;
+                }
+            }
+
+            if(!valid){
+                var firstInvalid = form.querySelector('.invalid');
+                if(firstInvalid) firstInvalid.focus();
+                errorDiv.textContent = 'Por favor, completa todos los campos requeridos correctamente.';
+                errorDiv.classList.add('visible');
+                return;
+            }
+
+            var originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Procesando...';
+            submitBtn.disabled = true;
+
+            try {
+                var customSize = '';
+                if(formatos.includes('custom')){
+                    customSize = document.getElementById('customW').value + 'x' + document.getElementById('customH').value;
+                }
+
+                var response = await fetch(API_URL + '/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: form.titulo.value.trim(),
+                        fecha_nacimiento: form.fecha.value,
+                        hora_nacimiento: form.hora.value || '21:00',
+                        lugar_nacimiento: form.lugar.value.trim(),
+                        email: form.correo.value.trim(),
+                        mensaje: 'MAPA ESTELAR | Formatos: ' + formatos.join(',') + (customSize ? ' | Custom: ' + customSize : '') + (form.notas.value.trim() ? ' | Notas: ' + form.notas.value.trim() : ''),
+                        plan: formatos.includes('custom') ? 'mapa_estelar_custom' : 'mapa_estelar'
+                    })
+                });
+
+                var data = await response.json();
+
+                if(response.ok && (data.url || data.checkout_url)){
+                    window.location.href = data.url || data.checkout_url;
+                } else {
+                    errorDiv.textContent = data.error || 'Hubo un error al procesar tu solicitud.';
+                    errorDiv.classList.add('visible');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch(err) {
+                errorDiv.textContent = 'Error de conexion. Verifica tu internet e intenta de nuevo.';
+                errorDiv.classList.add('visible');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Remove invalid on input
+        document.querySelectorAll('#orderForm input').forEach(function(el){
+            el.addEventListener('input', function(){
+                this.classList.remove('invalid');
+                var errorDiv = document.getElementById('formError');
+                if(errorDiv){ errorDiv.classList.remove('visible'); errorDiv.textContent = ''; }
+            });
+        });
+    </script>
+</body>
+</html>

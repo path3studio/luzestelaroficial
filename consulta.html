@@ -270,6 +270,38 @@
             box-shadow: none !important;
         }
 
+        /* Plan Switcher */
+        .plan-switcher {
+            max-width: 800px; margin: 0 auto; padding: 0 24px;
+        }
+        .plan-switcher-inner {
+            display: flex; gap: 8px; border-radius: 14px;
+            background: var(--glass); border: 1px solid var(--glass-border);
+            padding: 6px; backdrop-filter: blur(12px);
+        }
+        .plan-tab {
+            flex: 1; padding: 12px 8px; border: none; border-radius: 10px;
+            background: none; color: var(--text-dim); cursor: pointer;
+            font-family: 'Inter', sans-serif; font-size: 0.82em;
+            font-weight: 500; transition: all 0.25s; text-align: center;
+        }
+        .plan-tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+        .plan-tab.active {
+            background: linear-gradient(135deg, rgba(212,168,73,0.15), rgba(124,92,191,0.08));
+            color: var(--gold); border: 1px solid rgba(212,168,73,0.3);
+        }
+        .plan-tab .tab-price {
+            display: block; font-size: 0.85em; color: var(--text-dim);
+            margin-top: 2px; font-weight: 400;
+        }
+        .plan-tab.active .tab-price { color: var(--gold-light); }
+        .plan-switcher-hint {
+            text-align: center; margin-top: 10px; font-size: 0.78em;
+            color: var(--text-dim);
+        }
+        .plan-switcher-hint a { color: var(--gold); text-decoration: none; }
+        .plan-switcher-hint a:hover { text-decoration: underline; }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2em; }
@@ -305,6 +337,22 @@
             <div class="badge">Experiencia personalizada</div>
             <h1>Analisis Profundo<br>Personalizado</h1>
             <p class="subtitle">Tu carta natal completa, la energia de tu nombre y un pronostico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.</p>
+        </div>
+
+        <!-- Plan Switcher -->
+        <div class="plan-switcher">
+            <div class="plan-switcher-inner" id="planSwitcher">
+                <button class="plan-tab" data-plan="esencial" onclick="switchPlan('esencial')">
+                    Esencial<span class="tab-price">$9.99</span>
+                </button>
+                <button class="plan-tab" data-plan="profundo" onclick="switchPlan('profundo')">
+                    Profundo<span class="tab-price">$19.99</span>
+                </button>
+                <button class="plan-tab" data-plan="estelar" onclick="switchPlan('estelar')">
+                    Estelar<span class="tab-price">$49.99</span>
+                </button>
+            </div>
+            <p class="plan-switcher-hint"><a href="planes.html">Comparar planes en detalle &rarr;</a></p>
         </div>
 
         <!-- What's Included -->
@@ -589,7 +637,40 @@
 
             // Update page title
             document.title = cfg.title + ' — Luz Estelar Oficial';
+
+            // Set active tab
+            var tabs = document.querySelectorAll('.plan-tab');
+            tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.plan === currentPlan); });
         })();
+
+        function switchPlan(plan){
+            if(!PLAN_CONFIG[plan]) return;
+            currentPlan = plan;
+            var cfg = PLAN_CONFIG[currentPlan];
+
+            var badge = document.querySelector('.hero .badge');
+            var h1 = document.querySelector('.hero h1');
+            var subtitle = document.querySelector('.hero .subtitle');
+            var priceEl = document.querySelector('.price-card .price');
+            var priceNote = document.querySelector('.price-card .price-note');
+
+            if(badge) badge.textContent = cfg.badge;
+            if(h1) h1.innerHTML = cfg.title.replace(' ', '<br>');
+            if(subtitle) subtitle.textContent = cfg.subtitle;
+            if(priceEl) priceEl.textContent = cfg.price;
+            if(priceNote) priceNote.textContent = cfg.priceNote;
+            document.title = cfg.title + ' — Luz Estelar Oficial';
+
+            // Update active tab
+            document.querySelectorAll('.plan-tab').forEach(function(t){
+                t.classList.toggle('active', t.dataset.plan === plan);
+            });
+
+            // Update URL without reload
+            if(window.history.replaceState){
+                window.history.replaceState({}, '', 'consulta.html?plan=' + plan);
+            }
+        }
 
         // Form validation and submit
         document.getElementById('orderForm').addEventListener('submit', async function(e){
