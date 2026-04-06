@@ -269,6 +269,23 @@
             font-size: 2em; font-weight: 700; color: #fff; margin-bottom: 16px;
         }
         .coming-soon-card p { font-size: 0.95em; line-height: 1.8; color: var(--text-dim); max-width: 560px; }
+        .cta-analisis {
+            display: inline-block; margin-top: 32px; padding: 18px 48px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+            color: var(--bg-deep); font-weight: 700; font-size: 1.2em;
+            border-radius: 10px; text-decoration: none; letter-spacing: 0.03em;
+            box-shadow: 0 4px 20px rgba(212,168,73,0.35), 0 0 40px rgba(212,168,73,0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: ctaPulse 2.5s ease-in-out infinite;
+        }
+        .cta-analisis:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(212,168,73,0.5), 0 0 60px rgba(212,168,73,0.25);
+        }
+        @keyframes ctaPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(212,168,73,0.35), 0 0 40px rgba(212,168,73,0.15); }
+            50% { box-shadow: 0 4px 28px rgba(212,168,73,0.5), 0 0 60px rgba(212,168,73,0.25); }
+        }
         .layers {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px; margin-top: 30px;
@@ -652,7 +669,7 @@
                             <p>3 meses de transitos clave, dias favorables y recomendaciones por area de vida.</p>
                         </div>
                     </div>
-                    <a href="consulta.html" style="display:inline-block;margin-top:24px;padding:14px 36px;background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:var(--bg-deep);font-weight:600;border-radius:8px;text-decoration:none;font-size:1.05em;letter-spacing:0.02em;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(212,168,73,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Solicitar mi Analisis — $19.99 USD</a>
+                    <a href="consulta.html" class="cta-analisis">Solicitar mi Analisis — $19.99 USD</a>
                 </div>
             </div>
         </section>
