@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planes y Servicios — Luz Estelar Oficial</title>
+    <meta name="description" content="Elige tu guia cosmica personalizada. Carta natal, numerologia, pronostico trimestral y sesiones en vivo. Planes desde $9.99 USD.">
+    <meta property="og:title" content="Planes y Servicios — Luz Estelar Oficial">
+    <meta property="og:description" content="Consultas astrologicas personalizadas. Carta natal, numerologia, pronostico y mas.">
+    <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+    <meta property="og:url" content="https://luzestelaroficial.com/planes.html">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/planes.html">
+    <meta name="theme-color" content="#d4a849">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4a849;
+            --gold-light: #f0d078;
+            --gold-dim: rgba(212,168,73,0.15);
+            --bg-deep: #06061a;
+            --bg-mid: #0c0c2a;
+            --text: #e0dce8;
+            --text-dim: #9890a8;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --accent-purple: #7c5cbf;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Starfield ── */
+        .starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .starfield span {
+            position: absolute; border-radius: 50%; background: white;
+            animation: twinkle 3s infinite alternate;
+        }
+        @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 0.9; } }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(6,6,26,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0.8rem 2rem; display: flex; align-items: center;
+            justify-content: space-between;
+        }
+        .nav-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); text-decoration: none; font-weight: 700; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a.active { color: var(--gold); font-weight: 600; }
+
+        /* ── Main ── */
+        main { position: relative; z-index: 1; padding-top: 5rem; }
+
+        /* ── Hero ── */
+        .pricing-hero {
+            text-align: center; padding: 3rem 1.5rem 2rem;
+        }
+        .pricing-hero h1 {
+            font-family: 'Cormorant Garamond', serif; font-size: 2.6rem;
+            color: var(--gold); margin-bottom: 0.5rem;
+        }
+        .pricing-hero p { color: var(--text-dim); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* ── Pricing Grid ── */
+        .pricing-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem; max-width: 1100px; margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .plan-card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 2rem 1.5rem; text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .plan-card:hover { transform: translateY(-4px); border-color: rgba(212,168,73,0.3); }
+
+        .plan-card.featured {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(212,168,73,0.08), rgba(124,92,191,0.06));
+        }
+        .plan-card.featured::before {
+            content: 'MAS POPULAR'; position: absolute; top: 0; right: 0;
+            background: var(--gold); color: var(--bg-deep); font-size: 0.65rem;
+            font-weight: 700; padding: 4px 14px; border-radius: 0 16px 0 12px;
+            letter-spacing: 0.05em;
+        }
+
+        .plan-icon { font-size: 2.4rem; margin-bottom: 0.8rem; display: block; }
+        .plan-name {
+            font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
+            color: var(--gold); margin-bottom: 0.3rem;
+        }
+        .plan-tagline { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 1.2rem; }
+
+        .plan-price {
+            font-size: 2.4rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem;
+        }
+        .plan-price .currency { font-size: 1rem; vertical-align: super; color: var(--text-dim); }
+        .plan-price .period { font-size: 0.85rem; font-weight: 400; color: var(--text-dim); }
+        .plan-original {
+            font-size: 0.85rem; color: var(--text-dim);
+            text-decoration: line-through; margin-bottom: 1rem;
+        }
+        .plan-promo {
+            display: inline-block; background: rgba(76,175,80,0.15); color: #81c784;
+            font-size: 0.72rem; padding: 3px 10px; border-radius: 20px;
+            margin-bottom: 1.2rem; font-weight: 600;
+        }
+
+        .plan-features {
+            list-style: none; text-align: left; margin-bottom: 1.5rem;
+        }
+        .plan-features li {
+            padding: 0.45rem 0; font-size: 0.85rem; color: var(--text);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .plan-features li::before {
+            content: '✦'; color: var(--gold); font-size: 0.7rem; margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .plan-features li.highlight { color: var(--gold-light); font-weight: 500; }
+
+        .plan-btn {
+            display: block; width: 100%; padding: 0.85rem;
+            border: none; border-radius: 10px; font-size: 0.95rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            text-decoration: none; text-align: center;
+        }
+        .plan-btn-primary {
+            background: linear-gradient(135deg, var(--gold), #8b6914);
+            color: #fff; box-shadow: 0 4px 20px rgba(212,168,73,0.3);
+        }
+        .plan-btn-primary:hover { box-shadow: 0 6px 30px rgba(212,168,73,0.5); transform: translateY(-1px); }
+        .plan-btn-outline {
+            background: transparent; color: var(--gold);
+            border: 1.5px solid var(--gold);
+        }
+        .plan-btn-outline:hover { background: rgba(212,168,73,0.1); }
+
+        /* ── Comparison Table ── */
+        .comparison-section {
+            max-width: 900px; margin: 3rem auto; padding: 0 1.5rem;
+        }
+        .comparison-section h2 {
+            font-family: 'Cormorant Garamond', serif; color: var(--gold);
+            font-size: 1.8rem; text-align: center; margin-bottom: 1.5rem;
+        }
+        .comparison-table {
+            width: 100%; border-collapse: collapse;
+            background: var(--glass); border-radius: 12px; overflow: hidden;
+        }
+        .comparison-table th {
+            background: rgba(212,168,73,0.12); color: var(--gold);
+            padding: 0.8rem; font-size: 0.85rem; text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .comparison-table th:first-child { text-align: left; }
+        .comparison-table td {
+            padding: 0.65rem 0.8rem; font-size: 0.82rem;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            text-align: center; color: var(--text-dim);
+        }
+        .comparison-table td:first-child { text-align: left; color: var(--text); }
+        .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .check { color: var(--gold); font-weight: 700; }
+        .dash { color: rgba(255,255,255,0.15); }
+
+        /* ── FAQ ── */
+        .faq-section {
+            max-width: 700px; margin: 3rem auto; padding: 0 1.5rem 3rem;
+        }
+        .faq-section h2 {
+            font-family: 'Cormorant Garamond', serif; color: var(--gold);
+            font-size: 1.8rem; text-align: center; margin-bottom: 1.5rem;
+        }
+        .faq-item {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 10px; margin-bottom: 0.8rem; overflow: hidden;
+        }
+        .faq-q {
+            padding: 1rem 1.2rem; cursor: pointer; font-weight: 500;
+            font-size: 0.9rem; display: flex; justify-content: space-between;
+            align-items: center; transition: color 0.3s;
+        }
+        .faq-q:hover { color: var(--gold); }
+        .faq-q::after { content: '+'; color: var(--gold); font-size: 1.2rem; transition: transform 0.3s; }
+        .faq-item.open .faq-q::after { transform: rotate(45deg); }
+        .faq-a {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s;
+            font-size: 0.85rem; color: var(--text-dim); line-height: 1.6;
+        }
+        .faq-item.open .faq-a { max-height: 200px; padding: 0 1.2rem 1rem; }
+
+        /* ── Footer ── */
+        footer {
+            background: rgba(0,0,0,0.3); border-top: 1px solid var(--glass-border);
+            padding: 2rem; text-align: center; position: relative; z-index: 1;
+        }
+        .footer-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+        .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-copy { color: var(--text-dim); font-size: 0.75rem; }
+
+        /* ── Mobile ── */
+        @media (max-width: 900px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+            .plan-card.featured { order: -1; }
+            .pricing-hero h1 { font-size: 2rem; }
+        }
+        @media (max-width: 600px) {
+            nav { padding: 0.6rem 1rem; }
+            .nav-links { gap: 0.8rem; }
+            .nav-links a { font-size: 0.75rem; }
+            .comparison-table { font-size: 0.75rem; }
+            .comparison-table th, .comparison-table td { padding: 0.5rem 0.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield" id="starfield"></div>
+
+    <nav>
+        <a href="index.html" class="nav-brand">Luz Estelar</a>
+        <div class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="compatibilidad.html">Compatibilidad</a>
+            <a href="planes.html" class="active">Planes</a>
+            <a href="consulta.html" style="color:var(--gold)">Consulta</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="pricing-hero">
+            <h1>Tu Guia Cosmica Personalizada</h1>
+            <p>Cada plan incluye interpretacion profesional basada en datos astronomicos reales, calculados al segundo exacto de tu nacimiento.</p>
+        </section>
+
+        <section class="pricing-grid">
+            <!-- PLAN 1: Esencial -->
+            <div class="plan-card">
+                <span class="plan-icon">✦</span>
+                <h3 class="plan-name">Esencial</h3>
+                <p class="plan-tagline">Tu primer mapa estelar</p>
+                <div class="plan-price"><span class="currency">$</span>9<span class="period">.99 USD</span></div>
+                <div class="plan-original">$14.99</div>
+                <span class="plan-promo">Precio de lanzamiento</span>
+                <ul class="plan-features">
+                    <li>Carta natal completa (10 planetas)</li>
+                    <li>Ascendente y Medio Cielo</li>
+                    <li>Aspectos planetarios principales</li>
+                    <li>Tu esencia solar y lunar</li>
+                    <li>PDF profesional con sello de autenticidad</li>
+                    <li>Entrega en 24-48h</li>
+                </ul>
+                <a href="consulta.html?plan=esencial" class="plan-btn plan-btn-outline">Elegir Plan</a>
+            </div>
+
+            <!-- PLAN 2: Profundo (Featured) -->
+            <div class="plan-card featured">
+                <span class="plan-icon">🔮</span>
+                <h3 class="plan-name">Profundo</h3>
+                <p class="plan-tagline">El analisis completo</p>
+                <div class="plan-price"><span class="currency">$</span>19<span class="period">.99 USD</span></div>
+                <div class="plan-original">$39.99</div>
+                <span class="plan-promo">50% descuento de lanzamiento</span>
+                <ul class="plan-features">
+                    <li class="highlight">Todo del plan Esencial</li>
+                    <li>Analisis del nombre (numerologia, fonetica, etimologia)</li>
+                    <li>Amor, carrera, salud y espiritualidad</li>
+                    <li>Pronostico personal de 3 meses</li>
+                    <li>Audio narrado con voz oficial</li>
+                    <li>PDF premium de 11+ paginas</li>
+                    <li>Entrega en 24h</li>
+                </ul>
+                <a href="consulta.html?plan=profundo" class="plan-btn plan-btn-primary">Elegir Plan</a>
+            </div>
+
+            <!-- PLAN 3: Estelar -->
+            <div class="plan-card">
+                <span class="plan-icon">👑</span>
+                <h3 class="plan-name">Estelar</h3>
+                <p class="plan-tagline">La experiencia completa</p>
+                <div class="plan-price"><span class="currency">$</span>49<span class="period">.99 USD</span></div>
+                <div class="plan-original">$79.99</div>
+                <span class="plan-promo">Lanzamiento limitado</span>
+                <ul class="plan-features">
+                    <li class="highlight">Todo del plan Profundo</li>
+                    <li>Carta de retorno solar (cumpleanos astrologico)</li>
+                    <li>Compatibilidad con otra persona</li>
+                    <li>Pronostico extendido de 6 meses</li>
+                    <li>Audio extendido (todas las secciones)</li>
+                    <li>Actualizacion trimestral gratuita</li>
+                    <li>Prioridad: entrega en 12h</li>
+                </ul>
+                <a href="consulta.html?plan=estelar" class="plan-btn plan-btn-outline">Elegir Plan</a>
+            </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section class="comparison-section">
+            <h2>Compara los Planes</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Caracteristica</th>
+                        <th>Esencial</th>
+                        <th>Profundo</th>
+                        <th>Estelar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Carta natal (10 planetas)</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Ascendente y Medio Cielo</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Aspectos planetarios</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Interpretacion solar y lunar</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Analisis del nombre</td><td class="dash">—</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Amor, carrera, salud</td><td class="dash">—</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Pronostico personal</td><td class="dash">—</td><td>3 meses</td><td>6 meses</td></tr>
+                    <tr><td>Audio narrado</td><td class="dash">—</td><td class="check">✦</td><td>Extendido</td></tr>
+                    <tr><td>Compatibilidad de pareja</td><td class="dash">—</td><td class="dash">—</td><td class="check">✦</td></tr>
+                    <tr><td>Retorno solar</td><td class="dash">—</td><td class="dash">—</td><td class="check">✦</td></tr>
+                    <tr><td>Actualizacion trimestral</td><td class="dash">—</td><td class="dash">—</td><td class="check">✦</td></tr>
+                    <tr><td>Paginas del PDF</td><td>~4</td><td>11+</td><td>18+</td></tr>
+                    <tr><td>Tiempo de entrega</td><td>24-48h</td><td>24h</td><td>12h</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- FAQ -->
+        <section class="faq-section">
+            <h2>Preguntas Frecuentes</h2>
+
+            <div class="faq-item">
+                <div class="faq-q">Que necesito para mi consulta?</div>
+                <div class="faq-a">Tu nombre completo, fecha de nacimiento, hora exacta de nacimiento (lo mas precisa posible) y lugar de nacimiento. La hora es importante para calcular tu Ascendente y las casas astrologicas.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Como recibo mi reporte?</div>
+                <div class="faq-a">Despues del pago, recibes un PDF profesional y un audio MP3 directamente en tu correo electronico. El PDF incluye graficos, tablas y tu interpretacion personalizada.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Es diferente a un horoscopo diario?</div>
+                <div class="faq-a">Si. El horoscopo diario es general para todos los de tu signo. La consulta personalizada usa tu fecha, hora y lugar exactos de nacimiento para calcular posiciones planetarias unicas y generar un analisis que solo aplica a ti.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Puedo pedir un reembolso?</div>
+                <div class="faq-a">Si no estas satisfecho con tu reporte, escribenos a contacto@luzestelaroficial.com dentro de los primeros 7 dias. Evaluaremos tu caso y ofreceremos una solucion.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Que incluye la actualizacion trimestral del plan Estelar?</div>
+                <div class="faq-a">Cada 3 meses recibiras un nuevo pronostico personalizado basado en los transitos actuales sobre tu carta natal, sin costo adicional durante el primer ano.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Inicio</a>
+            <a href="planes.html">Planes</a>
+            <a href="consulta.html">Consulta</a>
+            <a href="compatibilidad.html">Compatibilidad</a>
+            <a href="terms-of-service.html">Terminos</a>
+            <a href="mailto:contacto@luzestelaroficial.com">Contacto</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Luz Estelar Oficial. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Starfield
+        (function(){
+            var sf = document.getElementById('starfield');
+            for(var i = 0; i < 80; i++){
+                var s = document.createElement('span');
+                var size = Math.random() * 2.5 + 0.5;
+                s.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(2+Math.random()*3)+'s';
+                sf.appendChild(s);
+            }
+        })();
+
+        // FAQ toggle
+        document.querySelectorAll('.faq-q').forEach(function(q){
+            q.addEventListener('click', function(){
+                this.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>

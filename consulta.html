@@ -293,6 +293,7 @@
                 <a href="./#signos">Signos</a>
                 <a href="./#aprende">Aprende</a>
                 <a href="./#plataformas">Plataformas</a>
+                <a href="planes.html">Planes</a>
             </div>
         </div>
     </nav>
@@ -539,6 +540,57 @@
         // API endpoint
         var API_URL = 'https://luzestelar-consulta-api.path3studio.workers.dev';
 
+        // Plan detection from URL parameter
+        var PLAN_CONFIG = {
+            esencial: {
+                name: 'Esencial',
+                price: '$9.99 USD',
+                badge: 'Tu primer mapa estelar',
+                title: 'Carta Natal Esencial',
+                subtitle: 'Tu carta natal completa con posiciones planetarias, Ascendente, Medio Cielo y aspectos principales. Entregado como PDF profesional.',
+                priceNote: 'Pago unico. Incluye carta natal completa, interpretacion solar y lunar, y PDF profesional con sello de autenticidad.'
+            },
+            profundo: {
+                name: 'Profundo',
+                price: '$19.99 USD',
+                badge: 'Experiencia personalizada',
+                title: 'Analisis Profundo Personalizado',
+                subtitle: 'Tu carta natal completa, la energia de tu nombre y un pronostico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.',
+                priceNote: 'Pago unico. Incluye carta natal, analisis de nombre, pronostico de 3 meses, PDF profesional y audio narrado personalizado.'
+            },
+            estelar: {
+                name: 'Estelar',
+                price: '$49.99 USD',
+                badge: 'La experiencia completa',
+                title: 'Experiencia Estelar Completa',
+                subtitle: 'Todo del plan Profundo mas retorno solar, compatibilidad de pareja, pronostico de 6 meses, audio extendido y actualizaciones trimestrales.',
+                priceNote: 'Pago unico. Incluye todo del plan Profundo + compatibilidad, retorno solar, pronostico de 6 meses y entrega prioritaria en 12h.'
+            }
+        };
+
+        var currentPlan = 'profundo'; // default
+        (function(){
+            var params = new URLSearchParams(window.location.search);
+            var p = params.get('plan');
+            if(p && PLAN_CONFIG[p]) currentPlan = p;
+
+            var cfg = PLAN_CONFIG[currentPlan];
+            var badge = document.querySelector('.hero .badge');
+            var h1 = document.querySelector('.hero h1');
+            var subtitle = document.querySelector('.hero .subtitle');
+            var priceEl = document.querySelector('.price-card .price');
+            var priceNote = document.querySelector('.price-card .price-note');
+
+            if(badge) badge.textContent = cfg.badge;
+            if(h1) h1.innerHTML = cfg.title.replace(' ', '<br>');
+            if(subtitle) subtitle.textContent = cfg.subtitle;
+            if(priceEl) priceEl.textContent = cfg.price;
+            if(priceNote) priceNote.textContent = cfg.priceNote;
+
+            // Update page title
+            document.title = cfg.title + ' — Luz Estelar Oficial';
+        })();
+
         // Form validation and submit
         document.getElementById('orderForm').addEventListener('submit', async function(e){
             e.preventDefault();
@@ -590,7 +642,8 @@
                         hora_nacimiento: form.hora.value || 'No especificada',
                         lugar_nacimiento: form.lugar.value.trim(),
                         email: form.correo.value.trim(),
-                        mensaje: form.mensaje.value.trim() || ''
+                        mensaje: form.mensaje.value.trim() || '',
+                        plan: currentPlan
                     })
                 });
 
