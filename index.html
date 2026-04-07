@@ -980,7 +980,6 @@
                 }
                 setTimeout(spawnShootingStar, 3000+Math.random()*8000);
             }
-            spawnShootingStar();
             function draw(){
                 ctx.clearRect(0,0,w,h);
                 const t = Date.now()*0.001;
@@ -1014,7 +1013,7 @@
                 }
                 requestAnimationFrame(draw);
             }
-            init(); draw();
+            init(); draw(); spawnShootingStar();
             window.addEventListener('resize', init);
         })();
 
