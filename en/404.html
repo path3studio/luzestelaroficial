@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/404.html">
-    <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/404.html">
     <title>404 — Luz Estelar Oficial</title>
     <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/404.html">
+    <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/404.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -38,37 +38,15 @@
         .secondary { display: block; margin-top: 1.2rem; color: #d4a849; font-size: .85rem; text-decoration: none; }
         .secondary:hover { text-decoration: underline; }
         footer { position: absolute; bottom: 1.5rem; font-size: .75rem; color: #555; font-weight: 300; }
-
-        /* ── Language selector ────────────────────────────── */
-        .lang-selector {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 0.82em; margin-left: 16px;
-        }
-        .lang-selector a {
-            color: var(--text-dim); text-decoration: none;
-            padding: 2px 6px; border-radius: 4px;
-            transition: color 0.2s, background 0.2s;
-        }
-        .lang-selector a:hover { color: var(--gold); }
-        .lang-selector a.active {
-            color: var(--gold); font-weight: 600;
-            background: var(--gold-dim);
-        }
-        .lang-selector .lang-sep { color: var(--text-dim); opacity: 0.5; }
-        @media (max-width: 768px) {
-            .lang-selector {
-                position: absolute; top: 18px; right: 60px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="code">404</div>
-        <h2>Los astros no encontraron esta pagina</h2>
-        <p>Parece que esta ruta no existe en nuestro mapa estelar.</p>
-        <a href="/" class="btn">Volver al Inicio</a>
-        <a href="/#signos" class="secondary">Explorar los 12 Signos</a>
+        <h2>The stars couldn't find this page</h2>
+        <p>It seems this path doesn't exist in our star map.</p>
+        <a href="/en/" class="btn">Back to Home</a>
+        <a href="/en/#signos" class="secondary">Explore the 12 Signs</a>
     </div>
     <footer>&copy; 2026 Luz Estelar Oficial &mdash; Path3 Studio</footer>
 </body>

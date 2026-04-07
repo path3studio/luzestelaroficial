@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis Profundo Personalizado — Luz Estelar Oficial</title>
-    <meta name="description" content="Tu carta natal completa, análisis de tu nombre, pronóstico de 3 meses y audio narrado por Luz Estelar. Entregado como PDF profesional y MP3 personalizado.">
-    <meta property="og:title" content="Análisis Profundo Personalizado — Luz Estelar Oficial">
-    <meta property="og:description" content="Carta natal, numerología, pronóstico de 3 meses y audio narrado. Tu guía cósmica personalizada.">
+    <title>Personalized Deep Analysis — Luz Estelar Oficial</title>
+    <meta name="description" content="Your complete birth chart, name analysis, 3-month forecast and audio narrated by Luz Estelar. Delivered as a professional PDF and personalized MP3.">
+    <meta property="og:title" content="Personalized Deep Analysis — Luz Estelar Oficial">
+    <meta property="og:description" content="Birth chart, numerology, 3-month forecast and narrated audio. Your personalized cosmic guide.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
-    <meta property="og:url" content="https://luzestelaroficial.com/consulta.html">
-    <link rel="icon" type="image/png" href="app_icon.png">
-    <link rel="canonical" href="https://luzestelaroficial.com/consulta.html">
+    <meta property="og:url" content="https://luzestelaroficial.com/en/consulta.html">
+    <link rel="icon" type="image/png" href="../app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/en/consulta.html">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/consulta.html">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/consulta.html">
     <meta name="theme-color" content="#d4a849">
@@ -61,12 +61,14 @@
             font-size: 1.4em; font-weight: 700; color: var(--gold);
             text-decoration: none;
         }
-        nav .nav-links { display: flex; gap: 28px; }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
         nav .nav-links a {
             color: var(--text-dim); text-decoration: none;
             font-size: 0.88em; font-weight: 400; transition: color 0.2s;
         }
         nav .nav-links a:hover { color: var(--gold); }
+        nav .nav-links a.active { color: var(--gold); font-weight: 600; }
+        .lang-sep { color: var(--text-dim); font-size: 0.88em; user-select: none; }
 
         /* Content */
         .content { position: relative; z-index: 1; }
@@ -314,28 +316,6 @@
             .included-list li { gap: 12px; }
             nav .nav-links { display: none; }
         }
-
-        /* ── Language selector ────────────────────────────── */
-        .lang-selector {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 0.82em; margin-left: 16px;
-        }
-        .lang-selector a {
-            color: var(--text-dim); text-decoration: none;
-            padding: 2px 6px; border-radius: 4px;
-            transition: color 0.2s, background 0.2s;
-        }
-        .lang-selector a:hover { color: var(--gold); }
-        .lang-selector a.active {
-            color: var(--gold); font-weight: 600;
-            background: var(--gold-dim);
-        }
-        .lang-selector .lang-sep { color: var(--text-dim); opacity: 0.5; }
-        @media (max-width: 768px) {
-            .lang-selector {
-                position: absolute; top: 18px; right: 60px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -345,11 +325,14 @@
         <div class="nav-inner">
             <a href="./" class="logo">Luz Estelar</a>
             <div class="nav-links">
-                <a href="./">Inicio</a>
-                <a href="./#signos">Signos</a>
-                <a href="./#aprende">Aprende</a>
-                <a href="./#plataformas">Plataformas</a>
-                <a href="planes.html">Planes</a>
+                <a href="./">Home</a>
+                <a href="./#signos">Signs</a>
+                <a href="./#aprende">Learn</a>
+                <a href="./#plataformas">Platforms</a>
+                <a href="planes.html">Plans</a>
+                <span class="lang-sep">|</span>
+                <a href="../consulta.html">ES</a>
+                <a href="consulta.html" class="active">EN</a>
             </div>
         </div>
     </nav>
@@ -358,32 +341,32 @@
 
         <!-- Hero -->
         <div class="hero">
-            <div class="badge">Experiencia personalizada</div>
-            <h1>Análisis Profundo<br>Personalizado</h1>
-            <p class="subtitle">Tu carta natal completa, la energía de tu nombre y un pronóstico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.</p>
+            <div class="badge">Personalized experience</div>
+            <h1>Personalized<br>Deep Analysis</h1>
+            <p class="subtitle">Your complete birth chart, the energy of your name and a 3-month forecast, interpreted by Luz Estelar and delivered as a professional PDF with narrated audio.</p>
         </div>
 
         <!-- Plan Switcher -->
         <div class="plan-switcher">
             <div class="plan-switcher-inner" id="planSwitcher">
                 <button class="plan-tab" data-plan="esencial" onclick="switchPlan('esencial')">
-                    Esencial<span class="tab-price">$9.99</span>
+                    Essential<span class="tab-price">$9.99</span>
                 </button>
                 <button class="plan-tab" data-plan="profundo" onclick="switchPlan('profundo')">
-                    Profundo<span class="tab-price">$19.99</span>
+                    Deep Analysis<span class="tab-price">$19.99</span>
                 </button>
                 <button class="plan-tab" data-plan="estelar" onclick="switchPlan('estelar')">
-                    Estelar<span class="tab-price">$49.99</span>
+                    Stellar<span class="tab-price">$49.99</span>
                 </button>
             </div>
-            <p class="plan-switcher-hint"><a href="planes.html">Comparar planes en detalle &rarr;</a></p>
+            <p class="plan-switcher-hint"><a href="planes.html">Compare plans in detail &rarr;</a></p>
         </div>
 
         <!-- What's Included -->
         <section>
             <div class="section-inner">
                 <div class="card">
-                    <h2>Qué incluye tu análisis</h2>
+                    <h2>What your analysis includes</h2>
                     <ul class="included-list" id="includedList">
                         <!-- Populated dynamically by switchPlan() -->
                     </ul>
@@ -399,7 +382,7 @@
             <div class="section-inner">
                 <div class="card price-card">
                     <div class="price">$19.99 USD</div>
-                    <p class="price-note">Pago único. Incluye carta natal, análisis de nombre, pronóstico de 3 meses, PDF profesional y audio narrado personalizado.</p>
+                    <p class="price-note">One-time payment. Includes birth chart, name analysis, 3-month forecast, professional PDF and personalized narrated audio.</p>
                 </div>
             </div>
         </section>
@@ -407,7 +390,7 @@
         <!-- Cancelled Payment Banner -->
         <section id="cancelledSection" style="padding-top: 10px; padding-bottom: 0; display: none;">
             <div class="section-inner">
-                <div class="cancelled-banner">Tu pago fue cancelado. Puedes intentar de nuevo cuando quieras.</div>
+                <div class="cancelled-banner">Your payment was cancelled. You can try again whenever you like.</div>
             </div>
         </section>
 
@@ -415,36 +398,36 @@
         <section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="card">
-                    <h2>Solicita tu análisis</h2>
+                    <h2>Request your analysis</h2>
                     <form id="orderForm" novalidate>
                         <div id="formError" class="form-error"></div>
                         <div class="form-group">
-                            <label for="nombre">Nombre completo *</label>
-                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+                            <label for="nombre">Full name *</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Your full name" required>
                         </div>
                         <div class="form-group">
-                            <label for="nacimiento">Fecha de nacimiento *</label>
+                            <label for="nacimiento">Date of birth *</label>
                             <input type="date" id="nacimiento" name="nacimiento" required>
                         </div>
                         <div class="form-group">
-                            <label for="hora">Hora de nacimiento *</label>
+                            <label for="hora">Time of birth *</label>
                             <input type="time" id="hora" name="hora" required>
-                            <p class="hint">Si no la conoces, escribe 12:00 y lo indicaremos en tu análisis.</p>
+                            <p class="hint">If you don't know it, enter 12:00 and we will note it in your analysis.</p>
                         </div>
                         <div class="form-group">
-                            <label for="lugar">Lugar de nacimiento *</label>
-                            <input type="text" id="lugar" name="lugar" placeholder="Ciudad, País" required>
+                            <label for="lugar">Place of birth *</label>
+                            <input type="text" id="lugar" name="lugar" placeholder="City, Country" required>
                         </div>
                         <div class="form-group">
-                            <label for="correo">Correo electrónico *</label>
-                            <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
-                            <p class="hint">Aquí recibirás tu PDF y audio personalizado.</p>
+                            <label for="correo">Email address *</label>
+                            <input type="email" id="correo" name="correo" placeholder="youremail@example.com" required>
+                            <p class="hint">This is where you will receive your personalized PDF and audio.</p>
                         </div>
                         <div class="form-group">
-                            <label for="mensaje">Mensaje adicional (opcional)</label>
-                            <textarea id="mensaje" name="mensaje" placeholder="Algún tema específico que te gustaría explorar? Relaciones, carrera, salud..."></textarea>
+                            <label for="mensaje">Additional message (optional)</label>
+                            <textarea id="mensaje" name="mensaje" placeholder="Any specific topic you'd like to explore? Relationships, career, health..."></textarea>
                         </div>
-                        <button type="submit" class="btn-submit" data-stripe-link="">Continuar al Pago</button>
+                        <button type="submit" class="btn-submit" data-stripe-link="">Continue to Payment</button>
                     </form>
                 </div>
             </div>
@@ -454,41 +437,41 @@
         <section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="card">
-                    <h2>Preguntas Frecuentes</h2>
+                    <h2>Frequently Asked Questions</h2>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
-                            Cuánto tarda en llegar mi análisis?
+                            How long does it take to receive my analysis?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Tu análisis será entregado en un plazo de 24 a 48 horas hábiles a la dirección de correo electrónico que indiques en el formulario. Recibirás tanto el PDF como el audio MP3 en un mismo correo.</p></div>
+                        <div class="faq-answer"><p>Your analysis will be delivered within 24 to 48 business hours to the email address you provide in the form. You will receive both the PDF and the MP3 audio in a single email.</p></div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
-                            Necesito saber mi hora exacta de nacimiento?
+                            Do I need to know my exact time of birth?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>La hora de nacimiento permite calcular tu Ascendente y las casas astrológicas con mayor precisión. Si no la conoces, puedes escribir 12:00 como hora aproximada. En ese caso, tu análisis se enfocará en las posiciones planetarias por signo (que no dependen de la hora) e indicaremos que el Ascendente es aproximado.</p></div>
+                        <div class="faq-answer"><p>The time of birth allows us to calculate your Ascendant and astrological houses with greater precision. If you don't know it, you can enter 12:00 as an approximate time. In that case, your analysis will focus on planetary positions by sign (which do not depend on the time) and we will note that the Ascendant is approximate.</p></div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
-                            Puedo regalarlo a alguien?
+                            Can I give it as a gift?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Sí. Simplemente completa el formulario con los datos de nacimiento de la persona que recibirá el análisis. En el campo de correo electrónico puedes poner tu dirección para recibir el PDF y audio, y luego compartirlo tú mismo como regalo.</p></div>
+                        <div class="faq-answer"><p>Yes. Simply fill out the form with the birth data of the person who will receive the analysis. In the email field, you can enter your own address to receive the PDF and audio, and then share it yourself as a gift.</p></div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
-                            Qué método de pago aceptan?
+                            What payment methods do you accept?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Aceptamos pagos con tarjeta de crédito y débito a través de Stripe, una plataforma de pagos segura utilizada por millones de empresas en todo el mundo. Tu información financiera nunca pasa por nuestros servidores.</p></div>
+                        <div class="faq-answer"><p>We accept credit and debit card payments through Stripe, a secure payment platform used by millions of businesses worldwide. Your financial information never passes through our servers.</p></div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
-                            Puedo pedir un reembolso?
+                            Can I request a refund?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Dado que se trata de un producto digital personalizado que requiere trabajo individual de investigación y producción, no ofrecemos reembolsos una vez entregado el análisis. Si tienes alguna duda antes de comprar, escríbenos a contacto@luzestelaroficial.com.</p></div>
+                        <div class="faq-answer"><p>Since this is a personalized digital product that requires individual research and production work, we do not offer refunds once the analysis has been delivered. If you have any questions before purchasing, write to us at contacto@luzestelaroficial.com.</p></div>
                     </div>
                 </div>
             </div>
@@ -498,10 +481,10 @@
         <section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="disclaimer">
-                    <p>Este es un producto interpretativo basado en cálculos astronómicos y tradición astrológica. No constituye asesoramiento profesional en salud, finanzas ni relaciones.</p>
-                    <p>Las interpretaciones se basan en posiciones planetarias reales y tradición astrológica milenaria. Lo que resuena contigo es lo que necesitas en este momento.</p>
-                    <p>No se ofrecen reembolsos una vez entregado el producto digital.</p>
-                    <p>Al realizar tu compra, aceptas nuestros <a href="terms-of-service.html">Términos de Servicio</a> y <a href="privacy-policy.html">Política de Privacidad</a>.</p>
+                    <p>This is an interpretive product based on astronomical calculations and astrological tradition. It does not constitute professional advice on health, finances or relationships.</p>
+                    <p>Interpretations are based on real planetary positions and millennia-old astrological tradition. What resonates with you is what you need at this moment.</p>
+                    <p>No refunds are offered once the digital product has been delivered.</p>
+                    <p>By making your purchase, you agree to our <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p>
                 </div>
             </div>
         </section>
@@ -509,11 +492,11 @@
         <!-- Footer -->
         <footer>
             <div class="footer-links">
-                <a href="privacy-policy.html">Privacidad</a>
-                <a href="terms-of-service.html">Términos</a>
+                <a href="privacy-policy.html">Privacy</a>
+                <a href="terms-of-service.html">Terms</a>
                 <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a>
             </div>
-            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. All rights reserved.</p>
         </footer>
     </div>
 
@@ -588,53 +571,53 @@
         // Plan detection from URL parameter
         var PLAN_CONFIG = {
             esencial: {
-                name: 'Esencial',
+                name: 'Essential',
                 price: '$9.99 USD',
-                badge: 'Tu primer mapa estelar',
-                title: 'Carta Natal Esencial',
-                subtitle: 'Tu carta natal completa con posiciones planetarias, Ascendente, Medio Cielo y aspectos principales. Entregado como PDF profesional.',
-                priceNote: 'Pago único. Incluye carta natal completa, interpretación solar y lunar, y PDF profesional con sello de autenticidad.',
-                delivery: '<strong>Formato de entrega:</strong> PDF profesional enviado a tu correo electrónico en 24-48 horas.',
+                badge: 'Your first star map',
+                title: 'Essential Birth Chart',
+                subtitle: 'Your complete birth chart with planetary positions, Ascendant, Midheaven and major aspects. Delivered as a professional PDF.',
+                priceNote: 'One-time payment. Includes complete birth chart, solar and lunar interpretation, and professional PDF with authenticity seal.',
+                delivery: '<strong>Delivery format:</strong> Professional PDF sent to your email within 24-48 hours.',
                 items: [
-                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente, Medio Cielo y los 10 planetas en sus signos y casas.' },
-                    { icon: '\u2728', title: 'Aspectos Planetarios', desc: 'Conjunciones, trígonos, cuadraturas y oposiciones entre tus planetas natales.' },
-                    { icon: '\u2600\uFE0E', title: 'Interpretación Solar y Lunar', desc: 'Tu esencia (Sol) y tus emociones (Luna) analizadas en profundidad.' },
-                    { icon: '\uD83D\uDCDC', title: 'PDF Profesional', desc: 'Documento con gráficos, tablas y tu interpretación personalizada, con sello de autenticidad.' }
+                    { icon: '\u2609\uFE0E', title: 'Complete Birth Chart', desc: 'Sun, Moon, Ascendant, Midheaven and all 10 planets in their signs and houses.' },
+                    { icon: '\u2728', title: 'Planetary Aspects', desc: 'Conjunctions, trines, squares and oppositions between your natal planets.' },
+                    { icon: '\u2600\uFE0E', title: 'Solar and Lunar Interpretation', desc: 'Your essence (Sun) and your emotions (Moon) analyzed in depth.' },
+                    { icon: '\uD83D\uDCDC', title: 'Professional PDF', desc: 'Document with charts, tables and your personalized interpretation, with authenticity seal.' }
                 ]
             },
             profundo: {
-                name: 'Profundo',
+                name: 'Deep Analysis',
                 price: '$19.99 USD',
-                badge: 'Experiencia personalizada',
-                title: 'Análisis Profundo Personalizado',
-                subtitle: 'Tu carta natal completa, la energía de tu nombre y un pronóstico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.',
-                priceNote: 'Pago único. Incluye carta natal, análisis de nombre, pronóstico de 3 meses, PDF profesional y audio narrado personalizado.',
-                delivery: '<strong>Formato de entrega:</strong> PDF profesional (11+ páginas) + audio MP3, enviados a tu correo electrónico en 24 horas.',
+                badge: 'Personalized experience',
+                title: 'Personalized Deep Analysis',
+                subtitle: 'Your complete birth chart, the energy of your name and a 3-month forecast, interpreted by Luz Estelar and delivered as a professional PDF with narrated audio.',
+                priceNote: 'One-time payment. Includes birth chart, name analysis, 3-month forecast, professional PDF and personalized narrated audio.',
+                delivery: '<strong>Delivery format:</strong> Professional PDF (11+ pages) + MP3 audio, sent to your email within 24 hours.',
                 items: [
-                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretación.' },
-                    { icon: '\u2728', title: 'Análisis de tu Nombre', desc: 'Numerología, fonética, etimología y compatibilidad entre tu nombre y tu carta astral.' },
-                    { icon: '\uD83D\uDD2D', title: 'Pronóstico de 3 Meses', desc: 'Tránsitos clave, días favorables y recomendaciones personalizadas por área de vida.' },
-                    { icon: '\u2764\uFE0F', title: 'Amor, Carrera y Salud', desc: 'Análisis detallado de las áreas más importantes de tu vida según tu carta natal.' },
-                    { icon: '\uD83C\uDF99', title: 'Audio Narrado por Luz Estelar', desc: 'Una lectura personalizada en audio para que puedas escuchar tu análisis donde quieras.' }
+                    { icon: '\u2609\uFE0E', title: 'Complete Birth Chart', desc: 'Sun, Moon, Ascendant and all planets in their signs and houses. Natal aspects and their interpretation.' },
+                    { icon: '\u2728', title: 'Name Analysis', desc: 'Numerology, phonetics, etymology and compatibility between your name and your birth chart.' },
+                    { icon: '\uD83D\uDD2D', title: '3-Month Forecast', desc: 'Key transits, favorable days and personalized recommendations by life area.' },
+                    { icon: '\u2764\uFE0F', title: 'Love, Career and Health', desc: 'Detailed analysis of the most important areas of your life according to your birth chart.' },
+                    { icon: '\uD83C\uDF99', title: 'Audio Narrated by Luz Estelar', desc: 'A personalized audio reading so you can listen to your analysis anywhere.' }
                 ]
             },
             estelar: {
-                name: 'Estelar',
+                name: 'Stellar',
                 price: '$49.99 USD',
-                badge: 'La experiencia completa',
-                title: 'Experiencia Estelar Completa',
-                subtitle: 'Todo del plan Profundo más retorno solar, compatibilidad de pareja, pronóstico de 6 meses, audio extendido y actualizaciones trimestrales.',
-                priceNote: 'Pago único. Incluye todo del plan Profundo + compatibilidad, retorno solar, pronóstico de 6 meses y entrega prioritaria en 12h.',
-                delivery: '<strong>Entrega prioritaria:</strong> PDF profesional completo + audio extendido, enviados a tu correo electrónico en 12 horas.',
+                badge: 'The complete experience',
+                title: 'Complete Stellar Experience',
+                subtitle: 'Everything in the Deep Analysis plan plus solar return, partner compatibility, 6-month forecast, extended audio and quarterly updates.',
+                priceNote: 'One-time payment. Includes everything in the Deep Analysis plan + compatibility, solar return, 6-month forecast and priority delivery in 12h.',
+                delivery: '<strong>Priority delivery:</strong> Complete professional PDF + extended audio, sent to your email within 12 hours.',
                 items: [
-                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretación.' },
-                    { icon: '\u2728', title: 'Análisis de tu Nombre', desc: 'Numerología, fonética, etimología y compatibilidad entre tu nombre y tu carta astral.' },
-                    { icon: '\uD83D\uDD2D', title: 'Pronóstico de 6 Meses', desc: 'El doble de cobertura: tránsitos, días favorables y recomendaciones extendidas.' },
-                    { icon: '\u2764\uFE0F', title: 'Amor, Carrera y Salud', desc: 'Análisis detallado de las áreas más importantes de tu vida según tu carta natal.' },
-                    { icon: '\uD83D\uDCAB', title: 'Compatibilidad de Pareja', desc: 'Sinastría completa: cómo interactúan tus planetas con los de tu pareja o persona de interés.' },
-                    { icon: '\u2600\uFE0E', title: 'Retorno Solar', desc: 'Tu carta del próximo cumpleaños: las energías y temas que definirán tu año personal.' },
-                    { icon: '\uD83C\uDF99', title: 'Audio Extendido por Luz Estelar', desc: 'Narración completa de todas las secciones, incluyendo compatibilidad y retorno solar.' },
-                    { icon: '\uD83D\uDD04', title: 'Actualización Trimestral', desc: 'Cada 3 meses recibirás un nuevo pronóstico personalizado durante el primer año, sin costo adicional.' }
+                    { icon: '\u2609\uFE0E', title: 'Complete Birth Chart', desc: 'Sun, Moon, Ascendant and all planets in their signs and houses. Natal aspects and their interpretation.' },
+                    { icon: '\u2728', title: 'Name Analysis', desc: 'Numerology, phonetics, etymology and compatibility between your name and your birth chart.' },
+                    { icon: '\uD83D\uDD2D', title: '6-Month Forecast', desc: 'Double the coverage: transits, favorable days and extended recommendations.' },
+                    { icon: '\u2764\uFE0F', title: 'Love, Career and Health', desc: 'Detailed analysis of the most important areas of your life according to your birth chart.' },
+                    { icon: '\uD83D\uDCAB', title: 'Partner Compatibility', desc: 'Complete synastry: how your planets interact with those of your partner or person of interest.' },
+                    { icon: '\u2600\uFE0E', title: 'Solar Return', desc: 'Your next birthday chart: the energies and themes that will define your personal year.' },
+                    { icon: '\uD83C\uDF99', title: 'Extended Audio by Luz Estelar', desc: 'Complete narration of all sections, including compatibility and solar return.' },
+                    { icon: '\uD83D\uDD04', title: 'Quarterly Update', desc: 'Every 3 months you will receive a new personalized forecast during the first year, at no additional cost.' }
                 ]
             }
         };
@@ -743,14 +726,14 @@
             if(!valid){
                 var firstInvalid = form.querySelector('.invalid');
                 if(firstInvalid) firstInvalid.focus();
-                errorDiv.textContent = 'Por favor, completa todos los campos requeridos correctamente.';
+                errorDiv.textContent = 'Please fill in all required fields correctly.';
                 errorDiv.classList.add('visible');
                 return;
             }
 
             // Show loading state
             var originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Procesando...';
+            submitBtn.textContent = 'Processing...';
             submitBtn.disabled = true;
 
             try {
@@ -773,14 +756,14 @@
                 if(response.ok && (data.url || data.checkout_url)){
                     window.location.href = data.url || data.checkout_url;
                 } else {
-                    var msg = data.error || 'Hubo un error al procesar tu solicitud. Por favor, intenta de nuevo.';
+                    var msg = data.error || 'There was an error processing your request. Please try again.';
                     errorDiv.textContent = msg;
                     errorDiv.classList.add('visible');
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
                 }
             } catch(err) {
-                errorDiv.textContent = 'Error de conexión. Verifica tu internet e intenta de nuevo.';
+                errorDiv.textContent = 'Connection error. Please check your internet and try again.';
                 errorDiv.classList.add('visible');
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;

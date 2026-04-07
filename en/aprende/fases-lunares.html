@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Phases — Complete Lunar Guide | Luz Estelar Oficial</title>
+    <meta name="description" content="Complete guide to moon phases: the 29.53-day cycle, all 8 lunar phases, current moon phase, eclipses, and the Moon in the zodiac signs. Educational astrology content.">
+    <meta property="og:title" content="Moon Phases — Luz Estelar Oficial">
+    <meta property="og:description" content="Learn all about moon phases and their astrological influence.">
+    <meta property="og:url" content="https://luzestelaroficial.com/en/aprende/fases-lunares.html">
+    <link rel="icon" type="image/png" href="../../app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/en/aprende/fases-lunares.html">
+    <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/aprende/fases-lunares.html">
+    <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/aprende/fases-lunares.html">
+    <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+        /* ── Starfield ── */
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+        .starfield canvas{width:100%;height:100%;}
+
+        /* ── Navigation ── */
+        nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,6,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
+        nav .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+        nav .logo{font-family:'Cormorant Garamond',serif;font-size:1.4em;font-weight:700;color:var(--gold);text-decoration:none;}
+        nav .nav-links{display:flex;gap:28px;}
+        nav .nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.88em;font-weight:400;transition:color 0.2s;}
+        nav .nav-links a:hover{color:var(--gold);}
+        .lang-switch{font-size:0.82em;color:var(--text-dim);}
+        .lang-switch a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+        .lang-switch a:hover,.lang-switch a.active{color:var(--gold);}
+        .content{position:relative;z-index:1;}
+
+        /* ── Hero ── */
+        .hero{padding:120px 24px 50px;text-align:center;}
+        .hero .moon-icon{font-family:'Noto Sans Symbols 2',serif;font-size:4.5em;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 18px rgba(212,168,73,0.4));}
+        .hero h1{font-family:'Cormorant Garamond',serif;font-size:3.2em;font-weight:700;color:#fff;margin:10px 0 12px;}
+        .hero .subtitle{font-size:1.05em;color:var(--text-dim);max-width:540px;margin:0 auto;line-height:1.7;}
+
+        /* ── Glass cards ── */
+        section{padding:50px 24px;}
+        .section-inner{max-width:900px;margin:0 auto;}
+        .section-title{font-family:'Cormorant Garamond',serif;font-size:2em;font-weight:700;color:#fff;text-align:center;margin-bottom:36px;}
+        .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:36px 32px;margin-bottom:30px;}
+        .card h2{font-family:'Cormorant Garamond',serif;font-size:1.8em;font-weight:700;color:#fff;margin-bottom:16px;}
+        .card h3{font-family:'Cormorant Garamond',serif;font-size:1.15em;color:var(--gold);margin:18px 0 10px;}
+        .card p{font-size:0.95em;line-height:1.85;color:var(--text-dim);margin-bottom:14px;}
+        .card p:last-child{margin-bottom:0;}
+        .card ul{list-style:none;padding:0;margin-bottom:10px;}
+        .card ul li{padding:8px 0 8px 18px;position:relative;font-size:0.9em;line-height:1.7;color:var(--text-dim);}
+        .card ul li::before{content:'';position:absolute;left:0;top:16px;width:6px;height:6px;border-radius:50%;background:var(--gold);}
+        .card ul li strong{color:var(--gold);}
+
+        /* ── Current Moon Widget ── */
+        .moon-widget{max-width:480px;margin:0 auto 50px;background:linear-gradient(135deg,rgba(212,168,73,0.06),rgba(124,92,191,0.06));border:1px solid rgba(212,168,73,0.18);border-radius:22px;padding:40px 32px;text-align:center;}
+        .moon-widget .widget-label{font-size:0.78em;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:18px;}
+        .moon-visual{width:120px;height:120px;margin:0 auto 22px;position:relative;}
+        .moon-visual .moon-base{width:100%;height:100%;border-radius:50%;background:var(--gold);position:relative;overflow:hidden;box-shadow:0 0 30px rgba(212,168,73,0.25);}
+        .moon-visual .moon-shadow{position:absolute;top:0;height:100%;border-radius:50%;background:var(--bg-deep);transition:all 0.5s;}
+        .widget-phase-name{font-family:'Cormorant Garamond',serif;font-size:1.6em;font-weight:700;color:#fff;margin-bottom:6px;}
+        .widget-illum{font-size:0.9em;color:var(--gold);margin-bottom:12px;}
+        .widget-desc{font-size:0.88em;line-height:1.7;color:var(--text-dim);max-width:360px;margin:0 auto;}
+
+        /* ── Phase Grid ── */
+        .phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:900px;margin:0 auto;}
+        .phase-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:30px 26px;transition:transform 0.3s,border-color 0.3s;}
+        .phase-card:hover{transform:translateY(-4px);border-color:rgba(212,168,73,0.2);}
+        .phase-card .phase-visual{width:64px;height:64px;margin:0 auto 16px;position:relative;}
+        .phase-card .phase-visual .p-base{width:100%;height:100%;border-radius:50%;border:2px solid var(--gold);background:var(--gold);position:relative;overflow:hidden;}
+        .phase-card .phase-visual .p-shadow{position:absolute;top:0;height:100%;background:var(--bg-deep);border-radius:50%;}
+        .phase-card h3{font-family:'Cormorant Garamond',serif;font-size:1.35em;font-weight:700;color:#fff;text-align:center;margin-bottom:4px;}
+        .phase-card .illum-range{text-align:center;font-size:0.78em;color:var(--gold);margin-bottom:4px;}
+        .phase-card .duration{text-align:center;font-size:0.76em;color:var(--text-dim);margin-bottom:14px;}
+        .phase-card .phase-desc{font-size:0.88em;line-height:1.75;color:var(--text-dim);margin-bottom:14px;}
+        .phase-card h4{font-size:0.82em;font-weight:600;color:var(--text);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;}
+        .phase-card ul{list-style:none;padding:0;margin-bottom:12px;}
+        .phase-card ul li{padding:4px 0 4px 16px;position:relative;font-size:0.84em;line-height:1.65;color:var(--text-dim);}
+        .phase-card ul li::before{content:'';position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;}
+        .phase-card .do-list li::before{background:#2E8B57;}
+        .phase-card .avoid-list li::before{background:#e74c3c;}
+
+        /* ── CTA ── */
+        .cta-section{max-width:600px;margin:20px auto 0;text-align:center;}
+        .cta-btn{display:inline-block;background:linear-gradient(135deg,var(--gold),#b8912e);color:var(--bg-deep);font-weight:600;font-size:0.95em;padding:14px 36px;border-radius:12px;text-decoration:none;transition:transform 0.3s,box-shadow 0.3s;}
+        .cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,168,73,0.3);}
+
+        /* ── Footer ── */
+        footer{text-align:center;padding:40px 24px;border-top:1px solid var(--glass-border);color:var(--text-dim);font-size:0.85em;}
+        footer a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+        footer a:hover{color:var(--gold);}
+        footer .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:16px;}
+
+        /* ── Responsive ── */
+        @media(max-width:768px){
+            .hero h1{font-size:2.3em;}
+            .hero .moon-icon{font-size:3.2em;}
+            .section-title{font-size:1.6em;}
+            .card{padding:24px 20px;}
+            .card h2{font-size:1.4em;}
+            .phase-grid{grid-template-columns:1fr;}
+            .moon-widget{padding:30px 20px;}
+            .moon-visual{width:100px;height:100px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="../" class="logo">Luz Estelar</a>
+            <div class="nav-links">
+                <a href="../">Home</a>
+                <a href="../#signos">Signs</a>
+                <a href="../#aprende">Learn</a>
+                <a href="../#plataformas">Platforms</a>
+                <span class="lang-switch"><a href="../../aprende/fases-lunares.html">ES</a> | <a href="#" class="active">EN</a></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="moon-icon">&#9789;&#xFE0E;</div>
+            <h1>Moon Phases</h1>
+            <p class="subtitle">Understand the Moon's cycle, its influence on our emotions, and how to align your actions with each phase to live with greater intention.</p>
+        </div>
+
+        <!-- Current Moon Phase Widget -->
+        <div class="moon-widget" id="moonWidget">
+            <div class="widget-label">Current Moon Phase</div>
+            <div class="moon-visual">
+                <div class="moon-base">
+                    <div class="moon-shadow" id="widgetShadow"></div>
+                </div>
+            </div>
+            <div class="widget-phase-name" id="widgetName">Calculating...</div>
+            <div class="widget-illum" id="widgetIllum"></div>
+            <p class="widget-desc" id="widgetDesc"></p>
+        </div>
+
+        <!-- 8 Moon Phases -->
+        <section>
+            <h2 class="section-title">The 8 Phases of the Lunar Cycle</h2>
+            <div class="phase-grid" id="phaseGrid"></div>
+        </section>
+
+        <!-- Educational Sections -->
+        <section>
+            <div class="section-inner">
+
+                <div class="card">
+                    <h2>The Complete Lunar Cycle</h2>
+                    <p>The Moon takes approximately 29.53 days to complete one orbit around the Earth, a period known as the synodic month. During this cycle, sunlight illuminates different portions of the lunar surface visible from our planet, creating the phases we observe in the night sky.</p>
+                    <p>This cycle has been the foundation of humanity's oldest calendars. The Babylonians, Maya, Chinese, and Hebrews organized their months around the Moon. Ocean tides respond directly to the Moon's gravitational pull, and many agricultural cultures planted and harvested according to lunar phases. Even today, artisanal fishing and biodynamic viticulture follow the Moon's rhythms.</p>
+                    <p>From an astrological perspective, the lunar cycle represents a complete journey of manifestation: from the seed of intention at the New Moon to the harvest of results at the Full Moon, followed by a period of integration and rest before the cycle begins again. Consciously observing this natural rhythm can help us synchronize our projects and emotions with a cadence that humanity has recognized for millennia.</p>
+                    <h3>Key cycle facts</h3>
+                    <ul>
+                        <li><strong>Duration:</strong> 29 days, 12 hours, and 44 minutes (synodic month)</li>
+                        <li><strong>Primary phases:</strong> 4 cardinal phases (New, First Quarter, Full, Last Quarter)</li>
+                        <li><strong>Intermediate phases:</strong> 4 transitional phases between the primary ones</li>
+                        <li><strong>Cycles per year:</strong> Approximately 12.4 complete cycles</li>
+                        <li><strong>Blue Moon:</strong> When two Full Moons occur in the same calendar month</li>
+                        <li><strong>Supermoon:</strong> A Full Moon that coincides with perigee (closest point to Earth)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>The Moon in the Signs</h2>
+                    <p>Beyond its phases, the Moon transits through all 12 zodiac signs approximately every 2.5 days, coloring the collective emotional energy with each sign's qualities. Knowing the Moon's sign on any given day allows you to fine-tune your activities and emotional expectations.</p>
+                    <p>The Moon rules our inner world: emotions, instincts, memory, and unconscious patterns. When it transits through a sign, we all feel a subtle shift in how we process our experiences, regardless of our Sun sign. That's why one day you may feel sociable and the next day need solitude, without anything external having changed.</p>
+                    <ul>
+                        <li><strong>Moon in Aries:</strong> Impulsive and courageous energy. Ideal for starting projects and making quick decisions.</li>
+                        <li><strong>Moon in Taurus:</strong> Sensory stability. A good time for cooking, enjoying nature, and financial matters.</li>
+                        <li><strong>Moon in Gemini:</strong> Mental curiosity. Favors communication, learning, and social connections.</li>
+                        <li><strong>Moon in Cancer:</strong> Deep sensitivity. Time for home, family, and emotional self-care.</li>
+                        <li><strong>Moon in Leo:</strong> Creativity and expression. Perfect for art, romance, and showcasing your talents.</li>
+                        <li><strong>Moon in Virgo:</strong> Analytical precision. Organizing, cleaning, planning, and tending to health.</li>
+                        <li><strong>Moon in Libra:</strong> Relational harmony. Favors diplomacy, partnerships, and aesthetics.</li>
+                        <li><strong>Moon in Scorpio:</strong> Transformative intensity. Deep research, intimacy, and emotional healing.</li>
+                        <li><strong>Moon in Sagittarius:</strong> Expansion and adventure. Travel, higher studies, and the search for meaning.</li>
+                        <li><strong>Moon in Capricorn:</strong> Discipline and ambition. Long-term goals, structure, and responsibility.</li>
+                        <li><strong>Moon in Aquarius:</strong> Innovation and community. Original ideas, group work, and social causes.</li>
+                        <li><strong>Moon in Pisces:</strong> Intuition and spirituality. Meditation, art, compassion, and inner work.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Void-of-Course Moon</h2>
+                    <p>The Moon is said to be "void of course" (VOC) when it has made its last major aspect (conjunction, sextile, square, trine, or opposition) with another planet and has not yet entered the next zodiac sign. This period can last from a few minutes to over a day.</p>
+                    <p>During a void-of-course Moon, astrological tradition advises against starting important projects, signing contracts, or making far-reaching decisions, as outcomes tend not to materialize as expected. However, it is an excellent time for reflection, meditation, routine tasks, and completing matters already underway.</p>
+                    <p>Think of the void-of-course Moon as a brief cosmic intermission: a space between acts where energy is in transition. It is not a time for fear, but for conscious pause before the Moon enters a new sign and reactivates the energetic flow.</p>
+                    <h3>What works during a VOC Moon</h3>
+                    <ul>
+                        <li><strong>Meditation and rest:</strong> The diffuse energy favors introspection and relaxation.</li>
+                        <li><strong>Routine tasks:</strong> Cleaning, organizing, and completing pending tasks that don't require starting something new.</li>
+                        <li><strong>Free creativity:</strong> Writing, drawing, or improvising without expectations of concrete results.</li>
+                        <li><strong>Canceling the unnecessary:</strong> A good time to say "no" to commitments that don't resonate.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>Eclipses: The Most Powerful Phases</h2>
+                    <p>Eclipses are amplified versions of New and Full Moons that occur when the Sun, Moon, and Earth align precisely near the lunar nodes. A solar eclipse happens at the New Moon, when the Moon blocks the Sun's light; a lunar eclipse occurs at the Full Moon, when the Earth casts its shadow on the Moon.</p>
+                    <p>In astrology, eclipses function as karmic accelerators. Solar eclipses open portals of new beginnings that can alter the course of our lives for the following six months. Lunar eclipses, on the other hand, bring culminations, revelations, and closures that may feel intense but necessary.</p>
+                    <p>Eclipses travel in pairs across a zodiacal axis for approximately 18 months. Identifying which area of your birth chart an eclipse falls in allows you to anticipate where you'll feel its effects most strongly. The general recommendation during eclipse season is to observe more than act, allowing changes to reveal themselves before reacting.</p>
+                    <h3>Types of eclipses</h3>
+                    <ul>
+                        <li><strong>Total Solar Eclipse:</strong> The Moon completely covers the solar disk. Radical and unexpected new beginnings.</li>
+                        <li><strong>Annular Solar Eclipse:</strong> The Moon leaves a visible ring of fire. Renewal with continuity, changes within existing structures.</li>
+                        <li><strong>Partial Solar Eclipse:</strong> Only part of the Sun is hidden. Subtle yet significant adjustments.</li>
+                        <li><strong>Total Lunar Eclipse:</strong> The Earth completely darkens the Moon, which takes on a reddish color. Deep emotional revelations and definitive closures.</li>
+                        <li><strong>Penumbral Lunar Eclipse:</strong> A subtle darkening of the Moon. Gradual realizations that unfold over time.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section>
+            <div class="cta-section">
+                <p style="color:var(--text-dim);margin-bottom:18px;font-size:0.95em;">
+                    Every day we analyze the current moon phase and its influence on your sign.
+                </p>
+                <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" class="cta-btn">
+                    Watch Daily Readings on YouTube
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="../">Home</a>
+                <a href="../privacy-policy.html">Privacy</a>
+                <a href="../terms-of-service.html">Terms</a>
+                <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a>
+            </div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+    /* ── Starfield (same as main site) ── */
+    (function(){var c=document.getElementById('stars');var ctx=c.getContext('2d');var w,h,stars=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}function init(){resize();stars=[];for(var i=0;i<150;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.3,a:Math.random()*0.5+0.15,speed:Math.random()*0.15+0.02,phase:Math.random()*Math.PI*2});}}function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}init();draw();window.addEventListener('resize',init);})();
+
+    /* ── Moon Phase Calculator & Renderer ─────────────────── */
+    (function(){
+        var SYNODIC = 29.53058770576;
+        /* Reference: Jan 6, 2000 18:14 UTC was a New Moon */
+        var REF = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
+
+        function getMoonAge(){
+            var now = new Date();
+            var diff = now.getTime() - REF.getTime();
+            var days = diff / (1000 * 60 * 60 * 24);
+            var age = days % SYNODIC;
+            if(age < 0) age += SYNODIC;
+            return age;
+        }
+
+        /* Phase data — 8 phases with boundaries, content, and advice */
+        var PHASES = [
+            { name:'New Moon', min:0, max:1.85, illumLabel:'0–2%',
+              doList:['Meditate and set intentions','Write goals for the cycle','Plant seeds (literally or figuratively)','Start a new journal or practice'],
+              avoidList:['Launch public projects','Make impulsive decisions','Overload your schedule'],
+              desc:'The New Moon marks the zero point of the lunar cycle. It is a time of fertile darkness, ideal for introspection and sowing intentions. The energy is directed inward, inviting us to connect with our most authentic desires before taking action.' },
+            { name:'Waxing Crescent', min:1.85, max:7.38, illumLabel:'2–25%',
+              doList:['Take the first steps toward your goals','Research and gather resources','Make key calls or contacts','Overcome initial resistance'],
+              avoidList:['Doubt your vision','Compare yourself to others','Give up at the first obstacle'],
+              desc:'The first sliver of light appears in the sky. It is the time to move from intention to initial action. The energy favors movement, even if small. Every step counts toward building the momentum you will need in the phases ahead.' },
+            { name:'First Quarter', min:7.38, max:11.07, illumLabel:'25–50%',
+              doList:['Make important decisions','Face obstacles head-on','Adjust your plan to reality','Commit to your path'],
+              avoidList:['Postpone difficult decisions','Ignore signs of resistance','Be rigid about necessary changes'],
+              desc:'The Moon shows exactly half of its illuminated face, symbolizing a moment of creative crisis. It is a crossroads where we must choose: advance with determination or retreat. The challenges that arise now are tests that strengthen our commitment.' },
+            { name:'Waxing Gibbous', min:11.07, max:14.76, illumLabel:'50–75%',
+              doList:['Refine and improve what you have built','Ask for feedback','Practice active patience','Perfect the details'],
+              avoidList:['Change course completely','Grow impatient for results','Neglect the details'],
+              desc:'The Moon is almost full but not quite. This phase calls for refinement and patience. The work is already underway and now it is time to polish, adjust, and trust that the culmination is approaching. It is a period of conscious anticipation.' },
+            { name:'Full Moon', min:14.76, max:16.62, illumLabel:'75–100%',
+              doList:['Celebrate your achievements','Observe what has been revealed','Share your work with the world','Practice gratitude'],
+              avoidList:['Start new projects','React emotionally without reflection','Make decisions under emotional tension'],
+              desc:'The Moon shines at its fullest expression, illuminating everything that was hidden. It is the climax of the cycle: the results of what was sown at the New Moon become manifest. Emotions intensify and truths come to the surface. A time of harvest and revelation.' },
+            { name:'Waning Gibbous', min:16.62, max:22.15, illumLabel:'75–50%',
+              doList:['Share what you have learned with others','Express genuine gratitude','Teach or mentor','Give back to your community'],
+              avoidList:['Cling to what has already served its purpose','Resist the natural deceleration','Ignore the lessons received'],
+              desc:'The light begins to diminish and with it comes an energy of generosity and transmission. What you harvested at the Full Moon can now be shared. It is a time to teach, give thanks, and recognize the value of accumulated experience.' },
+            { name:'Last Quarter', min:22.15, max:25.84, illumLabel:'50–25%',
+              doList:['Release habits that no longer serve you','Forgive and free yourself from resentment','Clean your physical and emotional space','Close pending cycles'],
+              avoidList:['Begin new commitments','Cling to the familiar out of fear','Avoid necessary closing conversations'],
+              desc:'Another exact half, but now in decline. It is the mirror of the First Quarter: if that one called for decision, this one calls for release. It is time to consciously let go of what you no longer need: beliefs, relationships, objects, or patterns that have fulfilled their purpose.' },
+            { name:'Waning Crescent', min:25.84, max:SYNODIC, illumLabel:'25–0%',
+              doList:['Rest deeply','Meditate and practice surrender','Cleanse and purify your environment','Prepare emotionally for a new beginning'],
+              avoidList:['Force new beginnings','Overexert yourself physically or mentally','Ignore your need for rest'],
+              desc:'The last sliver of light fades away. The Moon prepares to be reborn and so do we. This phase calls for surrender, rest, and emptying. Only when we allow ourselves to let go completely can we receive the new that the next cycle will bring.' }
+        ];
+
+        function getPhaseInfo(age){
+            for(var i = 0; i < PHASES.length; i++){
+                var p = PHASES[i];
+                if(age >= p.min && age < p.max) return { index: i, phase: p };
+            }
+            return { index: 0, phase: PHASES[0] };
+        }
+
+        function getIllumination(age){
+            return Math.round((1 - Math.cos(2 * Math.PI * age / SYNODIC)) / 2 * 100);
+        }
+
+        /**
+         * CSS Moon Renderer
+         * Creates a visual moon phase using a shadow div over a gold circle.
+         * The shadow width represents the unlit portion; its position (left/right)
+         * and border-radius create the correct waxing/waning shape.
+         */
+        function renderMoon(shadowEl, age, size){
+            var pct = age / SYNODIC;
+            var illum = (1 - Math.cos(2 * Math.PI * pct)) / 2;
+            var waxing = pct < 0.5;
+
+            var shadowWidth = Math.round((1 - illum) * size);
+            if(shadowWidth > size) shadowWidth = size;
+            if(shadowWidth < 0) shadowWidth = 0;
+
+            shadowEl.style.width = shadowWidth + 'px';
+
+            if(waxing){
+                shadowEl.style.right = '0';
+                shadowEl.style.left = 'auto';
+                shadowEl.style.borderRadius = (pct < 0.25) ? '50%' : '0 50% 50% 0';
+            } else {
+                shadowEl.style.left = '0';
+                shadowEl.style.right = 'auto';
+                shadowEl.style.borderRadius = (pct > 0.75) ? '50%' : '50% 0 0 50%';
+            }
+        }
+
+        /* ── Render the current phase widget ── */
+        var age = getMoonAge();
+        var info = getPhaseInfo(age);
+        var illum = getIllumination(age);
+
+        document.getElementById('widgetName').textContent = info.phase.name;
+        document.getElementById('widgetIllum').textContent = illum + '% illumination';
+        document.getElementById('widgetDesc').textContent = info.phase.desc;
+        renderMoon(document.getElementById('widgetShadow'), age, 120);
+
+        /* ── Render the 8 phase cards ── */
+        var grid = document.getElementById('phaseGrid');
+        var durations = [
+            '~1 day', '~3.5 days', '~3.5 days', '~3.5 days',
+            '~1 day', '~5.5 days', '~3.5 days', '~3.5 days'
+        ];
+
+        for(var i = 0; i < PHASES.length; i++){
+            var p = PHASES[i];
+            var midAge = (p.min + p.max) / 2;
+            var card = document.createElement('div');
+            card.className = 'phase-card';
+
+            var doItems = '', avoidItems = '';
+            for(var d = 0; d < p.doList.length; d++){
+                doItems += '<li>' + p.doList[d] + '</li>';
+            }
+            for(var a = 0; a < p.avoidList.length; a++){
+                avoidItems += '<li>' + p.avoidList[a] + '</li>';
+            }
+
+            card.innerHTML =
+                '<div class="phase-visual"><div class="p-base">' +
+                '<div class="p-shadow" id="ps' + i + '"></div>' +
+                '</div></div>' +
+                '<h3>' + p.name + '</h3>' +
+                '<div class="illum-range">' + p.illumLabel + ' illumination</div>' +
+                '<div class="duration">Duration: ' + durations[i] + '</div>' +
+                '<p class="phase-desc">' + p.desc + '</p>' +
+                '<h4>What to do</h4>' +
+                '<ul class="do-list">' + doItems + '</ul>' +
+                '<h4>What to avoid</h4>' +
+                '<ul class="avoid-list">' + avoidItems + '</ul>';
+
+            grid.appendChild(card);
+            renderMoon(document.getElementById('ps' + i), midAge, 64);
+
+            /* Highlight the card matching the current phase */
+            if(i === info.index){
+                card.style.borderColor = 'rgba(212,168,73,0.35)';
+                card.style.boxShadow = '0 0 24px rgba(212,168,73,0.08)';
+            }
+        }
+    })();
+    </script>
+</body>
+</html>

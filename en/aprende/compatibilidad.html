@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Compatibility — Complete Guide | Luz Estelar Oficial</title>
+    <meta name="description" content="Discover the compatibility between the 12 zodiac signs. Analysis by elements, modalities, and polarities. Complete astrological guide.">
+    <meta property="og:title" content="Sign Compatibility — Luz Estelar Oficial">
+    <meta property="og:description" content="Zodiac compatibility calculator with analysis by elements, modalities, and polarities.">
+    <meta property="og:url" content="https://luzestelaroficial.com/en/aprende/compatibilidad.html">
+    <link rel="icon" type="image/png" href="../../app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/en/aprende/compatibilidad.html">
+    <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/aprende/compatibilidad.html">
+    <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/aprende/compatibilidad.html">
+    <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <style>
+        :root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;overflow-x:hidden;}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+        .starfield canvas{width:100%;height:100%;}
+
+        /* Nav */
+        nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,6,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
+        nav .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+        nav .logo{font-family:'Cormorant Garamond',serif;font-size:1.4em;font-weight:700;color:var(--gold);text-decoration:none;}
+        nav .nav-links{display:flex;gap:28px;}
+        nav .nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.88em;font-weight:400;transition:color 0.2s;}
+        nav .nav-links a:hover{color:var(--gold);}
+        .lang-switch{font-size:0.82em;color:var(--text-dim);}
+        .lang-switch a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+        .lang-switch a:hover,.lang-switch a.active{color:var(--gold);}
+
+        /* Content */
+        .content{position:relative;z-index:1;}
+        section{padding:60px 24px;}
+        .section-inner{max-width:900px;margin:0 auto;}
+
+        /* Hero */
+        .hero{padding:120px 24px 50px;text-align:center;}
+        .hero .hero-icon{font-size:3em;margin-bottom:12px;}
+        .hero h1{font-family:'Cormorant Garamond',serif;font-size:3.2em;font-weight:700;color:#fff;margin-bottom:12px;}
+        .hero .subtitle{font-size:1em;color:var(--text-dim);max-width:560px;margin:0 auto;line-height:1.7;}
+
+        /* Zodiac selector */
+        .selector-section{padding:30px 24px 60px;}
+        .selector-wrap{max-width:900px;margin:0 auto;}
+        .selector-label{font-family:'Cormorant Garamond',serif;font-size:1.4em;font-weight:600;color:#fff;text-align:center;margin-bottom:18px;}
+        .zodiac-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:520px;margin:0 auto 32px;}
+        .zodiac-btn{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:12px 6px;text-align:center;cursor:pointer;transition:all 0.25s;user-select:none;}
+        .zodiac-btn:hover{border-color:rgba(212,168,73,0.35);background:rgba(255,255,255,0.06);}
+        .zodiac-btn.active{border-color:var(--gold);background:rgba(212,168,73,0.1);box-shadow:0 0 16px rgba(212,168,73,0.15);}
+        .zodiac-btn .zs{font-family:'Noto Sans Symbols 2',serif;font-size:1.6em;display:block;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.3;}
+        .zodiac-btn .zn{font-size:0.68em;color:var(--text-dim);margin-top:2px;transition:color 0.25s;}
+        .zodiac-btn.active .zn{color:var(--gold);}
+        .divider-line{width:60px;height:1px;background:var(--glass-border);margin:0 auto 28px;}
+
+        /* Result card */
+        .result-card{max-width:700px;margin:0 auto;background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:36px 32px;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;pointer-events:none;}
+        .result-card.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+        .result-header{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+        .result-header .pair-symbol{font-family:'Noto Sans Symbols 2',serif;font-size:2.2em;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .result-header .pair-heart{font-size:1.4em;color:var(--accent-purple);}
+        .result-title{font-family:'Cormorant Garamond',serif;font-size:1.6em;font-weight:700;color:#fff;text-align:center;margin-bottom:6px;}
+        .result-category{text-align:center;font-size:0.85em;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:20px;padding:4px 16px;border-radius:20px;display:inline-block;}
+        .result-category-wrap{text-align:center;margin-bottom:20px;}
+        .cat-excelente{background:rgba(46,139,87,0.2);color:#5fd9a0;}
+        .cat-muy-buena{background:rgba(46,139,87,0.15);color:#6fcf97;}
+        .cat-buena{background:rgba(212,168,73,0.15);color:var(--gold-light);}
+        .cat-moderada{background:rgba(212,168,73,0.12);color:var(--gold);}
+        .cat-desafiante{background:rgba(231,76,60,0.15);color:#e88477;}
+
+        /* Score bar */
+        .score-wrap{margin-bottom:22px;}
+        .score-label{display:flex;justify-content:space-between;font-size:0.82em;color:var(--text-dim);margin-bottom:6px;}
+        .score-bar{width:100%;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+        .score-fill{height:100%;border-radius:4px;transition:width 0.8s cubic-bezier(0.22,1,0.36,1);width:0;}
+        .score-fill.green{background:linear-gradient(90deg,#2E8B57,#5fd9a0);}
+        .score-fill.gold{background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+        .score-fill.red{background:linear-gradient(90deg,#c0392b,#e88477);}
+
+        .result-desc{font-size:0.93em;line-height:1.85;color:var(--text-dim);margin-bottom:16px;}
+        .result-element{font-size:0.85em;color:var(--accent-purple);font-style:italic;}
+
+        /* Educational cards */
+        .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:36px 32px;margin-bottom:30px;}
+        .card h2{font-family:'Cormorant Garamond',serif;font-size:1.8em;font-weight:700;color:#fff;margin-bottom:16px;}
+        .card p{font-size:0.95em;line-height:1.85;color:var(--text-dim);margin-bottom:14px;}
+        .card p:last-child{margin-bottom:0;}
+        .card h3{font-family:'Cormorant Garamond',serif;font-size:1.2em;color:var(--gold-light);margin:20px 0 8px;font-weight:600;}
+        .card ul{list-style:none;padding:0;}
+        .card ul li{padding:10px 0;border-bottom:1px solid var(--glass-border);font-size:0.92em;line-height:1.7;color:var(--text-dim);}
+        .card ul li:last-child{border-bottom:none;}
+        .card ul li strong{color:var(--gold);}
+        .element-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+        .element-item{background:rgba(255,255,255,0.02);border:1px solid var(--glass-border);border-radius:12px;padding:16px;}
+        .element-item h4{font-family:'Cormorant Garamond',serif;font-size:1.05em;color:#fff;margin-bottom:6px;}
+        .element-item p{font-size:0.85em;margin-bottom:0;}
+
+        /* CTA */
+        .cta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:30px;}
+        .cta-card{background:linear-gradient(135deg,rgba(212,168,73,0.08),rgba(124,92,191,0.06));border:1px solid rgba(212,168,73,0.2);border-radius:16px;padding:24px;text-align:center;text-decoration:none;color:#fff;transition:transform 0.3s;}
+        .cta-card:hover{transform:translateY(-3px);}
+        .cta-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2em;margin-bottom:8px;}
+        .cta-card p{font-size:0.85em;color:var(--text-dim);}
+
+        /* Footer */
+        footer{text-align:center;padding:40px 24px;border-top:1px solid var(--glass-border);color:var(--text-dim);font-size:0.85em;}
+        footer a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+        footer a:hover{color:var(--gold);}
+        footer .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:16px;}
+
+        /* Fade-in */
+        .fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease;}
+        .fade-in.visible{opacity:1;transform:translateY(0);}
+
+        /* Responsive */
+        @media(max-width:768px){
+            .hero h1{font-size:2.2em;}
+            .zodiac-row{grid-template-columns:repeat(4,1fr);max-width:360px;}
+            .card{padding:24px 20px;}
+            .card h2{font-size:1.4em;}
+            .result-card{padding:24px 20px;}
+            .element-grid{grid-template-columns:1fr;}
+        }
+        @media(max-width:480px){
+            .zodiac-row{grid-template-columns:repeat(3,1fr);max-width:280px;}
+            .hero h1{font-size:1.8em;}
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+    <nav><div class="nav-inner"><a href="../" class="logo">Luz Estelar</a><div class="nav-links"><a href="../">Home</a><a href="../#signos">Signs</a><a href="../#aprende">Learn</a><a href="../#plataformas">Platforms</a><span class="lang-switch"><a href="../../aprende/compatibilidad.html">ES</a> | <a href="#" class="active">EN</a></span></div></div></nav>
+
+    <div class="content">
+        <!-- Hero -->
+        <div class="hero fade-in">
+            <div class="hero-icon">&#x2728;</div>
+            <h1>Sign Compatibility</h1>
+            <p class="subtitle">Select two zodiac signs to discover their compatibility. Analysis based on astrological elements, modalities, and polarities.</p>
+        </div>
+
+        <!-- Selector -->
+        <div class="selector-section">
+            <div class="selector-wrap fade-in">
+                <p class="selector-label">Your Sign</p>
+                <div class="zodiac-row" id="row1">
+                    <div class="zodiac-btn" data-sign="0"><span class="zs">&#9800;&#xFE0E;</span><span class="zn">Aries</span></div>
+                    <div class="zodiac-btn" data-sign="1"><span class="zs">&#9801;&#xFE0E;</span><span class="zn">Taurus</span></div>
+                    <div class="zodiac-btn" data-sign="2"><span class="zs">&#9802;&#xFE0E;</span><span class="zn">Gemini</span></div>
+                    <div class="zodiac-btn" data-sign="3"><span class="zs">&#9803;&#xFE0E;</span><span class="zn">Cancer</span></div>
+                    <div class="zodiac-btn" data-sign="4"><span class="zs">&#9804;&#xFE0E;</span><span class="zn">Leo</span></div>
+                    <div class="zodiac-btn" data-sign="5"><span class="zs">&#9805;&#xFE0E;</span><span class="zn">Virgo</span></div>
+                    <div class="zodiac-btn" data-sign="6"><span class="zs">&#9806;&#xFE0E;</span><span class="zn">Libra</span></div>
+                    <div class="zodiac-btn" data-sign="7"><span class="zs">&#9807;&#xFE0E;</span><span class="zn">Scorpio</span></div>
+                    <div class="zodiac-btn" data-sign="8"><span class="zs">&#9808;&#xFE0E;</span><span class="zn">Sagittarius</span></div>
+                    <div class="zodiac-btn" data-sign="9"><span class="zs">&#9809;&#xFE0E;</span><span class="zn">Capricorn</span></div>
+                    <div class="zodiac-btn" data-sign="10"><span class="zs">&#9810;&#xFE0E;</span><span class="zn">Aquarius</span></div>
+                    <div class="zodiac-btn" data-sign="11"><span class="zs">&#9811;&#xFE0E;</span><span class="zn">Pisces</span></div>
+                </div>
+                <div class="divider-line"></div>
+                <p class="selector-label">Their Sign</p>
+                <div class="zodiac-row" id="row2">
+                    <div class="zodiac-btn" data-sign="0"><span class="zs">&#9800;&#xFE0E;</span><span class="zn">Aries</span></div>
+                    <div class="zodiac-btn" data-sign="1"><span class="zs">&#9801;&#xFE0E;</span><span class="zn">Taurus</span></div>
+                    <div class="zodiac-btn" data-sign="2"><span class="zs">&#9802;&#xFE0E;</span><span class="zn">Gemini</span></div>
+                    <div class="zodiac-btn" data-sign="3"><span class="zs">&#9803;&#xFE0E;</span><span class="zn">Cancer</span></div>
+                    <div class="zodiac-btn" data-sign="4"><span class="zs">&#9804;&#xFE0E;</span><span class="zn">Leo</span></div>
+                    <div class="zodiac-btn" data-sign="5"><span class="zs">&#9805;&#xFE0E;</span><span class="zn">Virgo</span></div>
+                    <div class="zodiac-btn" data-sign="6"><span class="zs">&#9806;&#xFE0E;</span><span class="zn">Libra</span></div>
+                    <div class="zodiac-btn" data-sign="7"><span class="zs">&#9807;&#xFE0E;</span><span class="zn">Scorpio</span></div>
+                    <div class="zodiac-btn" data-sign="8"><span class="zs">&#9808;&#xFE0E;</span><span class="zn">Sagittarius</span></div>
+                    <div class="zodiac-btn" data-sign="9"><span class="zs">&#9809;&#xFE0E;</span><span class="zn">Capricorn</span></div>
+                    <div class="zodiac-btn" data-sign="10"><span class="zs">&#9810;&#xFE0E;</span><span class="zn">Aquarius</span></div>
+                    <div class="zodiac-btn" data-sign="11"><span class="zs">&#9811;&#xFE0E;</span><span class="zn">Pisces</span></div>
+                </div>
+
+                <!-- Result -->
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <span class="pair-symbol" id="sym1"></span>
+                        <span class="pair-heart">&#x2764;&#xFE0E;</span>
+                        <span class="pair-symbol" id="sym2"></span>
+                    </div>
+                    <div class="result-title" id="resTitle"></div>
+                    <div class="result-category-wrap"><span class="result-category" id="resCat"></span></div>
+                    <div class="score-wrap">
+                        <div class="score-label"><span>Compatibility</span><span id="scoreNum"></span></div>
+                        <div class="score-bar"><div class="score-fill" id="scoreFill"></div></div>
+                    </div>
+                    <p class="result-desc" id="resDesc"></p>
+                    <p class="result-element" id="resElement"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational sections -->
+        <section><div class="section-inner">
+            <div class="card fade-in">
+                <h2>&#x1F525; The 4 Elements</h2>
+                <p>In astrology, the 12 signs are grouped into four elements that determine basic temperament and the way of interacting with the world. Elemental compatibility is one of the pillars of partnership analysis.</p>
+                <div class="element-grid">
+                    <div class="element-item">
+                        <h4>&#x1F525; Fire — Aries, Leo, Sagittarius</h4>
+                        <p>Passion, action, and drive. Fire signs need constant movement and stimulation. Together they ignite each other, but can burn out. With Air they expand; with Earth or Water they clash unless balance is found.</p>
+                    </div>
+                    <div class="element-item">
+                        <h4>&#x1F30D; Earth — Taurus, Virgo, Capricorn</h4>
+                        <p>Stability, pragmatism, and sensuality. They connect deeply with one another. With Water they form nurturing, lasting bonds. Fire agitates them and Air destabilizes them, though it can bring perspective.</p>
+                    </div>
+                    <div class="element-item">
+                        <h4>&#x1F4A8; Air — Gemini, Libra, Aquarius</h4>
+                        <p>Intellect, communication, and sociability. Among themselves ideas flow endlessly. With Fire they create dynamism and adventure. With Earth and Water they need conscious effort to find common ground.</p>
+                    </div>
+                    <div class="element-item">
+                        <h4>&#x1F30A; Water — Cancer, Scorpio, Pisces</h4>
+                        <p>Emotion, intuition, and depth. They understand each other without words. With Earth they build solid relationships. Fire evaporates them if not careful, and Air can leave them feeling misunderstood.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <h2>&#x1F504; The 3 Modalities</h2>
+                <p>Modalities describe how each sign approaches action and change. Two signs of the same modality compete for control; different modalities bring balance.</p>
+                <h3>Cardinal — Aries, Cancer, Libra, Capricorn</h3>
+                <p>The initiators of the zodiac. They love starting projects and leading. Two cardinals together may clash over command, but if they negotiate roles, their combined energy is unstoppable.</p>
+                <h3>Fixed — Taurus, Leo, Scorpio, Aquarius</h3>
+                <p>The stabilizers. Persevering and determined, but also stubborn. A fixed-sign couple is unbreakable if they share a vision, but inflexibility can create blockages.</p>
+                <h3>Mutable — Gemini, Virgo, Sagittarius, Pisces</h3>
+                <p>The adaptable ones. Flexible and versatile, but sometimes indecisive. Together they flow with ease, though they may lack structure. With a cardinal or fixed sign they find the anchor they need.</p>
+            </div>
+
+            <div class="card fade-in">
+                <h2>&#x262F;&#xFE0E; Polarities</h2>
+                <p>Each sign has an energetic polarity: Masculine (active, extroverted) or Feminine (receptive, introverted). Pairs of opposite polarities generate magnetic attraction; those of the same polarity share a natural rhythm.</p>
+                <ul>
+                    <li><strong>Masculine (Yang)</strong> — Aries, Gemini, Leo, Libra, Sagittarius, Aquarius. Projective energy, directed outward.</li>
+                    <li><strong>Feminine (Yin)</strong> — Taurus, Cancer, Virgo, Scorpio, Capricorn, Pisces. Receptive energy, directed inward.</li>
+                    <li><strong>Opposites attract</strong> — The Yin-Yang tension creates spark and complementarity, but requires mutual understanding.</li>
+                    <li><strong>Like understands like</strong> — They share rhythm and communication style, though stimulating contrasts may be lacking.</li>
+                </ul>
+            </div>
+
+            <div class="card fade-in">
+                <h2>&#x1F311; Beyond the Sun</h2>
+                <p>The Sun sign is just the entry point. True compatibility between two people depends on multiple factors in the birth chart:</p>
+                <ul>
+                    <li><strong>Venus</strong> — How you love and what you need in a relationship. Venus compatibility between two charts reveals real romantic harmony.</li>
+                    <li><strong>Moon</strong> — Your deep emotional needs. A good lunar connection indicates that both feel emotionally safe together.</li>
+                    <li><strong>Mars</strong> — Desire, passion, and conflict style. The Mars dynamic between two charts shows physical chemistry and how differences are resolved.</li>
+                    <li><strong>Ascendant</strong> — The first impression and how you present yourself. Aspects between Ascendants determine initial attraction.</li>
+                    <li><strong>Full synastry</strong> — Professional analysis cross-references all planets in both charts to offer a complete picture, not just the Sun sign.</li>
+                </ul>
+            </div>
+
+            <!-- CTA -->
+            <div class="card fade-in">
+                <h2>Deepen your analysis</h2>
+                <div class="cta-row">
+                    <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" class="cta-card">
+                        <h3>Daily Horoscope</h3>
+                        <p>Daily video readings with real planetary transits for your sign.</p>
+                    </a>
+                    <a href="../#analisis" class="cta-card">
+                        <h3>Personalized In-Depth Analysis</h3>
+                        <p>Birth chart, synastry, and 3-month forecast using your exact date of birth.</p>
+                    </a>
+                </div>
+            </div>
+        </div></section>
+
+        <footer>
+            <div class="footer-links"><a href="../">Home</a><a href="../privacy-policy.html">Privacy</a><a href="../terms-of-service.html">Terms</a><a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a></div>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+    // Starfield
+    (function(){
+        var c=document.getElementById('stars'),ctx=c.getContext('2d'),w,h,stars=[];
+        function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}
+        function init(){resize();stars=[];for(var i=0;i<180;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.3,a:Math.random()*0.5+0.15,speed:Math.random()*0.15+0.02,phase:Math.random()*Math.PI*2});}}
+        function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}
+        init();draw();window.addEventListener('resize',init);
+    })();
+
+    // Fade-in observer
+    var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.15});
+    document.querySelectorAll('.fade-in').forEach(function(el){obs.observe(el);});
+
+    // Compatibility engine
+    (function(){
+        var names=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+        var symbols=['\u2648\uFE0E','\u2649\uFE0E','\u264A\uFE0E','\u264B\uFE0E','\u264C\uFE0E','\u264D\uFE0E','\u264E\uFE0E','\u264F\uFE0E','\u2650\uFE0E','\u2651\uFE0E','\u2652\uFE0E','\u2653\uFE0E'];
+        var elements=['Fire','Earth','Air','Water','Fire','Earth','Air','Water','Fire','Earth','Air','Water'];
+        var modalities=['Cardinal','Fixed','Mutable','Cardinal','Fixed','Mutable','Cardinal','Fixed','Mutable','Cardinal','Fixed','Mutable'];
+
+        var compat = {};
+
+        function key(a,b){ return a+'-'+b; }
+
+        function elCompat(a,b){
+            var ea=elements[a], eb=elements[b];
+            if(ea===eb) return 'same';
+            var good={'Fire':'Air','Air':'Fire','Earth':'Water','Water':'Earth'};
+            if(good[ea]===eb) return 'compatible';
+            return 'challenging';
+        }
+
+        function genData(a,b){
+            var ec=elCompat(a,b);
+            var sameMod=modalities[a]===modalities[b];
+            var score, cat, desc, elNote;
+            var na=names[a], nb=names[b];
+            var ea=elements[a], eb=elements[b];
+
+            // Same sign
+            if(a===b){
+                var sameDescs=[
+                    'Two '+na+' together share the same intensity and worldview. They understand each other without explanations, but the lack of contrasts can become monotonous. The challenge is growing individually within the relationship.',
+                    'The connection between two '+na+' is immediate: same values, same rhythms. However, shared flaws are amplified. They need independent activities to keep the spark alive.',
+                    'Two '+na+' form a perfect mirror. Mutual understanding runs deep, but arguments can be intense because neither yields easily. Balance comes with maturity.',
+                    'The relationship between two '+na+' vibrates on the same frequency. They support and motivate each other, though they share the same weaknesses. The key is radical honesty.',
+                    'Two '+na+' create a bond of instant recognition. Strengths are doubled, but so are shadows. They work best when each maintains their own identity.',
+                    'The union of two '+na+' is like looking in a mirror. They share dreams and frustrations. The relationship thrives when they seek new experiences together instead of competing.',
+                    'Two '+na+' understand each other on a level that others cannot reach. Harmony is natural, but they need external stimuli to avoid falling into routine.',
+                    'A pair of two '+na+' enjoys unique complicity. Conflicts arise from shared stubbornness. Learning to yield is the greatest lesson.',
+                    'Two '+na+' together are a force of nature. They share vision and passion, but internal competitiveness can wear them down. Focusing on common goals unites them.',
+                    'The relationship between two '+na+' has the advantage of total understanding and the risk of stagnation. They need to genuinely admire each other for it to work.',
+                    'Two '+na+' vibrate in perfect synchrony. They intuit and respect each other, but may avoid confronting problems out of comfort. Open communication is essential.',
+                    'The connection between two '+na+' is electric and familiar at the same time. They share ideals and method. The challenge is not to take the relationship for granted.'
+                ];
+                score=7; cat='Good';
+                desc=sameDescs[a];
+                elNote='Same element ('+ea+'): energy is amplified but complementarity may be lacking.';
+                return {score:score,cat:cat,desc:desc,element:elNote};
+            }
+        }
+
+        // Unique pair descriptions
+        var pairData = {
+                '0-1':{s:5,d:'Aries wants to run and Taurus wants to plant roots. Aries\' passion clashes with Taurus\' calm, but if they learn to respect each other\'s rhythms, Aries brings adventure and Taurus brings stability. A relationship that works with mutual patience.',e:'Fire and Earth: impulsive action meets prudence. They can build something solid if Aries slows down and Taurus dares.'},
+                '0-2':{s:7,d:'Aries and Gemini form a dynamic and stimulating couple. Gemini keeps Aries intellectually captivated, and Aries gives Gemini the determination to bring ideas to life. Together they are never bored.',e:'Fire and Air: air fans the flame. Communication flows and energy multiplies.'},
+                '0-3':{s:4,d:'Aries\' frankness can hurt Cancer\'s sensitivity, and Cancer\'s emotional needs can overwhelm Aries. However, if Aries learns tenderness and Cancer gains confidence, they complement each other as protector and warrior.',e:'Fire and Water: intense steam. The passion is there, but the emotional language is very different.'},
+                '0-4':{s:9,d:'Aries and Leo are one of the most powerful combinations in the zodiac. Both radiate confidence, passion, and fierce loyalty. Leo brings the constancy Aries needs, and Aries gives Leo the action and adventure they adore.',e:'Fire and Fire: the flame burns brightly. They inspire each other and share a contagious vitality.'},
+                '0-5':{s:5,d:'Aries acts on impulse, Virgo by analysis. This difference can generate frustration or extraordinary balance. Virgo helps Aries plan, and Aries pulls Virgo out of their comfort zone.',e:'Fire and Earth: opposing rhythms. Patience and the willingness to adapt determine success.'},
+                '0-6':{s:7,d:'Aries and Libra are opposite signs in the zodiac, which creates magnetic attraction. Aries brings decisiveness and Libra brings diplomacy. Together they balance action with reflection, individualism with partnership.',e:'Fire and Air: complementary opposites. The creative tension between both generates growth.'},
+                '0-7':{s:6,d:'Two signs ruled by Mars (classical and modern). The intensity is enormous: passion, conflict, and transformation. Scorpio deepens what Aries initiates. A relationship that is never lukewarm.',e:'Fire and Water: extreme intensity. They can grow enormously together or consume each other.'},
+                '0-8':{s:9,d:'Aries and Sagittarius share fire, adventure, and optimism. This is a couple that travels, laughs, and grows together. Sagittarius expands Aries\' horizons, and Aries gives Sagittarius a companion who keeps up.',e:'Fire and Fire: spontaneous combustion. Mutual freedom and shared passion unite them.'},
+                '0-9':{s:5,d:'Both are cardinal and fight for control. Aries leads with impulse, Capricorn with strategy. They can clash or form an unstoppable team if they respect each other\'s way of reaching goals.',e:'Fire and Earth: shared ambition, opposite methods. Mutual respect is the key.'},
+                '0-10':{s:7,d:'Aries and Aquarius share independence and a rebellious spirit. Aquarius brings vision and originality, Aries brings courage to execute. A couple that challenges conventions together.',e:'Fire and Air: innovation flourishes. Both value individual freedom within the relationship.'},
+                '0-11':{s:4,d:'Aries charges forward without looking back, Pisces feels everything deeply. They can frustrate each other, but also heal one another: Pisces softens Aries\' roughness, and Aries protects Pisces\' sensitivity.',e:'Fire and Water: different worlds. Compassion and patience make a beautiful connection possible.'},
+                '1-2':{s:5,d:'Taurus seeks security and routine, Gemini needs variety and stimulation. They can complement each other if Gemini helps Taurus step outside their comfort zone and Taurus anchors Gemini\'s scattered energy.',e:'Earth and Air: stability meets change. Requires conscious compromise from both sides.'},
+                '1-3':{s:8,d:'Taurus and Cancer form one of the most nurturing couples in the zodiac. Both value home, security, and loyalty. Cancer brings emotional depth and Taurus offers the solid rock where Cancer feels safe.',e:'Earth and Water: a fertile combination. They build an emotional refuge that both need.'},
+                '1-4':{s:6,d:'Taurus and Leo share the fixed quality: both are loyal and determined, but also stubborn. Leo needs admiration and Taurus needs stability. If both give a little, the relationship is solid and passionate.',e:'Earth and Fire: shared stubbornness can be an obstacle or an unbreakable bond.'},
+                '1-5':{s:8,d:'Taurus and Virgo speak the same language: practical, sensory, and results-oriented. They understand each other without drama, build calmly, and enjoy simple pleasures together. A harmonious and stable couple.',e:'Earth and Earth: a naturally shared rhythm. The connection is easy and growth is constant.'},
+                '1-6':{s:6,d:'Both are ruled by Venus, which creates a shared appreciation for beauty and harmony. Taurus brings sensory depth, Libra brings social elegance. The difference in pace requires adjustment.',e:'Earth and Air: Venus unites them aesthetically and affectively, but their social needs differ.'},
+                '1-7':{s:7,d:'Taurus and Scorpio are zodiac opposites: the attraction is intense and inevitable. Both are fixed, loyal to the core, and possessive. The connection is deep, but power struggles are real.',e:'Earth and Water: complementary opposites. The emotional depth of both creates a transformative bond.'},
+                '1-8':{s:4,d:'Taurus wants to stay, Sagittarius wants to go. Their priorities clash directly. However, Sagittarius can expand Taurus\' world, and Taurus can give Sagittarius a place to come home to.',e:'Earth and Fire: the tension between security and freedom defines the relationship. Requires a lot of compromise.'},
+                '1-9':{s:8,d:'Two earth signs that share ambition, discipline, and love for the tangible. Capricorn plans and Taurus executes with patience. Together they build empires and enjoy the fruits of their effort.',e:'Earth and Earth: pure solidity. The connection is natural, practical, and lasting.'},
+                '1-10':{s:4,d:'Taurus values tradition, Aquarius breaks it. This tension can be exhausting or revealing. Aquarius wakes Taurus from routine, and Taurus reminds Aquarius that roots matter.',e:'Earth and Air: opposite visions of life. Only works with deep respect for differences.'},
+                '1-11':{s:7,d:'Taurus and Pisces create a romantic and sensory world together. Pisces brings magic and imagination, Taurus brings security and physical presence. A tender and protective combination.',e:'Earth and Water: the combination nourishes both. Pisces flourishes with Taurus\' stability.'},
+                '2-3':{s:5,d:'Gemini lives in the mind, Cancer in the emotions. They can frustrate each other or learn what they\'re missing. Gemini helps Cancer rationalize, and Cancer teaches Gemini to feel more deeply.',e:'Air and Water: different languages. The relationship works if both value what the other offers.'},
+                '2-4':{s:7,d:'Gemini and Leo form a social, creative, and energetic couple. Leo shines and Gemini entertains. Together they are the life of any gathering. Leo gives loyalty, Gemini gives variety.',e:'Air and Fire: an effervescent combination. Mutual admiration feeds the relationship.'},
+                '2-5':{s:6,d:'Both are mutable and ruled by Mercury. They communicate fluidly and share intellectual curiosity. However, Virgo seeks perfection and Gemini seeks novelty, which can create friction.',e:'Air and Earth: Mercury connects them mentally, but their practical approaches differ.'},
+                '2-6':{s:8,d:'Gemini and Libra are an ideal air couple. Communication is brilliant, social life is vibrant, and mutual respect comes naturally. Libra brings balance to Gemini\'s duality.',e:'Air and Air: perfect mental flow. They share values, humor, and worldview.'},
+                '2-7':{s:4,d:'Gemini is light, Scorpio is deep. Scorpio demands absolute loyalty and Gemini needs space to explore. The initial attraction is strong, but maintaining the relationship requires mutual transformation.',e:'Air and Water: intensity versus lightness. Scorpio may feel insecure with Gemini\'s social nature.'},
+                '2-8':{s:7,d:'Gemini and Sagittarius are zodiac opposites and attract each other like magnets. Both love learning, traveling, and conversing. Sagittarius brings philosophy and Gemini brings data. Together they never stop discovering.',e:'Air and Fire: opposites that complement each other. Shared curiosity is the cement of this relationship.'},
+                '2-9':{s:5,d:'Gemini flows and Capricorn structures. They can admire or frustrate each other. Capricorn gives Gemini focus, and Gemini reminds Capricorn that life is also for enjoying.',e:'Air and Earth: lightness meets gravity. Works when there is genuine admiration.'},
+                '2-10':{s:8,d:'Two air signs that value freedom, intellect, and innovation. The mental connection is electrifying. Aquarius brings vision and Gemini brings versatility. A stimulating and unconventional couple.',e:'Air and Air: instant mental synchronization. They share progressive ideals and inexhaustible curiosity.'},
+                '2-11':{s:5,d:'Gemini rationalizes, Pisces feels. They can get lost in misunderstandings or create a fascinating fusion of logic and intuition. Both are mutable and adapt, which helps overcome differences.',e:'Air and Water: parallel worlds. The adaptability of both is this couple\'s greatest strength.'},
+                '3-4':{s:5,d:'Cancer needs emotional security and Leo needs admiration. They can give each other what the other seeks if Leo learns sensitivity and Cancer learns to express admiration openly.',e:'Water and Fire: Leo\'s warmth can comfort Cancer, but emotional intensity requires management.'},
+                '3-5':{s:7,d:'Cancer and Virgo care for each other with quiet devotion. Virgo brings order and Cancer brings warmth. Together they create a home that is impeccable and emotionally rich. An underrated and powerful couple.',e:'Water and Earth: a nurturing combination. Both express love through service and care.'},
+                '3-6':{s:5,d:'Cancer seeks emotional depth, Libra seeks social balance. Cancer may feel overlooked and Libra may feel smothered. However, both are cardinal and share the ability to initiate changes together.',e:'Water and Air: emotional and social needs can collide. Requires clear communication.'},
+                '3-7':{s:9,d:'Cancer and Scorpio share an emotional connection that borders on telepathic. Both are water signs, loyal and protective. Scorpio values Cancer\'s devotion, and Cancer feels safe with Scorpio\'s strength.',e:'Water and Water: oceanic depth. They understand each other without words and protect each other.'},
+                '3-8':{s:4,d:'Cancer wants to stay home, Sagittarius wants to explore the world. Their needs are opposite, but Cancer can give Sagittarius an emotional refuge and Sagittarius can open Cancer\'s world.',e:'Water and Fire: the clash between security and adventure. Only works with great mutual flexibility.'},
+                '3-9':{s:6,d:'Both are cardinal and goal-oriented, but through opposite paths. Cancer leads with emotion, Capricorn with strategy. As zodiac opposites, the attraction is real and the complementarity is potent.',e:'Water and Earth: zodiac opposites. Cancer softens Capricorn\'s coldness, which in turn structures Cancer\'s emotionality.'},
+                '3-10':{s:4,d:'Cancer values intimacy and tradition, Aquarius values independence and the new. They can feel like they are on different planets, but Cancer teaches Aquarius about emotions, and Aquarius expands Cancer\'s perspective.',e:'Water and Air: heart versus mind. Aquarius\' emotional distance can frustrate Cancer.'},
+                '3-11':{s:8,d:'Cancer and Pisces are emotional soulmates. Both intuitive, empathetic, and creative. Pisces enriches Cancer\'s imagination, and Cancer gives Pisces the safe home they need to dream.',e:'Water and Water: deep spiritual connection. Shared sensitivity creates an almost magical bond.'},
+                '4-5':{s:5,d:'Leo shines and Virgo analyzes. Leo may feel that Virgo criticizes them, and Virgo may feel that Leo demands too much attention. But if Leo values Virgo\'s practical devotion and Virgo admires Leo\'s generosity, they balance out.',e:'Fire and Earth: ego meets humility. Works best when both recognize what they bring.'},
+                '4-6':{s:7,d:'Leo and Libra form a glamorous and socially magnificent couple. Libra admires Leo\'s radiance, and Leo adores Libra\'s elegance. Together they create harmony, beauty, and a vibrant social life.',e:'Fire and Air: air fans the flame with grace. Mutual admiration is the engine of this relationship.'},
+                '4-7':{s:6,d:'Two fixed signs with powerful personalities. Leo leads with charisma, Scorpio with intensity. Power struggles are inevitable, but mutual loyalty is fierce. An all-or-nothing relationship.',e:'Fire and Water: passion and intensity multiply. The pride of both is the greatest challenge.'},
+                '4-8':{s:8,d:'Leo and Sagittarius are pure fire: enthusiasm, generosity, and boundless adventure. Sagittarius adores Leo\'s nobility, and Leo loves Sagittarius\' free spirit. Together they light up any room.',e:'Fire and Fire: the most joyful combination in the zodiac. They share optimism and passion for life.'},
+                '4-9':{s:5,d:'Leo wants to shine, Capricorn wants to achieve. Both are ambitious but with opposite styles. Leo is expressive, Capricorn reserved. Respect for each other\'s strengths is essential.',e:'Fire and Earth: ambition unites them, style separates them. They can be a formidable team with patience.'},
+                '4-10':{s:6,d:'Leo and Aquarius are zodiac opposites: the individual versus the collective. The attraction is electric. Leo brings personal warmth and Aquarius brings humanitarian vision. Together they balance the self with the us.',e:'Fire and Air: magnetic opposites. Creative tension generates growth if both give ground.'},
+                '4-11':{s:5,d:'Leo radiates fire and Pisces flows like water. Leo may feel that Pisces doesn\'t admire them enough, and Pisces may feel eclipsed. But when Leo protects and Pisces inspires, the magic appears.',e:'Fire and Water: creativity unites them, emotional expression differentiates them. Requires mutual sensitivity.'},
+                '5-6':{s:5,d:'Virgo and Libra are neighboring signs with different rhythms. Virgo is practical and detail-oriented, Libra is social and aesthetic. They can complement each other domestically, but need to respect their different worlds.',e:'Earth and Air: precision meets harmony. They work well day-to-day if they accept their differences.'},
+                '5-7':{s:7,d:'Virgo and Scorpio share a quiet intensity. Both are analytical, loyal, and unafraid of depth. Virgo organizes Scorpio\'s chaos, and Scorpio shows Virgo the emotions they try to rationalize.',e:'Earth and Water: a powerful underground connection. Trust is built slowly but is unbreakable.'},
+                '5-8':{s:5,d:'Virgo wants to organize and Sagittarius wants to expand. They are opposites in approach: detail versus big picture. But both are mutable and adapt. Sagittarius opens Virgo\'s mind, and Virgo gives Sagittarius a plan.',e:'Earth and Fire: the tension between order and chaos. The mutable flexibility of both is their greatest advantage.'},
+                '5-9':{s:8,d:'Virgo and Capricorn are the architects of the zodiac. They share discipline, work ethic, and a love for excellence. Together they build a solid, organized life full of tangible achievements.',e:'Earth and Earth: the most productive combination. They respect, support, and grow together without drama.'},
+                '5-10':{s:4,d:'Virgo lives in the details, Aquarius in big ideas. They can admire each other intellectually but get frustrated in daily life. Virgo needs order and Aquarius needs to experiment.',e:'Earth and Air: precision versus innovation. Works intellectually, clashes practically.'},
+                '5-11':{s:6,d:'Virgo and Pisces are zodiac opposites. Virgo analyzes, Pisces intuits. Virgo brings structure to Pisces\' dreams, and Pisces teaches Virgo that not everything needs a logical explanation.',e:'Earth and Water: opposites that need each other. Virgo grounds Pisces, Pisces elevates Virgo.'},
+                '6-7':{s:7,d:'Libra and Scorpio are neighbors with intriguing attraction. Libra brings lightness and social grace, Scorpio brings depth and intensity. The relationship grows when Libra accepts going deeper.',e:'Air and Water: surface meets depth. Scorpio transforms Libra, Libra civilizes Scorpio.'},
+                '6-8':{s:7,d:'Libra and Sagittarius share optimism, sociability, and a love of culture. Sagittarius brings adventure and Libra brings refinement. Together they explore the world with style and joy.',e:'Air and Fire: the ultimate social combination. They have fun together and grow mutually.'},
+                '6-9':{s:5,d:'Libra seeks harmony, Capricorn seeks results. Libra may find Capricorn cold, and Capricorn may find Libra superficial. But both are cardinal and share the ambition to create something meaningful.',e:'Air and Earth: the social meets the strategic. Requires both to value what the other brings.'},
+                '6-10':{s:8,d:'Libra and Aquarius are an air couple in full intellectual synchrony. They share ideals of justice, beauty, and progress. Libra brings diplomacy and Aquarius brings originality. The mental connection is exceptional.',e:'Air and Air: a relationship based on ideas, ideals, and communication. Socially unstoppable.'},
+                '6-11':{s:6,d:'Libra and Pisces share artistic sensitivity and a desire for harmony. Both avoid conflict, which can be a problem when there are issues to resolve. But tenderness and creativity unite them.',e:'Air and Water: beauty connects them. They need to learn to face conflicts without evading.'},
+                '7-8':{s:7,d:'Scorpio and Sagittarius are neighbors with very different energies: Scorpio goes deep, Sagittarius goes wide. Sagittarius\' curiosity can intrigue Scorpio, and Scorpio\'s intensity can fascinate Sagittarius.',e:'Water and Fire: depth meets expansion. A relationship that works with respect for each other\'s rhythms.'},
+                '7-9':{s:7,d:'Scorpio and Capricorn share ambition, reserve, and determination. Neither gives up easily. Capricorn admires Scorpio\'s depth, and Scorpio respects Capricorn\'s discipline.',e:'Water and Earth: quiet power. Together they are a discreet and unstoppable force.'},
+                '7-10':{s:6,d:'Both are fixed and obstinate. Scorpio operates from emotions, Aquarius from intellect. Power struggles are intense, but the loyalty of both can forge a unique and indestructible bond.',e:'Water and Air: the tension between emotion and reason. When they understand each other, they transform mutually.'},
+                '7-11':{s:8,d:'Scorpio and Pisces are water souls who recognize each other in the deep. The connection is intuitive, emotional, and almost mystical. Scorpio protects and Pisces inspires. Together they explore the deepest layers of love.',e:'Water and Water: spiritual and emotional union. They understand each other without words and heal each other.'},
+                '8-9':{s:7,d:'Sagittarius and Capricorn are neighbors with complementary visions. Sagittarius sees the horizon, Capricorn charts the path. Together they combine vision with execution. The difference in pace is resolved with humor and respect.',e:'Fire and Earth: optimism meets realism. They balance each other when they respect the other\'s perspective.'},
+                '8-10':{s:7,d:'Sagittarius and Aquarius share a love for freedom, ideals, and rebellion. Neither tries to control the other. The relationship is open, stimulating, and full of perspective-changing conversations.',e:'Fire and Air: shared freedom. One of the most independent and progressive couples in the zodiac.'},
+                '8-11':{s:5,d:'Sagittarius is frank and direct, Pisces is subtle and sensitive. Sagittarius can hurt without meaning to, and Pisces can confuse Sagittarius with their ambiguity. But both are mutable and dreamers, which creates common ground.',e:'Fire and Water: honesty meets sensitivity. Works when Sagittarius measures their words and Pisces expresses their needs.'},
+                '9-10':{s:5,d:'Capricorn values tradition and order, Aquarius values innovation and disruption. Zodiac neighbors with opposite views of progress. They can learn enormously from each other if they abandon the need to be right.',e:'Earth and Air: the established versus the revolutionary. Mutual respect transforms this tension into growth.'},
+                '9-11':{s:6,d:'Capricorn brings structure and Pisces brings imagination. Capricorn needs Pisces\' tenderness to soften, and Pisces needs Capricorn\'s solidity to avoid getting lost in dreams. A surprisingly effective combination.',e:'Earth and Water: feet on the ground and head in the clouds. Together they find a beautiful balance.'},
+                '10-11':{s:6,d:'Aquarius and Pisces are the last two signs of the zodiac, both oriented toward the collective and the transcendental. Aquarius brings humanitarian logic and Pisces brings intuitive compassion. Together they can change their surroundings.',e:'Air and Water: reason meets intuition. They complement each other when they respect their different ways of perceiving the world.'}
+            };
+
+            function getData(a,b){
+                if(a===b) return genData(a,b);
+                var k1=Math.min(a,b)+'-'+Math.max(a,b);
+                var pd=pairData[k1];
+                if(!pd) return null;
+                var na=names[a],nb=names[b];
+                var score=pd.s;
+                var cat;
+                if(score>=9) cat='Excellent';
+                else if(score>=8) cat='Very Good';
+                else if(score>=7) cat='Good';
+                else if(score>=6) cat='Moderate';
+                else cat='Challenging';
+                return {score:score,cat:cat,desc:pd.d,element:pd.e};
+            }
+
+            var sel1=null, sel2=null;
+            var row1=document.getElementById('row1');
+            var row2=document.getElementById('row2');
+            var card=document.getElementById('resultCard');
+
+            function bindRow(row, isFirst){
+                row.querySelectorAll('.zodiac-btn').forEach(function(btn){
+                    btn.addEventListener('click',function(){
+                        var idx=parseInt(this.getAttribute('data-sign'));
+                        row.querySelectorAll('.zodiac-btn').forEach(function(b){b.classList.remove('active');});
+                        this.classList.add('active');
+                        if(isFirst) sel1=idx; else sel2=idx;
+                        if(sel1!==null && sel2!==null) showResult();
+                    });
+                });
+            }
+            bindRow(row1,true);
+            bindRow(row2,false);
+
+            function showResult(){
+                var data=getData(sel1,sel2);
+                if(!data) return;
+                document.getElementById('sym1').textContent=symbols[sel1];
+                document.getElementById('sym2').textContent=symbols[sel2];
+                document.getElementById('resTitle').textContent=names[sel1]+' & '+names[sel2];
+                var catEl=document.getElementById('resCat');
+                catEl.textContent=data.cat;
+                catEl.className='result-category';
+                if(data.cat==='Excellent') catEl.classList.add('cat-excelente');
+                else if(data.cat==='Very Good') catEl.classList.add('cat-muy-buena');
+                else if(data.cat==='Good') catEl.classList.add('cat-buena');
+                else if(data.cat==='Moderate') catEl.classList.add('cat-moderada');
+                else catEl.classList.add('cat-desafiante');
+
+                document.getElementById('scoreNum').textContent=data.score+'/10';
+                var fill=document.getElementById('scoreFill');
+                fill.style.width='0%';
+                fill.className='score-fill';
+                if(data.score>=8) fill.classList.add('green');
+                else if(data.score>=6) fill.classList.add('gold');
+                else fill.classList.add('red');
+
+                document.getElementById('resDesc').textContent=data.desc;
+                document.getElementById('resElement').textContent=data.element;
+
+                card.classList.remove('visible');
+                void card.offsetWidth;
+                card.classList.add('visible');
+                setTimeout(function(){fill.style.width=(data.score*10)+'%';},100);
+                card.scrollIntoView({behavior:'smooth',block:'nearest'});
+            }
+        })();
+    </script>
+</body>
+</html>

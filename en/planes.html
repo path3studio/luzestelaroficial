@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planes y Servicios — Luz Estelar Oficial</title>
-    <meta name="description" content="Elige tu guia cosmica personalizada. Carta natal, numerologia, pronostico trimestral y sesiones en vivo. Planes desde $9.99 USD.">
-    <meta property="og:title" content="Planes y Servicios — Luz Estelar Oficial">
-    <meta property="og:description" content="Consultas astrologicas personalizadas. Carta natal, numerologia, pronostico y mas.">
+    <title>Plans & Pricing — Luz Estelar Oficial</title>
+    <meta name="description" content="Choose your personalized cosmic guide. Birth chart, numerology, quarterly forecast and live sessions. Plans from $9.99 USD.">
+    <meta property="og:title" content="Plans & Pricing — Luz Estelar Oficial">
+    <meta property="og:description" content="Personalized astrological consultations. Birth chart, numerology, forecast and more.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
-    <meta property="og:url" content="https://luzestelaroficial.com/planes.html">
-    <link rel="icon" type="image/png" href="app_icon.png">
-    <link rel="canonical" href="https://luzestelaroficial.com/planes.html">
+    <meta property="og:url" content="https://luzestelaroficial.com/en/planes.html">
+    <link rel="icon" type="image/png" href="../app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/en/planes.html">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/planes.html">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/planes.html">
     <meta name="theme-color" content="#d4a849">
@@ -57,10 +57,11 @@
             justify-content: space-between;
         }
         .nav-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); text-decoration: none; font-weight: 700; }
-        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
         .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
         .nav-links a:hover { color: var(--gold); }
         .nav-links a.active { color: var(--gold); font-weight: 600; }
+        .lang-sep { color: var(--text-dim); font-size: 0.85rem; user-select: none; }
 
         /* ── Main ── */
         main { position: relative; z-index: 1; padding-top: 5rem; }
@@ -95,7 +96,7 @@
             background: linear-gradient(135deg, rgba(212,168,73,0.08), rgba(124,92,191,0.06));
         }
         .plan-card.featured::before {
-            content: 'MÁS POPULAR'; position: absolute; top: 0; right: 0;
+            content: 'MOST POPULAR'; position: absolute; top: 0; right: 0;
             background: var(--gold); color: var(--bg-deep); font-size: 0.65rem;
             font-weight: 700; padding: 4px 14px; border-radius: 0 16px 0 12px;
             letter-spacing: 0.05em;
@@ -231,28 +232,6 @@
             .comparison-table { font-size: 0.75rem; }
             .comparison-table th, .comparison-table td { padding: 0.5rem 0.4rem; }
         }
-
-        /* ── Language selector ────────────────────────────── */
-        .lang-selector {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 0.82em; margin-left: 16px;
-        }
-        .lang-selector a {
-            color: var(--text-dim); text-decoration: none;
-            padding: 2px 6px; border-radius: 4px;
-            transition: color 0.2s, background 0.2s;
-        }
-        .lang-selector a:hover { color: var(--gold); }
-        .lang-selector a.active {
-            color: var(--gold); font-weight: 600;
-            background: var(--gold-dim);
-        }
-        .lang-selector .lang-sep { color: var(--text-dim); opacity: 0.5; }
-        @media (max-width: 768px) {
-            .lang-selector {
-                position: absolute; top: 18px; right: 60px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -261,138 +240,141 @@
     <nav>
         <a href="index.html" class="nav-brand">Luz Estelar</a>
         <div class="nav-links">
-            <a href="index.html">Inicio</a>
-            <a href="compatibilidad.html">Compatibilidad</a>
-            <a href="planes.html" class="active">Planes</a>
-            <a href="mapa-estelar.html">Mapa Estelar</a>
-            <a href="consulta.html" style="color:var(--gold)">Consulta</a>
+            <a href="index.html">Home</a>
+            <a href="compatibilidad.html">Compatibility</a>
+            <a href="planes.html" class="active">Plans</a>
+            <a href="mapa-estelar.html">Star Map</a>
+            <a href="consulta.html" style="color:var(--gold)">Consultation</a>
+            <span class="lang-sep">|</span>
+            <a href="../planes.html">ES</a>
+            <a href="planes.html" class="active">EN</a>
         </div>
     </nav>
 
     <main>
         <section class="pricing-hero">
-            <h1>Tu Guía Cósmica Personalizada</h1>
-            <p>Cada plan incluye interpretación profesional basada en datos astronómicos reales, calculados al segundo exacto de tu nacimiento.</p>
+            <h1>Your Personalized Cosmic Guide</h1>
+            <p>Each plan includes professional interpretation based on real astronomical data, calculated to the exact second of your birth.</p>
         </section>
 
         <section class="pricing-grid">
-            <!-- PLAN 1: Esencial -->
+            <!-- PLAN 1: Essential -->
             <div class="plan-card">
                 <span class="plan-icon">✦</span>
-                <h3 class="plan-name">Esencial</h3>
-                <p class="plan-tagline">Tu primer mapa estelar</p>
+                <h3 class="plan-name">Essential</h3>
+                <p class="plan-tagline">Your first star map</p>
                 <div class="plan-price"><span class="currency">$</span>9<span class="period">.99 USD</span></div>
                 <div class="plan-original">$14.99</div>
-                <span class="plan-promo">Precio de lanzamiento</span>
+                <span class="plan-promo">Launch price</span>
                 <ul class="plan-features">
-                    <li>Carta natal completa (10 planetas)</li>
-                    <li>Ascendente y Medio Cielo</li>
-                    <li>Aspectos planetarios principales</li>
-                    <li>Tu esencia solar y lunar</li>
-                    <li>PDF profesional con sello de autenticidad</li>
-                    <li>Entrega en 24-48h</li>
+                    <li>Complete birth chart (10 planets)</li>
+                    <li>Ascendant and Midheaven</li>
+                    <li>Major planetary aspects</li>
+                    <li>Your solar and lunar essence</li>
+                    <li>Professional PDF with authenticity seal</li>
+                    <li>Delivery in 24-48h</li>
                 </ul>
-                <a href="consulta.html?plan=esencial" class="plan-btn plan-btn-outline">Elegir Plan</a>
+                <a href="consulta.html?plan=esencial" class="plan-btn plan-btn-outline">Choose Plan</a>
             </div>
 
-            <!-- PLAN 2: Profundo (Featured) -->
+            <!-- PLAN 2: Deep Analysis (Featured) -->
             <div class="plan-card featured">
-                <span class="plan-icon">🔮</span>
-                <h3 class="plan-name">Profundo</h3>
-                <p class="plan-tagline">El análisis completo</p>
+                <span class="plan-icon">&#x1F52E;</span>
+                <h3 class="plan-name">Deep Analysis</h3>
+                <p class="plan-tagline">The complete analysis</p>
                 <div class="plan-price"><span class="currency">$</span>19<span class="period">.99 USD</span></div>
                 <div class="plan-original">$39.99</div>
-                <span class="plan-promo">50% descuento de lanzamiento</span>
+                <span class="plan-promo">50% launch discount</span>
                 <ul class="plan-features">
-                    <li class="highlight">Todo del plan Esencial</li>
-                    <li>Análisis del nombre (numerología, fonética, etimología)</li>
-                    <li>Amor, carrera, salud y espiritualidad</li>
-                    <li>Pronóstico personal de 3 meses</li>
-                    <li>Audio narrado con voz oficial</li>
-                    <li>PDF premium de 11+ páginas</li>
-                    <li>Entrega en 24h</li>
+                    <li class="highlight">Everything in the Essential plan</li>
+                    <li>Name analysis (numerology, phonetics, etymology)</li>
+                    <li>Love, career, health and spirituality</li>
+                    <li>3-month personal forecast</li>
+                    <li>Narrated audio with official voice</li>
+                    <li>Premium PDF of 11+ pages</li>
+                    <li>Delivery in 24h</li>
                 </ul>
-                <a href="consulta.html?plan=profundo" class="plan-btn plan-btn-primary">Elegir Plan</a>
+                <a href="consulta.html?plan=profundo" class="plan-btn plan-btn-primary">Choose Plan</a>
             </div>
 
-            <!-- PLAN 3: Estelar -->
+            <!-- PLAN 3: Stellar -->
             <div class="plan-card">
-                <span class="plan-icon">👑</span>
-                <h3 class="plan-name">Estelar</h3>
-                <p class="plan-tagline">La experiencia completa</p>
+                <span class="plan-icon">&#x1F451;</span>
+                <h3 class="plan-name">Stellar</h3>
+                <p class="plan-tagline">The complete experience</p>
                 <div class="plan-price"><span class="currency">$</span>49<span class="period">.99 USD</span></div>
                 <div class="plan-original">$79.99</div>
-                <span class="plan-promo">Lanzamiento limitado</span>
+                <span class="plan-promo">Limited launch offer</span>
                 <ul class="plan-features">
-                    <li class="highlight">Todo del plan Profundo</li>
-                    <li>Carta de retorno solar (cumpleaños astrológico)</li>
-                    <li>Compatibilidad con otra persona</li>
-                    <li>Pronóstico extendido de 6 meses</li>
-                    <li>Audio extendido (todas las secciones)</li>
-                    <li>Actualización trimestral gratuita</li>
-                    <li>Prioridad: entrega en 12h</li>
+                    <li class="highlight">Everything in the Deep Analysis plan</li>
+                    <li>Solar return chart (astrological birthday)</li>
+                    <li>Compatibility with another person</li>
+                    <li>Extended 6-month forecast</li>
+                    <li>Extended audio (all sections)</li>
+                    <li>Free quarterly update</li>
+                    <li>Priority: delivery in 12h</li>
                 </ul>
-                <a href="consulta.html?plan=estelar" class="plan-btn plan-btn-outline">Elegir Plan</a>
+                <a href="consulta.html?plan=estelar" class="plan-btn plan-btn-outline">Choose Plan</a>
             </div>
         </section>
 
         <!-- Comparison Table -->
         <section class="comparison-section">
-            <h2>Compara los Planes</h2>
+            <h2>Compare Plans</h2>
             <table class="comparison-table">
                 <thead>
                     <tr>
-                        <th>Característica</th>
-                        <th>Esencial</th>
-                        <th>Profundo</th>
-                        <th>Estelar</th>
+                        <th>Feature</th>
+                        <th>Essential</th>
+                        <th>Deep Analysis</th>
+                        <th>Stellar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Carta natal (10 planetas)</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
-                    <tr><td>Ascendente y Medio Cielo</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
-                    <tr><td>Aspectos planetarios</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
-                    <tr><td>Interpretación solar y lunar</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
-                    <tr><td>Análisis del nombre</td><td class="dash">—</td><td class="check">✦</td><td class="check">✦</td></tr>
-                    <tr><td>Amor, carrera, salud</td><td class="dash">—</td><td class="check">✦</td><td class="check">✦</td></tr>
-                    <tr><td>Pronóstico personal</td><td class="dash">—</td><td>3 meses</td><td>6 meses</td></tr>
-                    <tr><td>Audio narrado</td><td class="dash">—</td><td class="check">✦</td><td>Extendido</td></tr>
-                    <tr><td>Compatibilidad de pareja</td><td class="dash">—</td><td class="dash">—</td><td class="check">✦</td></tr>
-                    <tr><td>Retorno solar</td><td class="dash">—</td><td class="dash">—</td><td class="check">✦</td></tr>
-                    <tr><td>Actualización trimestral</td><td class="dash">—</td><td class="dash">—</td><td class="check">✦</td></tr>
-                    <tr><td>Páginas del PDF</td><td>~4</td><td>11+</td><td>18+</td></tr>
-                    <tr><td>Tiempo de entrega</td><td>24-48h</td><td>24h</td><td>12h</td></tr>
+                    <tr><td>Birth chart (10 planets)</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Ascendant and Midheaven</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Planetary aspects</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Solar and lunar interpretation</td><td class="check">✦</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Name analysis</td><td class="dash">&mdash;</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Love, career, health</td><td class="dash">&mdash;</td><td class="check">✦</td><td class="check">✦</td></tr>
+                    <tr><td>Personal forecast</td><td class="dash">&mdash;</td><td>3 months</td><td>6 months</td></tr>
+                    <tr><td>Narrated audio</td><td class="dash">&mdash;</td><td class="check">✦</td><td>Extended</td></tr>
+                    <tr><td>Partner compatibility</td><td class="dash">&mdash;</td><td class="dash">&mdash;</td><td class="check">✦</td></tr>
+                    <tr><td>Solar return</td><td class="dash">&mdash;</td><td class="dash">&mdash;</td><td class="check">✦</td></tr>
+                    <tr><td>Quarterly update</td><td class="dash">&mdash;</td><td class="dash">&mdash;</td><td class="check">✦</td></tr>
+                    <tr><td>PDF pages</td><td>~4</td><td>11+</td><td>18+</td></tr>
+                    <tr><td>Delivery time</td><td>24-48h</td><td>24h</td><td>12h</td></tr>
                 </tbody>
             </table>
         </section>
 
         <!-- FAQ -->
         <section class="faq-section">
-            <h2>Preguntas Frecuentes</h2>
+            <h2>Frequently Asked Questions</h2>
 
             <div class="faq-item">
-                <div class="faq-q">¿Qué necesito para mi consulta?</div>
-                <div class="faq-a">Tu nombre completo, fecha de nacimiento, hora exacta de nacimiento (lo más precisa posible) y lugar de nacimiento. La hora es importante para calcular tu Ascendente y las casas astrológicas.</div>
+                <div class="faq-q">What do I need for my consultation?</div>
+                <div class="faq-a">Your full name, date of birth, exact time of birth (as precise as possible) and place of birth. The time is important to calculate your Ascendant and astrological houses.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">¿Cómo recibo mi reporte?</div>
-                <div class="faq-a">Después del pago, recibes un PDF profesional y un audio MP3 directamente en tu correo electrónico. El PDF incluye gráficos, tablas y tu interpretación personalizada.</div>
+                <div class="faq-q">How do I receive my report?</div>
+                <div class="faq-a">After payment, you will receive a professional PDF and an MP3 audio file directly to your email. The PDF includes charts, tables and your personalized interpretation.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">¿Es diferente a un horóscopo diario?</div>
-                <div class="faq-a">Sí. El horóscopo diario es general para todos los de tu signo. La consulta personalizada usa tu fecha, hora y lugar exactos de nacimiento para calcular posiciones planetarias únicas y generar un análisis que solo aplica a ti.</div>
+                <div class="faq-q">Is this different from a daily horoscope?</div>
+                <div class="faq-a">Yes. A daily horoscope is general for everyone with your sign. The personalized consultation uses your exact date, time and place of birth to calculate unique planetary positions and generate an analysis that applies only to you.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">¿Puedo pedir un reembolso?</div>
-                <div class="faq-a">Si no estás satisfecho con tu reporte, escríbenos a contacto@luzestelaroficial.com dentro de los primeros 7 días. Evaluaremos tu caso y ofreceremos una solución.</div>
+                <div class="faq-q">Can I request a refund?</div>
+                <div class="faq-a">If you are not satisfied with your report, write to us at contacto@luzestelaroficial.com within the first 7 days. We will review your case and offer a solution.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">¿Qué incluye la actualización trimestral del plan Estelar?</div>
-                <div class="faq-a">Cada 3 meses recibirás un nuevo pronóstico personalizado basado en los tránsitos actuales sobre tu carta natal, sin costo adicional durante el primer año.</div>
+                <div class="faq-q">What does the Stellar plan quarterly update include?</div>
+                <div class="faq-a">Every 3 months you will receive a new personalized forecast based on current transits over your birth chart, at no additional cost during the first year.</div>
             </div>
         </section>
     </main>
@@ -401,31 +383,31 @@
         <section style="max-width:700px;margin:0 auto 3rem;padding:0 1.5rem;">
             <div class="plan-card featured" style="text-align:center;padding:2.5rem;">
                 <span class="plan-icon">&#x1F30C;</span>
-                <h3 class="plan-name">Mapa Estelar Personalizado</h3>
-                <p class="plan-tagline">El cielo exacto de tu fecha especial</p>
+                <h3 class="plan-name">Personalized Star Map</h3>
+                <p class="plan-tagline">The exact sky of your special date</p>
                 <div class="plan-price"><span class="currency">$</span>14<span class="period">.99 USD</span></div>
                 <ul class="plan-features">
-                    <li>Posiciones estelares reales (catálogo Hipparcos)</li>
-                    <li>Constelaciones visibles desde tu ubicación</li>
-                    <li>Título y mensaje personalizado</li>
-                    <li>Formatos: celular, escritorio, TV 4K, cuadro chico/mediano/grande</li>
-                    <li>Ideal para bodas, nacimientos, aniversarios</li>
-                    <li>Medida personalizada disponible (+$4.99)</li>
+                    <li>Real star positions (Hipparcos catalog)</li>
+                    <li>Constellations visible from your location</li>
+                    <li>Custom title and message</li>
+                    <li>Formats: phone, desktop, 4K TV, small/medium/large print</li>
+                    <li>Ideal for weddings, births, anniversaries</li>
+                    <li>Custom size available (+$4.99)</li>
                 </ul>
-                <a href="mapa-estelar.html" class="plan-btn plan-btn-primary">Crear mi Mapa Estelar</a>
+                <a href="mapa-estelar.html" class="plan-btn plan-btn-primary">Create my Star Map</a>
             </div>
         </section>
 
     <footer>
         <div class="footer-links">
-            <a href="index.html">Inicio</a>
-            <a href="planes.html">Planes</a>
-            <a href="consulta.html">Consulta</a>
-            <a href="compatibilidad.html">Compatibilidad</a>
-            <a href="terms-of-service.html">Términos</a>
-            <a href="mailto:contacto@luzestelaroficial.com">Contacto</a>
+            <a href="index.html">Home</a>
+            <a href="planes.html">Plans</a>
+            <a href="consulta.html">Consultation</a>
+            <a href="compatibilidad.html">Compatibility</a>
+            <a href="terms-of-service.html">Terms</a>
+            <a href="mailto:contacto@luzestelaroficial.com">Contact</a>
         </div>
-        <p class="footer-copy">&copy; 2026 Luz Estelar Oficial. Todos los derechos reservados.</p>
+        <p class="footer-copy">&copy; 2026 Luz Estelar Oficial. All rights reserved.</p>
     </footer>
 
     <script>

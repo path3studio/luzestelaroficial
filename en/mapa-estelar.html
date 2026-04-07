@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Estelar Personalizado — Luz Estelar Oficial</title>
-    <meta name="description" content="El cielo exacto de tu fecha especial. Mapa de estrellas personalizado para bodas, nacimientos y momentos únicos. Múltiples formatos para pantalla e impresión.">
-    <meta property="og:title" content="Mapa Estelar Personalizado — Luz Estelar Oficial">
-    <meta property="og:description" content="El cielo exacto de tu fecha especial. Estrellas reales, constelaciones y tu mensaje personalizado.">
+    <title>Personalized Star Map — Luz Estelar Oficial</title>
+    <meta name="description" content="The exact sky of your special date. Personalized star map for weddings, births and unique moments. Multiple formats for screen and print.">
+    <meta property="og:title" content="Personalized Star Map — Luz Estelar Oficial">
+    <meta property="og:description" content="The exact sky of your special date. Real stars, constellations and your personalized message.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
-    <link rel="icon" type="image/png" href="app_icon.png">
-    <link rel="canonical" href="https://luzestelaroficial.com/mapa-estelar.html">
+    <link rel="icon" type="image/png" href="../app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/en/mapa-estelar.html">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mapa-estelar.html">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/mapa-estelar.html">
     <meta name="theme-color" content="#d4a849">
@@ -60,13 +60,14 @@
             font-size: 1.4em; font-weight: 700; color: var(--gold);
             text-decoration: none;
         }
-        nav .nav-links { display: flex; gap: 28px; }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
         nav .nav-links a {
             color: var(--text-dim); text-decoration: none;
             font-size: 0.88em; font-weight: 400; transition: color 0.2s;
         }
         nav .nav-links a:hover { color: var(--gold); }
         nav .nav-links a.active { color: var(--gold); font-weight: 600; }
+        .lang-sep { color: var(--text-dim); font-size: 0.88em; user-select: none; }
 
         .content { position: relative; z-index: 1; }
 
@@ -277,28 +278,6 @@
             .format-grid { grid-template-columns: repeat(2, 1fr); }
             nav .nav-links { display: none; }
         }
-
-        /* ── Language selector ────────────────────────────── */
-        .lang-selector {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 0.82em; margin-left: 16px;
-        }
-        .lang-selector a {
-            color: var(--text-dim); text-decoration: none;
-            padding: 2px 6px; border-radius: 4px;
-            transition: color 0.2s, background 0.2s;
-        }
-        .lang-selector a:hover { color: var(--gold); }
-        .lang-selector a.active {
-            color: var(--gold); font-weight: 600;
-            background: var(--gold-dim);
-        }
-        .lang-selector .lang-sep { color: var(--text-dim); opacity: 0.5; }
-        @media (max-width: 768px) {
-            .lang-selector {
-                position: absolute; top: 18px; right: 60px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -308,54 +287,57 @@
         <div class="nav-inner">
             <a href="index.html" class="logo">Luz Estelar</a>
             <div class="nav-links">
-                <a href="index.html">Inicio</a>
-                <a href="planes.html">Planes</a>
-                <a href="mapa-estelar.html" class="active">Mapa Estelar</a>
-                <a href="consulta.html">Consulta</a>
+                <a href="index.html">Home</a>
+                <a href="planes.html">Plans</a>
+                <a href="mapa-estelar.html" class="active">Star Map</a>
+                <a href="consulta.html">Consultation</a>
+                <span class="lang-sep">|</span>
+                <a href="../mapa-estelar.html">ES</a>
+                <a href="mapa-estelar.html" class="active">EN</a>
             </div>
         </div>
     </nav>
 
     <div class="content">
         <div class="hero">
-            <div class="badge">Nuevo producto</div>
-            <h1>Mapa Estelar<br>Personalizado</h1>
-            <p class="subtitle">El cielo exacto de tu fecha especial. Estrellas reales, constelaciones y tu mensaje personalizado, calculado al segundo exacto desde la ubicación que elijas.</p>
+            <div class="badge">New product</div>
+            <h1>Personalized<br>Star Map</h1>
+            <p class="subtitle">The exact sky of your special date. Real stars, constellations and your personalized message, calculated to the exact second from the location you choose.</p>
         </div>
 
         <!-- Occasions -->
         <section style="padding-top:0;">
             <div class="section-inner">
                 <div class="card">
-                    <h2>Para cada momento especial</h2>
+                    <h2>For every special moment</h2>
                     <div class="occasions">
                         <div class="occasion-item">
                             <span class="icon">&#x1F476;</span>
-                            <span class="label">Nacimiento</span>
+                            <span class="label">Birth</span>
                         </div>
                         <div class="occasion-item">
                             <span class="icon">&#x1F48D;</span>
-                            <span class="label">Boda</span>
+                            <span class="label">Wedding</span>
                         </div>
                         <div class="occasion-item">
                             <span class="icon">&#x2764;&#xFE0F;</span>
-                            <span class="label">Aniversario</span>
+                            <span class="label">Anniversary</span>
                         </div>
                         <div class="occasion-item">
                             <span class="icon">&#x1F31F;</span>
-                            <span class="label">Primer encuentro</span>
+                            <span class="label">First meeting</span>
                         </div>
                         <div class="occasion-item">
                             <span class="icon">&#x1F393;</span>
-                            <span class="label">Graduación</span>
+                            <span class="label">Graduation</span>
                         </div>
                         <div class="occasion-item">
                             <span class="icon">&#x2728;</span>
-                            <span class="label">Cualquier fecha</span>
+                            <span class="label">Any date</span>
                         </div>
                     </div>
                     <div class="delivery-note">
-                        <strong>Qué recibes:</strong> Imagen digital en alta resolución (PNG) lista para imprimir o usar como fondo de pantalla. Entregada a tu correo en 24-48 horas.
+                        <strong>What you receive:</strong> High-resolution digital image (PNG) ready to print or use as a wallpaper. Delivered to your email within 24-48 hours.
                     </div>
                 </div>
             </div>
@@ -366,8 +348,8 @@
             <div class="section-inner">
                 <div class="card price-card">
                     <div class="price">$14.99 USD</div>
-                    <p class="price-note">Incluye todos los formatos seleccionados en una sola compra.</p>
-                    <span class="price-extra">+$4.99 por medida personalizada</span>
+                    <p class="price-note">Includes all selected formats in a single purchase.</p>
+                    <span class="price-extra">+$4.99 for custom size</span>
                 </div>
             </div>
         </section>
@@ -376,42 +358,42 @@
         <section style="padding-top:0;">
             <div class="section-inner">
                 <div class="card">
-                    <h2>Crea tu mapa estelar</h2>
+                    <h2>Create your star map</h2>
                     <form id="orderForm" novalidate>
                         <div id="formError" class="form-error"></div>
 
                         <div class="form-group">
-                            <label for="titulo">Título o mensaje personalizado *</label>
-                            <input type="text" id="titulo" name="titulo" placeholder="La noche que nos conocimos" required>
-                            <p class="hint">Este texto aparecerá debajo de tu mapa estelar.</p>
+                            <label for="titulo">Custom title or message *</label>
+                            <input type="text" id="titulo" name="titulo" placeholder="The night we met" required>
+                            <p class="hint">This text will appear below your star map.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="fecha">Fecha del evento *</label>
+                            <label for="fecha">Event date *</label>
                             <input type="date" id="fecha" name="fecha" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="hora">Hora (opcional)</label>
+                            <label for="hora">Time (optional)</label>
                             <input type="time" id="hora" name="hora">
-                            <p class="hint">Si no la recuerdas, usaremos las 21:00 (cielo nocturno).</p>
+                            <p class="hint">If you don't remember, we'll use 9:00 PM (night sky).</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="lugar">Lugar del evento *</label>
-                            <input type="text" id="lugar" name="lugar" placeholder="Ciudad de México, México" required>
-                            <p class="hint">Ciudad y país donde ocurrió el evento.</p>
+                            <label for="lugar">Event location *</label>
+                            <input type="text" id="lugar" name="lugar" placeholder="New York, United States" required>
+                            <p class="hint">City and country where the event took place.</p>
                         </div>
 
                         <div class="form-group">
-                            <label>Formatos deseados *</label>
-                            <p class="hint" style="margin-bottom:10px;">Selecciona uno o más formatos. Todos se incluyen en tu compra.</p>
+                            <label>Desired formats *</label>
+                            <p class="hint" style="margin-bottom:10px;">Select one or more formats. All are included in your purchase.</p>
                             <div class="format-grid">
                                 <label class="format-option">
                                     <input type="checkbox" name="formatos" value="phone" checked>
                                     <span class="format-label">
                                         <span class="fmt-icon">&#x1F4F1;</span>
-                                        <span class="fmt-name">Celular</span>
+                                        <span class="fmt-name">Phone</span>
                                         <span class="fmt-size">1080x1920</span>
                                     </span>
                                 </label>
@@ -419,7 +401,7 @@
                                     <input type="checkbox" name="formatos" value="desktop">
                                     <span class="format-label">
                                         <span class="fmt-icon">&#x1F5A5;</span>
-                                        <span class="fmt-name">Escritorio</span>
+                                        <span class="fmt-name">Desktop</span>
                                         <span class="fmt-size">2560x1440</span>
                                     </span>
                                 </label>
@@ -427,7 +409,7 @@
                                     <input type="checkbox" name="formatos" value="tv">
                                     <span class="format-label">
                                         <span class="fmt-icon">&#x1F4FA;</span>
-                                        <span class="fmt-name">Televisor 4K</span>
+                                        <span class="fmt-name">4K TV</span>
                                         <span class="fmt-size">3840x2160</span>
                                     </span>
                                 </label>
@@ -435,7 +417,7 @@
                                     <input type="checkbox" name="formatos" value="small">
                                     <span class="format-label">
                                         <span class="fmt-icon">&#x1F5BC;</span>
-                                        <span class="fmt-name">Cuadro chico</span>
+                                        <span class="fmt-name">Small print</span>
                                         <span class="fmt-size">8x10" (300dpi)</span>
                                     </span>
                                 </label>
@@ -443,7 +425,7 @@
                                     <input type="checkbox" name="formatos" value="medium">
                                     <span class="format-label">
                                         <span class="fmt-icon">&#x1F5BC;</span>
-                                        <span class="fmt-name">Cuadro mediano</span>
+                                        <span class="fmt-name">Medium print</span>
                                         <span class="fmt-size">12x18" (300dpi)</span>
                                     </span>
                                 </label>
@@ -451,7 +433,7 @@
                                     <input type="checkbox" name="formatos" value="large">
                                     <span class="format-label">
                                         <span class="fmt-icon">&#x1F5BC;</span>
-                                        <span class="fmt-name">Cuadro grande</span>
+                                        <span class="fmt-name">Large print</span>
                                         <span class="fmt-size">16x24" (300dpi)</span>
                                     </span>
                                 </label>
@@ -461,29 +443,29 @@
                             <label class="format-option" style="display:block; margin-bottom:10px;">
                                 <input type="checkbox" name="formatos" value="custom" id="customCheck">
                                 <span class="format-label" style="display:inline-block; width:auto; padding:10px 20px;">
-                                    <span class="fmt-name">&#x2795; Medida personalizada (+$4.99)</span>
+                                    <span class="fmt-name">&#x2795; Custom size (+$4.99)</span>
                                 </span>
                             </label>
                             <div class="custom-size" id="customSize">
-                                <input type="number" id="customW" placeholder="Ancho (px)" min="500" max="10000">
+                                <input type="number" id="customW" placeholder="Width (px)" min="500" max="10000">
                                 <span>&times;</span>
-                                <input type="number" id="customH" placeholder="Alto (px)" min="500" max="10000">
+                                <input type="number" id="customH" placeholder="Height (px)" min="500" max="10000">
                                 <span>px</span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="correo">Correo electrónico *</label>
-                            <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
-                            <p class="hint">Aquí recibirás tus imágenes en alta resolución.</p>
+                            <label for="correo">Email address *</label>
+                            <input type="email" id="correo" name="correo" placeholder="youremail@example.com" required>
+                            <p class="hint">This is where you will receive your high-resolution images.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="notas">Notas adicionales (opcional)</label>
-                            <input type="text" id="notas" name="notas" placeholder="Algún detalle extra que quieras incluir...">
+                            <label for="notas">Additional notes (optional)</label>
+                            <input type="text" id="notas" name="notas" placeholder="Any extra detail you'd like to include...">
                         </div>
 
-                        <button type="submit" class="btn-submit">Continuar al Pago</button>
+                        <button type="submit" class="btn-submit">Continue to Payment</button>
                     </form>
                 </div>
             </div>
@@ -493,23 +475,23 @@
         <section style="padding-top:0;">
             <div class="section-inner">
                 <div class="disclaimer">
-                    <p>Las posiciones estelares son calculadas con datos astronómicos reales del catálogo Hipparcos usando la librería Skyfield. Las constelaciones mostradas dependen del hemisferio y la hora del evento.</p>
-                    <p>Las imágenes se entregan en formato digital (PNG). No incluyen impresión física ni enmarcado.</p>
-                    <p>Al realizar tu compra, aceptas nuestros <a href="terms-of-service.html">Términos de Servicio</a> y <a href="privacy-policy.html">Política de Privacidad</a>.</p>
+                    <p>Star positions are calculated using real astronomical data from the Hipparcos catalog via the Skyfield library. The constellations shown depend on the hemisphere and time of the event.</p>
+                    <p>Images are delivered in digital format (PNG). Physical printing and framing are not included.</p>
+                    <p>By making your purchase, you agree to our <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p>
                 </div>
             </div>
         </section>
 
         <footer>
             <div class="footer-links">
-                <a href="index.html">Inicio</a>
-                <a href="planes.html">Planes</a>
-                <a href="mapa-estelar.html">Mapa Estelar</a>
-                <a href="consulta.html">Consulta</a>
-                <a href="privacy-policy.html">Privacidad</a>
-                <a href="terms-of-service.html">Términos</a>
+                <a href="index.html">Home</a>
+                <a href="planes.html">Plans</a>
+                <a href="mapa-estelar.html">Star Map</a>
+                <a href="consulta.html">Consultation</a>
+                <a href="privacy-policy.html">Privacy</a>
+                <a href="terms-of-service.html">Terms</a>
             </div>
-            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. Todos los derechos reservados.</p>
+            <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. All rights reserved.</p>
         </footer>
     </div>
 
@@ -588,7 +570,7 @@
                 formatos.push(cb.value);
             });
             if(formatos.length === 0){
-                errorDiv.textContent = 'Selecciona al menos un formato.';
+                errorDiv.textContent = 'Please select at least one format.';
                 errorDiv.classList.add('visible');
                 return;
             }
@@ -598,7 +580,7 @@
                 var cw = parseInt(document.getElementById('customW').value);
                 var ch = parseInt(document.getElementById('customH').value);
                 if(!cw || !ch || cw < 500 || ch < 500 || cw > 10000 || ch > 10000){
-                    errorDiv.textContent = 'Medida personalizada: mínimo 500px, máximo 10000px por lado.';
+                    errorDiv.textContent = 'Custom size: minimum 500px, maximum 10000px per side.';
                     errorDiv.classList.add('visible');
                     return;
                 }
@@ -607,13 +589,13 @@
             if(!valid){
                 var firstInvalid = form.querySelector('.invalid');
                 if(firstInvalid) firstInvalid.focus();
-                errorDiv.textContent = 'Por favor, completa todos los campos requeridos correctamente.';
+                errorDiv.textContent = 'Please fill in all required fields correctly.';
                 errorDiv.classList.add('visible');
                 return;
             }
 
             var originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Procesando...';
+            submitBtn.textContent = 'Processing...';
             submitBtn.disabled = true;
 
             try {
@@ -641,13 +623,13 @@
                 if(response.ok && (data.url || data.checkout_url)){
                     window.location.href = data.url || data.checkout_url;
                 } else {
-                    errorDiv.textContent = data.error || 'Hubo un error al procesar tu solicitud.';
+                    errorDiv.textContent = data.error || 'There was an error processing your request.';
                     errorDiv.classList.add('visible');
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
                 }
             } catch(err) {
-                errorDiv.textContent = 'Error de conexión. Verifica tu internet e intenta de nuevo.';
+                errorDiv.textContent = 'Connection error. Please check your internet and try again.';
                 errorDiv.classList.add('visible');
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;

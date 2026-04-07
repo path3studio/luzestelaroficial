@@ -27,4 +27,32 @@
   <url><loc>https://luzestelaroficial.com/podcast/feed.xml</loc><lastmod>2026-04-06</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://luzestelaroficial.com/privacy-policy.html</loc><lastmod>2026-04-06</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://luzestelaroficial.com/terms-of-service.html</loc><lastmod>2026-04-06</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
+  <!-- English pages -->
+  <url>
+    <loc>https://luzestelaroficial.com/en/</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url><loc>https://luzestelaroficial.com/en/planes.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/consulta.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/mapa-estelar.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/aries.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/tauro.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/geminis.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/cancer.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/leo.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/virgo.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/libra.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/escorpio.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/sagitario.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/capricornio.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/acuario.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/signos/piscis.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/aprende/compatibilidad.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/aprende/fases-lunares.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/aprende/transitos-planetarios.html</loc><lastmod>2026-04-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/privacy-policy.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://luzestelaroficial.com/en/terms-of-service.html</loc><lastmod>2026-04-07</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
