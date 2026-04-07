@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Luz Estelar Oficial — Horóscopo Técnico Diario</title>
+    <description>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</description>
+    <link>https://luzestelaroficial.com</link>
+    <language>es</language>
+    <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
+    <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>Mon, 06 Apr 2026 22:00:00 -0600</lastBuildDate>
+    <itunes:author>Luz Estelar Oficial</itunes:author>
+    <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
+    <itunes:owner>
+      <itunes:name>Luz Estelar Oficial</itunes:name>
+      <itunes:email>contacto@luzestelaroficial.com</itunes:email>
+    </itunes:owner>
+    <itunes:image href="https://luzestelaroficial.com/podcast_cover.jpg"/>
+    <itunes:category text="Society &amp; Culture">
+      <itunes:category text="Philosophy"/>
+    </itunes:category>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <image>
+      <url>https://luzestelaroficial.com/podcast_cover.jpg</url>
+      <title>Luz Estelar Oficial — Horóscopo Técnico Diario</title>
+      <link>https://luzestelaroficial.com</link>
+    </image>
+    <item>
+      <title>Bienvenidos a Luz Estelar Oficial</title>
+      <description><![CDATA[Bienvenidos al podcast de Luz Estelar Oficial — tu horóscopo técnico diario basado en datos astronómicos reales.
+
+Cada mañana analizamos las posiciones planetarias exactas, aspectos mayores y fases lunares para darte la lectura más precisa del zodiaco para los 12 signos.
+
+Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.
+
+Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
+
+Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://luzestelaroficial.com/podcast/episodes/ep-2026-04-06.mp3" length="120318" type="audio/mpeg"/>
+      <guid isPermaLink="true">https://luzestelaroficial.com/podcast/episodes/ep-2026-04-06.mp3</guid>
+      <pubDate>Mon, 06 Apr 2026 07:00:00 -0600</pubDate>
+      <itunes:duration>00:00:30</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>trailer</itunes:episodeType>
+    </item>
+  </channel>
+</rss>
