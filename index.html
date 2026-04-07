@@ -981,36 +981,38 @@
                 setTimeout(spawnShootingStar, 3000+Math.random()*8000);
             }
             function draw(){
-                ctx.clearRect(0,0,w,h);
-                const t = Date.now()*0.001;
-                // Regular stars
-                stars.forEach(s=>{
-                    const flicker = 0.5+0.5*Math.sin(t*s.speed*6+s.phase);
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-                    ctx.fillStyle = `rgba(255,255,255,${s.a*flicker})`;
-                    ctx.fill();
-                });
-                // Shooting stars
-                for(let i=shootingStars.length-1;i>=0;i--){
-                    const ss = shootingStars[i];
-                    ss.life++;
-                    const progress = ss.life/ss.maxLife;
-                    const fade = progress<0.3 ? progress/0.3 : progress>0.7 ? (1-progress)/0.3 : 1;
-                    const cx = ss.x + Math.cos(ss.angle)*ss.speed*ss.life;
-                    const cy = ss.y + Math.sin(ss.angle)*ss.speed*ss.life;
-                    const dx = Math.cos(ss.angle)*ss.len;
-                    const dy = Math.sin(ss.angle)*ss.len;
-                    const grad = ctx.createLinearGradient(cx-dx, cy-dy, cx, cy);
-                    grad.addColorStop(0, `rgba(255,255,255,0)`);
-                    grad.addColorStop(1, `rgba(255,255,255,${ss.opacity*fade})`);
-                    ctx.strokeStyle = grad; ctx.lineWidth = 1.5;
-                    ctx.beginPath(); ctx.moveTo(cx-dx, cy-dy); ctx.lineTo(cx, cy); ctx.stroke();
-                    // Head glow
-                    ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI*2);
-                    ctx.fillStyle = `rgba(255,255,255,${ss.opacity*fade*0.8})`; ctx.fill();
-                    if(ss.life >= ss.maxLife) shootingStars.splice(i, 1);
-                }
+                try {
+                    ctx.clearRect(0,0,w,h);
+                    const t = Date.now()*0.001;
+                    // Regular stars
+                    stars.forEach(s=>{
+                        const flicker = 0.5+0.5*Math.sin(t*s.speed*6+s.phase);
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                        ctx.fillStyle = `rgba(255,255,255,${s.a*flicker})`;
+                        ctx.fill();
+                    });
+                    // Shooting stars
+                    for(let i=shootingStars.length-1;i>=0;i--){
+                        const ss = shootingStars[i];
+                        ss.life++;
+                        const progress = ss.life/ss.maxLife;
+                        const fade = progress<0.3 ? progress/0.3 : progress>0.7 ? (1-progress)/0.3 : 1;
+                        const cx = ss.x + Math.cos(ss.angle)*ss.speed*ss.life;
+                        const cy = ss.y + Math.sin(ss.angle)*ss.speed*ss.life;
+                        const dx = Math.cos(ss.angle)*ss.len;
+                        const dy = Math.sin(ss.angle)*ss.len;
+                        const grad = ctx.createLinearGradient(cx-dx, cy-dy, cx, cy);
+                        grad.addColorStop(0, `rgba(255,255,255,0)`);
+                        grad.addColorStop(1, `rgba(255,255,255,${ss.opacity*fade})`);
+                        ctx.strokeStyle = grad; ctx.lineWidth = 1.5;
+                        ctx.beginPath(); ctx.moveTo(cx-dx, cy-dy); ctx.lineTo(cx, cy); ctx.stroke();
+                        // Head glow
+                        ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI*2);
+                        ctx.fillStyle = `rgba(255,255,255,${ss.opacity*fade*0.8})`; ctx.fill();
+                        if(ss.life >= ss.maxLife) shootingStars.splice(i, 1);
+                    }
+                } catch(e) { /* canvas error — ignore to keep page alive */ }
                 requestAnimationFrame(draw);
             }
             init(); draw(); spawnShootingStar();
@@ -1114,12 +1116,26 @@
         });
 
         // ── Scroll fade-in ──
-        const obs = new IntersectionObserver((entries)=>{
-            entries.forEach(e=>{
-                if(e.isIntersecting) e.target.classList.add('visible');
-            });
-        }, {threshold: 0.1});
-        document.querySelectorAll('.fade-in').forEach(el=> obs.observe(el));
+        (function(){
+            var fadeEls = document.querySelectorAll('.fade-in');
+            function revealAll(){
+                fadeEls.forEach(function(el){ el.classList.add('visible'); });
+            }
+            // Primary: IntersectionObserver
+            if('IntersectionObserver' in window){
+                var obs = new IntersectionObserver(function(entries){
+                    entries.forEach(function(e){
+                        if(e.isIntersecting) e.target.classList.add('visible');
+                    });
+                }, {threshold: 0.05, rootMargin: '50px'});
+                fadeEls.forEach(function(el){ obs.observe(el); });
+            }
+            // Fallback: if nothing visible after 1.2s, force all
+            setTimeout(function(){
+                var anyVisible = document.querySelector('.fade-in.visible');
+                if(!anyVisible) revealAll();
+            }, 1200);
+        })();
     </script>
 </body>
 </html>
