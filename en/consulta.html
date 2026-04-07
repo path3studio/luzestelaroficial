@@ -9,10 +9,13 @@
     <meta property="og:description" content="Birth chart, numerology, 3-month forecast and narrated audio. Your personalized cosmic guide.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
     <meta property="og:url" content="https://luzestelaroficial.com/en/consulta.html">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="es_MX">
     <link rel="icon" type="image/png" href="../app_icon.png">
     <link rel="canonical" href="https://luzestelaroficial.com/en/consulta.html">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/consulta.html">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/consulta.html">
+    <link rel="alternate" hreflang="x-default" href="https://luzestelaroficial.com/consulta.html">
     <meta name="theme-color" content="#d4a849">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -743,11 +746,12 @@
                     body: JSON.stringify({
                         nombre: form.nombre.value.trim(),
                         fecha_nacimiento: form.nacimiento.value,
-                        hora_nacimiento: form.hora.value || 'No especificada',
+                        hora_nacimiento: form.hora.value || 'Not specified',
                         lugar_nacimiento: form.lugar.value.trim(),
                         email: form.correo.value.trim(),
                         mensaje: form.mensaje.value.trim() || '',
-                        plan: currentPlan
+                        plan: currentPlan,
+                        lang: 'en'
                     })
                 });
 

@@ -12,6 +12,7 @@
     <link rel="canonical" href="https://luzestelaroficial.com/en/mapa-estelar.html">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mapa-estelar.html">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/mapa-estelar.html">
+    <link rel="alternate" hreflang="x-default" href="https://luzestelaroficial.com/mapa-estelar.html">
     <meta name="theme-color" content="#d4a849">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -614,7 +615,8 @@
                         lugar_nacimiento: form.lugar.value.trim(),
                         email: form.correo.value.trim(),
                         mensaje: 'MAPA ESTELAR | Formatos: ' + formatos.join(',') + (customSize ? ' | Custom: ' + customSize : '') + (form.notas.value.trim() ? ' | Notas: ' + form.notas.value.trim() : ''),
-                        plan: formatos.includes('custom') ? 'mapa_estelar_custom' : 'mapa_estelar'
+                        plan: formatos.includes('custom') ? 'mapa_estelar_custom' : 'mapa_estelar',
+                        lang: 'en'
                     })
                 });
 

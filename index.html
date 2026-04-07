@@ -9,11 +9,14 @@
     <meta property="og:description" content="Horóscopo técnico diario basado en datos astronómicos reales.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
     <meta property="og:url" content="https://luzestelaroficial.com/">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:locale:alternate" content="en_US">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com;">
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="canonical" href="https://luzestelaroficial.com/">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/">
+    <link rel="alternate" hreflang="x-default" href="https://luzestelaroficial.com/">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d4a849">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1312,6 +1315,20 @@
                 if(!anyVisible) revealAll();
             }, 1200);
         })();
+    </script>
+
+    <!-- Language detection banner for English speakers -->
+    <script>
+    (function(){
+        var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+        if(lang.startsWith('en') && !sessionStorage.getItem('lang_dismissed')){
+            var b = document.createElement('div');
+            b.id = 'lang-banner';
+            b.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,26,0.95);border-top:1px solid rgba(212,168,73,0.3);padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:16px;z-index:9999;backdrop-filter:blur(10px);font-family:Inter,sans-serif;font-size:0.9em;color:#e0dce8;';
+            b.innerHTML = '<span>This site is also available in English</span><a href="en/" style="background:#d4a849;color:#06061a;padding:8px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.88em;">Switch to English</a><button onclick="sessionStorage.setItem(\'lang_dismissed\',\'1\');this.parentElement.remove();" style="background:none;border:none;color:#9890a8;cursor:pointer;font-size:1.2em;padding:4px 8px;" aria-label="Close">&times;</button>';
+            document.body.appendChild(b);
+        }
+    })();
     </script>
 </body>
 </html>
