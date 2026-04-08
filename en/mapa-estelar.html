@@ -492,6 +492,15 @@
                 <a href="privacy-policy.html">Privacy</a>
                 <a href="terms-of-service.html">Terms</a>
             </div>
+            <style>.newsletter-box{max-width:440px;margin:24px auto 20px;padding:20px 24px;border:1px solid var(--glass-border,rgba(255,255,255,0.08));border-radius:12px;background:var(--glass-bg,rgba(255,255,255,0.04));}.newsletter-title{font-size:1em;color:var(--gold,#d4a849);margin:0 0 12px;font-weight:600;}.newsletter-form{display:flex;gap:8px;}.newsletter-form input{flex:1;padding:10px 14px;border:1px solid var(--glass-border,rgba(255,255,255,0.08));border-radius:8px;background:rgba(255,255,255,0.05);color:var(--text-main,#e0dce8);font-size:0.9em;outline:none;transition:border-color 0.3s;}.newsletter-form input:focus{border-color:var(--gold,#d4a849);}.newsletter-form input::placeholder{color:var(--text-dim,#9890a8);}.newsletter-form button{padding:10px 20px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold,#d4a849),#c89030);color:#1a1625;font-weight:700;font-size:0.9em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;white-space:nowrap;}.newsletter-form button:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(212,168,73,0.3);}.newsletter-form button:disabled{opacity:0.6;cursor:not-allowed;transform:none;}.newsletter-msg{font-size:0.82em;margin:8px 0 0;min-height:1.2em;}@media(max-width:480px){.newsletter-form{flex-direction:column;}.newsletter-form button{width:100%;}}</style>
+                        <div class="newsletter-box">
+                <p class="newsletter-title">&#10024; Get your daily horoscope</p>
+                <form id="newsletter-form" class="newsletter-form" autocomplete="on">
+                    <input type="email" id="newsletter-email" name="email" placeholder="Your email address" required autocomplete="email">
+                    <button type="submit">Subscribe</button>
+                </form>
+                <p id="newsletter-msg" class="newsletter-msg"></p>
+            </div>
             <p>&copy; 2026 Luz Estelar Oficial — Path3 Studio. All rights reserved.</p>
         </footer>
     </div>
@@ -647,5 +656,6 @@
             });
         });
     </script>
+<script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
 </body>
 </html>
