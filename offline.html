@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexion — Luz Estelar</title>
+    <style>
+        :root{--gold:#d4a849;--bg-deep:#06061a;--text:#e0dce8;--text-dim:#9890a8;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
+        .container{max-width:420px;}
+        .symbol{font-size:4em;margin-bottom:20px;opacity:0.6;}
+        h1{font-size:1.6em;color:var(--gold);margin-bottom:12px;}
+        p{font-size:0.95em;color:var(--text-dim);line-height:1.7;margin-bottom:20px;}
+        .btn{display:inline-block;padding:12px 28px;border:1px solid var(--gold);border-radius:8px;color:var(--gold);text-decoration:none;font-size:0.9em;transition:background 0.3s;}
+        .btn:hover{background:rgba(212,168,73,0.1);}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="symbol">&#127776;</div>
+        <h1>Sin conexion</h1>
+        <p>Parece que no tienes conexion a internet. Las estrellas siguen ahi arriba, pero necesitamos la red para mostrarte tu horoscopo.</p>
+        <a href="/" class="btn" onclick="window.location.reload(); return false;">Reintentar</a>
+    </div>
+</body>
+</html>
