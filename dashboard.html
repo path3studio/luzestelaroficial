@@ -219,6 +219,37 @@
         }
     }
 
+    async function loadDailyHoroscope(cc, lang) {
+        var el = document.getElementById('daily-horoscope');
+        try {
+            var res = await fetch('/api/dashboard/daily?lang=' + lang);
+            var data = await res.json();
+            if (data.ok && data.horoscope && data.horoscope.text) {
+                var h = data.horoscope;
+                var bio = h.biorhythm || {};
+                var html = '<p>' + h.text + '</p>';
+                html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;">';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">❤️</div><div style="font-size:0.75em;color:var(--text-dim);">Amor</div><div style="font-weight:600;color:var(--gold);">' + (bio.love || '—') + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">💼</div><div style="font-size:0.75em;color:var(--text-dim);">Trabajo</div><div style="font-weight:600;color:var(--gold);">' + (bio.career || '—') + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">🌿</div><div style="font-size:0.75em;color:var(--text-dim);">Salud</div><div style="font-weight:600;color:var(--gold);">' + (bio.health || '—') + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">⚡</div><div style="font-size:0.75em;color:var(--text-dim);">Energia</div><div style="font-weight:600;color:var(--gold);">' + (bio.energy || '—') + '/10</div></div>';
+                html += '</div>';
+                if (data.moon) {
+                    html += '<p style="margin-top:14px;font-size:0.82em;color:var(--text-dim);">🌙 ' + data.moon.phase + ' — Iluminacion: ' + data.moon.illumination + '%</p>';
+                }
+                if (data.luckyNumber) {
+                    html += '<p style="font-size:0.82em;color:var(--text-dim);">🍀 Numero de la suerte: ' + data.luckyNumber + '</p>';
+                }
+                el.innerHTML = html;
+            } else {
+                // Fallback: generic text from cross-cultural data
+                el.innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Con tu numero de vida ' + cc.numerology.lifePathNumber + ' (' + cc.numerology.data.keyword_es + '), este es un buen momento para reflexionar sobre tu proposito. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuicion.</p><p style="margin-top:12px;">Las vibraciones del arbol ' + cc.celtic.name_es + ' en la tradicion celta resuenan con la energia del dia.</p>';
+            }
+        } catch(e) {
+            el.innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuicion.</p>';
+        }
+    }
+
     function showState(id) {
         ['loading-state','login-prompt','setup-state','main-dashboard'].forEach(function(s) {
             document.getElementById(s).classList.toggle('hidden', s !== id);
@@ -273,8 +304,8 @@
             document.getElementById('chart-notice').textContent = profile.nombre + ' — ' + profile.fecha_nacimiento + ' ' + profile.hora_nacimiento;
         }
 
-        // Daily horoscope placeholder
-        document.getElementById('daily-horoscope').innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Con tu numero de vida ' + cc.numerology.lifePathNumber + ' (' + cc.numerology.data.keyword_es + '), este es un buen momento para reflexionar sobre tu proposito. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuicion.</p><p style="margin-top:12px;">Las vibraciones del arbol ' + cc.celtic.name_es + ' en la tradicion celta resuenan con la energia del dia.</p>';
+        // Fetch daily horoscope from API
+        loadDailyHoroscope(cc, 'es');
 
         // Upgrade CTA visibility
         if (user.tier !== 'free') {
