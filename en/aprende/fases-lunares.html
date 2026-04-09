@@ -243,6 +243,24 @@
         </section>
 
         <!-- Footer -->
+        
+        <div class="card" style="margin-top:30px;">
+            <h2>Explore Other Systems</h2>
+            <div class="cta-row">
+                <a href="../../horoscopo-chino/" class="cta-card">
+                    <h3>Chinese Zodiac</h3>
+                    <p>The 12 animals and their meaning.</p>
+                </a>
+                <a href="../../numerologia/" class="cta-card">
+                    <h3>Numerology</h3>
+                    <p>Calculate your life path number.</p>
+                </a>
+                <a href="../../zodiaco-celta/" class="cta-card">
+                    <h3>Celtic Zodiac</h3>
+                    <p>Your tree according to the Celts.</p>
+                </a>
+            </div>
+        </div>
         <footer>
             <div class="footer-links">
                 <a href="../">Home</a>
@@ -414,5 +432,6 @@
     })();
     </script>
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
 </body>
 </html>
