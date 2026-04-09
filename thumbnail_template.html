@@ -134,7 +134,7 @@
         top: 34px;
         left: 40px;
         font-family: 'Cormorant Garamond', serif;
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 700;
         letter-spacing: 0.03em;
         background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
@@ -160,13 +160,14 @@
     /* ── "HOROSCOPO DEL DIA" label ──────────────────── */
     .label {
         font-family: 'Inter', sans-serif;
-        font-size: 16px;
-        font-weight: 500;
-        letter-spacing: 0.28em;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.32em;
         text-transform: uppercase;
         color: var(--gold);
         margin-bottom: 20px;
         font-variant: small-caps;
+        text-shadow: 0 0 20px rgba(212,168,73,0.3);
     }
 
     /* ── Decorative line above date ─────────────────── */
@@ -180,14 +181,15 @@
     /* ── Main date text ─────────────────────────────── */
     .date {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 66px;
+        font-size: 88px;
         font-weight: 700;
         color: #ffffff;
         line-height: 1.05;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.02em;
         text-shadow:
-            0 0 60px rgba(212,168,73,0.15),
-            0 2px 4px rgba(0,0,0,0.5);
+            0 0 80px rgba(212,168,73,0.25),
+            0 0 40px rgba(212,168,73,0.15),
+            0 2px 4px rgba(0,0,0,0.6);
         margin-bottom: 20px;
     }
 
@@ -218,7 +220,7 @@
         text-align: center;
         z-index: 10;
         font-family: 'Noto Sans Symbols 2', 'Apple Symbols', 'Segoe UI Symbol', sans-serif;
-        font-size: 24px;
+        font-size: 30px;
         color: var(--gold);
         opacity: 0.65;
         text-shadow: 0 0 10px rgba(212,168,73,0.3);
@@ -264,7 +266,7 @@
         <div class="label">Horoscopo del Dia</div>
         <div class="divider-top"></div>
         <div class="date" id="dateText">{{DATE_TEXT}}</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;color:rgba(255,255,255,0.55);margin-top:-12px;margin-bottom:14px;">{{YEAR}}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:-10px;margin-bottom:14px;letter-spacing:0.08em;">{{YEAR}}</div>
         <div class="divider-bottom"></div>
         <div class="diamond"></div>
     </div>
