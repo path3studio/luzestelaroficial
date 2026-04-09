@@ -1,0 +1,27 @@
+# Cloudflare Pages project configuration for Luz Estelar
+# Deploy: npx wrangler pages deploy . --project-name luzestelar
+
+name = "luzestelar"
+pages_build_output_dir = "."
+compatibility_date = "2024-09-25"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "luzestelar-db"
+database_id = "482c33b2-1b29-415f-aaf0-cfac74b9898e"
+
+# KV Namespace (auth tokens, cached data, newsletter)
+[[kv_namespaces]]
+binding = "AUTH_KV"
+id = "861e63a656b54a9b9eac5a3f8d8e1421"
+
+# Environment variables (set via dashboard or wrangler secret)
+# GOOGLE_CLIENT_ID     — Google OAuth client ID
+# GOOGLE_CLIENT_SECRET — Google OAuth client secret
+# JWT_SECRET           — HMAC signing key for JWTs
+# RESEND_API_KEY       — Resend.com API key for magic link emails
+# STRIPE_SECRET_KEY    — Stripe secret key
+# STRIPE_WEBHOOK_SECRET — Stripe webhook signing secret
+# STRIPE_PRICE_PREMIUM — Stripe Price ID for premium subscription

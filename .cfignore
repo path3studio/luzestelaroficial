@@ -1,0 +1,7 @@
+# Exclude large podcast episodes (served via GitHub Pages)
+podcast/episodes/*.mp3
+
+# Exclude dev files
+wrangler.toml
+.cfignore
+node_modules/
