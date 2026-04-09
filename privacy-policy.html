@@ -100,8 +100,8 @@
 
         <div class="section">
             <h2>5. Almacenamiento y Seguridad</h2>
-            <p>Los tokens de acceso y credenciales de API se almacenan de forma segura en variables de entorno en nuestros servidores locales. No almacenamos información personal de usuarios en bases de datos externas.</p>
-            <p>Implementamos medidas de seguridad razonables para proteger la información bajo nuestro control, incluyendo cifrado en tránsito y acceso restringido a credenciales.</p>
+            <p>Los datos de tu cuenta (email, nombre, perfil de nacimiento, suscripcion) se almacenan en una base de datos Cloudflare D1 cifrada. Los tokens de sesion se gestionan mediante Cloudflare KV con expiracion automatica.</p>
+            <p>Implementamos medidas de seguridad incluyendo: cifrado en transito (HTTPS/TLS), cookies HttpOnly y Secure, firmas HMAC-SHA256 para tokens JWT, y verificacion de firmas para webhooks de pago.</p>
         </div>
 
         <div class="section">
@@ -111,7 +111,13 @@
 
         <div class="section">
             <h2>7. Cookies y Rastreo</h2>
-            <p>Nuestro sitio web estático no utiliza cookies ni tecnologías de rastreo. Las plataformas de terceros donde publicamos contenido (YouTube, Facebook, Instagram, TikTok) pueden usar sus propias cookies según sus respectivas políticas de privacidad.</p>
+            <p>Utilizamos una unica cookie estrictamente necesaria:</p>
+            <ul>
+                <li><strong>le_token</strong> — Cookie de sesion para autenticacion. HttpOnly, Secure, SameSite=Lax. Expira en 30 dias. No contiene datos personales, solo un token JWT firmado.</li>
+            </ul>
+            <p>Esta cookie se establece unicamente cuando inicias sesion (Google OAuth o enlace magico). No se usa para rastreo ni publicidad.</p>
+            <p><strong>No utilizamos</strong> cookies de terceros, cookies de publicidad, ni tecnologias de rastreo como pixels o fingerprinting.</p>
+            <p>Cloudflare Web Analytics puede recopilar metricas anonimas de trafico (sin cookies, sin datos personales). Las plataformas de terceros donde publicamos contenido (YouTube, Facebook, Instagram, TikTok) pueden usar sus propias cookies segun sus respectivas politicas de privacidad.</p>
         </div>
 
         <div class="section">
