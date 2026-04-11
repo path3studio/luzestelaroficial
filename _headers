@@ -5,7 +5,10 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com;
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://cloudflareinsights.com https://luzestelar-consulta-api.path3studio.workers.dev https://nominatim.openstreetmap.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com;
+  ! Access-Control-Allow-Origin
+  Access-Control-Allow-Origin: https://luzestelaroficial.com
+  Vary: Origin
 
 /app_icon.png
   Cache-Control: public, max-age=2592000
@@ -15,3 +18,13 @@
 
 /aprende/*
   Cache-Control: public, max-age=86400
+
+# Belt-and-suspenders: paths that used to leak source/config never get cached.
+# The Pages Functions at functions/wrangler.toml.js and functions/workers/[[path]].js
+# already return 404 with no-store; this is a second layer in case anything
+# downstream tries to re-introduce caching for these URLs.
+/wrangler.toml
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+
+/workers/*
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0

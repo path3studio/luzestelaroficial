@@ -3,8 +3,10 @@
 # The `website/podcast/episodes/` directory no longer exists.
 # See scripts/podcast_generator.py for the R2 upload flow.
 
-# Exclude dev files
-# NOTE: wrangler.toml moved to Variables_y_Codigo/wrangler.toml after
-# wrangler 4.81.1 was found to ignore this rule for top-level files.
+# Exclude dev/config files
+# NOTE: wrangler.toml used to live here but wrangler 4.81.1 ignores
+# .assetsignore for top-level files, so it leaked as a static asset.
+# It now lives one level up at Variables_y_Codigo/wrangler.toml.
 .cfignore
+.assetsignore
 node_modules/

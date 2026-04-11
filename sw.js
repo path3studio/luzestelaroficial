@@ -5,7 +5,7 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-const CACHE_NAME = 'luzestelar-v1';
+const CACHE_NAME = 'luzestelar-v2';
 const OFFLINE_URL = '/offline.html';
 
 // Static assets to precache on install
@@ -81,6 +81,12 @@ self.addEventListener('fetch', (event) => {
         });
       })
     );
+    return;
+  }
+
+  // API calls: always network, never cache
+  if (request.url.includes('/api/')) {
+    event.respondWith(fetch(request));
     return;
   }
 
