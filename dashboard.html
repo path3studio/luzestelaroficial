@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Dashboard — Luz Estelar</title>
-    <meta name="description" content="Tu panel astrologico personalizado. Carta natal, horoscopo diario, transitos y perfil multi-sistema.">
+    <meta name="description" content="Tu panel astrológico personalizado. Carta natal, horóscopo diario, tránsitos y perfil multi-sistema.">
     <meta name="robots" content="noindex">
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,13 +50,43 @@
         .btn-primary{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),#c89030);color:#1a1625;font-weight:700;font-size:0.95em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;margin-top:8px;}
         .btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(212,168,73,0.3);}
 
-        /* Multi-system summary */
-        .system-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-        .system-item{text-align:center;padding:16px 8px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid var(--glass-border);text-decoration:none;color:inherit;transition:transform 0.2s;}
-        .system-item:hover{transform:translateY(-2px);}
-        .system-item .sys-symbol{font-size:2em;display:block;margin-bottom:4px;}
-        .system-item .sys-name{font-size:0.78em;color:var(--gold);font-weight:600;}
-        .system-item .sys-detail{font-size:0.72em;color:var(--text-dim);margin-top:2px;}
+        /* Geocoding autocomplete */
+        .geo-wrapper{position:relative;}
+        .geo-dropdown{position:absolute;top:100%;left:0;right:0;z-index:50;background:#12122e;border:1px solid var(--glass-border);border-top:none;border-radius:0 0 8px 8px;max-height:220px;overflow-y:auto;display:none;}
+        .geo-dropdown.active{display:block;}
+        .geo-option{padding:10px 14px;cursor:pointer;font-size:0.85em;color:var(--text);border-bottom:1px solid var(--glass-border);transition:background 0.15s;}
+        .geo-option:last-child{border-bottom:none;}
+        .geo-option:hover,.geo-option.highlighted{background:rgba(212,168,73,0.12);color:#fff;}
+        .geo-option .geo-main{display:block;font-weight:500;}
+        .geo-option .geo-sub{display:block;font-size:0.78em;color:var(--text-dim);margin-top:2px;}
+        .geo-spinner{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;border:2px solid var(--glass-border);border-top:2px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;display:none;}
+
+        /* Multi-system summary — 8 system grid */
+        .system-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+        .system-item{text-align:center;padding:18px 8px 14px;background:rgba(255,255,255,0.02);border-radius:14px;border:1px solid var(--glass-border);text-decoration:none;color:inherit;transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;animation:cardFadeIn 0.5s ease-out both;}
+        .system-item:hover{transform:translateY(-3px);border-color:rgba(212,168,73,0.3);box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+        .system-item .sys-color-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+        .system-item .sys-symbol{font-size:2.2em;display:block;margin-bottom:6px;}
+        .system-item .sys-name{font-size:0.82em;color:var(--gold);font-weight:600;display:block;}
+        .system-item .sys-detail{font-size:0.72em;color:var(--text-dim);margin-top:3px;display:block;}
+        @keyframes cardFadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+        /* Enneagram mini-link */
+        .ennea-link{text-align:center;padding:18px 8px 14px;background:linear-gradient(135deg,rgba(212,168,73,0.06),rgba(124,92,191,0.04));border-radius:14px;border:1px dashed rgba(212,168,73,0.25);text-decoration:none;color:inherit;transition:transform 0.3s,border-color 0.3s;animation:cardFadeIn 0.5s ease-out both;}
+        .ennea-link:hover{transform:translateY(-3px);border-color:var(--gold);}
+
+        /* Share buttons */
+        .share-row{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+        .btn-share{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border:1px solid rgba(212,168,73,0.3);border-radius:10px;background:rgba(212,168,73,0.08);color:var(--gold);font-size:0.85em;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+        .btn-share:hover{background:rgba(212,168,73,0.15);transform:translateY(-1px);}
+
+        /* Synthesis card */
+        .synthesis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
+        .synth-item{text-align:center;padding:14px 8px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid var(--glass-border);}
+        .synth-item .synth-label{font-size:0.72em;color:var(--text-dim);margin-bottom:4px;}
+        .synth-item .synth-bar{height:6px;border-radius:3px;background:var(--glass-border);margin:6px 0;overflow:hidden;}
+        .synth-item .synth-fill{height:100%;border-radius:3px;transition:width 1s ease-out;}
+        .synth-item .synth-value{font-size:0.78em;color:var(--gold);font-weight:600;}
 
         /* Chart container */
         .chart-container{display:flex;justify-content:center;padding:10px 0;}
@@ -112,8 +142,8 @@
     <div id="login-prompt" class="dashboard hidden">
         <div class="dash-card setup-card dash-full">
             <h2>Bienvenido a Luz Estelar</h2>
-            <p>Inicia sesion para acceder a tu dashboard astrologico personalizado.</p>
-            <a href="/login.html" class="btn-primary" style="display:inline-block;text-decoration:none;text-align:center;max-width:300px;">Iniciar Sesion</a>
+            <p>Inicia sesión para acceder a tu dashboard astrológico personalizado.</p>
+            <a href="/login.html" class="btn-primary" style="display:inline-block;text-decoration:none;text-align:center;max-width:300px;">Iniciar Sesión</a>
         </div>
     </div>
 
@@ -121,7 +151,7 @@
     <div id="setup-state" class="dashboard hidden">
         <div class="dash-card setup-card dash-full">
             <h2>Configura tu Perfil Astral</h2>
-            <p>Ingresa tu fecha de nacimiento para descubrir tu perfil en cuatro sistemas diferentes.</p>
+            <p>Ingresa tu fecha de nacimiento para descubrir tu perfil en ocho sistemas ancestrales.</p>
             <form id="setup-form" class="setup-form">
                 <div class="form-group">
                     <label>Nombre</label>
@@ -135,9 +165,14 @@
                     <label>Hora de nacimiento (opcional)</label>
                     <input type="time" id="setup-hora">
                 </div>
-                <div class="form-group">
+                <div class="form-group geo-wrapper">
                     <label>Lugar de nacimiento</label>
-                    <input type="text" id="setup-lugar" placeholder="Ciudad, Pais" required>
+                    <input type="text" id="setup-lugar" placeholder="Ciudad, País" required autocomplete="off">
+                    <div class="geo-spinner" id="geo-spinner"></div>
+                    <div class="geo-dropdown" id="geo-dropdown"></div>
+                    <input type="hidden" id="setup-lat">
+                    <input type="hidden" id="setup-lon">
+                    <input type="hidden" id="setup-tz">
                 </div>
                 <button type="submit" class="btn-primary">Descubrir Mi Perfil</button>
             </form>
@@ -147,11 +182,28 @@
     <!-- Main dashboard (authenticated + has profile) -->
     <div id="main-dashboard" class="dashboard hidden">
 
-        <!-- Multi-system summary -->
+        <!-- Multi-system summary (8 systems) -->
         <div class="dash-card dash-full">
             <h2><span class="icon">&#10024;</span> Tu Perfil Multi-Sistema</h2>
             <div class="system-grid" id="system-summary">
-                <!-- Filled by JS -->
+                <!-- 7 date-based systems filled by JS + 1 enneagram link -->
+            </div>
+            <div class="share-row">
+                <button class="btn-share" onclick="downloadCard()">&#128247; Descargar Card</button>
+                <button class="btn-share" onclick="shareCard()">&#128279; Compartir</button>
+                <button class="btn-share" onclick="copyProfileLink()" id="btn-copy-link">&#128279; Copiar Link</button>
+            </div>
+        </div>
+
+        <!-- Elemental Synthesis -->
+        <div class="dash-card dash-full">
+            <h2><span class="icon">&#127760;</span> Síntesis Elemental</h2>
+            <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:12px;">Balance de elementos a través de tus 7 sistemas ancestrales.</p>
+            <div class="synthesis-grid" id="synth-grid">
+                <!-- Filled by JS: Fire, Earth, Air, Water bars -->
+            </div>
+            <div id="synth-insight" style="margin-top:18px;padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);">
+                <p style="font-size:0.88em;line-height:1.7;color:var(--text-dim);" id="synth-text"></p>
             </div>
         </div>
 
@@ -162,29 +214,112 @@
                 <div class="chart-container">
                     <canvas id="natal-chart-canvas"></canvas>
                 </div>
-                <p style="text-align:center;font-size:0.78em;color:var(--text-dim);margin-top:8px;" id="chart-notice">Ingresa tu hora de nacimiento para una carta natal completa.</p>
+                <p style="text-align:center;font-size:0.78em;color:var(--text-dim);margin-top:8px;" id="chart-notice">Sol y Luna aproximados. Obtén tu carta natal completa con 10 planetas.</p>
             </div>
 
             <!-- Daily Horoscope -->
             <div class="dash-card">
-                <h2><span class="icon">&#9788;</span> Tu Dia Hoy</h2>
+                <h2><span class="icon">&#9788;</span> Tu Día Hoy</h2>
                 <div id="daily-horoscope" class="horoscope-text">
-                    <p style="color:var(--text-dim);">Cargando tu horoscopo...</p>
+                    <p style="color:var(--text-dim);">Cargando tu horóscopo...</p>
                 </div>
             </div>
 
             <!-- Cross-cultural report preview -->
             <div class="dash-card dash-full">
-                <h2><span class="icon">&#127760;</span> Reporte Cross-Cultural</h2>
+                <h2><span class="icon">&#128302;</span> Reporte Cross-Cultural</h2>
                 <div id="cross-cultural-preview">
-                    <p style="color:var(--text-dim);">Tu reporte personalizado combina cuatro sistemas ancestrales para revelar patrones unicos en tu personalidad.</p>
+                    <p style="color:var(--text-dim);">Tu reporte personalizado combina ocho sistemas ancestrales para revelar patrones únicos en tu personalidad.</p>
                 </div>
                 <div class="upgrade-cta" id="upgrade-cta">
                     <h3>&#9733; Desbloquea tu Reporte Completo</h3>
-                    <p>Analisis detallado que conecta tu signo occidental, animal chino, numero de vida y arbol celta.</p>
+                    <p>Análisis detallado que conecta tus 8 sistemas: zodiaco, chino, numerología, celta, maya, védica, diseño humano y eneagrama.</p>
                     <a href="/planes.html" class="btn-upgrade">Ver Planes Premium</a>
                 </div>
             </div>
+
+            <!-- Compatibilidad Pareja — cross-cultural 7-system compatibility (premium).
+                 Added 2026-04-11 to close the UI gap vs. the already-deployed backend
+                 at functions/api/reports/compatibility.js. Free users see an upgrade
+                 gate; premium users can add a partner profile inline and calculate. -->
+            <div class="dash-card dash-full" id="compat-card">
+                <h2><span class="icon">&#128150;</span> Compatibilidad Pareja</h2>
+                <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:16px;">Analiza la compatibilidad entre dos perfiles a través de 7 sistemas ancestrales: Occidental, Chino, Numerología, Celta, Maya, Védica y Diseño Humano.</p>
+
+                <!-- State: free user — upgrade gate -->
+                <div id="compat-upgrade-gate" class="upgrade-cta hidden">
+                    <h3>&#128274; Función Premium</h3>
+                    <p>La compatibilidad cross-cultural de pareja requiere una cuenta Premium. Incluye análisis en 7 sistemas ancestrales y hasta 10 perfiles guardados.</p>
+                    <a href="/planes.html" class="btn-upgrade">Ver Planes Premium</a>
+                </div>
+
+                <!-- State: premium, no partner profile yet -->
+                <div id="compat-partner-form" class="hidden">
+                    <p style="font-size:0.82em;color:var(--text-dim);margin-bottom:12px;">Agrega los datos de nacimiento de tu pareja para generar el reporte:</p>
+                    <form id="partner-form" style="max-width:500px;">
+                        <div class="form-group">
+                            <label>Nombre de tu pareja</label>
+                            <input type="text" id="partner-nombre" placeholder="Nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de nacimiento</label>
+                            <input type="date" id="partner-fecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora de nacimiento (opcional)</label>
+                            <input type="time" id="partner-hora">
+                        </div>
+                        <div class="form-group">
+                            <label>Lugar de nacimiento</label>
+                            <input type="text" id="partner-lugar" placeholder="Ciudad, País" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar y Calcular Compatibilidad</button>
+                    </form>
+                </div>
+
+                <!-- State: ≥2 profiles — show selector -->
+                <div id="compat-selector" class="hidden">
+                    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px;">
+                        <div class="form-group" style="flex:1;min-width:180px;margin-bottom:0;">
+                            <label>Perfil A</label>
+                            <select id="compat-a"></select>
+                        </div>
+                        <div class="form-group" style="flex:1;min-width:180px;margin-bottom:0;">
+                            <label>Perfil B</label>
+                            <select id="compat-b"></select>
+                        </div>
+                        <button class="btn-primary" style="flex:0 0 auto;width:auto;padding:10px 20px;margin:0;" onclick="calcCompatibility()">Calcular</button>
+                    </div>
+                    <p style="font-size:0.78em;color:var(--text-dim);"><a href="#" onclick="showPartnerForm();return false;" style="color:var(--gold);">+ Agregar otro perfil</a></p>
+                </div>
+
+                <!-- State: loading -->
+                <div id="compat-loading" class="hidden" style="text-align:center;padding:30px;">
+                    <div class="spinner" style="width:32px;height:32px;border:3px solid var(--glass-border);border-top:3px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+                    <p style="font-size:0.82em;color:var(--text-dim);">Calculando compatibilidad...</p>
+                </div>
+
+                <!-- State: error -->
+                <div id="compat-error" class="hidden" style="padding:14px;background:rgba(220,80,80,0.08);border:1px solid rgba(220,80,80,0.25);border-radius:10px;color:#ff8080;font-size:0.85em;margin-top:12px;"></div>
+
+                <!-- State: result -->
+                <div id="compat-result" class="hidden" style="margin-top:20px;"></div>
+            </div>
+
+            <!-- Privacy & Data (GDPR / LFPDPPP) — collapsed by default so the
+                 dashboard UI stays focused on insights. GDPR endpoints
+                 (export / delete) remain one click away via <details>. -->
+            <details class="dash-full" style="margin:20px 0 8px;padding:10px 18px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
+                <summary style="font-size:0.82em;color:var(--text-dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;"><span>&#128274;</span> Privacidad y Datos</summary>
+                <div style="padding-top:14px;">
+                    <p style="font-size:0.8em;color:var(--text-dim);margin-bottom:12px;">Tienes derecho a descargar una copia de toda tu información o eliminar tu cuenta permanentemente. Consulta nuestra <a href="/privacy-policy.html" style="color:var(--gold);">Política de Privacidad</a>.</p>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="btn-share" onclick="exportMyData()" id="btn-export" style="font-size:0.78em;padding:6px 12px;">&#128229; Descargar mis datos</button>
+                        <button class="btn-share" onclick="confirmDeleteAccount()" id="btn-delete" style="font-size:0.78em;padding:6px 12px;border-color:rgba(220,80,80,0.4);color:#ff8080;">&#128465; Eliminar mi cuenta</button>
+                    </div>
+                    <p id="privacy-msg" style="font-size:0.78em;color:var(--text-dim);margin-top:10px;display:none;"></p>
+                </div>
+            </details>
         </div>
     </div>
 
@@ -200,13 +335,16 @@
 
     async function init() {
         try {
-            var res = await fetch('/api/auth/me');
+            var res = await fetch('/api/auth/me', {cache: 'no-store', credentials: 'same-origin'});
             if (!res.ok) throw new Error('Not authenticated');
             var data = await res.json();
             if (!data.ok) throw new Error('Not authenticated');
 
             currentUser = data.user;
             showUserInfo(data.user);
+
+            // Store full list globally for compatibility card selector
+            window._birthProfilesList = data.birthProfiles || [];
 
             if (data.birthProfiles && data.birthProfiles.length > 0) {
                 currentProfile = data.birthProfiles[0];
@@ -232,21 +370,28 @@
                 html += '<div style="text-align:center;"><div style="font-size:1.4em;">❤️</div><div style="font-size:0.75em;color:var(--text-dim);">Amor</div><div style="font-weight:600;color:var(--gold);">' + (bio.love || '—') + '/10</div></div>';
                 html += '<div style="text-align:center;"><div style="font-size:1.4em;">💼</div><div style="font-size:0.75em;color:var(--text-dim);">Trabajo</div><div style="font-weight:600;color:var(--gold);">' + (bio.career || '—') + '/10</div></div>';
                 html += '<div style="text-align:center;"><div style="font-size:1.4em;">🌿</div><div style="font-size:0.75em;color:var(--text-dim);">Salud</div><div style="font-weight:600;color:var(--gold);">' + (bio.health || '—') + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">⚡</div><div style="font-size:0.75em;color:var(--text-dim);">Energia</div><div style="font-weight:600;color:var(--gold);">' + (bio.energy || '—') + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">⚡</div><div style="font-size:0.75em;color:var(--text-dim);">Energía</div><div style="font-weight:600;color:var(--gold);">' + (bio.energy || '—') + '/10</div></div>';
                 html += '</div>';
                 if (data.moon) {
                     html += '<p style="margin-top:14px;font-size:0.82em;color:var(--text-dim);">🌙 ' + data.moon.phase + ' — Iluminacion: ' + data.moon.illumination + '%</p>';
                 }
                 if (data.luckyNumber) {
-                    html += '<p style="font-size:0.82em;color:var(--text-dim);">🍀 Numero de la suerte: ' + data.luckyNumber + '</p>';
+                    html += '<p style="font-size:0.82em;color:var(--text-dim);">🍀 Número de la suerte: ' + data.luckyNumber + '</p>';
+                }
+                if (data.cosmicToday) {
+                    var ct = data.cosmicToday;
+                    html += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(212,168,73,0.15);font-size:0.78em;color:var(--text-dim);display:flex;gap:18px;flex-wrap:wrap;justify-content:center;">';
+                    html += '<span title="Energía Maya del día">🌞 Maya: Tono ' + ct.mayanTone + ' · ' + ct.mayanSeal + '</span>';
+                    html += '<span title="Nakshatra Védico lunar del día">🌙 Nakshatra: ' + ct.nakshatra + '</span>';
+                    html += '</div>';
                 }
                 el.innerHTML = html;
             } else {
                 // Fallback: generic text from cross-cultural data
-                el.innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Con tu numero de vida ' + cc.numerology.lifePathNumber + ' (' + cc.numerology.data.keyword_es + '), este es un buen momento para reflexionar sobre tu proposito. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuicion.</p><p style="margin-top:12px;">Las vibraciones del arbol ' + cc.celtic.name_es + ' en la tradicion celta resuenan con la energia del dia.</p>';
+                el.innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Con tu número de vida ' + cc.numerology.lifePathNumber + ' (' + cc.numerology.data.keyword_es + '), este es un buen momento para reflexionar sobre tu propósito. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuición.</p><p style="margin-top:12px;">Las vibraciones del arbol ' + cc.celtic.name_es + ' en la tradición celta resuenan con la energía del dia.</p>';
             }
         } catch(e) {
-            el.innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuicion.</p>';
+            el.innerHTML = '<p>Hoy, las energias cosmicas favorecen a ' + cc.western.name_es + '. Tu animal chino, el ' + cc.chinese.animal.name_es + ', te invita a confiar en tu intuición.</p>';
         }
     }
 
@@ -279,18 +424,49 @@
         var summaryHTML = '';
         summaryHTML += '<a href="/signos/' + cc.western.slug_es + '.html" class="system-item"><span class="sys-symbol">' + cc.western.symbol + '</span><span class="sys-name">' + cc.western.name_es + '</span><span class="sys-detail">' + cc.western.element_es + '</span></a>';
         summaryHTML += '<a href="/horoscopo-chino/' + cc.chinese.animal.slug_es + '.html" class="system-item"><span class="sys-symbol">' + cc.chinese.animal.symbol + '</span><span class="sys-name">' + cc.chinese.animal.name_es + '</span><span class="sys-detail">' + cc.chinese.element.es + ' | ' + cc.chinese.yinYang + '</span></a>';
-        summaryHTML += '<a href="/numerologia/' + cc.numerology.data.slug_es + '.html" class="system-item"><span class="sys-symbol">' + cc.numerology.lifePathNumber + '</span><span class="sys-name">' + cc.numerology.data.keyword_es + '</span><span class="sys-detail">Numero de Vida</span></a>';
+        summaryHTML += '<a href="/numerologia/' + cc.numerology.data.slug_es + '.html" class="system-item"><span class="sys-symbol">' + cc.numerology.lifePathNumber + '</span><span class="sys-name">' + cc.numerology.data.keyword_es + '</span><span class="sys-detail">Número de Vida</span></a>';
         summaryHTML += '<a href="/zodiaco-celta/' + cc.celtic.slug_es + '.html" class="system-item"><span class="sys-symbol">&#127807;</span><span class="sys-name">' + cc.celtic.name_es + '</span><span class="sys-detail">Ogham: ' + cc.celtic.ogham + '</span></a>';
+        summaryHTML += '<a href="/astrologia-maya/' + cc.mayan.seal.slug_es + '.html" class="system-item"><span class="sys-symbol">&#128302;</span><span class="sys-name">' + cc.mayan.seal.name_es + '</span><span class="sys-detail">Kin ' + cc.mayan.kin + ' \u2022 Tono ' + cc.mayan.tone.num + '</span></a>';
+        summaryHTML += '<a href="/astrologia-vedica/' + cc.vedic.rashi.slug_es + '.html" class="system-item"><span class="sys-symbol">&#128329;\uFE0F</span><span class="sys-name">' + cc.vedic.rashi.name_sa + '</span><span class="sys-detail">' + cc.vedic.nakshatra.name_sa + ' \u2022 ' + cc.vedic.rashi.ruler_es + '</span></a>';
+        summaryHTML += '<a href="/diseno-humano/gate-' + cc.humanDesign.gate + '.html" class="system-item" style="animation-delay:0.3s"><span class="sys-color-bar" style="background:#7c5cbf"></span><span class="sys-symbol">&#11041;</span><span class="sys-name">Gate ' + cc.humanDesign.gate + '</span><span class="sys-detail">' + cc.humanDesign.gateData.name_es + ' \u2022 L\u00ednea ' + cc.humanDesign.line + '</span></a>';
+        if (currentProfile.enneagram_type) {
+            var et = LuzEstelar.CrossCultural.ENNEAGRAM_TYPES[currentProfile.enneagram_type];
+            summaryHTML += '<a href="/eneagrama/' + et.slug_es + '.html" class="system-item" style="animation-delay:0.35s"><span class="sys-color-bar" style="background:' + et.color + '"></span><span class="sys-symbol">&#10042;</span><span class="sys-name">Tipo ' + currentProfile.enneagram_type + '</span><span class="sys-detail">' + et.name_es + '</span></a>';
+        } else {
+            summaryHTML += '<a href="/eneagrama/" class="ennea-link" style="animation-delay:0.35s"><span class="sys-symbol">&#10042;</span><span class="sys-name">Eneagrama</span><span class="sys-detail">Descubre tu tipo \u2192</span></a>';
+        }
         document.getElementById('system-summary').innerHTML = summaryHTML;
 
-        // Natal chart (demo with sun position)
+        // Add color bars to first 7 items
+        var colors = [cc.western.color, cc.chinese.animal.color, cc.numerology.data.color, cc.celtic.color, cc.mayan.seal.color, cc.vedic.rashi.color, '#7c5cbf'];
+        var items = document.querySelectorAll('#system-summary .system-item');
+        items.forEach(function(item, i) {
+            if (i < colors.length && !item.querySelector('.sys-color-bar')) {
+                var bar = document.createElement('span');
+                bar.className = 'sys-color-bar';
+                bar.style.background = colors[i];
+                item.prepend(bar);
+            }
+            item.style.animationDelay = (i * 0.05) + 's';
+        });
+
+        // Elemental synthesis
+        buildSynthesis(cc);
+
+        // Store cc for sharing
+        window._dashCC = cc;
+
+        // Natal chart (Sun + Moon positions)
         var sunLong = (parts[1] - 1) * 30 + parts[2]; // rough solar longitude
+        var moonLong = LuzEstelar.NatalChart.calcMoonLongitude(parts[0], parts[1], parts[2]);
+        var moonSign = LuzEstelar.NatalChart.signFromLongitude(moonLong);
+        var moonDeg  = LuzEstelar.NatalChart.degreeInSign(moonLong);
         var chartData = {
             planets: [
                 {name: 'Sun', longitude: sunLong, sign: cc.western.name_en, degree: parts[2]},
+                {name: 'Moon', longitude: moonLong, sign: LuzEstelar.NatalChart.SIGN_NAMES[moonSign], degree: moonDeg}
             ],
-            aspects: [],
-            ascendant: profile.hora_nacimiento ? (sunLong + 90) % 360 : undefined
+            aspects: []
         };
 
         if (profile.natal_chart) {
@@ -301,7 +477,9 @@
         LuzEstelar.NatalChart.render(canvas, chartData);
 
         if (profile.hora_nacimiento) {
-            document.getElementById('chart-notice').textContent = profile.nombre + ' — ' + profile.fecha_nacimiento + ' ' + profile.hora_nacimiento;
+            document.getElementById('chart-notice').textContent = profile.nombre + ' \u2014 ' + profile.fecha_nacimiento + ' ' + profile.hora_nacimiento;
+        } else {
+            document.getElementById('chart-notice').textContent = 'Sol y Luna aproximados \u2014 ingresa tu hora de nacimiento para carta completa.';
         }
 
         // Fetch daily horoscope from API
@@ -311,7 +489,196 @@
         if (user.tier !== 'free') {
             document.getElementById('upgrade-cta').classList.add('hidden');
         }
+
+        // Initialize Compatibilidad Pareja card state
+        setupCompatCard();
     }
+
+    // ── Compatibilidad Pareja ──────────────────────────────
+    function setupCompatCard() {
+        var profiles = window._birthProfilesList || [];
+        var isFree = !currentUser || currentUser.tier === 'free';
+        var gate = document.getElementById('compat-upgrade-gate');
+        var partnerForm = document.getElementById('compat-partner-form');
+        var selector = document.getElementById('compat-selector');
+
+        gate.classList.add('hidden');
+        partnerForm.classList.add('hidden');
+        selector.classList.add('hidden');
+
+        if (isFree) {
+            gate.classList.remove('hidden');
+            return;
+        }
+        if (profiles.length < 2) {
+            partnerForm.classList.remove('hidden');
+        } else {
+            renderCompatSelects(profiles);
+            selector.classList.remove('hidden');
+        }
+    }
+
+    function renderCompatSelects(profiles) {
+        var selA = document.getElementById('compat-a');
+        var selB = document.getElementById('compat-b');
+        selA.innerHTML = '';
+        selB.innerHTML = '';
+        profiles.forEach(function(p, i) {
+            var label = (p.label || p.nombre || 'Perfil') + ' — ' + (p.nombre || '') + ' (' + p.fecha_nacimiento + ')';
+            var optA = document.createElement('option');
+            optA.value = p.id; optA.textContent = label;
+            if (i === 0) optA.selected = true;
+            selA.appendChild(optA);
+            var optB = document.createElement('option');
+            optB.value = p.id; optB.textContent = label;
+            if (i === 1) optB.selected = true;
+            selB.appendChild(optB);
+        });
+    }
+
+    function showPartnerForm() {
+        document.getElementById('compat-selector').classList.add('hidden');
+        document.getElementById('compat-result').classList.add('hidden');
+        document.getElementById('compat-partner-form').classList.remove('hidden');
+    }
+
+    async function calcCompatibility() {
+        var a = document.getElementById('compat-a').value;
+        var b = document.getElementById('compat-b').value;
+        var errEl = document.getElementById('compat-error');
+        if (!a || !b || a === b) {
+            errEl.textContent = 'Selecciona dos perfiles distintos.';
+            errEl.classList.remove('hidden');
+            return;
+        }
+        errEl.classList.add('hidden');
+        document.getElementById('compat-result').classList.add('hidden');
+        document.getElementById('compat-loading').classList.remove('hidden');
+
+        try {
+            var url = '/api/reports/compatibility?profile_a=' + encodeURIComponent(a) +
+                      '&profile_b=' + encodeURIComponent(b) + '&lang=es';
+            var res = await fetch(url, { credentials: 'same-origin' });
+            var data = await res.json();
+            document.getElementById('compat-loading').classList.add('hidden');
+            if (!data.ok) {
+                if (data.upgrade) {
+                    document.getElementById('compat-selector').classList.add('hidden');
+                    document.getElementById('compat-upgrade-gate').classList.remove('hidden');
+                } else {
+                    errEl.textContent = data.error || 'Error al calcular compatibilidad.';
+                    errEl.classList.remove('hidden');
+                }
+                return;
+            }
+            renderCompatibilityResult(data.report);
+        } catch(e) {
+            document.getElementById('compat-loading').classList.add('hidden');
+            errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+            errEl.classList.remove('hidden');
+        }
+    }
+
+    function renderCompatibilityResult(report) {
+        var container = document.getElementById('compat-result');
+        var bd = report.breakdown || {};
+        var systems = [
+            {key:'western',     label:'Occidental',   icon:'\u2648',     a: (bd.western||{}).signA,   b: (bd.western||{}).signB},
+            {key:'chinese',     label:'Chino',        icon:'\uD83D\uDC32', a: (bd.chinese||{}).animalA, b: (bd.chinese||{}).animalB},
+            {key:'numerology',  label:'Numerología',  icon:'\uD83D\uDD22', a: (bd.numerology||{}).numberA, b: (bd.numerology||{}).numberB},
+            {key:'celtic',      label:'Celta',        icon:'\uD83C\uDF33', a: (bd.celtic||{}).treeA, b: (bd.celtic||{}).treeB},
+            {key:'mayan',       label:'Maya',         icon:'\uD83C\uDF1E', a: (bd.mayan||{}).sealA||'?', b: (bd.mayan||{}).sealB||'?'},
+            {key:'vedic',       label:'Védica',       icon:'\uD83D\uDD49', a: (bd.vedic||{}).rashiA||'?', b: (bd.vedic||{}).rashiB||'?'},
+            {key:'humanDesign', label:'Diseño Humano',icon:'\u2699',      a: 'Gate '+((bd.humanDesign||{}).gateA||'?'), b: 'Gate '+((bd.humanDesign||{}).gateB||'?')}
+        ];
+        function colorFor(score) {
+            if (score >= 75) return '#7cb97c';
+            if (score >= 55) return '#d4a849';
+            return '#c88030';
+        }
+        var overallColor = colorFor(report.overallScore);
+        var html = '';
+        html += '<div style="text-align:center;margin-bottom:24px;">';
+        html += '  <div style="font-family:\'Cormorant Garamond\',serif;font-size:4em;color:' + overallColor + ';font-weight:700;line-height:1;">' + report.overallScore + '%</div>';
+        html += '  <div style="font-size:0.9em;color:var(--text-dim);margin-top:4px;">' + escapeHtml(report.profileA.name) + ' &amp; ' + escapeHtml(report.profileB.name) + '</div>';
+        html += '</div>';
+        html += '<div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;">';
+        systems.forEach(function(s) {
+            var sBlock = bd[s.key] || {};
+            var score = typeof sBlock.score === 'number' ? sBlock.score : 60;
+            var c = colorFor(score);
+            html += '<div style="display:grid;grid-template-columns:170px 1fr 52px;align-items:center;gap:12px;font-size:0.85em;">';
+            html += '  <div style="color:var(--text);"><span style="margin-right:6px;">' + s.icon + '</span>' + s.label + '<div style="font-size:0.72em;color:var(--text-dim);margin-top:2px;">' + escapeHtml(String(s.a)) + ' · ' + escapeHtml(String(s.b)) + '</div></div>';
+            html += '  <div style="height:8px;background:var(--glass-border);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + score + '%;background:' + c + ';border-radius:4px;transition:width 0.8s ease-out;"></div></div>';
+            html += '  <div style="text-align:right;color:' + c + ';font-weight:600;">' + score + '%</div>';
+            html += '</div>';
+        });
+        html += '</div>';
+        html += '<div style="padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);">';
+        html += '  <p style="font-size:0.9em;line-height:1.7;color:var(--text-dim);">' + escapeHtml(report.synthesis || '') + '</p>';
+        html += '</div>';
+        container.innerHTML = html;
+        container.classList.remove('hidden');
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function(c) {
+            return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+        });
+    }
+
+    // Partner-form submission: create a second birth profile, then auto-calculate
+    document.addEventListener('DOMContentLoaded', function() {
+        var pf = document.getElementById('partner-form');
+        if (!pf) return;
+        pf.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var btn = this.querySelector('button');
+            var origLabel = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Guardando...';
+            try {
+                var res = await fetch('/api/profile/birth-profiles', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        nombre: document.getElementById('partner-nombre').value,
+                        fechaNacimiento: document.getElementById('partner-fecha').value,
+                        horaNacimiento: document.getElementById('partner-hora').value || null,
+                        lugarNacimiento: document.getElementById('partner-lugar').value,
+                        label: 'Pareja'
+                    })
+                });
+                var data = await res.json();
+                if (!data.ok) {
+                    var errEl = document.getElementById('compat-error');
+                    errEl.textContent = data.error || 'Error al crear perfil';
+                    errEl.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.textContent = origLabel;
+                    return;
+                }
+                // Reload full profile list
+                var listRes = await fetch('/api/profile/birth-profiles', { credentials: 'same-origin' });
+                var listData = await listRes.json();
+                window._birthProfilesList = listData.profiles || [];
+                document.getElementById('compat-partner-form').classList.add('hidden');
+                renderCompatSelects(window._birthProfilesList);
+                document.getElementById('compat-selector').classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = origLabel;
+                // Auto-calculate
+                setTimeout(calcCompatibility, 250);
+            } catch(err) {
+                var errEl2 = document.getElementById('compat-error');
+                errEl2.textContent = 'Error de conexión.';
+                errEl2.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = origLabel;
+            }
+        });
+    });
 
     // Setup form
     document.getElementById('setup-form').addEventListener('submit', async function(e) {
@@ -329,6 +696,9 @@
                     fechaNacimiento: document.getElementById('setup-fecha').value,
                     horaNacimiento: document.getElementById('setup-hora').value || null,
                     lugarNacimiento: document.getElementById('setup-lugar').value,
+                    lat: parseFloat(document.getElementById('setup-lat').value) || null,
+                    lon: parseFloat(document.getElementById('setup-lon').value) || null,
+                    timezone: document.getElementById('setup-tz').value || null,
                 })
             });
             var data = await res.json();
@@ -343,19 +713,287 @@
                 btn.textContent = 'Descubrir Mi Perfil';
             }
         } catch(err) {
-            alert('Error de conexion');
+            alert('Error de conexión');
             btn.disabled = false;
             btn.textContent = 'Descubrir Mi Perfil';
         }
     });
+
+    // ── Geocoding autocomplete (Nominatim) ─────────────────
+    (function(){
+        var input = document.getElementById('setup-lugar');
+        var dropdown = document.getElementById('geo-dropdown');
+        var spinner = document.getElementById('geo-spinner');
+        var latEl = document.getElementById('setup-lat');
+        var lonEl = document.getElementById('setup-lon');
+        var tzEl = document.getElementById('setup-tz');
+        var debounceTimer = null;
+        var highlighted = -1;
+        var results = [];
+
+        // Timezone lookup from lat/lon (approximate by UTC offset)
+        function tzFromCoords(lat, lon) {
+            // Rough timezone from longitude (±15° per hour)
+            var offset = Math.round(lon / 15);
+            var sign = offset >= 0 ? '+' : '';
+            return 'UTC' + sign + offset;
+        }
+
+        function formatResult(r) {
+            var parts = [];
+            var addr = r.address || {};
+            var city = addr.city || addr.town || addr.village || addr.hamlet || r.name || '';
+            var state = addr.state || addr.region || '';
+            var country = addr.country || '';
+            return { main: city || r.display_name.split(',')[0], sub: [state, country].filter(Boolean).join(', '), full: r.display_name, lat: r.lat, lon: r.lon };
+        }
+
+        function renderDropdown() {
+            if (results.length === 0) { dropdown.classList.remove('active'); return; }
+            var html = '';
+            results.forEach(function(r, i) {
+                var f = formatResult(r);
+                html += '<div class="geo-option' + (i === highlighted ? ' highlighted' : '') + '" data-idx="' + i + '"><span class="geo-main">' + f.main + '</span><span class="geo-sub">' + f.sub + '</span></div>';
+            });
+            dropdown.innerHTML = html;
+            dropdown.classList.add('active');
+
+            // Click handlers
+            dropdown.querySelectorAll('.geo-option').forEach(function(el) {
+                el.addEventListener('mousedown', function(ev) {
+                    ev.preventDefault();
+                    selectResult(parseInt(el.dataset.idx));
+                });
+            });
+        }
+
+        function selectResult(idx) {
+            var r = results[idx];
+            if (!r) return;
+            var f = formatResult(r);
+            input.value = f.full;
+            latEl.value = r.lat;
+            lonEl.value = r.lon;
+            tzEl.value = tzFromCoords(parseFloat(r.lat), parseFloat(r.lon));
+            dropdown.classList.remove('active');
+            results = [];
+            highlighted = -1;
+        }
+
+        async function searchLocation(query) {
+            if (query.length < 3) { dropdown.classList.remove('active'); return; }
+            spinner.style.display = 'block';
+            try {
+                var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1&accept-language=es';
+                var res = await fetch(url, { headers: { 'User-Agent': 'LuzEstelar/1.0 (luzestelaroficial.com)' } });
+                results = await res.json();
+                highlighted = -1;
+                renderDropdown();
+            } catch(e) { console.error('Geocode error', e); }
+            spinner.style.display = 'none';
+        }
+
+        input.addEventListener('input', function() {
+            // Clear previous selection
+            latEl.value = ''; lonEl.value = ''; tzEl.value = '';
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() { searchLocation(input.value.trim()); }, 400);
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (!dropdown.classList.contains('active')) return;
+            if (e.key === 'ArrowDown') { e.preventDefault(); highlighted = Math.min(highlighted + 1, results.length - 1); renderDropdown(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); highlighted = Math.max(highlighted - 1, 0); renderDropdown(); }
+            else if (e.key === 'Enter' && highlighted >= 0) { e.preventDefault(); selectResult(highlighted); }
+            else if (e.key === 'Escape') { dropdown.classList.remove('active'); }
+        });
+
+        input.addEventListener('blur', function() {
+            setTimeout(function() { dropdown.classList.remove('active'); }, 200);
+        });
+    })();
 
     async function logout() {
         await fetch('/api/auth/logout', {method: 'POST'});
         window.location.href = '/';
     }
 
+    function buildSynthesis(cc) {
+        // Count elemental balance across systems
+        var elements = {fire:0, earth:0, air:0, water:0};
+        var total = 0;
+
+        // Western element
+        var wEl = cc.western.element_en.toLowerCase();
+        if (elements[wEl] !== undefined) { elements[wEl] += 2; total += 2; }
+
+        // Chinese element
+        var cEl = cc.chinese.element.en.toLowerCase();
+        if (cEl === 'wood') { elements.earth++; elements.air++; total += 2; }
+        else if (cEl === 'metal') { elements.air++; elements.earth++; total += 2; }
+        else if (elements[cEl] !== undefined) { elements[cEl] += 2; total += 2; }
+
+        // Vedic element
+        var vEl = cc.vedic.rashi.element_en.toLowerCase();
+        if (elements[vEl] !== undefined) { elements[vEl] += 2; total += 2; }
+
+        // Mayan color mapping
+        var mc = cc.mayan.color_en.toLowerCase();
+        if (mc === 'red') { elements.fire++; total++; }
+        else if (mc === 'white') { elements.air++; total++; }
+        else if (mc === 'blue') { elements.water++; total++; }
+        else if (mc === 'yellow') { elements.earth++; total++; }
+
+        // Numerology: odd=fire/air, even=earth/water
+        if (cc.numerology.lifePathNumber % 2 === 1) { elements.fire++; total++; }
+        else { elements.earth++; total++; }
+
+        var maxEl = Math.max(elements.fire, elements.earth, elements.air, elements.water);
+        var elData = [
+            {key:'fire', label:'Fuego', emoji:'\u{1F525}', color:'#FF4500', val:elements.fire},
+            {key:'earth', label:'Tierra', emoji:'\u{1F33F}', color:'#2E8B57', val:elements.earth},
+            {key:'air', label:'Aire', emoji:'\u{1F4A8}', color:'#4169E1', val:elements.air},
+            {key:'water', label:'Agua', emoji:'\u{1F30A}', color:'#1E90FF', val:elements.water}
+        ];
+
+        var html = '';
+        elData.forEach(function(el) {
+            var pct = maxEl > 0 ? Math.round((el.val / maxEl) * 100) : 0;
+            html += '<div class="synth-item"><div class="synth-label">' + el.emoji + ' ' + el.label + '</div><div class="synth-bar"><div class="synth-fill" style="width:' + pct + '%;background:' + el.color + ';"></div></div><div class="synth-value">' + el.val + '/' + total + '</div></div>';
+        });
+        document.getElementById('synth-grid').innerHTML = html;
+
+        // Dominant element insight
+        var dominant = elData.sort(function(a,b){return b.val-a.val;})[0];
+        var isPremium = currentUser && currentUser.tier !== 'free';
+        if (isPremium) {
+            var insights = {
+                fire: 'Tu perfil cósmico esta dominado por el elemento Fuego. Esto indica una naturaleza apasionada, creativa y orientada a la accion. Multiples sistemas coinciden en senalar tu energía dinamica y tu capacidad de liderazgo.',
+                earth: 'Tu perfil cósmico esta dominado por el elemento Tierra. Esto indica una naturaleza estable, practica y arraigada. Multiples sistemas coinciden en senalar tu solidez, paciencia y capacidad de materializar tus metas.',
+                air: 'Tu perfil cósmico esta dominado por el elemento Aire. Esto indica una naturaleza intelectual, comunicativa y adaptable. Multiples sistemas coinciden en senalar tu agilidad mental y tu don para las conexiones sociales.',
+                water: 'Tu perfil cósmico esta dominado por el elemento Agua. Esto indica una naturaleza emocional, intuitiva y profunda. Multiples sistemas coinciden en senalar tu sensibilidad, empatia y conexión con el mundo interior.'
+            };
+            document.getElementById('synth-text').textContent = insights[dominant.key] || '';
+        } else {
+            document.getElementById('synth-text').innerHTML = 'Tu elemento dominante es <strong style="color:var(--gold)">' + dominant.label + '</strong>. <a href="planes.html" style="color:var(--gold);">Activa Premium</a> para ver la síntesis completa de tus 8 sistemas.';
+        }
+    }
+
+    // downloadCard + shareCard — previously gated to premium. Moved to
+    // free tier 2026-04-11: the card shows only headline data (symbol +
+    // name per system) with watermark + URL, so each share is organic
+    // advertising rather than a premium product. Real premium value
+    // lives in the deeper cross-cultural report and partner
+    // compatibility, not in this snapshot card.
+    function downloadCard() {
+        if (!currentProfile || !window._dashCC) return;
+        var profileData = {
+            nombre: currentProfile.nombre || currentProfile.label,
+            fecha_nacimiento: currentProfile.fecha_nacimiento,
+            _cc: window._dashCC
+        };
+        LuzEstelar.ProfileCard.download(profileData, 'es');
+    }
+
+    function shareCard() {
+        if (!currentProfile || !window._dashCC) return;
+        var profileData = {
+            nombre: currentProfile.nombre || currentProfile.label,
+            fecha_nacimiento: currentProfile.fecha_nacimiento,
+            _cc: window._dashCC
+        };
+        LuzEstelar.ProfileCard.share(profileData, 'es');
+    }
+
+    function copyProfileLink() {
+        if (!currentProfile || !currentProfile.id) return;
+        var url = 'https://luzestelaroficial.com/perfil/' + currentProfile.id;
+        navigator.clipboard.writeText(url).then(function() {
+            var btn = document.getElementById('btn-copy-link');
+            btn.textContent = '\u2705 Copiado!';
+            setTimeout(function() { btn.innerHTML = '&#128279; Copiar Link'; }, 2000);
+        }).catch(function() {
+            prompt('Copia este link:', url);
+        });
+    }
+
+    // ── Privacy / GDPR ──
+    function showPrivacyMsg(text, isError) {
+        var el = document.getElementById('privacy-msg');
+        if (!el) return;
+        el.textContent = text;
+        el.style.display = 'block';
+        el.style.color = isError ? '#ff8080' : 'var(--text-dim)';
+    }
+
+    async function exportMyData() {
+        var btn = document.getElementById('btn-export');
+        btn.disabled = true;
+        var original = btn.innerHTML;
+        btn.innerHTML = '&#9203; Preparando...';
+        showPrivacyMsg('');
+        try {
+            var res = await fetch('/api/account/export', {credentials: 'same-origin'});
+            if (!res.ok) {
+                var err = await res.json().catch(function(){return {};});
+                throw new Error(err.error || ('HTTP ' + res.status));
+            }
+            var blob = await res.blob();
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'luzestelar-export-' + new Date().toISOString().slice(0,10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showPrivacyMsg('\u2705 Tu archivo se descargó. Guárdalo en un lugar seguro.');
+        } catch (e) {
+            showPrivacyMsg('No se pudo descargar: ' + e.message, true);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    }
+
+    async function confirmDeleteAccount() {
+        var msg = '⚠️ Vas a eliminar tu cuenta PERMANENTEMENTE.\n\n' +
+                  'Esto borrará tu perfil, perfiles natales, historial de compras y reportes guardados.\n' +
+                  'También se cancelarán suscripciones activas en Stripe.\n\n' +
+                  'Esta acción NO se puede deshacer.\n\n' +
+                  'Para confirmar, escribe la palabra: ELIMINAR';
+        var input = prompt(msg);
+        if (input !== 'ELIMINAR') {
+            showPrivacyMsg('Eliminación cancelada.');
+            return;
+        }
+        var btn = document.getElementById('btn-delete');
+        btn.disabled = true;
+        var original = btn.innerHTML;
+        btn.innerHTML = '&#9203; Eliminando...';
+        try {
+            var res = await fetch('/api/account/delete', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({confirm: 'DELETE'}),
+            });
+            var data = await res.json().catch(function(){return {};});
+            if (!res.ok || !data.ok) {
+                throw new Error(data.error || ('HTTP ' + res.status));
+            }
+            alert('Tu cuenta ha sido eliminada. Gracias por haber sido parte de Luz Estelar.');
+            window.location.href = '/';
+        } catch (e) {
+            showPrivacyMsg('No se pudo eliminar: ' + e.message, true);
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    }
+
     init();
     </script>
+    <script src="/js/profile-card.js"></script>
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
     <script src="/js/cookie-consent.js" defer></script>
 </body>

@@ -106,7 +106,38 @@ export async function onRequestGet(context) {
   // Celtic: same tree = high, similar season = medium
   const celticScore = profileA.celtic_tree === profileB.celtic_tree ? 95 : 60;
 
-  const overallScore = Math.round((westernScore + chineseScore + numScore + celticScore) / 4);
+  // Mayan: same seal = very high, same color = high
+  const MAYAN_COLORS = { 0:'Red',1:'White',2:'Blue',3:'Yellow' };
+  let mayanScore = 60;
+  if (profileA.mayan_seal && profileB.mayan_seal) {
+    if (profileA.mayan_seal === profileB.mayan_seal) mayanScore = 95;
+    else if (profileA.mayan_kin && profileB.mayan_kin) {
+      const colorA = MAYAN_COLORS[profileA.mayan_kin % 4];
+      const colorB = MAYAN_COLORS[profileB.mayan_kin % 4];
+      mayanScore = colorA === colorB ? 80 : 60;
+    }
+  }
+
+  // Vedic: same rashi = high, same element = medium
+  const VEDIC_ELEMENTS = { 'Mesha':'Fire','Vrishabha':'Earth','Mithuna':'Air','Karka':'Water','Simha':'Fire','Kanya':'Earth','Tula':'Air','Vrischika':'Water','Dhanu':'Fire','Makara':'Earth','Kumbha':'Air','Meena':'Water' };
+  let vedicScore = 60;
+  if (profileA.vedic_rashi && profileB.vedic_rashi) {
+    if (profileA.vedic_rashi === profileB.vedic_rashi) vedicScore = 90;
+    else if (VEDIC_ELEMENTS[profileA.vedic_rashi] === VEDIC_ELEMENTS[profileB.vedic_rashi]) vedicScore = 78;
+  }
+
+  // Human Design: same gate = high
+  let hdScore = 60;
+  if (profileA.human_design_gate && profileB.human_design_gate) {
+    if (profileA.human_design_gate === profileB.human_design_gate) hdScore = 90;
+    else {
+      const diff = Math.abs(profileA.human_design_gate - profileB.human_design_gate);
+      hdScore = diff <= 4 ? 75 : 60;
+    }
+  }
+
+  const scores = [westernScore, chineseScore, numScore, celticScore, mayanScore, vedicScore, hdScore];
+  const overallScore = Math.round(scores.reduce((a,b) => a+b, 0) / scores.length);
 
   const report = {
     profileA: { name: profileA.nombre, birthDate: profileA.fecha_nacimiento },
@@ -135,10 +166,27 @@ export async function onRequestGet(context) {
         treeA: profileA.celtic_tree,
         treeB: profileB.celtic_tree,
       },
+      mayan: {
+        score: mayanScore,
+        sealA: profileA.mayan_seal,
+        sealB: profileB.mayan_seal,
+        kinA: profileA.mayan_kin,
+        kinB: profileB.mayan_kin,
+      },
+      vedic: {
+        score: vedicScore,
+        rashiA: profileA.vedic_rashi,
+        rashiB: profileB.vedic_rashi,
+      },
+      humanDesign: {
+        score: hdScore,
+        gateA: profileA.human_design_gate,
+        gateB: profileB.human_design_gate,
+      },
     },
     synthesis: lang === 'en'
-      ? `${profileA.nombre} and ${profileB.nombre} share a ${overallScore}% cross-cultural compatibility. Their ${profileA.western_sign}-${profileB.western_sign} dynamic brings ${westernScore >= 70 ? 'natural harmony' : 'creative tension'}, while their Chinese zodiac pairing (${profileA.chinese_animal}-${profileB.chinese_animal}) ${chineseScore >= 70 ? 'flows with ease' : 'offers growth opportunities'}.`
-      : `${profileA.nombre} y ${profileB.nombre} comparten un ${overallScore}% de compatibilidad cross-cultural. Su dinamica ${profileA.western_sign}-${profileB.western_sign} trae ${westernScore >= 70 ? 'armonia natural' : 'tension creativa'}, mientras su pareja del zodiaco chino (${profileA.chinese_animal}-${profileB.chinese_animal}) ${chineseScore >= 70 ? 'fluye con facilidad' : 'ofrece oportunidades de crecimiento'}.`,
+      ? `${profileA.nombre} and ${profileB.nombre} share a ${overallScore}% cross-cultural compatibility across 7 systems. Their ${profileA.western_sign}-${profileB.western_sign} dynamic brings ${westernScore >= 70 ? 'natural harmony' : 'creative tension'}, while their Chinese zodiac pairing (${profileA.chinese_animal}-${profileB.chinese_animal}) ${chineseScore >= 70 ? 'flows with ease' : 'offers growth opportunities'}. Their Mayan seals (${profileA.mayan_seal || '?'}-${profileB.mayan_seal || '?'}) and Vedic signs (${profileA.vedic_rashi || '?'}-${profileB.vedic_rashi || '?'}) add deeper layers to their cosmic connection.`
+      : `${profileA.nombre} y ${profileB.nombre} comparten un ${overallScore}% de compatibilidad cross-cultural a traves de 7 sistemas. Su dinamica ${profileA.western_sign}-${profileB.western_sign} trae ${westernScore >= 70 ? 'armonia natural' : 'tension creativa'}, mientras su pareja del zodiaco chino (${profileA.chinese_animal}-${profileB.chinese_animal}) ${chineseScore >= 70 ? 'fluye con facilidad' : 'ofrece oportunidades de crecimiento'}. Sus sellos mayas (${profileA.mayan_seal || '?'}-${profileB.mayan_seal || '?'}) y signos vedicos (${profileA.vedic_rashi || '?'}-${profileB.vedic_rashi || '?'}) anaden capas mas profundas a su conexion cosmica.`,
     generatedAt: new Date().toISOString(),
   };
 
