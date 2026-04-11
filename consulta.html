@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis Profundo Personalizado — Luz Estelar Oficial</title>
-    <meta name="description" content="Tu carta natal completa, análisis de tu nombre, pronóstico de 3 meses y audio narrado por Luz Estelar. Entregado como PDF profesional y MP3 personalizado.">
-    <meta property="og:title" content="Análisis Profundo Personalizado — Luz Estelar Oficial">
-    <meta property="og:description" content="Carta natal, numerología, pronóstico de 3 meses y audio narrado. Tu guía cósmica personalizada.">
+    <title>Consulta Personalizada — Luz Estelar Oficial</title>
+    <meta name="description" content="Tu carta natal completa, análisis de tu nombre, pronóstico de 6 meses y audio narrado por Luz Estelar. Entregado como PDF profesional y MP3 personalizado.">
+    <meta property="og:title" content="Consulta Personalizada — Luz Estelar Oficial">
+    <meta property="og:description" content="Carta natal, numerología, pronóstico de 6 meses y audio narrado. Tu guía cósmica personalizada.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
     <meta property="og:url" content="https://luzestelaroficial.com/consulta.html">
     <meta property="og:locale" content="es_MX">
@@ -70,6 +70,22 @@
             font-size: 0.88em; font-weight: 400; transition: color 0.2s;
         }
         nav .nav-links a:hover { color: var(--gold); }
+        .mobile-portal-btn {
+            display: none;
+            align-items: center; gap: 6px;
+            padding: 7px 14px 7px 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.22), rgba(212,168,73,0.08));
+            border: 1px solid rgba(212,168,73,0.45);
+            border-radius: 22px;
+            color: var(--gold-light);
+            font-size: 0.82em; font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .mobile-portal-btn:hover,
+        .mobile-portal-btn:active { background: linear-gradient(135deg, rgba(212,168,73,0.35), rgba(212,168,73,0.15)); transform: scale(1.03); }
+        .mobile-portal-btn .star { font-size: 0.95em; line-height: 1; }
 
         /* Content */
         .content { position: relative; z-index: 1; }
@@ -151,6 +167,40 @@
         .price-card .price-note {
             font-size: 0.92em; color: var(--text-dim); line-height: 1.7;
         }
+
+        /* Trust bar — social proof row */
+        .trust-bar {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+            margin: 28px auto 0; max-width: 720px;
+        }
+        .trust-bar .trust-item {
+            text-align: center; padding: 14px 8px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(212,168,73,0.12);
+            border-radius: 12px;
+        }
+        .trust-bar .trust-item .trust-icon {
+            font-size: 1.4em; margin-bottom: 6px; display: block;
+        }
+        .trust-bar .trust-item .trust-label {
+            font-size: 0.74em; color: var(--text-dim); line-height: 1.35;
+        }
+        .trust-bar .trust-item strong { color: var(--gold-light); display: block; font-size: 0.82em; margin-bottom: 2px; }
+        @media (max-width: 640px) { .trust-bar { grid-template-columns: repeat(2, 1fr); } }
+
+        /* Guarantee badge */
+        .guarantee-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin: 24px auto 0; max-width: 520px;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, rgba(67,160,71,0.08), rgba(212,168,73,0.04));
+            border: 1px solid rgba(67,160,71,0.25);
+            border-radius: 14px;
+            text-align: left;
+        }
+        .guarantee-badge .g-icon { font-size: 1.8em; flex-shrink: 0; }
+        .guarantee-badge .g-text { font-size: 0.85em; color: var(--text-dim); line-height: 1.5; }
+        .guarantee-badge .g-text strong { color: #fff; display: block; margin-bottom: 2px; }
 
         /* Form */
         .form-group { margin-bottom: 22px; }
@@ -316,6 +366,8 @@
             .price-card .price { font-size: 2.8em; }
             .included-list li { gap: 12px; }
             nav .nav-links { display: none; }
+            .mobile-portal-btn { display: inline-flex; }
+            nav .lang-selector { display: none; }
         }
 
         /* ── Language selector ────────────────────────────── */
@@ -355,6 +407,10 @@
                 <a href="planes.html">Planes</a>
                 <a href="dashboard.html" style="color:var(--gold-light)">✦ Mi Portal</a>
             </div>
+            <a href="dashboard.html" class="mobile-portal-btn" aria-label="Mi Portal">
+                <span class="star">&#x2726;</span>
+                <span>Mi Portal</span>
+            </a>
         </div>
     </nav>
 
@@ -362,9 +418,9 @@
 
         <!-- Hero -->
         <div class="hero">
-            <div class="badge">Experiencia personalizada</div>
-            <h1>Análisis Profundo<br>Personalizado</h1>
-            <p class="subtitle">Tu carta natal completa, la energía de tu nombre y un pronóstico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.</p>
+            <div class="badge">La experiencia completa</div>
+            <h1>Consulta Completa<br>Personalizada</h1>
+            <p class="subtitle">Tu carta natal profunda, pronóstico de 6 meses, mapa estelar personalizado y audio narrado por Luz Estelar — entregado como PDF profesional.</p>
         </div>
 
         <!-- Plan Switcher -->
@@ -373,11 +429,8 @@
                 <button class="plan-tab" data-plan="esencial" onclick="switchPlan('esencial')">
                     Esencial<span class="tab-price">$9.99</span>
                 </button>
-                <button class="plan-tab" data-plan="profundo" onclick="switchPlan('profundo')">
-                    Profundo<span class="tab-price">$19.99</span>
-                </button>
-                <button class="plan-tab" data-plan="estelar" onclick="switchPlan('estelar')">
-                    Estelar<span class="tab-price">$49.99</span>
+                <button class="plan-tab" data-plan="completo" onclick="switchPlan('completo')">
+                    Completa<span class="tab-price">$29.99</span>
                 </button>
             </div>
             <p class="plan-switcher-hint"><a href="planes.html">Comparar planes en detalle &rarr;</a></p>
@@ -402,8 +455,41 @@
         <section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="card price-card">
-                    <div class="price">$19.99 USD</div>
-                    <p class="price-note">Pago único. Incluye carta natal, análisis de nombre, pronóstico de 3 meses, PDF profesional y audio narrado personalizado.</p>
+                    <div class="price">$29.99 USD</div>
+                    <p class="price-note">Pago único. Incluye carta natal profunda, pronóstico de 6 meses, mapa estelar personalizado, PDF profesional y audio narrado extendido.</p>
+
+                    <!-- Trust bar -->
+                    <div class="trust-bar">
+                        <div class="trust-item">
+                            <span class="trust-icon">⏱️</span>
+                            <strong>24–48h</strong>
+                            <span class="trust-label">Entrega garantizada</span>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-icon">🔒</span>
+                            <strong>Pago seguro</strong>
+                            <span class="trust-label">Stripe encriptado</span>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-icon">📜</span>
+                            <strong>PDF firmado</strong>
+                            <span class="trust-label">Sello de autenticidad</span>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-icon">♾️</span>
+                            <strong>Descarga permanente</strong>
+                            <span class="trust-label">Tuyo para siempre</span>
+                        </div>
+                    </div>
+
+                    <!-- Guarantee -->
+                    <div class="guarantee-badge">
+                        <div class="g-icon">🛡️</div>
+                        <div class="g-text">
+                            <strong>Garantía de satisfacción</strong>
+                            Si tu análisis no cumple lo prometido, lo revisamos y reentregamos sin costo adicional. Tu tranquilidad es prioridad.
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -605,58 +691,50 @@
                 price: '$9.99 USD',
                 badge: 'Tu primer mapa estelar',
                 title: 'Carta Natal Esencial',
-                subtitle: 'Tu carta natal completa con posiciones planetarias, Ascendente, Medio Cielo y aspectos principales. Entregado como PDF profesional.',
-                priceNote: 'Pago único. Incluye carta natal completa, interpretación solar y lunar, y PDF profesional con sello de autenticidad.',
-                delivery: '<strong>Formato de entrega:</strong> PDF profesional enviado a tu correo electrónico en 24-48 horas.',
+                subtitle: 'Tu carta natal con Sol, Luna, Ascendente y Consejo Cósmico, interpretados por Luz Estelar — entregado como PDF profesional + audio breve narrado.',
+                priceNote: 'Pago único. Incluye carta natal completa, 4 secciones interpretadas (Sol, Luna, Ascendente y Consejo Cósmico), PDF profesional con sello de autenticidad, y un audio breve narrado.',
+                delivery: '<strong>Formato de entrega:</strong> PDF profesional + audio MP3 breve, enviados a tu correo electrónico en 24-48 horas.',
                 items: [
                     { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente, Medio Cielo y los 10 planetas en sus signos y casas.' },
                     { icon: '\u2728', title: 'Aspectos Planetarios', desc: 'Conjunciones, trígonos, cuadraturas y oposiciones entre tus planetas natales.' },
-                    { icon: '\u2600\uFE0E', title: 'Interpretación Solar y Lunar', desc: 'Tu esencia (Sol) y tus emociones (Luna) analizadas en profundidad.' },
+                    { icon: '\u2600\uFE0E', title: 'Interpretación en 4 Secciones', desc: 'Tu Esencia Solar, tu Mundo Emocional (Luna), tu Máscara Social (Ascendente) y tu Consejo Cósmico personal.' },
+                    { icon: '\uD83C\uDF99', title: 'Audio Narrado Breve', desc: 'Una lectura concisa (~2–3 min) en audio MP3 para escuchar lo esencial de tu carta.' },
                     { icon: '\uD83D\uDCDC', title: 'PDF Profesional', desc: 'Documento con gráficos, tablas y tu interpretación personalizada, con sello de autenticidad.' }
                 ]
             },
-            profundo: {
-                name: 'Profundo',
-                price: '$19.99 USD',
-                badge: 'Experiencia personalizada',
-                title: 'Análisis Profundo Personalizado',
-                subtitle: 'Tu carta natal completa, la energía de tu nombre y un pronóstico de 3 meses, interpretado por Luz Estelar y entregado como PDF profesional con audio narrado.',
-                priceNote: 'Pago único. Incluye carta natal, análisis de nombre, pronóstico de 3 meses, PDF profesional y audio narrado personalizado.',
-                delivery: '<strong>Formato de entrega:</strong> PDF profesional (11+ páginas) + audio MP3, enviados a tu correo electrónico en 24 horas.',
-                items: [
-                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretación.' },
-                    { icon: '\u2728', title: 'Análisis de tu Nombre', desc: 'Numerología, fonética, etimología y compatibilidad entre tu nombre y tu carta astral.' },
-                    { icon: '\uD83D\uDD2D', title: 'Pronóstico de 3 Meses', desc: 'Tránsitos clave, días favorables y recomendaciones personalizadas por área de vida.' },
-                    { icon: '\u2764\uFE0F', title: 'Amor, Carrera y Salud', desc: 'Análisis detallado de las áreas más importantes de tu vida según tu carta natal.' },
-                    { icon: '\uD83C\uDF99', title: 'Audio Narrado por Luz Estelar', desc: 'Una lectura personalizada en audio para que puedas escuchar tu análisis donde quieras.' }
-                ]
-            },
-            estelar: {
-                name: 'Estelar',
-                price: '$49.99 USD',
+            completo: {
+                name: 'Completa',
+                price: '$29.99 USD',
                 badge: 'La experiencia completa',
-                title: 'Experiencia Estelar Completa',
-                subtitle: 'Todo del plan Profundo más retorno solar, compatibilidad de pareja, pronóstico de 6 meses, audio extendido y actualizaciones trimestrales.',
-                priceNote: 'Pago único. Incluye todo del plan Profundo + compatibilidad, retorno solar, pronóstico de 6 meses y entrega prioritaria en 12h.',
-                delivery: '<strong>Entrega prioritaria:</strong> PDF profesional completo + audio extendido, enviados a tu correo electrónico en 12 horas.',
+                title: 'Consulta Completa Personalizada',
+                subtitle: 'Tu carta natal profunda, pronóstico de 6 meses, mapa estelar personalizado y audio narrado por Luz Estelar — entregado como PDF profesional.',
+                priceNote: 'Pago único. Incluye carta natal profunda, pronóstico de 6 meses, mapa estelar personalizado, PDF profesional y audio narrado extendido.',
+                delivery: '<strong>Formato de entrega:</strong> PDF profesional completo + audio MP3 + mapa estelar personalizado, enviados a tu correo electrónico en 24 horas.',
                 items: [
-                    { icon: '\u2609\uFE0E', title: 'Carta Natal Completa', desc: 'Sol, Luna, Ascendente y todos los planetas en sus signos y casas. Aspectos natales y su interpretación.' },
+                    { icon: '\u2609\uFE0E', title: 'Carta Natal Profunda', desc: 'Sol, Luna, Ascendente y los 10 planetas en sus signos y casas. Aspectos natales interpretados en detalle.' },
                     { icon: '\u2728', title: 'Análisis de tu Nombre', desc: 'Numerología, fonética, etimología y compatibilidad entre tu nombre y tu carta astral.' },
-                    { icon: '\uD83D\uDD2D', title: 'Pronóstico de 6 Meses', desc: 'El doble de cobertura: tránsitos, días favorables y recomendaciones extendidas.' },
+                    { icon: '\uD83D\uDD2D', title: 'Pronóstico de 6 Meses', desc: 'Tránsitos clave, días favorables y recomendaciones personalizadas por área de vida.' },
                     { icon: '\u2764\uFE0F', title: 'Amor, Carrera y Salud', desc: 'Análisis detallado de las áreas más importantes de tu vida según tu carta natal.' },
-                    { icon: '\uD83D\uDCAB', title: 'Compatibilidad de Pareja', desc: 'Sinastría completa: cómo interactúan tus planetas con los de tu pareja o persona de interés.' },
-                    { icon: '\u2600\uFE0E', title: 'Retorno Solar', desc: 'Tu carta del próximo cumpleaños: las energías y temas que definirán tu año personal.' },
-                    { icon: '\uD83C\uDF99', title: 'Audio Extendido por Luz Estelar', desc: 'Narración completa de todas las secciones, incluyendo compatibilidad y retorno solar.' },
-                    { icon: '\uD83D\uDD04', title: 'Actualización Trimestral', desc: 'Cada 3 meses recibirás un nuevo pronóstico personalizado durante el primer año, sin costo adicional.' }
+                    { icon: '\uD83C\uDF0C', title: 'Mapa Estelar Personalizado', desc: 'El cielo exacto de tu lugar y fecha de nacimiento, incluido como arte digital descargable.' },
+                    { icon: '\uD83C\uDF99', title: 'Audio Narrado por Luz Estelar', desc: 'Una lectura extendida en audio para que puedas escuchar tu análisis completo donde quieras.' }
                 ]
             }
         };
+        // Aliases retrocompatibles con enlaces viejos
+        PLAN_CONFIG.profundo = PLAN_CONFIG.completo;
+        PLAN_CONFIG.estelar = PLAN_CONFIG.completo;
 
-        var currentPlan = 'profundo'; // default
+        var currentPlan = 'completo'; // default
         (function(){
             var params = new URLSearchParams(window.location.search);
             var p = params.get('plan');
+            // Normalizar aliases viejos
+            if(p === 'profundo' || p === 'estelar') p = 'completo';
             if(p && PLAN_CONFIG[p]) currentPlan = p;
+            // Si llegó con alias, limpiar la URL
+            if(params.get('plan') && params.get('plan') !== currentPlan && window.history.replaceState){
+                window.history.replaceState({}, '', 'consulta.html?plan=' + currentPlan);
+            }
 
             var cfg = PLAN_CONFIG[currentPlan];
             var badge = document.querySelector('.hero .badge');
@@ -812,5 +890,82 @@
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
 <script src="/js/cookie-consent.js" defer></script>
+
+<!-- ══ Exit-intent popup ══ -->
+<style>
+#exitModal{position:fixed;inset:0;background:rgba(5,3,15,0.82);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;animation:exitFade 0.3s ease;}
+#exitModal.visible{display:flex;}
+@keyframes exitFade{from{opacity:0}to{opacity:1}}
+.exit-card{background:linear-gradient(160deg,#1a1428,#0f0a1f);border:1px solid rgba(212,168,73,0.4);border-radius:20px;max-width:440px;width:100%;padding:36px 30px 30px;text-align:center;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 60px rgba(212,168,73,0.15);animation:exitSlide 0.4s ease;}
+@keyframes exitSlide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.exit-close{position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.6em;cursor:pointer;line-height:1;padding:4px 8px;transition:color 0.2s;}
+.exit-close:hover{color:#fff;}
+.exit-icon{font-size:2.4em;margin-bottom:8px;}
+.exit-card h3{font-family:'Cormorant Garamond',serif;color:var(--gold,#d4a849);font-size:1.7em;margin:0 0 8px;font-weight:600;line-height:1.25;}
+.exit-card p{color:rgba(255,255,255,0.75);font-size:0.92em;margin:0 0 18px;line-height:1.55;}
+.exit-code-box{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(212,168,73,0.08);border:1px dashed rgba(212,168,73,0.5);border-radius:12px;padding:14px 18px;margin:0 auto 18px;max-width:280px;}
+.exit-code-box code{font-family:'Courier New',monospace;color:#fff;font-size:1.25em;font-weight:700;letter-spacing:2px;}
+.exit-copy-btn{background:rgba(212,168,73,0.2);border:1px solid rgba(212,168,73,0.4);color:var(--gold,#d4a849);padding:6px 12px;border-radius:6px;font-size:0.78em;cursor:pointer;transition:all 0.2s;}
+.exit-copy-btn:hover{background:rgba(212,168,73,0.35);color:#fff;}
+.exit-cta{display:inline-block;background:linear-gradient(135deg,var(--gold,#d4a849),#c89030);color:#1a1625;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95em;margin-top:4px;transition:transform 0.2s,box-shadow 0.2s;}
+.exit-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,73,0.35);}
+.exit-note{color:rgba(255,255,255,0.4);font-size:0.72em;margin-top:14px;}
+</style>
+<div id="exitModal" role="dialog" aria-labelledby="exitTitle" aria-hidden="true">
+    <div class="exit-card">
+        <button class="exit-close" aria-label="Cerrar" onclick="closeExitModal()">&times;</button>
+        <div class="exit-icon">&#127775;</div>
+        <h3 id="exitTitle">Espera&hellip; Un regalo c&oacute;smico para ti</h3>
+        <p>Antes de irte, toma un <strong>10% de descuento</strong> en cualquiera de nuestras consultas. Usa este c&oacute;digo al pagar:</p>
+        <div class="exit-code-box">
+            <code id="exitCode">ESTELAR10</code>
+            <button class="exit-copy-btn" onclick="copyExitCode()">Copiar</button>
+        </div>
+        <a href="#planSwitcher" class="exit-cta" onclick="closeExitModal()">Reclamar mi descuento</a>
+        <p class="exit-note">V&aacute;lido por tiempo limitado. Apl&iacute;calo al finalizar tu compra.</p>
+    </div>
+</div>
+<script>
+(function(){
+    var KEY='luzestelar_exit_shown';
+    var shown=false;
+    function openModal(){
+        if(shown||sessionStorage.getItem(KEY))return;
+        shown=true;
+        sessionStorage.setItem(KEY,'1');
+        var m=document.getElementById('exitModal');
+        if(m){m.classList.add('visible');m.setAttribute('aria-hidden','false');}
+    }
+    window.closeExitModal=function(){
+        var m=document.getElementById('exitModal');
+        if(m){m.classList.remove('visible');m.setAttribute('aria-hidden','true');}
+    };
+    window.copyExitCode=function(){
+        var code=document.getElementById('exitCode').textContent;
+        if(navigator.clipboard){navigator.clipboard.writeText(code).then(function(){
+            var btn=document.querySelector('.exit-copy-btn');
+            if(btn){var o=btn.textContent;btn.textContent='\u2713 Copiado';setTimeout(function(){btn.textContent=o;},1800);}
+        });}
+    };
+    // Desktop: mouseleave toward top of viewport
+    document.addEventListener('mouseleave',function(e){
+        if(e.clientY<=10)openModal();
+    });
+    // Mobile fallback: scroll-up or 35 sec delay
+    var lastY=window.scrollY,scrollUps=0;
+    window.addEventListener('scroll',function(){
+        var y=window.scrollY;
+        if(y<lastY-10)scrollUps++;
+        lastY=y;
+        if(scrollUps>=2&&y<200)openModal();
+    },{passive:true});
+    setTimeout(openModal,45000);
+    // Close on backdrop click or Escape
+    document.addEventListener('click',function(e){
+        if(e.target&&e.target.id==='exitModal')window.closeExitModal();
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeExitModal();});
+})();
+</script>
 </body>
 </html>

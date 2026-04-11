@@ -69,6 +69,22 @@
         nav .nav-links a:hover { color: var(--gold); }
         nav .nav-links a.active { color: var(--gold); font-weight: 600; }
         .lang-sep { color: var(--text-dim); font-size: 0.88em; user-select: none; }
+        .mobile-portal-btn {
+            display: none;
+            align-items: center; gap: 6px;
+            padding: 7px 14px 7px 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.22), rgba(212,168,73,0.08));
+            border: 1px solid rgba(212,168,73,0.45);
+            border-radius: 22px;
+            color: var(--gold-light);
+            font-size: 0.82em; font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .mobile-portal-btn:hover,
+        .mobile-portal-btn:active { background: linear-gradient(135deg, rgba(212,168,73,0.35), rgba(212,168,73,0.15)); transform: scale(1.03); }
+        .mobile-portal-btn .star { font-size: 0.95em; line-height: 1; }
 
         .content { position: relative; z-index: 1; }
 
@@ -278,9 +294,11 @@
             .occasions { grid-template-columns: repeat(2, 1fr); }
             .format-grid { grid-template-columns: repeat(2, 1fr); }
             nav .nav-links { display: none; }
+            .mobile-portal-btn { display: inline-flex; }
         }
     </style>
-</head>
+<script src="/js/cookie-consent.js" defer></script>
+  </head>
 <body>
     <div class="starfield"><canvas id="stars"></canvas></div>
 
@@ -296,6 +314,10 @@
                 <a href="../mapa-estelar.html">ES</a>
                 <a href="mapa-estelar.html" class="active">EN</a>
             </div>
+            <a href="dashboard.html" class="mobile-portal-btn" aria-label="My Portal">
+                <span class="star">&#x2726;</span>
+                <span>My Portal</span>
+            </a>
         </div>
     </nav>
 
@@ -343,6 +365,63 @@
                 </div>
             </div>
         </section>
+
+        <!-- Live Preview -->
+        <section style="padding-top:0;">
+            <div class="section-inner">
+                <div class="card" style="text-align:center;">
+                    <h2 style="margin-bottom:6px;">See what your map looks like</h2>
+                    <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:20px;">Change the date to see how the sky varies. Your actual map will use the exact date and place you choose.</p>
+                    <div style="display:flex;gap:12px;max-width:320px;margin:0 auto 20px;flex-wrap:wrap;justify-content:center;">
+                        <input type="date" id="preview-date" value="2025-06-21" style="padding:10px 14px;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9em;outline:none;font-family:inherit;">
+                    </div>
+                    <canvas id="star-map-preview" width="600" height="600" style="max-width:100%;border-radius:50%;border:2px solid rgba(212,168,73,0.3);"></canvas>
+                    <p style="font-size:0.8em;color:var(--text-dim);margin-top:14px;font-style:italic;max-width:520px;margin-left:auto;margin-right:auto;">Illustrative preview. Your real map includes data from the <strong>Hipparcos</strong> catalog with more than <strong>9,000 real stars</strong>, the Milky Way and constellations visible from your exact location and date.</p>
+                </div>
+            </div>
+        </section>
+        <script>
+        (function(){
+            var canvas=document.getElementById('star-map-preview');
+            var ctx=canvas.getContext('2d');
+            var W=600,H=600,CX=W/2,CY=H/2,R=260;
+            var constellations=[
+                {name:'Sample',stars:[[0.35,0.32],[0.4,0.3],[0.44,0.34],[0.48,0.32],[0.52,0.36]],lines:[[0,1],[1,2],[2,3],[3,4]]},
+            ];
+            function draw(){
+                var dateVal=document.getElementById('preview-date').value||'2025-06-21';
+                var grd=ctx.createRadialGradient(CX,CY,10,CX,CY,R+40);
+                grd.addColorStop(0,'#0a0a2e');grd.addColorStop(0.7,'#060620');grd.addColorStop(1,'#020210');
+                ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+                ctx.save();ctx.beginPath();ctx.arc(CX,CY,R+20,0,Math.PI*2);ctx.clip();
+                var mg=ctx.createLinearGradient(0,100,W,H-100);
+                mg.addColorStop(0,'rgba(100,120,180,0)');mg.addColorStop(0.5,'rgba(120,140,200,0.05)');mg.addColorStop(1,'rgba(100,120,180,0)');
+                ctx.fillStyle=mg;ctx.fillRect(0,0,W,H);
+                var seed=0;for(var si=0;si<dateVal.length;si++)seed+=dateVal.charCodeAt(si)*(si+1);
+                function rng(){seed=(seed*9301+49297)%233280;return seed/233280;}
+                for(var i=0;i<150;i++){var a=rng()*Math.PI*2,d=rng()*R,x=CX+Math.cos(a)*d,y=CY+Math.sin(a)*d;ctx.beginPath();ctx.arc(x,y,rng()*1.6+0.3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(rng()*0.55+0.2)+')';ctx.fill();}
+                for(var i=0;i<6;i++){var a=rng()*Math.PI*2,d=rng()*R*0.85,x=CX+Math.cos(a)*d,y=CY+Math.sin(a)*d;ctx.beginPath();ctx.arc(x,y,2.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,240,0.85)';ctx.fill();var sg=ctx.createRadialGradient(x,y,0,x,y,6);sg.addColorStop(0,'rgba(255,255,240,0.25)');sg.addColorStop(1,'rgba(255,255,240,0)');ctx.fillStyle=sg;ctx.fillRect(x-6,y-6,12,12);}
+                ctx.strokeStyle='rgba(212,168,73,0.18)';ctx.lineWidth=0.8;
+                constellations.forEach(function(c){var pts=c.stars.map(function(s){return{x:s[0]*W,y:s[1]*H};});c.lines.forEach(function(l){ctx.beginPath();ctx.moveTo(pts[l[0]].x,pts[l[0]].y);ctx.lineTo(pts[l[1]].x,pts[l[1]].y);ctx.stroke();});pts.forEach(function(p){ctx.beginPath();ctx.arc(p.x,p.y,1.8,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.75)';ctx.fill();});});
+                // Large "PREVIEW" watermark
+                ctx.save();ctx.translate(CX,CY);ctx.rotate(-Math.PI/6);
+                ctx.font='700 76px "Cormorant Garamond",Georgia,serif';ctx.textAlign='center';ctx.textBaseline='middle';
+                ctx.fillStyle='rgba(212,168,73,0.22)';ctx.fillText('PREVIEW',0,-18);
+                ctx.font='500 22px Inter,sans-serif';ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fillText('luzestelaroficial.com',0,30);
+                ctx.restore();
+                ctx.restore();
+                ctx.beginPath();ctx.arc(CX,CY,R+20,0,Math.PI*2);ctx.strokeStyle='rgba(212,168,73,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+                for(var i=0;i<360;i+=15){var a=(i-90)*Math.PI/180,r1=R+15,r2=i%45===0?R+30:R+22;ctx.beginPath();ctx.moveTo(CX+Math.cos(a)*r1,CY+Math.sin(a)*r1);ctx.lineTo(CX+Math.cos(a)*r2,CY+Math.sin(a)*r2);ctx.strokeStyle='rgba(212,168,73,0.25)';ctx.lineWidth=i%45===0?1.2:0.6;ctx.stroke();}
+                ctx.textAlign='center';ctx.font='500 11px Inter,sans-serif';ctx.fillStyle='rgba(212,168,73,0.6)';
+                ctx.fillText('N',CX,CY-R-28);ctx.fillText('S',CX,CY+R+38);ctx.fillText('E',CX-R-34,CY+4);ctx.fillText('W',CX+R+34,CY+4);
+                ctx.font='400 13px Inter,sans-serif';ctx.fillStyle='rgba(212,168,73,0.75)';ctx.fillText(dateVal,CX,CY+R+70);
+                ctx.font='400 10px Inter,sans-serif';ctx.fillStyle='rgba(152,144,168,0.45)';ctx.fillText('PREVIEW · luzestelaroficial.com',CX,H-8);
+            }
+            draw();
+            document.getElementById('preview-date').addEventListener('input',draw);
+            document.getElementById('preview-date').addEventListener('change',draw);
+        })();
+        </script>
 
         <!-- Price -->
         <section style="padding-top:0;">

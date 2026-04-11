@@ -131,12 +131,12 @@
     /* ── Logo: top-left ─────────────────────────────── */
     .logo {
         position: absolute;
-        top: 34px;
+        top: 32px;
         left: 40px;
         font-family: 'Cormorant Garamond', serif;
-        font-size: 22px;
+        font-size: 28px;
         font-weight: 700;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.04em;
         background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -160,14 +160,14 @@
     /* ── "HOROSCOPO DEL DIA" label ──────────────────── */
     .label {
         font-family: 'Inter', sans-serif;
-        font-size: 22px;
-        font-weight: 600;
-        letter-spacing: 0.32em;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 0.36em;
         text-transform: uppercase;
         color: var(--gold);
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         font-variant: small-caps;
-        text-shadow: 0 0 20px rgba(212,168,73,0.3);
+        text-shadow: 0 0 24px rgba(212,168,73,0.45);
     }
 
     /* ── Decorative line above date ─────────────────── */
@@ -181,16 +181,16 @@
     /* ── Main date text ─────────────────────────────── */
     .date {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 88px;
+        font-size: 108px;
         font-weight: 700;
         color: #ffffff;
         line-height: 1.05;
         letter-spacing: 0.02em;
         text-shadow:
-            0 0 80px rgba(212,168,73,0.25),
-            0 0 40px rgba(212,168,73,0.15),
-            0 2px 4px rgba(0,0,0,0.6);
-        margin-bottom: 20px;
+            0 0 100px rgba(212,168,73,0.35),
+            0 0 50px rgba(212,168,73,0.25),
+            0 3px 6px rgba(0,0,0,0.75);
+        margin-bottom: 22px;
     }
 
     /* ── Decorative line below date ─────────────────── */
@@ -214,18 +214,18 @@
     /* ── Zodiac row at bottom ───────────────────────── */
     .zodiac-row {
         position: absolute;
-        bottom: 50px;
+        bottom: 48px;
         left: 0;
         right: 0;
         text-align: center;
         z-index: 10;
         font-family: 'Noto Sans Symbols 2', 'Apple Symbols', 'Segoe UI Symbol', sans-serif;
-        font-size: 30px;
+        font-size: 38px;
         color: var(--gold);
-        opacity: 0.65;
-        text-shadow: 0 0 10px rgba(212,168,73,0.3);
+        opacity: 0.72;
+        text-shadow: 0 0 14px rgba(212,168,73,0.4);
         font-variant-emoji: text;
-        letter-spacing: 0.3em;
+        letter-spacing: 0.32em;
         line-height: 1;
     }
 
@@ -263,10 +263,10 @@
 
     <!-- Main content -->
     <div class="content">
-        <div class="label">Horoscopo del Dia</div>
+        <div class="label">Horóscopo del Dia</div>
         <div class="divider-top"></div>
         <div class="date" id="dateText">{{DATE_TEXT}}</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:-10px;margin-bottom:14px;letter-spacing:0.08em;">{{YEAR}}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:54px;font-weight:500;color:rgba(255,255,255,0.72);margin-top:-10px;margin-bottom:16px;letter-spacing:0.1em;">{{YEAR}}</div>
         <div class="divider-bottom"></div>
         <div class="diamond"></div>
     </div>

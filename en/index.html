@@ -13,6 +13,7 @@
     <meta property="og:locale:alternate" content="es_MX">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com https://luzestelar-consulta-api.path3studio.workers.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com;">
     <link rel="icon" type="image/png" href="../app_icon.png">
+    <link rel="preload" as="image" href="../app_icon.png" fetchpriority="high">
     <link rel="canonical" href="https://luzestelaroficial.com/en/">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/">
@@ -94,6 +95,22 @@
             transition: color 0.2s; letter-spacing: 0.02em;
         }
         nav .nav-links a:hover { color: var(--gold); }
+        .mobile-portal-btn {
+            display: none;
+            align-items: center; gap: 6px;
+            padding: 7px 14px 7px 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.22), rgba(212,168,73,0.08));
+            border: 1px solid rgba(212,168,73,0.45);
+            border-radius: 22px;
+            color: var(--gold-light);
+            font-size: 0.82em; font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .mobile-portal-btn:hover,
+        .mobile-portal-btn:active { background: linear-gradient(135deg, rgba(212,168,73,0.35), rgba(212,168,73,0.15)); transform: scale(1.03); }
+        .mobile-portal-btn .star { font-size: 0.95em; line-height: 1; }
         .hamburger {
             display: none; background: none; border: none; cursor: pointer;
             width: 32px; height: 24px; position: relative; z-index: 110;
@@ -124,7 +141,7 @@
         }
         .section-desc {
             font-size: 1.05em; line-height: 1.8; color: var(--text-dim);
-            max-width: 640px;
+            max-width: 640px; margin-left: auto; margin-right: auto;
         }
 
         /* ── Hero ─────────────────────────────────────────── */
@@ -189,15 +206,30 @@
 
         /* ── Features grid ────────────────────────────────── */
         .features-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px; margin-top: 50px;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 20px; margin-top: 50px; text-align: left;
         }
+        @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .features-grid { grid-template-columns: 1fr; } }
         .feature-card {
+            /* Left gold bar differentiates "Our Method" (what WE do) from
+               "Learn Astrology" further down (catalog the USER explores). */
             background: var(--glass); border: 1px solid var(--glass-border);
+            border-left: 3px solid rgba(212,168,73,0.45);
             border-radius: 18px; padding: 32px 28px;
             transition: transform 0.3s, border-color 0.3s;
         }
-        .feature-card:hover { transform: translateY(-4px); border-color: rgba(212,168,73,0.25); }
+        .feature-card:hover { transform: translateY(-4px); border-color: rgba(212,168,73,0.25); border-left-color: var(--gold); }
+        .learn-subgroup-title {
+            text-align: center; font-family: 'Cormorant Garamond', serif;
+            color: var(--gold); font-size: 1.4em; font-weight: 600;
+            letter-spacing: 2px; margin: 42px 0 18px; text-transform: uppercase;
+        }
+        .learn-subgroup-title::before, .learn-subgroup-title::after {
+            content: ''; display: inline-block; width: 40px; height: 1px;
+            background: rgba(212,168,73,0.35); vertical-align: middle;
+            margin: 0 14px;
+        }
         .feature-card .icon-circle {
             width: 48px; height: 48px; border-radius: 14px;
             background: var(--gold-dim); display: flex; align-items: center;
@@ -380,6 +412,12 @@
         /* ── Responsive ───────────────────────────────────── */
         @media (max-width: 768px) {
             .hamburger { display: block; }
+            .mobile-portal-btn { display: inline-flex; padding: 6px 11px 6px 10px; font-size: 0.75em; }
+            .mobile-portal-btn .star { display: none; }
+            nav .lang-selector { font-size: 0.72em; margin-left: 0; display: flex; position: static; }
+            nav .lang-selector a { padding: 2px 4px; }
+            nav .nav-inner { gap: 8px; padding: 12px 14px; }
+            nav .logo { font-size: 1.15em; }
             nav .nav-links {
                 position: fixed; top: 0; right: -100%; width: 260px; height: 100vh;
                 flex-direction: column; gap: 0;
@@ -418,8 +456,14 @@
         .fade-in {
             opacity: 0; transform: translateY(30px);
             transition: opacity 0.8s ease, transform 0.8s ease;
+            will-change: opacity, transform;
         }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ── CLS protection: reserve space for key sections ── */
+        #analisis { min-height: 760px; contain: layout style; }
+        #energía, #metodo, #descubre { contain: layout style; }
+        @media (max-width: 860px) { #analisis { min-height: 1280px; } }
 
         /* ── Nebula background orbs ──────────────────────── */
         .nebula-container {
@@ -649,10 +693,64 @@
         /* ── Premium services grid ───────────────────────── */
         .premium-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
-            margin-top: 36px; align-items: start;
+            margin-top: 36px; align-items: stretch;
         }
         .premium-grid .coming-soon-card { margin-top: 0; }
         @media (max-width: 860px) { .premium-grid { grid-template-columns: 1fr; } }
+
+        /* ── Consult stack (Essential + Complete) ────────── */
+        .consult-stack { display: flex; flex-direction: column; gap: 20px; }
+        .consult-card {
+            position: relative; display: flex; flex-direction: column;
+            background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(30,30,60,0.35));
+            border: 1px solid rgba(212,175,55,0.22);
+            border-radius: 20px; padding: 26px 28px; text-align: left;
+            transition: border-color 0.4s, transform 0.3s, box-shadow 0.4s;
+        }
+        .consult-card:hover {
+            border-color: rgba(212,175,55,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 36px rgba(0,0,0,0.35), 0 0 30px rgba(212,175,55,0.08);
+        }
+        .consult-card.popular { border-color: rgba(212,175,55,0.4); }
+        .consult-card .popular-tag {
+            position: absolute; top: -10px; right: 20px;
+            padding: 4px 14px; border-radius: 20px; font-size: 0.72em;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #1a1530;
+        }
+        .consult-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.45em; font-weight: 700; color: #fff;
+            margin-bottom: 6px;
+        }
+        .consult-card .consult-price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6em; font-weight: 700; color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+        .consult-card .consult-desc {
+            font-size: 0.9em; line-height: 1.65; color: var(--text-dim);
+            margin-bottom: 18px;
+        }
+        .consult-card .consult-cta {
+            display: inline-block; margin-top: auto; padding: 11px 24px;
+            border-radius: 50px; font-size: 0.9em; font-weight: 600;
+            text-decoration: none; text-align: center;
+            color: var(--gold-light); border: 1px solid rgba(212,175,55,0.45);
+            background: rgba(212,175,55,0.06);
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+            align-self: flex-start;
+        }
+        .consult-card .consult-cta:hover {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #1a1530; transform: translateY(-1px);
+        }
+        .consult-card.popular .consult-cta {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #1a1530; border-color: transparent;
+        }
 
         /* ── Mapa Estelar card ───────────────────────────── */
         .mapa-card {
@@ -744,11 +842,7 @@
             background: var(--gold-dim);
         }
         .lang-selector .lang-sep { color: var(--text-dim); opacity: 0.5; }
-        @media (max-width: 768px) {
-            .lang-selector {
-                position: absolute; top: 18px; right: 60px;
-            }
-        }
+        /* Mobile lang-selector handled in nav @media block above */
     </style>
     <script type="application/ld+json">
     {
@@ -829,15 +923,15 @@
             },
             {
                 "@type": "Product",
-                "@id": "https://luzestelaroficial.com/#analisis-profundo",
-                "name": "Personalized Deep Analysis",
-                "description": "Complete birth chart, name analysis, 3-month forecast, and personalized biorhythm. Delivered as a professional PDF and narrated audio.",
+                "@id": "https://luzestelaroficial.com/#complete-consultation",
+                "name": "Complete Astrological Consultation",
+                "description": "Professional birth chart, name analysis, 6-month forecast, personalized star map, professional PDF and narrated audio.",
                 "image": "https://luzestelaroficial.com/app_icon.png",
                 "brand": {"@type": "Brand", "name": "Luz Estelar Oficial"},
                 "aggregateRating": {
                     "@type": "AggregateRating",
-                    "ratingValue": "4.8",
-                    "reviewCount": "12",
+                    "ratingValue": "4.9",
+                    "reviewCount": "18",
                     "bestRating": "5"
                 },
                 "review": {
@@ -850,9 +944,9 @@
                 "offers": {
                     "@type": "Offer",
                     "priceCurrency": "USD",
-                    "price": "9.99",
+                    "price": "29.99",
                     "availability": "https://schema.org/InStock",
-                    "url": "https://luzestelaroficial.com/en/planes.html",
+                    "url": "https://luzestelaroficial.com/en/consulta.html?plan=completo",
                     "seller": {"@type": "Organization", "name": "Luz Estelar Oficial"},
                     "shippingDetails": {
                         "@type": "OfferShippingDetails",
@@ -963,6 +1057,10 @@
                 <span class="lang-sep">|</span>
                 <a href="./" class="active">EN</a>
             </div>
+            <a href="dashboard.html" class="mobile-portal-btn" aria-label="My Portal">
+                <span class="star">&#x2726;</span>
+                <span>My Portal</span>
+            </a>
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
@@ -973,7 +1071,7 @@
         <!-- ── Hero ──────────────────────────────────── -->
         <section class="hero" id="inicio">
             <div class="hero-content fade-in">
-                <div class="icon-wrap"><img src="../app_icon.png" alt="Luz Estelar Oficial" class="icon"></div>
+                <div class="icon-wrap"><img src="../app_icon.png" alt="Luz Estelar Oficial" class="icon" width="160" height="160" fetchpriority="high" decoding="async"></div>
                 <h1><span class="gold">Luz Estelar</span><br>Oficial</h1>
                 <p class="tagline">Daily Technical Horoscope — Based on Real Astronomical Data</p>
                 <div class="cta-row">
@@ -1013,7 +1111,7 @@
 
         <!-- ── Features ──────────────────────────────── -->
         <section id="metodo">
-            <div class="section-inner">
+            <div class="section-inner" style="text-align:center;">
                 <div class="fade-in">
                     <p class="section-label">Our Method</p>
                     <h2 class="section-title">Technical astrology,<br>not generic predictions</h2>
@@ -1040,6 +1138,16 @@
                         <h3>Astral Biorhythm</h3>
                         <p>Daily score from 1 to 10 in Love, Work, Health, and Energy, calibrated with the day's transits.</p>
                     </div>
+                    <div class="feature-card fade-in">
+                        <div class="icon-circle">&#x1F30D;</div>
+                        <h3>8 Ancient Systems</h3>
+                        <p>We blend eight traditions — Western zodiac, Chinese, numerology, Celtic, Mayan, Vedic, Human Design and Enneagram — to reveal unique patterns.</p>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="icon-circle">&#x2699;&#xFE0F;</div>
+                        <h3>Advanced Technology</h3>
+                        <p>High-precision astronomical calculation tools and cutting-edge data processing allow us to tailor every reading to your complete birth chart.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1048,9 +1156,9 @@
         <section id="descubre">
             <div class="section-inner" style="text-align:center;">
                 <div class="fade-in">
-                    <p class="section-label">4 Ancient Systems</p>
+                    <p class="section-label">8 Ancient Systems</p>
                     <h2 class="section-title">Discover Your Cosmic Profile</h2>
-                    <p class="section-desc">Enter your birth date and instantly discover what Western astrology, Chinese zodiac, numerology, and Celtic zodiac reveal about you.</p>
+                    <p class="section-desc">Enter your birth date and instantly discover what 8 ancient traditions reveal about you: Western astrology, Chinese zodiac, numerology, Celtic zodiac, Mayan astrology, Vedic astrology, Human Design, and Enneagram.</p>
                 </div>
                 <div class="fade-in" style="margin:30px auto 0;max-width:480px;">
                     <form id="profile-calc" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" onsubmit="return false;">
@@ -1120,14 +1228,20 @@
             </div>
         </section>
 
-        <!-- ── Learn ────────────────────────────────── -->
+        <!-- ── Learn ──────────────────────────────────
+             Split into 2 sub-groups (Western / Ancestral) 2026-04-11
+             so this section reads as "a library to explore" instead of
+             blurring with the process-focused "Our Method" cards above. -->
         <section id="aprende">
             <div class="section-inner">
                 <div class="fade-in" style="text-align:center;">
                     <p class="section-label">Learn Astrology</p>
                     <h2 class="section-title">Knowledge that transforms</h2>
-                    <p class="section-desc" style="margin:0 auto;">Explore each sign in depth. Personality, compatibility, career, health, and more.</p>
+                    <p class="section-desc" style="margin:0 auto;">Explore eight systems of cosmic wisdom: four pillars of Western astrology and four ancestral traditions from around the world.</p>
                 </div>
+
+                <!-- Subgroup 1 — Western Astrology (4 guides) -->
+                <h3 class="learn-subgroup-title fade-in">Western Astrology</h3>
                 <div class="learn-grid fade-in">
                     <a href="signos/aries.html" class="learn-card">
                         <div class="learn-icon">&#9800;&#xFE0E;</div>
@@ -1154,6 +1268,35 @@
                         <span class="card-tag">Complete guide</span>
                     </a>
                 </div>
+
+                <!-- Subgroup 2 — Ancestral Systems (4 traditions) -->
+                <h3 class="learn-subgroup-title fade-in">Ancestral Systems</h3>
+                <div class="learn-grid fade-in">
+                    <a href="mayan-astrology/" class="learn-card">
+                        <div class="learn-icon">&#128302;</div>
+                        <h3>Mayan Astrology</h3>
+                        <p>Discover your Kin, solar seal and galactic tone in the 260-day Tzolkin calendar.</p>
+                        <span class="card-tag">20 seals + 13 tones</span>
+                    </a>
+                    <a href="vedic-astrology/" class="learn-card">
+                        <div class="learn-icon">&#128329;&#xFE0F;</div>
+                        <h3>Vedic Astrology</h3>
+                        <p>Explore your Rashi and Nakshatra in the ancient Jyotish tradition of India.</p>
+                        <span class="card-tag">12 rashis + 27 nakshatras</span>
+                    </a>
+                    <a href="human-design/" class="learn-card">
+                        <div class="learn-icon">&#11041;</div>
+                        <h3>Human Design</h3>
+                        <p>Your solar Gate and Gene Key reveal your purpose, gift and shadow in the 64-gate mandala.</p>
+                        <span class="card-tag">64 gates</span>
+                    </a>
+                    <a href="enneagram/" class="learn-card">
+                        <div class="learn-icon">&#10042;</div>
+                        <h3>Enneagram</h3>
+                        <p>9 personality types and 3 intelligence centers. Discover your type with our interactive quiz.</p>
+                        <span class="card-tag">Interactive quiz</span>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -1166,29 +1309,20 @@
                     <p class="section-desc">Discover our exclusive services: from a deep astral analysis to a unique star map to give as a gift or keep as a keepsake.</p>
                 </div>
                 <div class="premium-grid">
-                    <div class="coming-soon-card fade-in" style="margin-bottom:0;">
-                        <span class="badge" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700;font-size:0.85em;padding:6px 16px;letter-spacing:1px;animation:badgePulse 2s ease-in-out infinite;">NEW</span>
-                        <h3>Personalized Deep Analysis</h3>
-                        <p style="color:var(--gold-light);font-size:1.05em;margin-bottom:4px;font-weight:500;">Launch price — for a limited time</p>
-                        <p>Your complete birth chart, name analysis, 3-month forecast, and personalized biorhythm. Delivered as a professional PDF and audio narrated by Luz Estelar.</p>
-                        <div class="layers">
-                            <div class="layer">
-                                <p class="layer-num">Layer 1</p>
-                                <h4>Birth Chart</h4>
-                                <p>Sun, Moon, Ascendant, 10 planets in signs and houses. Natal aspects and current transits.</p>
-                            </div>
-                            <div class="layer">
-                                <p class="layer-num">Layer 2</p>
-                                <h4>Name Analysis</h4>
-                                <p>Numerology, phonetics, etymology, and name-sign compatibility.</p>
-                            </div>
-                            <div class="layer">
-                                <p class="layer-num">Layer 3</p>
-                                <h4>Personal Forecast</h4>
-                                <p>3 months of key transits, favorable days, and recommendations by life area.</p>
-                            </div>
+                    <div class="consult-stack fade-in">
+                        <div class="consult-card">
+                            <h4>Essential Reading</h4>
+                            <div class="consult-price">$9.99 USD</div>
+                            <p class="consult-desc">Your complete birth chart with Sun, Moon, Ascendant and all 10 planets, aspects, and a professional PDF with authenticity seal.</p>
+                            <a href="consulta.html?plan=esencial" class="consult-cta">Order Essential →</a>
                         </div>
-                        <a href="planes.html" class="cta-analisis">View Plans & Order — from $9.99 USD</a>
+                        <div class="consult-card popular">
+                            <span class="popular-tag">Most popular</span>
+                            <h4>Complete Reading</h4>
+                            <div class="consult-price">$29.99 USD</div>
+                            <p class="consult-desc">Deep birth chart, 6-month forecast, personalized star map, and audio narrated by Luz Estelar.</p>
+                            <a href="consulta.html?plan=completo" class="consult-cta">Order Complete →</a>
+                        </div>
                     </div>
                     <div class="mapa-card fade-in">
                         <span class="mapa-gift-tag">&#x1F381; Perfect Gift</span>
@@ -1500,7 +1634,10 @@
             {symbol:cc.western.symbol,name:cc.western.name_en,detail:cc.western.element_en,color:cc.western.color,href:'signos/'+cc.western.slug_en+'.html'},
             {symbol:cc.chinese.animal.symbol,name:cc.chinese.animal.name_en,detail:cc.chinese.element.en+' | '+cc.chinese.yinYang,color:cc.chinese.animal.color,href:'chinese-zodiac/'+cc.chinese.animal.slug_en+'.html'},
             {symbol:cc.numerology.lifePathNumber,name:cc.numerology.data.keyword_en,detail:cc.numerology.data.planet_en,color:cc.numerology.data.color,href:'numerology/'+cc.numerology.data.slug_en+'.html'},
-            {symbol:'\u{1F33F}',name:cc.celtic.name_en,detail:'Ogham: '+cc.celtic.ogham,color:cc.celtic.color,href:'celtic-zodiac/'+cc.celtic.slug_en+'.html'}
+            {symbol:'\u{1F33F}',name:cc.celtic.name_en,detail:'Ogham: '+cc.celtic.ogham,color:cc.celtic.color,href:'celtic-zodiac/'+cc.celtic.slug_en+'.html'},
+            {symbol:'\u{1F52E}',name:cc.mayan.seal.name_en,detail:'Kin '+cc.mayan.kin+' \u2022 Tone '+cc.mayan.tone.num+' '+cc.mayan.tone.name_en,color:cc.mayan.seal.color,href:'mayan-astrology/'+cc.mayan.seal.slug_en+'.html'},
+            {symbol:'\u{1F549}\uFE0F',name:cc.vedic.rashi.name_sa,detail:cc.vedic.nakshatra.name_sa+' \u2022 '+cc.vedic.rashi.ruler_en,color:cc.vedic.rashi.color,href:'vedic-astrology/'+cc.vedic.rashi.slug_en+'.html'},
+            {symbol:'\u{2B21}',name:'Gate '+cc.humanDesign.gate,detail:cc.humanDesign.gateData.name_en+' \u2022 Line '+cc.humanDesign.line,color:'#7C5CBF',href:'human-design/gate-'+cc.humanDesign.gate+'.html'}
         ];
         var html='';
         items.forEach(function(it){

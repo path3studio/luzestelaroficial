@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalized Deep Analysis — Luz Estelar Oficial</title>
-    <meta name="description" content="Your complete birth chart, name analysis, 3-month forecast and audio narrated by Luz Estelar. Delivered as a professional PDF and personalized MP3.">
-    <meta property="og:title" content="Personalized Deep Analysis — Luz Estelar Oficial">
-    <meta property="og:description" content="Birth chart, numerology, 3-month forecast and narrated audio. Your personalized cosmic guide.">
+    <title>Personalized Consultation — Luz Estelar Oficial</title>
+    <meta name="description" content="Your complete birth chart, name analysis, 6-month forecast and audio narrated by Luz Estelar. Delivered as a professional PDF and personalized MP3.">
+    <meta property="og:title" content="Personalized Consultation — Luz Estelar Oficial">
+    <meta property="og:description" content="Birth chart, numerology, 6-month forecast and narrated audio. Your personalized cosmic guide.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
     <meta property="og:url" content="https://luzestelaroficial.com/en/consulta.html">
     <meta property="og:locale" content="en_US">
@@ -72,6 +72,22 @@
         nav .nav-links a:hover { color: var(--gold); }
         nav .nav-links a.active { color: var(--gold); font-weight: 600; }
         .lang-sep { color: var(--text-dim); font-size: 0.88em; user-select: none; }
+        .mobile-portal-btn {
+            display: none;
+            align-items: center; gap: 6px;
+            padding: 7px 14px 7px 12px;
+            background: linear-gradient(135deg, rgba(212,168,73,0.22), rgba(212,168,73,0.08));
+            border: 1px solid rgba(212,168,73,0.45);
+            border-radius: 22px;
+            color: var(--gold-light);
+            font-size: 0.82em; font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+        .mobile-portal-btn:hover,
+        .mobile-portal-btn:active { background: linear-gradient(135deg, rgba(212,168,73,0.35), rgba(212,168,73,0.15)); transform: scale(1.03); }
+        .mobile-portal-btn .star { font-size: 0.95em; line-height: 1; }
 
         /* Content */
         .content { position: relative; z-index: 1; }
@@ -153,6 +169,35 @@
         .price-card .price-note {
             font-size: 0.92em; color: var(--text-dim); line-height: 1.7;
         }
+
+        /* Trust bar */
+        .trust-bar {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+            margin: 28px auto 0; max-width: 720px;
+        }
+        .trust-bar .trust-item {
+            text-align: center; padding: 14px 8px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(212,168,73,0.12);
+            border-radius: 12px;
+        }
+        .trust-bar .trust-item .trust-icon { font-size: 1.4em; margin-bottom: 6px; display: block; }
+        .trust-bar .trust-item .trust-label { font-size: 0.74em; color: var(--text-dim); line-height: 1.35; }
+        .trust-bar .trust-item strong { color: var(--gold-light); display: block; font-size: 0.82em; margin-bottom: 2px; }
+        @media (max-width: 640px) { .trust-bar { grid-template-columns: repeat(2, 1fr); } }
+
+        /* Guarantee badge */
+        .guarantee-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin: 24px auto 0; max-width: 520px;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, rgba(67,160,71,0.08), rgba(212,168,73,0.04));
+            border: 1px solid rgba(67,160,71,0.25);
+            border-radius: 14px; text-align: left;
+        }
+        .guarantee-badge .g-icon { font-size: 1.8em; flex-shrink: 0; }
+        .guarantee-badge .g-text { font-size: 0.85em; color: var(--text-dim); line-height: 1.5; }
+        .guarantee-badge .g-text strong { color: #fff; display: block; margin-bottom: 2px; }
 
         /* Form */
         .form-group { margin-bottom: 22px; }
@@ -318,9 +363,11 @@
             .price-card .price { font-size: 2.8em; }
             .included-list li { gap: 12px; }
             nav .nav-links { display: none; }
+            .mobile-portal-btn { display: inline-flex; }
         }
     </style>
-</head>
+<script src="/js/cookie-consent.js" defer></script>
+  </head>
 <body>
     <div class="starfield"><canvas id="stars"></canvas></div>
 
@@ -338,6 +385,10 @@
                 <a href="../consulta.html">ES</a>
                 <a href="consulta.html" class="active">EN</a>
             </div>
+            <a href="dashboard.html" class="mobile-portal-btn" aria-label="My Portal">
+                <span class="star">&#x2726;</span>
+                <span>My Portal</span>
+            </a>
         </div>
     </nav>
 
@@ -345,9 +396,9 @@
 
         <!-- Hero -->
         <div class="hero">
-            <div class="badge">Personalized experience</div>
-            <h1>Personalized<br>Deep Analysis</h1>
-            <p class="subtitle">Your complete birth chart, the energy of your name and a 3-month forecast, interpreted by Luz Estelar and delivered as a professional PDF with narrated audio.</p>
+            <div class="badge">The complete experience</div>
+            <h1>Complete<br>Personalized Reading</h1>
+            <p class="subtitle">Your deep birth chart, 6-month forecast, personalized star map and audio narrated by Luz Estelar — delivered as a professional PDF.</p>
         </div>
 
         <!-- Plan Switcher -->
@@ -356,11 +407,8 @@
                 <button class="plan-tab" data-plan="esencial" onclick="switchPlan('esencial')">
                     Essential<span class="tab-price">$9.99</span>
                 </button>
-                <button class="plan-tab" data-plan="profundo" onclick="switchPlan('profundo')">
-                    Deep Analysis<span class="tab-price">$19.99</span>
-                </button>
-                <button class="plan-tab" data-plan="estelar" onclick="switchPlan('estelar')">
-                    Stellar<span class="tab-price">$49.99</span>
+                <button class="plan-tab" data-plan="completo" onclick="switchPlan('completo')">
+                    Complete<span class="tab-price">$29.99</span>
                 </button>
             </div>
             <p class="plan-switcher-hint"><a href="planes.html">Compare plans in detail &rarr;</a></p>
@@ -385,8 +433,41 @@
         <section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="card price-card">
-                    <div class="price">$19.99 USD</div>
-                    <p class="price-note">One-time payment. Includes birth chart, name analysis, 3-month forecast, professional PDF and personalized narrated audio.</p>
+                    <div class="price">$29.99 USD</div>
+                    <p class="price-note">One-time payment. Includes deep birth chart, 6-month forecast, personalized star map, professional PDF and extended narrated audio.</p>
+
+                    <!-- Trust bar -->
+                    <div class="trust-bar">
+                        <div class="trust-item">
+                            <span class="trust-icon">⏱️</span>
+                            <strong>24–48h</strong>
+                            <span class="trust-label">Guaranteed delivery</span>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-icon">🔒</span>
+                            <strong>Secure payment</strong>
+                            <span class="trust-label">Encrypted by Stripe</span>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-icon">📜</span>
+                            <strong>Signed PDF</strong>
+                            <span class="trust-label">Authenticity seal</span>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-icon">♾️</span>
+                            <strong>Permanent download</strong>
+                            <span class="trust-label">Yours to keep forever</span>
+                        </div>
+                    </div>
+
+                    <!-- Guarantee -->
+                    <div class="guarantee-badge">
+                        <div class="g-icon">🛡️</div>
+                        <div class="g-text">
+                            <strong>Satisfaction guarantee</strong>
+                            If your analysis doesn't deliver what was promised, we'll review it and re-deliver at no extra cost. Your peace of mind comes first.
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -588,58 +669,50 @@
                 price: '$9.99 USD',
                 badge: 'Your first star map',
                 title: 'Essential Birth Chart',
-                subtitle: 'Your complete birth chart with planetary positions, Ascendant, Midheaven and major aspects. Delivered as a professional PDF.',
-                priceNote: 'One-time payment. Includes complete birth chart, solar and lunar interpretation, and professional PDF with authenticity seal.',
-                delivery: '<strong>Delivery format:</strong> Professional PDF sent to your email within 24-48 hours.',
+                subtitle: 'Your birth chart with Sun, Moon, Ascendant and Cosmic Advice, interpreted by Luz Estelar — delivered as a professional PDF + short narrated audio.',
+                priceNote: 'One-time payment. Includes complete birth chart, 4 interpreted sections (Sun, Moon, Ascendant and Cosmic Advice), professional PDF with authenticity seal, and a short narrated audio.',
+                delivery: '<strong>Delivery format:</strong> Professional PDF + short MP3 audio, sent to your email within 24-48 hours.',
                 items: [
                     { icon: '\u2609\uFE0E', title: 'Complete Birth Chart', desc: 'Sun, Moon, Ascendant, Midheaven and all 10 planets in their signs and houses.' },
                     { icon: '\u2728', title: 'Planetary Aspects', desc: 'Conjunctions, trines, squares and oppositions between your natal planets.' },
-                    { icon: '\u2600\uFE0E', title: 'Solar and Lunar Interpretation', desc: 'Your essence (Sun) and your emotions (Moon) analyzed in depth.' },
+                    { icon: '\u2600\uFE0E', title: '4-Section Interpretation', desc: 'Your Solar Essence, your Emotional World (Moon), your Social Mask (Ascendant) and your personal Cosmic Advice.' },
+                    { icon: '\uD83C\uDF99', title: 'Short Narrated Audio', desc: 'A concise audio reading (~2–3 min) in MP3 to listen to the essentials of your chart.' },
                     { icon: '\uD83D\uDCDC', title: 'Professional PDF', desc: 'Document with charts, tables and your personalized interpretation, with authenticity seal.' }
                 ]
             },
-            profundo: {
-                name: 'Deep Analysis',
-                price: '$19.99 USD',
-                badge: 'Personalized experience',
-                title: 'Personalized Deep Analysis',
-                subtitle: 'Your complete birth chart, the energy of your name and a 3-month forecast, interpreted by Luz Estelar and delivered as a professional PDF with narrated audio.',
-                priceNote: 'One-time payment. Includes birth chart, name analysis, 3-month forecast, professional PDF and personalized narrated audio.',
-                delivery: '<strong>Delivery format:</strong> Professional PDF (11+ pages) + MP3 audio, sent to your email within 24 hours.',
-                items: [
-                    { icon: '\u2609\uFE0E', title: 'Complete Birth Chart', desc: 'Sun, Moon, Ascendant and all planets in their signs and houses. Natal aspects and their interpretation.' },
-                    { icon: '\u2728', title: 'Name Analysis', desc: 'Numerology, phonetics, etymology and compatibility between your name and your birth chart.' },
-                    { icon: '\uD83D\uDD2D', title: '3-Month Forecast', desc: 'Key transits, favorable days and personalized recommendations by life area.' },
-                    { icon: '\u2764\uFE0F', title: 'Love, Career and Health', desc: 'Detailed analysis of the most important areas of your life according to your birth chart.' },
-                    { icon: '\uD83C\uDF99', title: 'Audio Narrated by Luz Estelar', desc: 'A personalized audio reading so you can listen to your analysis anywhere.' }
-                ]
-            },
-            estelar: {
-                name: 'Stellar',
-                price: '$49.99 USD',
+            completo: {
+                name: 'Complete',
+                price: '$29.99 USD',
                 badge: 'The complete experience',
-                title: 'Complete Stellar Experience',
-                subtitle: 'Everything in the Deep Analysis plan plus solar return, partner compatibility, 6-month forecast, extended audio and quarterly updates.',
-                priceNote: 'One-time payment. Includes everything in the Deep Analysis plan + compatibility, solar return, 6-month forecast and priority delivery in 12h.',
-                delivery: '<strong>Priority delivery:</strong> Complete professional PDF + extended audio, sent to your email within 12 hours.',
+                title: 'Complete Personalized Reading',
+                subtitle: 'Your deep birth chart, 6-month forecast, personalized star map and audio narrated by Luz Estelar — delivered as a professional PDF.',
+                priceNote: 'One-time payment. Includes deep birth chart, 6-month forecast, personalized star map, professional PDF and extended narrated audio.',
+                delivery: '<strong>Delivery format:</strong> Complete professional PDF + MP3 audio + personalized star map, sent to your email within 24 hours.',
                 items: [
-                    { icon: '\u2609\uFE0E', title: 'Complete Birth Chart', desc: 'Sun, Moon, Ascendant and all planets in their signs and houses. Natal aspects and their interpretation.' },
+                    { icon: '\u2609\uFE0E', title: 'Deep Birth Chart', desc: 'Sun, Moon, Ascendant and all 10 planets in their signs and houses. Natal aspects interpreted in detail.' },
                     { icon: '\u2728', title: 'Name Analysis', desc: 'Numerology, phonetics, etymology and compatibility between your name and your birth chart.' },
-                    { icon: '\uD83D\uDD2D', title: '6-Month Forecast', desc: 'Double the coverage: transits, favorable days and extended recommendations.' },
+                    { icon: '\uD83D\uDD2D', title: '6-Month Forecast', desc: 'Key transits, favorable days and personalized recommendations by life area.' },
                     { icon: '\u2764\uFE0F', title: 'Love, Career and Health', desc: 'Detailed analysis of the most important areas of your life according to your birth chart.' },
-                    { icon: '\uD83D\uDCAB', title: 'Partner Compatibility', desc: 'Complete synastry: how your planets interact with those of your partner or person of interest.' },
-                    { icon: '\u2600\uFE0E', title: 'Solar Return', desc: 'Your next birthday chart: the energies and themes that will define your personal year.' },
-                    { icon: '\uD83C\uDF99', title: 'Extended Audio by Luz Estelar', desc: 'Complete narration of all sections, including compatibility and solar return.' },
-                    { icon: '\uD83D\uDD04', title: 'Quarterly Update', desc: 'Every 3 months you will receive a new personalized forecast during the first year, at no additional cost.' }
+                    { icon: '\uD83C\uDF0C', title: 'Personalized Star Map', desc: 'The exact sky of your birth place and date, included as downloadable digital art.' },
+                    { icon: '\uD83C\uDF99', title: 'Audio Narrated by Luz Estelar', desc: 'An extended audio reading so you can listen to your complete analysis anywhere.' }
                 ]
             }
         };
+        // Backward-compatible aliases for old links
+        PLAN_CONFIG.profundo = PLAN_CONFIG.completo;
+        PLAN_CONFIG.estelar = PLAN_CONFIG.completo;
 
-        var currentPlan = 'profundo'; // default
+        var currentPlan = 'completo'; // default
         (function(){
             var params = new URLSearchParams(window.location.search);
             var p = params.get('plan');
+            // Normalize old aliases
+            if(p === 'profundo' || p === 'estelar') p = 'completo';
             if(p && PLAN_CONFIG[p]) currentPlan = p;
+            // Clean URL if it arrived with an alias
+            if(params.get('plan') && params.get('plan') !== currentPlan && window.history.replaceState){
+                window.history.replaceState({}, '', 'consulta.html?plan=' + currentPlan);
+            }
 
             var cfg = PLAN_CONFIG[currentPlan];
             var badge = document.querySelector('.hero .badge');
@@ -795,5 +868,79 @@
     </script>
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
+
+<!-- ══ Exit-intent popup ══ -->
+<style>
+#exitModal{position:fixed;inset:0;background:rgba(5,3,15,0.82);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;animation:exitFade 0.3s ease;}
+#exitModal.visible{display:flex;}
+@keyframes exitFade{from{opacity:0}to{opacity:1}}
+.exit-card{background:linear-gradient(160deg,#1a1428,#0f0a1f);border:1px solid rgba(212,168,73,0.4);border-radius:20px;max-width:440px;width:100%;padding:36px 30px 30px;text-align:center;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 60px rgba(212,168,73,0.15);animation:exitSlide 0.4s ease;}
+@keyframes exitSlide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.exit-close{position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.6em;cursor:pointer;line-height:1;padding:4px 8px;transition:color 0.2s;}
+.exit-close:hover{color:#fff;}
+.exit-icon{font-size:2.4em;margin-bottom:8px;}
+.exit-card h3{font-family:'Cormorant Garamond',serif;color:var(--gold,#d4a849);font-size:1.7em;margin:0 0 8px;font-weight:600;line-height:1.25;}
+.exit-card p{color:rgba(255,255,255,0.75);font-size:0.92em;margin:0 0 18px;line-height:1.55;}
+.exit-code-box{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(212,168,73,0.08);border:1px dashed rgba(212,168,73,0.5);border-radius:12px;padding:14px 18px;margin:0 auto 18px;max-width:280px;}
+.exit-code-box code{font-family:'Courier New',monospace;color:#fff;font-size:1.25em;font-weight:700;letter-spacing:2px;}
+.exit-copy-btn{background:rgba(212,168,73,0.2);border:1px solid rgba(212,168,73,0.4);color:var(--gold,#d4a849);padding:6px 12px;border-radius:6px;font-size:0.78em;cursor:pointer;transition:all 0.2s;}
+.exit-copy-btn:hover{background:rgba(212,168,73,0.35);color:#fff;}
+.exit-cta{display:inline-block;background:linear-gradient(135deg,var(--gold,#d4a849),#c89030);color:#1a1625;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.95em;margin-top:4px;transition:transform 0.2s,box-shadow 0.2s;}
+.exit-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,73,0.35);}
+.exit-note{color:rgba(255,255,255,0.4);font-size:0.72em;margin-top:14px;}
+</style>
+<div id="exitModal" role="dialog" aria-labelledby="exitTitle" aria-hidden="true">
+    <div class="exit-card">
+        <button class="exit-close" aria-label="Close" onclick="closeExitModal()">&times;</button>
+        <div class="exit-icon">&#127775;</div>
+        <h3 id="exitTitle">Wait&hellip; A cosmic gift for you</h3>
+        <p>Before you leave, take <strong>10% off</strong> any of our consultations. Use this code at checkout:</p>
+        <div class="exit-code-box">
+            <code id="exitCode">ESTELAR10</code>
+            <button class="exit-copy-btn" onclick="copyExitCode()">Copy</button>
+        </div>
+        <a href="#planSwitcher" class="exit-cta" onclick="closeExitModal()">Claim my discount</a>
+        <p class="exit-note">Limited time offer. Apply it when you complete your purchase.</p>
+    </div>
+</div>
+<script>
+(function(){
+    var KEY='luzestelar_exit_shown';
+    var shown=false;
+    function openModal(){
+        if(shown||sessionStorage.getItem(KEY))return;
+        shown=true;
+        sessionStorage.setItem(KEY,'1');
+        var m=document.getElementById('exitModal');
+        if(m){m.classList.add('visible');m.setAttribute('aria-hidden','false');}
+    }
+    window.closeExitModal=function(){
+        var m=document.getElementById('exitModal');
+        if(m){m.classList.remove('visible');m.setAttribute('aria-hidden','true');}
+    };
+    window.copyExitCode=function(){
+        var code=document.getElementById('exitCode').textContent;
+        if(navigator.clipboard){navigator.clipboard.writeText(code).then(function(){
+            var btn=document.querySelector('.exit-copy-btn');
+            if(btn){var o=btn.textContent;btn.textContent='\u2713 Copied';setTimeout(function(){btn.textContent=o;},1800);}
+        });}
+    };
+    document.addEventListener('mouseleave',function(e){
+        if(e.clientY<=10)openModal();
+    });
+    var lastY=window.scrollY,scrollUps=0;
+    window.addEventListener('scroll',function(){
+        var y=window.scrollY;
+        if(y<lastY-10)scrollUps++;
+        lastY=y;
+        if(scrollUps>=2&&y<200)openModal();
+    },{passive:true});
+    setTimeout(openModal,45000);
+    document.addEventListener('click',function(e){
+        if(e.target&&e.target.id==='exitModal')window.closeExitModal();
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeExitModal();});
+})();
+</script>
 </body>
 </html>

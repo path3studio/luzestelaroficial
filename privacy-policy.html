@@ -55,7 +55,8 @@
             }
         }
     </style>
-</head>
+<script src="/js/cookie-consent.js" defer></script>
+  </head>
 <body>
     <div class="container">
         <h1>Política de Privacidad</h1>
@@ -100,7 +101,7 @@
 
         <div class="section">
             <h2>5. Almacenamiento y Seguridad</h2>
-            <p>Los datos de tu cuenta (email, nombre, perfil de nacimiento, suscripcion) se almacenan en una base de datos Cloudflare D1 cifrada. Los tokens de sesion se gestionan mediante Cloudflare KV con expiracion automatica.</p>
+            <p>Los datos de tu cuenta (email, nombre, perfil de nacimiento, suscripción) se almacenan en una base de datos Cloudflare D1 cifrada. Los tokens de sesión se gestionan mediante Cloudflare KV con expiracion automatica.</p>
             <p>Implementamos medidas de seguridad incluyendo: cifrado en transito (HTTPS/TLS), cookies HttpOnly y Secure, firmas HMAC-SHA256 para tokens JWT, y verificacion de firmas para webhooks de pago.</p>
         </div>
 
@@ -113,9 +114,9 @@
             <h2>7. Cookies y Rastreo</h2>
             <p>Utilizamos una unica cookie estrictamente necesaria:</p>
             <ul>
-                <li><strong>le_token</strong> — Cookie de sesion para autenticacion. HttpOnly, Secure, SameSite=Lax. Expira en 30 dias. No contiene datos personales, solo un token JWT firmado.</li>
+                <li><strong>le_token</strong> — Cookie de sesión para autenticacion. HttpOnly, Secure, SameSite=Lax. Expira en 30 dias. No contiene datos personales, solo un token JWT firmado.</li>
             </ul>
-            <p>Esta cookie se establece unicamente cuando inicias sesion (Google OAuth o enlace magico). No se usa para rastreo ni publicidad.</p>
+            <p>Esta cookie se establece unicamente cuando inicias sesión (Google OAuth o enlace mágico). No se usa para rastreo ni publicidad.</p>
             <p><strong>No utilizamos</strong> cookies de terceros, cookies de publicidad, ni tecnologias de rastreo como pixels o fingerprinting.</p>
             <p>Cloudflare Web Analytics puede recopilar metricas anonimas de trafico (sin cookies, sin datos personales). Las plataformas de terceros donde publicamos contenido (YouTube, Facebook, Instagram, TikTok) pueden usar sus propias cookies según sus respectivas politicas de privacidad.</p>
         </div>
@@ -129,6 +130,12 @@
                 <li>Retirar tu consentimiento para el procesamiento de datos en cualquier momento.</li>
                 <li>Presentar una queja ante la autoridad de protección de datos correspondiente.</li>
             </ul>
+            <p style="margin-top:14px;"><strong>Acceso y eliminación inmediata desde tu cuenta:</strong> Si tienes una cuenta activa, puedes ejercer estos derechos directamente desde tu <a href="/dashboard.html">Dashboard</a>, en la sección <em>Privacidad y Datos</em>:</p>
+            <ul>
+                <li><strong>Descargar mis datos</strong> — descarga inmediata en JSON de toda tu información (perfil, perfiles natales, historial de compras, suscripciones y reportes guardados).</li>
+                <li><strong>Eliminar mi cuenta</strong> — borra permanentemente tu cuenta y todos los datos asociados, y cancela cualquier suscripción activa en Stripe. Esta acción requiere confirmación explícita y no se puede deshacer.</li>
+            </ul>
+            <p>Si prefieres ejercer tus derechos por correo, escríbenos a <a href="mailto:contacto@luzestelaroficial.com">contacto@luzestelaroficial.com</a> y atenderemos tu solicitud en un plazo máximo de 30 días.</p>
         </div>
 
         <div class="section">

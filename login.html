@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesion — Luz Estelar</title>
-    <meta name="description" content="Inicia sesion en tu cuenta de Luz Estelar para acceder a tu dashboard astrologico personalizado.">
+    <title>Iniciar Sesión — Luz Estelar</title>
+    <meta name="description" content="Inicia sesión en tu cuenta de Luz Estelar para acceder a tu dashboard astrologico personalizado.">
     <meta name="robots" content="noindex">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/login.html">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/login.html">
@@ -77,12 +77,12 @@
             <!-- Magic Link -->
             <form id="magic-form">
                 <div class="form-group">
-                    <label>Correo electronico</label>
+                    <label>Correo electrónico</label>
                     <input type="email" id="magic-email" placeholder="tu@email.com" required>
                 </div>
-                <button type="submit" class="btn-primary" id="magic-btn">Enviar enlace magico</button>
+                <button type="submit" class="btn-primary" id="magic-btn">Enviar enlace mágico</button>
                 <div class="success-msg" id="magic-success">
-                    Revisa tu bandeja de entrada. Te enviamos un enlace para iniciar sesion.
+                    Revisa tu bandeja de entrada. Te enviamos un enlace para iniciar sesión.
                 </div>
                 <div class="error-msg" id="magic-error"></div>
             </form>
@@ -98,7 +98,7 @@
     // Check if already logged in
     (async function(){
         try {
-            var res = await fetch('/api/auth/me');
+            var res = await fetch('/api/auth/me', {cache: 'no-store', credentials: 'same-origin'});
             if (res.ok) {
                 var data = await res.json();
                 if (data.ok) window.location.href = '/dashboard.html';
@@ -133,13 +133,13 @@
                 errorEl.textContent = data.error || 'Error al enviar el enlace';
                 errorEl.style.display = 'block';
                 btn.disabled = false;
-                btn.textContent = 'Enviar enlace magico';
+                btn.textContent = 'Enviar enlace mágico';
             }
         } catch(err) {
-            errorEl.textContent = 'Error de conexion. Intenta de nuevo.';
+            errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
             errorEl.style.display = 'block';
             btn.disabled = false;
-            btn.textContent = 'Enviar enlace magico';
+            btn.textContent = 'Enviar enlace mágico';
         }
     });
     </script>

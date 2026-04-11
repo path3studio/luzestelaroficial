@@ -96,7 +96,7 @@
     // Check if already logged in
     (async function(){
         try {
-            var res = await fetch('/api/auth/me');
+            var res = await fetch('/api/auth/me', {cache: 'no-store', credentials: 'same-origin'});
             if (res.ok) {
                 var data = await res.json();
                 if (data.ok) window.location.href = '/en/dashboard.html';
