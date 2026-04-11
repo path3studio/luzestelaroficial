@@ -3,27 +3,60 @@
  * ========================================================
  * Renders a zodiac wheel on a <canvas> element with planets, houses, and aspects.
  * Pure vanilla JS, no dependencies.
+ *
+ * v2 — Improvements:
+ *  - Approximate Moon position calculation
+ *  - Removed fake ascendant (only draws ASC when ascendantVerified flag is set)
+ *  - Vivid element-based zodiac colors
+ *  - Radial gradient background, tick marks, golden Sun glow
+ *  - Decorative center pattern
  */
 
 (function(global) {
   'use strict';
 
-  var SIGN_GLYPHS = ['\u2648','\u2649','\u264A','\u264B','\u264C','\u264D','\u264E','\u264F','\u2650','\u2651','\u2652','\u2653'];
+  // Zodiac glyphs with U+FE0E (Variation Selector-15) to force text presentation
+  // instead of colored emoji rendering on mobile (iOS/Android default to emoji font otherwise).
+  var SIGN_GLYPHS = ['\u2648\uFE0E','\u2649\uFE0E','\u264A\uFE0E','\u264B\uFE0E','\u264C\uFE0E','\u264D\uFE0E','\u264E\uFE0E','\u264F\uFE0E','\u2650\uFE0E','\u2651\uFE0E','\u2652\uFE0E','\u2653\uFE0E'];
   var SIGN_NAMES  = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-  var SIGN_COLORS = ['#FF4500','#2E8B57','#FFD700','#4169E1','#FF8C00','#8B4513','#DA70D6','#8B0000','#9400D3','#2F4F4F','#00CED1','#1E90FF'];
-  var ELEMENT_COLORS = {Fire:'#FF4500', Earth:'#2E8B57', Air:'#FFD700', Water:'#4169E1'};
+
+  // Vivid element-based colors for each sign
+  var ELEMENT_COLORS_VIVID = {
+    Fire:  '#e53935',  // red
+    Earth: '#43a047',  // green
+    Air:   '#1e88e5',  // blue
+    Water: '#00acc1'   // teal/cyan
+  };
   var ELEMENTS = ['Fire','Earth','Air','Water','Fire','Earth','Air','Water','Fire','Earth','Air','Water'];
 
+  // Per-sign colors derived from element
+  var SIGN_COLORS = ELEMENTS.map(function(el) { return ELEMENT_COLORS_VIVID[el]; });
+
+  // Planet glyphs with U+FE0E to force text presentation (avoids emoji rendering on mobile).
   var PLANET_GLYPHS = {
-    Sun:'\u2609', Moon:'\u263D', Mercury:'\u263F', Venus:'\u2640', Mars:'\u2642',
-    Jupiter:'\u2643', Saturn:'\u2644', Uranus:'\u2645', Neptune:'\u2646', Pluto:'\u2647',
-    NorthNode:'\u260A', Chiron:'\u26B7'
+    Sun:'\u2609\uFE0E', Moon:'\u263D\uFE0E', Mercury:'\u263F\uFE0E', Venus:'\u2640\uFE0E', Mars:'\u2642\uFE0E',
+    Jupiter:'\u2643\uFE0E', Saturn:'\u2644\uFE0E', Uranus:'\u2645\uFE0E', Neptune:'\u2646\uFE0E', Pluto:'\u2647\uFE0E',
+    NorthNode:'\u260A\uFE0E', Chiron:'\u26B7\uFE0E'
   };
   var PLANET_COLORS = {
-    Sun:'#FFD700', Moon:'#C0C0C0', Mercury:'#00CED1', Venus:'#DA70D6', Mars:'#FF4500',
-    Jupiter:'#9400D3', Saturn:'#2F4F4F', Uranus:'#00CED1', Neptune:'#1E90FF', Pluto:'#8B0000',
+    Sun:'#FFD700', Moon:'#b8c4e0', Mercury:'#00CED1', Venus:'#DA70D6', Mars:'#FF4500',
+    Jupiter:'#9400D3', Saturn:'#708090', Uranus:'#00CED1', Neptune:'#1E90FF', Pluto:'#8B0000',
     NorthNode:'#888', Chiron:'#A0522D'
   };
+
+  // On mobile canvases the saturated magenta Venus (#DA70D6) and deep
+  // purple Jupiter (#9400D3) read as harsh lilac/violet blobs against
+  // the cosmic background — same colors desaturated slightly blend
+  // better at small sizes while staying recognizable. Desktop keeps
+  // the vivid palette because the wheel is bigger and the colors
+  // don't overwhelm at that scale.
+  function getPlanetColor(name, size) {
+    if (size < 500) {
+      if (name === 'Venus')   return '#c4a8d8';
+      if (name === 'Jupiter') return '#a88cc8';
+    }
+    return PLANET_COLORS[name] || '#fff';
+  }
 
   var ASPECT_STYLES = {
     conjunction: {color:'#FFD700', dash:[], angle:0},
@@ -37,9 +70,48 @@
   var DEG = Math.PI / 180;
 
   /**
+   * Calculate approximate lunar mean longitude for a given date.
+   * Uses the simplified formula: moonLong = (218.316 + 13.176396 * daysSinceJ2000) % 360
+   * @param {number} year
+   * @param {number} month (1-12)
+   * @param {number} day
+   * @returns {number} longitude in degrees (0-360)
+   */
+  function calcMoonLongitude(year, month, day) {
+    // Julian Day Number (simplified)
+    var a = Math.floor((14 - month) / 12);
+    var y = year + 4800 - a;
+    var m = month + 12 * a - 3;
+    var jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+    // J2000.0 epoch is JDN 2451545.0 (Jan 1, 2000, 12:00 TT)
+    var daysSinceJ2000 = jdn - 2451545.0;
+    var moonLong = (218.316 + 13.176396 * daysSinceJ2000) % 360;
+    if (moonLong < 0) moonLong += 360;
+    return moonLong;
+  }
+
+  /**
+   * Get the zodiac sign index (0-11) from ecliptic longitude.
+   * @param {number} longitude in degrees
+   * @returns {number} sign index (0 = Aries, 11 = Pisces)
+   */
+  function signFromLongitude(longitude) {
+    return Math.floor(((longitude % 360) + 360) % 360 / 30);
+  }
+
+  /**
+   * Get degree within sign from ecliptic longitude.
+   * @param {number} longitude in degrees
+   * @returns {number} degree within sign (0-29)
+   */
+  function degreeInSign(longitude) {
+    return ((longitude % 360) + 360) % 360 % 30;
+  }
+
+  /**
    * Render a natal chart wheel.
    * @param {HTMLCanvasElement} canvas
-   * @param {Object} chartData — { planets: [{name, longitude, sign, degree}...], aspects: [{planet1, planet2, type}...], ascendant: number, houses: [number x 12] }
+   * @param {Object} chartData — { planets: [{name, longitude, sign, degree}...], aspects: [{planet1, planet2, type}...], ascendant: number, ascendantVerified: boolean, houses: [number x 12], midheaven: number }
    * @param {Object} opts — optional overrides
    */
   function render(canvas, chartData, opts) {
@@ -62,59 +134,122 @@
     var planetR = size * 0.26;
     var aspectR = size * 0.22;
 
-    // Ascendant offset: Asc should be at 9 o'clock (180 deg)
-    var ascOffset = chartData.ascendant ? (180 - chartData.ascendant) : 0;
+    // Only use ascendant offset if we have a verified ascendant (real time-of-birth calculation)
+    var hasVerifiedAsc = chartData.ascendant !== undefined && chartData.ascendantVerified === true;
+    var ascOffset = hasVerifiedAsc ? (180 - chartData.ascendant) : 0;
 
     ctx.clearRect(0, 0, size, size);
 
-    // ── Background ──
-    var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerR);
-    bgGrad.addColorStop(0, 'rgba(12,12,42,0.95)');
-    bgGrad.addColorStop(1, 'rgba(6,6,26,0.98)');
+    // ── Background with radial gradient ──
+    var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerR + 12);
+    bgGrad.addColorStop(0, 'rgba(18,18,52,0.92)');
+    bgGrad.addColorStop(0.5, 'rgba(12,12,42,0.96)');
+    bgGrad.addColorStop(0.85, 'rgba(8,8,32,0.98)');
+    bgGrad.addColorStop(1, 'rgba(4,4,20,1)');
     ctx.fillStyle = bgGrad;
     ctx.beginPath();
-    ctx.arc(cx, cy, outerR + 8, 0, TAU);
+    ctx.arc(cx, cy, outerR + 12, 0, TAU);
     ctx.fill();
 
-    // ── Zodiac ring ──
+    // ── Subtle radial glow behind zodiac ring ──
+    var ringGlow = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR + 4);
+    ringGlow.addColorStop(0, 'rgba(212,168,73,0.03)');
+    ringGlow.addColorStop(0.5, 'rgba(212,168,73,0.06)');
+    ringGlow.addColorStop(1, 'rgba(212,168,73,0.01)');
+    ctx.fillStyle = ringGlow;
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR + 4, 0, TAU);
+    ctx.fill();
+
+    // ── Zodiac ring — segments ──
     for (var i = 0; i < 12; i++) {
       var startAngle = ((i * 30 + ascOffset) * DEG) - Math.PI / 2;
       var endAngle = (((i + 1) * 30 + ascOffset) * DEG) - Math.PI / 2;
+      var elemColor = ELEMENT_COLORS_VIVID[ELEMENTS[i]];
 
-      // Sign segment fill
+      // Subtle segment — almost transparent (no square background look)
       ctx.beginPath();
       ctx.arc(cx, cy, outerR, startAngle, endAngle);
       ctx.arc(cx, cy, signR, endAngle, startAngle, true);
       ctx.closePath();
-      var elemColor = ELEMENT_COLORS[ELEMENTS[i]];
-      ctx.fillStyle = elemColor + '22';
+      ctx.fillStyle = elemColor + '08'; // very subtle fill
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      // Thin divider strokes only
+      ctx.strokeStyle = 'rgba(212,168,73,0.12)';
       ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(startAngle) * signR, cy + Math.sin(startAngle) * signR);
+      ctx.lineTo(cx + Math.cos(startAngle) * outerR, cy + Math.sin(startAngle) * outerR);
       ctx.stroke();
 
-      // Sign glyph
+      // ── Glyph position ──
       var midAngle = ((i * 30 + 15 + ascOffset) * DEG) - Math.PI / 2;
       var glyphR = (outerR + signR) / 2;
       var gx = cx + Math.cos(midAngle) * glyphR;
       var gy = cy + Math.sin(midAngle) * glyphR;
-      ctx.fillStyle = elemColor;
-      ctx.font = Math.round(size * 0.035) + 'px "Noto Sans Symbols 2", serif';
+      var discR = Math.round(size * 0.028);
+
+      // Decorative halo disc behind glyph (radial gradient, element-colored)
+      var haloGrad = ctx.createRadialGradient(gx, gy, 0, gx, gy, discR);
+      haloGrad.addColorStop(0, elemColor + '55');
+      haloGrad.addColorStop(0.6, elemColor + '18');
+      haloGrad.addColorStop(1, elemColor + '00');
+      ctx.fillStyle = haloGrad;
+      ctx.beginPath();
+      ctx.arc(gx, gy, discR, 0, TAU);
+      ctx.fill();
+
+      // Thin gold ring around glyph
+      ctx.strokeStyle = 'rgba(212,168,73,0.38)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(gx, gy, discR - 1, 0, TAU);
+      ctx.stroke();
+
+      // Sign glyph — white/gold with element color shadow
+      ctx.font = '600 ' + Math.round(size * 0.042) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.shadowColor = elemColor;
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = '#fff8e7';
       ctx.fillText(SIGN_GLYPHS[i], gx, gy);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+    }
+
+    // ── Tick marks every 5 degrees on the outer ring ──
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 0.5;
+    for (var t = 0; t < 360; t += 5) {
+      var tickAngle = ((t + ascOffset) * DEG) - Math.PI / 2;
+      var tickInner = outerR - 2;
+      var tickOuter = outerR + 2;
+      // Longer ticks at 10-degree intervals
+      if (t % 10 === 0) {
+        tickInner = outerR - 3;
+        tickOuter = outerR + 3;
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      }
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(tickAngle) * tickInner, cy + Math.sin(tickAngle) * tickInner);
+      ctx.lineTo(cx + Math.cos(tickAngle) * tickOuter, cy + Math.sin(tickAngle) * tickOuter);
+      ctx.stroke();
     }
 
     // ── Outer and inner circles ──
-    ctx.strokeStyle = 'rgba(212,168,73,0.4)';
+    ctx.strokeStyle = 'rgba(212,168,73,0.35)';
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(cx, cy, outerR, 0, TAU); ctx.stroke();
-    ctx.strokeStyle = 'rgba(212,168,73,0.25)';
+    ctx.strokeStyle = 'rgba(212,168,73,0.20)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(cx, cy, signR, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = 'rgba(212,168,73,0.15)';
     ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, TAU); ctx.stroke();
 
-    // ── House cusps ──
+    // ── House cusps (only if full house data provided) ──
     if (chartData.houses && chartData.houses.length === 12) {
       ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 0.5;
@@ -130,7 +265,7 @@
         var hMid = chartData.houses[h] + ((chartData.houses[nextH] - chartData.houses[h] + 360) % 360) / 2;
         var hnAngle = ((hMid + ascOffset) * DEG) - Math.PI / 2;
         var hnR = (innerR + signR) / 2;
-        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
         ctx.font = Math.round(size * 0.022) + 'px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -138,8 +273,8 @@
       }
     }
 
-    // ── ASC / MC markers ──
-    if (chartData.ascendant !== undefined) {
+    // ── ASC / MC markers — only render if ascendant is verified (real time-of-birth) ──
+    if (hasVerifiedAsc) {
       var ascAngle = ((chartData.ascendant + ascOffset) * DEG) - Math.PI / 2;
       ctx.strokeStyle = '#d4a849';
       ctx.lineWidth = 2;
@@ -150,10 +285,12 @@
       // Label
       ctx.fillStyle = '#d4a849';
       ctx.font = 'bold ' + Math.round(size * 0.025) + 'px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText('ASC', cx + Math.cos(ascAngle) * (outerR + 14), cy + Math.sin(ascAngle) * (outerR + 14));
     }
 
-    if (chartData.midheaven !== undefined) {
+    if (chartData.midheaven !== undefined && hasVerifiedAsc) {
       var mcAngle = ((chartData.midheaven + ascOffset) * DEG) - Math.PI / 2;
       ctx.strokeStyle = 'rgba(212,168,73,0.5)';
       ctx.lineWidth = 1.5;
@@ -163,11 +300,13 @@
       ctx.stroke();
       ctx.fillStyle = 'rgba(212,168,73,0.7)';
       ctx.font = 'bold ' + Math.round(size * 0.022) + 'px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText('MC', cx + Math.cos(mcAngle) * (outerR + 14), cy + Math.sin(mcAngle) * (outerR + 14));
     }
 
     // ── Aspect lines ──
-    if (chartData.aspects) {
+    if (chartData.aspects && chartData.aspects.length > 0) {
       var planetAngles = {};
       if (chartData.planets) {
         chartData.planets.forEach(function(p) {
@@ -194,7 +333,7 @@
     }
 
     // ── Planets ──
-    if (chartData.planets) {
+    if (chartData.planets && chartData.planets.length > 0) {
       // Spread overlapping planets
       var sorted = chartData.planets.slice().sort(function(a,b) { return a.longitude - b.longitude; });
       var positions = [];
@@ -210,24 +349,63 @@
         var px = cx + Math.cos(angle) * planetR;
         var py = cy + Math.sin(angle) * planetR;
         var glyph = PLANET_GLYPHS[p.name] || '?';
-        var color = PLANET_COLORS[p.name] || '#fff';
+        var color = getPlanetColor(p.name, size);
+
+        // Sun gets a golden pulsating glow
+        if (p.name === 'Sun') {
+          ctx.shadowColor = '#FFD700';
+          ctx.shadowBlur = 12;
+          // Draw a golden glow circle behind the Sun
+          var sunGlowGrad = ctx.createRadialGradient(px, py, 0, px, py, size * 0.035);
+          sunGlowGrad.addColorStop(0, 'rgba(255,215,0,0.25)');
+          sunGlowGrad.addColorStop(0.6, 'rgba(255,180,0,0.08)');
+          sunGlowGrad.addColorStop(1, 'rgba(255,215,0,0)');
+          ctx.fillStyle = sunGlowGrad;
+          ctx.beginPath();
+          ctx.arc(px, py, size * 0.035, 0, TAU);
+          ctx.fill();
+        }
+
+        // Moon gets a silver/blue-white glow
+        if (p.name === 'Moon') {
+          ctx.shadowColor = '#b8c4e0';
+          ctx.shadowBlur = 8;
+          var moonGlowGrad = ctx.createRadialGradient(px, py, 0, px, py, size * 0.03);
+          moonGlowGrad.addColorStop(0, 'rgba(184,196,224,0.20)');
+          moonGlowGrad.addColorStop(0.6, 'rgba(184,196,224,0.06)');
+          moonGlowGrad.addColorStop(1, 'rgba(184,196,224,0)');
+          ctx.fillStyle = moonGlowGrad;
+          ctx.beginPath();
+          ctx.arc(px, py, size * 0.03, 0, TAU);
+          ctx.fill();
+        }
 
         // Planet glyph
         ctx.fillStyle = color;
-        ctx.font = Math.round(size * 0.04) + 'px "Noto Sans Symbols 2", serif';
+        ctx.font = Math.round(size * 0.042) + 'px "Noto Sans Symbols 2", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(glyph, px, py);
+
+        // Use crescent symbol for Moon
+        if (p.name === 'Moon') {
+          ctx.fillText('\u263D', px, py);
+        } else {
+          ctx.fillText(glyph, px, py);
+        }
+
+        // Reset shadow
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
 
         // Degree label
         var degStr = Math.floor(p.degree) + '\u00B0';
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
         ctx.font = Math.round(size * 0.018) + 'px Inter, sans-serif';
         ctx.fillText(degStr, px, py + size * 0.03);
 
         // Tick line from planet to zodiac ring
         var tickAngle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
-        ctx.strokeStyle = color + '44';
+        ctx.strokeStyle = color + '33';
         ctx.lineWidth = 0.5;
         ctx.beginPath();
         ctx.moveTo(cx + Math.cos(tickAngle) * (planetR + size * 0.04), cy + Math.sin(tickAngle) * (planetR + size * 0.04));
@@ -236,26 +414,72 @@
       });
     }
 
-    // ── Center decoration ──
-    var centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.06);
-    centerGrad.addColorStop(0, 'rgba(212,168,73,0.15)');
-    centerGrad.addColorStop(1, 'rgba(212,168,73,0)');
-    ctx.fillStyle = centerGrad;
+    // ── Center decoration — decorative pattern ──
+    // Outer glow
+    var centerGlowR = size * 0.08;
+    var centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, centerGlowR);
+    centerGlow.addColorStop(0, 'rgba(212,168,73,0.12)');
+    centerGlow.addColorStop(0.5, 'rgba(212,168,73,0.05)');
+    centerGlow.addColorStop(1, 'rgba(212,168,73,0)');
+    ctx.fillStyle = centerGlow;
     ctx.beginPath();
-    ctx.arc(cx, cy, size * 0.06, 0, TAU);
+    ctx.arc(cx, cy, centerGlowR, 0, TAU);
     ctx.fill();
 
+    // Center circle
+    ctx.strokeStyle = 'rgba(212,168,73,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.035, 0, TAU);
+    ctx.stroke();
+
+    // Inner circle
+    ctx.strokeStyle = 'rgba(212,168,73,0.15)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.018, 0, TAU);
+    ctx.stroke();
+
+    // Radiating dots around center
+    var dotCount = 8;
+    var dotR = size * 0.05;
+    var dotSize = size * 0.004;
+    for (var d = 0; d < dotCount; d++) {
+      var dAngle = (d / dotCount) * TAU;
+      var dx = cx + Math.cos(dAngle) * dotR;
+      var dy = cy + Math.sin(dAngle) * dotR;
+      ctx.fillStyle = 'rgba(212,168,73,0.20)';
+      ctx.beginPath();
+      ctx.arc(dx, dy, dotSize, 0, TAU);
+      ctx.fill();
+    }
+
+    // Smaller ring of dots
+    var smallDotR = size * 0.028;
+    for (var sd = 0; sd < dotCount; sd++) {
+      var sdAngle = (sd / dotCount) * TAU + (TAU / (dotCount * 2)); // offset by half step
+      var sdx = cx + Math.cos(sdAngle) * smallDotR;
+      var sdy = cy + Math.sin(sdAngle) * smallDotR;
+      ctx.fillStyle = 'rgba(212,168,73,0.12)';
+      ctx.beginPath();
+      ctx.arc(sdx, sdy, dotSize * 0.7, 0, TAU);
+      ctx.fill();
+    }
+
+    // Center point
     ctx.fillStyle = '#d4a849';
-    ctx.font = Math.round(size * 0.03) + 'px "Cormorant Garamond", serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('\u2729', cx, cy);
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.005, 0, TAU);
+    ctx.fill();
   }
 
   // ─── Export ──
   global.LuzEstelar = global.LuzEstelar || {};
   global.LuzEstelar.NatalChart = {
     render: render,
+    calcMoonLongitude: calcMoonLongitude,
+    signFromLongitude: signFromLongitude,
+    degreeInSign: degreeInSign,
     PLANET_GLYPHS: PLANET_GLYPHS,
     SIGN_GLYPHS: SIGN_GLYPHS,
     SIGN_NAMES: SIGN_NAMES
