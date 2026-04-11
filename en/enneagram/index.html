@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enneagram — 9 Personality Types & Interactive Quiz | Luz Estelar</title>
+    <meta name="description" content="Discover your Enneagram type with our 9-question quiz. Explore the 9 personality types, the 3 centers (body, heart, head), and your wing.">
+    <meta property="og:title" content="Enneagram — 9 Personality Types & Interactive Quiz | Luz Estelar">
+    <meta property="og:description" content="Discover your Enneagram type with our 9-question quiz. Explore the 9 personality types, the 3 centers, and your wing.">
+    <meta property="og:url" content="https://luzestelaroficial.com/en/enneagram/">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="es_MX">
+    <link rel="icon" type="image/png" href="../../app_icon.png">
+    <link rel="canonical" href="https://luzestelaroficial.com/en/enneagram/">
+    <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/eneagrama/">
+    <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/enneagram/">
+    <link rel="alternate" hreflang="x-default" href="https://luzestelaroficial.com/eneagrama/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Enneagram — 9 Personality Types & Interactive Quiz", "description": "Discover your Enneagram type with our 9-question quiz. Explore the 9 personality types, the 3 centers (body, heart, head), and your wing.", "author": {"@type": "Organization", "name": "Luz Estelar Oficial"}, "inLanguage": "en", "mainEntityOfPage": "https://luzestelaroficial.com/en/enneagram/"}</script>
+    <style>
+        :root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.starfield canvas{width:100%;height:100%;}
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,6,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
+nav .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+nav .logo{font-family:'Cormorant Garamond',serif;font-size:1.4em;font-weight:700;color:var(--gold);text-decoration:none;}
+nav .nav-links{display:flex;gap:28px;}
+nav .nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.88em;font-weight:400;transition:color 0.2s;}
+nav .nav-links a:hover{color:var(--gold);}
+.mobile-portal-btn{display:none;align-items:center;gap:6px;padding:7px 14px 7px 12px;background:linear-gradient(135deg,rgba(212,168,73,0.22),rgba(212,168,73,0.08));border:1px solid rgba(212,168,73,0.45);border-radius:22px;color:var(--gold-light);font-size:0.82em;font-weight:600;text-decoration:none;transition:all 0.25s;white-space:nowrap;}
+.mobile-portal-btn:hover,.mobile-portal-btn:active{background:linear-gradient(135deg,rgba(212,168,73,0.35),rgba(212,168,73,0.15));transform:scale(1.03);}
+.mobile-portal-btn .star{font-size:0.95em;line-height:1;}
+.content{position:relative;z-index:1;}
+.hero-sign{padding:120px 24px 60px;text-align:center;}
+.hero-sign .symbol{font-family:'Noto Sans Symbols 2',serif;font-size:5em;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 15px rgba(212,168,73,0.4));}
+.hero-sign h1{font-family:'Cormorant Garamond',serif;font-size:3.5em;font-weight:700;color:#fff;margin:10px 0;}
+.hero-sign .subtitle{font-size:1.1em;color:var(--text-dim);margin-top:8px;}
+.hero-sign .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:0.9em;color:var(--text-dim);}
+.hero-sign .meta span{display:flex;align-items:center;gap:6px;}
+.hero-sign .meta .dot{width:8px;height:8px;border-radius:50%;}
+section{padding:60px 24px;}
+.section-inner{max-width:800px;margin:0 auto;}
+.card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:36px 32px;margin-bottom:30px;}
+.card h2{font-family:'Cormorant Garamond',serif;font-size:1.8em;font-weight:700;color:#fff;margin-bottom:16px;}
+.card p{font-size:0.95em;line-height:1.85;color:var(--text-dim);margin-bottom:14px;}
+.card p:last-child{margin-bottom:0;}
+.card ul{list-style:none;padding:0;}
+.card ul li{padding:10px 0;border-bottom:1px solid var(--glass-border);font-size:0.92em;line-height:1.7;color:var(--text-dim);}
+.card ul li:last-child{border-bottom:none;}
+.card ul li strong{color:var(--gold);}
+.sign-nav{display:flex;justify-content:space-between;max-width:800px;margin:40px auto;padding:0 24px;}
+.sign-nav a{color:var(--gold);text-decoration:none;font-size:0.95em;transition:opacity 0.2s;}
+.sign-nav a:hover{opacity:0.7;}
+.cta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px;}
+.cta-card{background:linear-gradient(135deg,rgba(212,168,73,0.08),rgba(124,92,191,0.06));border:1px solid rgba(212,168,73,0.2);border-radius:16px;padding:24px;text-align:center;text-decoration:none;color:#fff;transition:transform 0.3s;}
+.cta-card:hover{transform:translateY(-3px);}
+.cta-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2em;margin-bottom:8px;}
+.cta-card p{font-size:0.85em;color:var(--text-dim);}
+footer{text-align:center;padding:40px 24px;border-top:1px solid var(--glass-border);color:var(--text-dim);font-size:0.85em;}
+footer a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+footer a:hover{color:var(--gold);}
+footer .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:16px;}
+.lang-selector{display:flex;align-items:center;gap:4px;font-size:0.82em;margin-left:16px;}
+.lang-selector a{color:var(--text-dim);text-decoration:none;padding:2px 6px;border-radius:4px;transition:color 0.2s,background 0.2s;}
+.lang-selector a:hover{color:var(--gold);}
+.lang-selector a.active{color:var(--gold);font-weight:600;background:var(--gold-dim);}
+.lang-selector .lang-sep{color:var(--text-dim);opacity:0.5;}
+@media(max-width:768px){.hero-sign h1{font-size:2.4em;}.hero-sign .symbol{font-size:3.5em;}.card{padding:24px 20px;}.card h2{font-size:1.4em;}.lang-selector{position:absolute;top:18px;right:60px;}.mobile-portal-btn{display:inline-flex;}nav .nav-links{display:none;}}
+
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;max-width:1100px;margin:0 auto;padding:0 24px;}
+.hub-item{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:28px 24px;text-align:center;text-decoration:none;color:#fff;transition:transform 0.3s,border-color 0.3s;}
+.hub-item:hover{transform:translateY(-4px);border-color:var(--gold);}
+.hub-item .hub-symbol{font-size:2.8em;margin-bottom:8px;display:block;}
+.hub-item h3{font-family:"Cormorant Garamond",serif;font-size:1.3em;margin-bottom:6px;}
+.hub-item .hub-meta{font-size:0.82em;color:var(--text-dim);line-height:1.5;}
+.hub-item .hub-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+.hub-intro{max-width:800px;margin:0 auto 40px;padding:0 24px;}
+.hub-intro p{font-size:1em;line-height:1.85;color:var(--text-dim);text-align:center;}
+.section-links{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;max-width:800px;margin:40px auto 0;padding:0 24px;}
+.section-links a{color:var(--gold);text-decoration:none;font-size:0.92em;padding:8px 20px;border:1px solid rgba(212,168,73,0.3);border-radius:30px;transition:all 0.2s;}
+.section-links a:hover{background:rgba(212,168,73,0.1);border-color:var(--gold);}
+@media(max-width:600px){.hub-grid{grid-template-columns:repeat(2,1fr);gap:12px;}.hub-item{padding:20px 14px;}.hub-item .hub-symbol{font-size:2em;}}
+
+/* Quiz styles */
+.quiz-box{max-width:640px;margin:0 auto 40px;text-align:left;}
+.quiz-progress{text-align:center;font-size:0.88em;color:var(--text-dim);margin-bottom:16px;}
+.quiz-progress-bar{width:100%;height:4px;background:var(--glass-border);border-radius:2px;margin-top:8px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width 0.4s ease;}
+.quiz-question{font-family:'Cormorant Garamond',serif;font-size:1.5em;font-weight:700;color:#fff;margin-bottom:20px;line-height:1.4;}
+.quiz-options{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.quiz-option{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass);cursor:pointer;transition:all 0.2s;font-size:0.95em;color:var(--text-dim);line-height:1.6;}
+.quiz-option:hover{border-color:rgba(212,168,73,0.4);background:rgba(212,168,73,0.06);}
+.quiz-option input[type="radio"]{accent-color:var(--gold);margin-top:4px;flex-shrink:0;}
+.quiz-option.selected{border-color:var(--gold);background:rgba(212,168,73,0.1);color:var(--text);}
+.quiz-btn{display:block;margin:0 auto;padding:12px 36px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold),#c89030);color:#06061a;font-weight:700;font-size:0.95em;cursor:pointer;transition:transform 0.2s,opacity 0.2s;}
+.quiz-btn:hover{transform:translateY(-2px);}
+.quiz-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.quiz-result{text-align:center;}
+.quiz-result .result-type-num{font-size:4em;font-weight:700;background:linear-gradient(180deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:'Cormorant Garamond',serif;}
+.quiz-result .result-type-name{font-family:'Cormorant Garamond',serif;font-size:2em;font-weight:700;color:#fff;margin:4px 0 12px;}
+.quiz-result .result-details{font-size:0.95em;color:var(--text-dim);line-height:1.8;margin-bottom:20px;}
+.quiz-result .result-link{display:inline-block;padding:10px 28px;border:1px solid var(--gold);border-radius:30px;color:var(--gold);text-decoration:none;font-size:0.9em;transition:all 0.2s;}
+.quiz-result .result-link:hover{background:rgba(212,168,73,0.1);}
+.quiz-restart{display:inline-block;margin-top:12px;color:var(--text-dim);text-decoration:none;font-size:0.85em;cursor:pointer;border:none;background:none;transition:color 0.2s;}
+.quiz-restart:hover{color:var(--gold);}
+@media(max-width:600px){.quiz-question{font-size:1.2em;}.quiz-option{padding:12px 14px;font-size:0.9em;}}
+</style>
+</head>
+<body>
+    <div class="starfield"><canvas id="stars"></canvas></div>
+    <nav><div class="nav-inner"><a href="../../" class="logo">Luz Estelar</a><div class="nav-links"><a href="../../">Home</a><a href="../../#signos">Signs</a><a href="../../#plataformas">Platforms</a><a href="../../#analisis">Readings</a></div><a href="/en/dashboard.html" class="mobile-portal-btn" aria-label="My Portal"><span class="star">&#x2726;</span><span>My Portal</span></a></div></nav>
+    <div class="content">
+        <div class="hero-sign">
+            <div class="symbol" style="font-family:'Noto Sans Symbols 2',serif;">&#10042;</div>
+            <h1>Enneagram</h1>
+            <p class="subtitle">9 Personality Types &mdash; 3 Centers of Intelligence</p>
+            <div class="meta">
+                <span><span class="dot" style="background:#F44336;"></span> Body (Instinctive)</span>
+                <span><span class="dot" style="background:#E91E63;"></span> Heart (Emotional)</span>
+                <span><span class="dot" style="background:#3F51B5;"></span> Head (Mental)</span>
+            </div>
+        </div>
+        <section>
+            <div class="hub-intro">
+                <p>The Enneagram is an ancient personality system that describes nine fundamental character types, organized into three centers of intelligence: the instinctive (body), the emotional (heart), and the mental (head). Each type has unique motivations, fears, and patterns. Answer the 9-question quiz to discover your type and your wing.</p>
+            </div>
+
+            <!-- Quiz -->
+            <div class="card quiz-box" style="border-color:rgba(212,168,73,0.25);">
+                <h2 style="font-size:1.4em;text-align:center;">Discover Your Type</h2>
+                <div id="quiz-container">
+                    <div id="quiz-progress" class="quiz-progress">
+                        Question <span id="quiz-current">1</span> of 9
+                        <div class="quiz-progress-bar"><div id="quiz-fill" class="quiz-progress-fill" style="width:11.1%"></div></div>
+                    </div>
+                    <div id="quiz-question" class="quiz-question"></div>
+                    <div id="quiz-options" class="quiz-options"></div>
+                    <button id="quiz-next" class="quiz-btn" disabled>Next</button>
+                </div>
+                <div id="quiz-result" class="quiz-result" style="display:none;">
+                    <div id="result-type-num" class="result-type-num"></div>
+                    <div id="result-type-name" class="result-type-name"></div>
+                    <div id="result-details" class="result-details"></div>
+                    <a id="result-link" href="#" class="result-link">Read your full profile &rarr;</a><br>
+                    <button id="save-to-profile" class="result-link" style="margin:12px 0;background:rgba(212,168,73,0.1);cursor:pointer;border:1px solid var(--gold);display:none;">&#128190; Save to my profile</button>
+                    <div id="save-msg" style="font-size:0.85em;margin:8px 0;min-height:1.2em;"></div>
+                    <button id="quiz-restart" class="quiz-restart">Retake the quiz</button>
+                </div>
+            </div>
+
+            <div class="hub-grid">
+                <a href="type-1-reformer.html" class="hub-item">
+                    <span class="hub-symbol">&#9312;</span>
+                    <h3>The Reformer</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#607D8B"></span>Body (Instinctive)</div>
+                </a>
+                <a href="type-2-helper.html" class="hub-item">
+                    <span class="hub-symbol">&#9313;</span>
+                    <h3>The Helper</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#E91E63"></span>Heart (Emotional)</div>
+                </a>
+                <a href="type-3-achiever.html" class="hub-item">
+                    <span class="hub-symbol">&#9314;</span>
+                    <h3>The Achiever</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#FF9800"></span>Heart (Emotional)</div>
+                </a>
+                <a href="type-4-individualist.html" class="hub-item">
+                    <span class="hub-symbol">&#9315;</span>
+                    <h3>The Individualist</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#9C27B0"></span>Heart (Emotional)</div>
+                </a>
+                <a href="type-5-investigator.html" class="hub-item">
+                    <span class="hub-symbol">&#9316;</span>
+                    <h3>The Investigator</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#3F51B5"></span>Head (Mental)</div>
+                </a>
+                <a href="type-6-loyalist.html" class="hub-item">
+                    <span class="hub-symbol">&#9317;</span>
+                    <h3>The Loyalist</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#795548"></span>Head (Mental)</div>
+                </a>
+                <a href="type-7-enthusiast.html" class="hub-item">
+                    <span class="hub-symbol">&#9318;</span>
+                    <h3>The Enthusiast</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#FFC107"></span>Head (Mental)</div>
+                </a>
+                <a href="type-8-challenger.html" class="hub-item">
+                    <span class="hub-symbol">&#9319;</span>
+                    <h3>The Challenger</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#F44336"></span>Body (Instinctive)</div>
+                </a>
+                <a href="type-9-peacemaker.html" class="hub-item">
+                    <span class="hub-symbol">&#9320;</span>
+                    <h3>The Peacemaker</h3>
+                    <div class="hub-meta"><span class="hub-dot" style="background:#4CAF50"></span>Body (Instinctive)</div>
+                </a>
+            </div>
+            <div class="section-links">
+                <a href="../dashboard.html" style="background:rgba(212,168,73,0.12);border-color:var(--gold);color:var(--gold);">&#10024; My Dashboard</a>
+                <a href="../../">Home</a>
+                <a href="../chinese-zodiac/">Chinese Zodiac</a>
+                <a href="../numerology/">Numerology</a>
+                <a href="../celtic-zodiac/">Celtic Zodiac</a>
+                <a href="../mayan-astrology/">Mayan Astrology</a>
+                <a href="../vedic-astrology/">Vedic Astrology</a>
+                <a href="../human-design/">Human Design</a>
+            </div>
+        </section>
+        <footer>
+            <div class="footer-links"><a href="../../">Home</a><a href="../../privacy-policy.html">Privacy</a><a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank">YouTube</a></div>
+            <style>.newsletter-box{max-width:440px;margin:24px auto 20px;padding:20px 24px;border:1px solid var(--glass-border,rgba(255,255,255,0.08));border-radius:12px;background:var(--glass-bg,rgba(255,255,255,0.04));}.newsletter-title{font-size:1em;color:var(--gold,#d4a849);margin:0 0 12px;font-weight:600;}.newsletter-form{display:flex;gap:8px;}.newsletter-form input{flex:1;padding:10px 14px;border:1px solid var(--glass-border,rgba(255,255,255,0.08));border-radius:8px;background:rgba(255,255,255,0.05);color:var(--text-main,#e0dce8);font-size:0.9em;outline:none;transition:border-color 0.3s;}.newsletter-form input:focus{border-color:var(--gold,#d4a849);}.newsletter-form input::placeholder{color:var(--text-dim,#9890a8);}.newsletter-form button{padding:10px 20px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold,#d4a849),#c89030);color:#1a1625;font-weight:700;font-size:0.9em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;white-space:nowrap;}.newsletter-form button:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(212,168,73,0.3);}.newsletter-form button:disabled{opacity:0.6;cursor:not-allowed;transform:none;}.newsletter-msg{font-size:0.82em;margin:8px 0 0;min-height:1.2em;}@media(max-width:480px){.newsletter-form{flex-direction:column;}.newsletter-form button{width:100%;}}</style>
+            <div class="newsletter-box">
+                <p class="newsletter-title">&#10024; Get your weekly astral summary</p>
+                <form id="newsletter-form" class="newsletter-form" autocomplete="on">
+                    <input type="email" id="newsletter-email" name="email" placeholder="Your email address" required autocomplete="email">
+                    <button type="submit">Subscribe</button>
+                </form>
+                <p id="newsletter-msg" class="newsletter-msg"></p>
+            </div>
+            <p>&copy; 2026 Luz Estelar Oficial &mdash; Path3 Studio. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>(function(){var c=document.getElementById('stars');var ctx=c.getContext('2d');var w,h,stars=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}function init(){resize();stars=[];for(var i=0;i<150;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.3,a:Math.random()*0.5+0.15,speed:Math.random()*0.15+0.02,phase:Math.random()*Math.PI*2});}}function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}init();draw();window.addEventListener('resize',init);})();</script>
+    <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexion. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
+    <script src="/js/cross-cultural.js"></script>
+    <script>
+    (function(){
+        var lang='en';
+        var questions=LuzEstelar.CrossCultural.ENNEAGRAM_QUESTIONS[lang];
+        var TYPES=LuzEstelar.CrossCultural.ENNEAGRAM_TYPES;
+        var answers=[];
+        var current=0;
+
+        var containerEl=document.getElementById('quiz-container');
+        var resultEl=document.getElementById('quiz-result');
+        var questionEl=document.getElementById('quiz-question');
+        var optionsEl=document.getElementById('quiz-options');
+        var nextBtn=document.getElementById('quiz-next');
+        var currentEl=document.getElementById('quiz-current');
+        var fillEl=document.getElementById('quiz-fill');
+        var restartBtn=document.getElementById('quiz-restart');
+
+        function renderQuestion(){
+            var q=questions[current];
+            currentEl.textContent=current+1;
+            fillEl.style.width=((current+1)/9*100)+'%';
+            questionEl.textContent=q.q;
+            optionsEl.innerHTML='';
+            for(var i=0;i<q.a.length;i++){
+                var label=document.createElement('label');
+                label.className='quiz-option';
+                var radio=document.createElement('input');
+                radio.type='radio';radio.name='eq';radio.value=i;
+                if(answers[current]===i){label.classList.add('selected');radio.checked=true;}
+                radio.addEventListener('change',(function(idx){return function(){
+                    answers[current]=idx;
+                    nextBtn.disabled=false;
+                    var opts=optionsEl.querySelectorAll('.quiz-option');
+                    for(var j=0;j<opts.length;j++) opts[j].classList.remove('selected');
+                    this.parentNode.classList.add('selected');
+                };})(i));
+                var span=document.createElement('span');
+                span.textContent=q.a[i].text;
+                label.appendChild(radio);
+                label.appendChild(span);
+                optionsEl.appendChild(label);
+            }
+            nextBtn.disabled=answers[current]===undefined;
+            nextBtn.textContent=current===8?'See result':'Next';
+        }
+
+        nextBtn.addEventListener('click',function(){
+            if(answers[current]===undefined)return;
+            if(current<8){current++;renderQuestion();}
+            else{showResult();}
+        });
+
+        var lastResult=null;
+        function showResult(){
+            containerEl.style.display='none';
+            var r=LuzEstelar.CrossCultural.scoreEnneagram(answers,lang);
+            lastResult=r;
+            document.getElementById('result-type-num').textContent='Type '+r.type;
+            document.getElementById('result-type-name').textContent=r.typeData.name_en;
+            document.getElementById('result-details').innerHTML=
+                '<span class="hub-dot" style="background:'+r.typeData.color+';display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:6px;"></span>'+
+                'Center: '+r.typeData.center_en+'<br>'+
+                'Wing: '+r.wingData.name_en+' (Type '+r.wing+')';
+            document.getElementById('result-link').href=r.typeData.slug_en+'.html';
+            resultEl.style.display='block';
+            resultEl.style.animation='fadeIn 0.4s ease-out';
+            checkAuthForSave();
+        }
+
+        function checkAuthForSave(){
+            var saveBtn=document.getElementById('save-to-profile');
+            var saveMsg=document.getElementById('save-msg');
+            fetch('/api/auth/me',{cache:'no-store',credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){
+                if(d.ok){
+                    saveBtn.style.display='inline-block';
+                    saveBtn.onclick=function(){saveEnneagram();};
+                } else {
+                    saveMsg.innerHTML='<a href="/en/login.html?redirect=/en/enneagram/" style="color:var(--gold);">Sign in</a> to save to your profile.';
+                }
+            }).catch(function(){
+                saveMsg.innerHTML='<a href="/en/login.html?redirect=/en/enneagram/" style="color:var(--gold);">Sign in</a> to save to your profile.';
+            });
+        }
+
+        function saveEnneagram(){
+            if(!lastResult)return;
+            var saveBtn=document.getElementById('save-to-profile');
+            var saveMsg=document.getElementById('save-msg');
+            saveBtn.disabled=true;
+            saveBtn.textContent='Saving...';
+            fetch('/api/profile/enneagram',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                credentials:'same-origin',
+                body:JSON.stringify({enneagramType:lastResult.type,enneagramWing:String(lastResult.wing)})
+            }).then(function(r){return r.json();}).then(function(d){
+                if(d.ok){
+                    saveMsg.style.color='var(--gold)';
+                    saveMsg.innerHTML='\u2705 Saved to your profile. <a href="/en/dashboard.html" style="color:var(--gold);text-decoration:underline;">Go to your portal \u2192</a>';
+                    saveBtn.style.display='none';
+                } else {
+                    saveMsg.style.color='#e74c3c';
+                    saveMsg.textContent=d.error||'Error saving.';
+                    saveBtn.disabled=false;
+                    saveBtn.innerHTML='&#128190; Save to my profile';
+                }
+            }).catch(function(){
+                saveMsg.style.color='#e74c3c';
+                saveMsg.textContent='Connection error.';
+                saveBtn.disabled=false;
+                saveBtn.innerHTML='&#128190; Save to my profile';
+            });
+        }
+
+        restartBtn.addEventListener('click',function(){
+            answers=[];current=0;
+            containerEl.style.display='block';
+            resultEl.style.display='none';
+            renderQuestion();
+        });
+
+        renderQuestion();
+    })();
+    </script>
+    <style>@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}</style>
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+    <script src="/js/cookie-consent.js" defer></script>
+</body>
+</html>
