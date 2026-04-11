@@ -6,9 +6,14 @@
  *   customer.subscription.updated — Update tier
  *   customer.subscription.deleted — Downgrade to free
  *   invoice.payment_failed — Log warning
+ *
+ * Idempotency: every processed event.id is recorded in AUTH_KV
+ * with a 7-day TTL. Stripe retries failed deliveries for up to 3 days,
+ * so 7 days gives a safe margin. Repeated deliveries return 200 ok
+ * without re-running the side effects (no duplicate INSERT).
  */
 export async function onRequestPost(context) {
-  const { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, DB } = context.env;
+  const { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, DB, AUTH_KV } = context.env;
 
   // Verify webhook signature
   const sig = context.request.headers.get('stripe-signature');
@@ -56,6 +61,28 @@ export async function onRequestPost(context) {
 
   const event = JSON.parse(body);
   const now = new Date().toISOString();
+
+  // Idempotency check — skip if we've already processed this event.id.
+  // Stripe guarantees event.id is unique per event (not per delivery).
+  if (event.id && AUTH_KV) {
+    const dedupeKey = `stripe_event:${event.id}`;
+    try {
+      const seen = await AUTH_KV.get(dedupeKey);
+      if (seen) {
+        // Already processed — acknowledge so Stripe stops retrying.
+        console.log(JSON.stringify({
+          event: 'stripe_webhook_dedupe',
+          stripe_event_id: event.id,
+          stripe_event_type: event.type,
+        }));
+        return new Response('ok (deduped)', { status: 200 });
+      }
+    } catch (e) {
+      // KV read failure — fall through and process. Better to risk a
+      // duplicate than to silently drop a real subscription event.
+      console.warn('Idempotency KV read failed:', e);
+    }
+  }
 
   try {
     switch (event.type) {
@@ -117,6 +144,23 @@ export async function onRequestPost(context) {
       case 'invoice.payment_failed': {
         console.warn('Payment failed for customer:', event.data.object.customer);
         break;
+      }
+    }
+
+    // Mark as processed AFTER successful handling, so Stripe retries
+    // any event whose handler threw before we got here.
+    if (event.id && AUTH_KV) {
+      try {
+        await AUTH_KV.put(
+          `stripe_event:${event.id}`,
+          JSON.stringify({ type: event.type, processed_at: now }),
+          { expirationTtl: 7 * 86400 },
+        );
+      } catch (e) {
+        // Idempotency-store write failed — log but don't error the webhook.
+        // Worst case Stripe re-delivers and we re-process (matters mainly
+        // for INSERT statements without UNIQUE constraints).
+        console.warn('Idempotency KV write failed:', e);
       }
     }
 
