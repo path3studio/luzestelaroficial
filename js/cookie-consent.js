@@ -32,7 +32,7 @@
   };
 
   var t = text[lang] || text.es;
-  var policyUrl = lang === 'en' ? '/privacy-policy.html' : '/privacy-policy.html';
+  var policyUrl = lang === 'en' ? '/en/privacy-policy.html' : '/privacy-policy.html';
 
   // Create banner
   var banner = document.createElement('div');
