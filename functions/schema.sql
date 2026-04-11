@@ -34,6 +34,14 @@ CREATE TABLE IF NOT EXISTS birth_profiles (
   chinese_animal TEXT,
   numerology_number INTEGER,
   celtic_tree TEXT,
+  mayan_kin INTEGER,
+  mayan_seal TEXT,
+  mayan_tone INTEGER,
+  vedic_rashi TEXT,
+  vedic_nakshatra TEXT,
+  human_design_gate INTEGER,
+  enneagram_type INTEGER,
+  enneagram_wing TEXT,
   is_primary INTEGER DEFAULT 0,
   created_at TEXT NOT NULL
 );
