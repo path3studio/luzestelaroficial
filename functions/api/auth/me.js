@@ -19,7 +19,7 @@ export async function onRequestGet(context) {
 
     // Fetch birth profiles
     const profiles = await context.env.DB.prepare(
-      'SELECT id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, western_sign, chinese_animal, numerology_number, celtic_tree, is_primary FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC'
+      'SELECT id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, enneagram_type, enneagram_wing, is_primary FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC'
     ).bind(user.sub).all();
 
     return Response.json({

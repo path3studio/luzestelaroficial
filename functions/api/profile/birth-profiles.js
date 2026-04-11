@@ -52,6 +52,66 @@ function getCelticTree(month, day) {
   return 'Birch';
 }
 
+// ── Mayan Tzolkin ──────────────────────────────────────────
+const MAYAN_SEAL_NAMES = [
+  'Imix','Ik','Akbal','Kan','Chicchan','Cimi','Manik','Lamat',
+  'Muluc','Oc','Chuen','Eb','Ben','Ix','Men','Cib',
+  'Caban','Etznab','Cauac','Ahau'
+];
+
+function gregorianToJDN(year, month, day) {
+  const a = Math.floor((14 - month) / 12);
+  const y = year + 4800 - a;
+  const m = month + 12 * a - 3;
+  return day + Math.floor((153 * m + 2) / 5) + 365 * y
+       + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+}
+
+function getMayanKin(year, month, day) {
+  const jdn = gregorianToJDN(year, month, day);
+  const kin = ((jdn - 584283) % 260 + 260) % 260;
+  return { kin: kin + 1, seal: MAYAN_SEAL_NAMES[kin % 20], tone: (kin % 13) + 1 };
+}
+
+// ── Vedic / Jyotish ───────────────────────────────────────
+const RASHI_NAMES = ['Mesha','Vrishabha','Mithuna','Karka','Simha','Kanya','Tula','Vrischika','Dhanu','Makara','Kumbha','Meena'];
+const NAKSHATRA_NAMES = [
+  'Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha',
+  'Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha',
+  'Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'
+];
+
+function approxSunLongitude(year, month, day) {
+  const jdn = gregorianToJDN(year, month, day);
+  const n = jdn - 2451545.0;
+  let L = (280.460 + 0.9856474 * n) % 360;
+  if (L < 0) L += 360;
+  const g = ((357.528 + 0.9856003 * n) % 360) * Math.PI / 180;
+  const lambda = L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g);
+  return ((lambda % 360) + 360) % 360;
+}
+
+function getVedicProfile(year, month, day) {
+  const tropical = approxSunLongitude(year, month, day);
+  const ayanamsa = 23.85 + (year - 2000) * 0.01397;
+  const sidereal = ((tropical - ayanamsa) % 360 + 360) % 360;
+  return { rashi: RASHI_NAMES[Math.floor(sidereal / 30)], nakshatra: NAKSHATRA_NAMES[Math.floor(sidereal / (360/27))] };
+}
+
+// ── Human Design Sun Gate ─────────────────────────────────
+const HD_GATE_SEQ = [
+  41,19,13,49,30,55,37,63, 22,36,25,17,21,51,42,3,
+  27,24,2,23,8,20,16,35,   45,12,15,52,39,53,62,56,
+  31,33,7,4,29,59,40,64,   47,6,46,18,48,57,32,50,
+  28,44,1,43,14,34,9,5,    26,11,10,58,38,54,61,60
+];
+
+function getHumanDesignGate(year, month, day) {
+  const sunLong = approxSunLongitude(year, month, day);
+  const gateIdx = Math.floor(sunLong / 5.625) % 64;
+  return HD_GATE_SEQ[gateIdx];
+}
+
 export async function onRequestGet(context) {
   const user = context.data.user;
   if (!user) return Response.json({ ok: false, error: 'Not authenticated' }, { status: 401 });
@@ -100,18 +160,22 @@ export async function onRequestPost(context) {
   const chineseAnimal = getChineseAnimal(year);
   const numerologyNumber = getLifePathNumber(year, month, day);
   const celticTree = getCelticTree(month, day);
+  const mayan = getMayanKin(year, month, day);
+  const vedic = getVedicProfile(year, month, day);
+  const hdGate = getHumanDesignGate(year, month, day);
 
   const profileId = crypto.randomUUID();
   const isPrimary = countRes.cnt === 0 ? 1 : 0;
   const now = new Date().toISOString();
 
   await context.env.DB.prepare(
-    `INSERT INTO birth_profiles (id, user_id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, western_sign, chinese_animal, numerology_number, celtic_tree, is_primary, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO birth_profiles (id, user_id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, is_primary, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     profileId, user.sub, label || 'Mi Perfil', nombre, fechaNacimiento,
     horaNacimiento || null, lugarNacimiento, lat || null, lon || null,
     timezone || null, westernSign, chineseAnimal, numerologyNumber, celticTree,
+    mayan.kin, mayan.seal, mayan.tone, vedic.rashi, vedic.nakshatra, hdGate,
     isPrimary, now
   ).run();
 
@@ -126,6 +190,12 @@ export async function onRequestPost(context) {
       chineseAnimal,
       numerologyNumber,
       celticTree,
+      mayanKin: mayan.kin,
+      mayanSeal: mayan.seal,
+      mayanTone: mayan.tone,
+      vedicRashi: vedic.rashi,
+      vedicNakshatra: vedic.nakshatra,
+      humanDesignGate: hdGate,
       isPrimary,
     }
   }, { status: 201 });

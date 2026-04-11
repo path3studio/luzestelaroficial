@@ -127,6 +127,22 @@ export async function onRequestGet(context) {
         tree: profile.celtic_tree,
         qualities: celticQ,
       },
+      mayan: {
+        kin: profile.mayan_kin,
+        seal: profile.mayan_seal,
+        tone: profile.mayan_tone,
+      },
+      vedic: {
+        rashi: profile.vedic_rashi,
+        nakshatra: profile.vedic_nakshatra,
+      },
+      humanDesign: {
+        gate: profile.human_design_gate,
+      },
+      enneagram: profile.enneagram_type ? {
+        type: profile.enneagram_type,
+        wing: profile.enneagram_wing,
+      } : null,
     },
     synthesis: buildSynthesis(profile, western, chineseElement, lpTheme, celticQ, lang),
     generatedAt: new Date().toISOString(),
