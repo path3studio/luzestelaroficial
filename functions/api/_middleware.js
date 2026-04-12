@@ -1,6 +1,9 @@
 /**
- * API Middleware — JWT Auth + CORS + IP Rate Limiting + Origin check
+ * API Middleware — JWT Auth + CORS + Origin check
  * Runs before every /api/* route
+ *
+ * Rate limiting was removed 2026-04-12 to stay under free-tier KV limits.
+ * See comment below for details and remaining protections.
  */
 
 // Browser origins allowed to call /api/* with credentials.
@@ -47,88 +50,25 @@ function isAllowedOrigin(request) {
   return false;
 }
 
-// Per-IP rate limits — applied BEFORE the route handler.
-// Uses AUTH_KV with keys `ratelimit:{ip}:{bucket}`.
-// `max` requests per `window` seconds. Defense-in-depth on top of
-// existing application-level limits (e.g. magic-link per-email cap).
-const RATE_LIMITS = [
-  { match: '/api/auth/magic-link',          max: 5,  window: 900 }, // 5 per 15 min
-  { match: '/api/auth/google',              max: 10, window: 60  }, // 10 per min
-  { match: '/api/auth/google-callback',     max: 10, window: 60  },
-  { match: '/api/auth/magic-verify',        max: 20, window: 60  },
-  { match: '/api/billing/create-subscription', max: 5,  window: 300 }, // 5 per 5 min
-  { match: '/api/billing/portal',           max: 10, window: 300 },
-  { match: '/api/profile/birth-profiles',   max: 30, window: 60  }, // 30 per min
-  { match: '/api/account/export',           max: 5,  window: 3600 }, // 5/hour — heavy DB read
-  { match: '/api/account/delete',           max: 3,  window: 3600 }, // 3/hour — irreversible
-  { match: '/api/admin',                    max: 30, window: 60  }, // protect against token brute-force
-  { match: '/api/status',                   max: 60, window: 60  }, // public status — generous, edge-cached anyway
-];
-
-function getRateLimit(pathname) {
-  for (const rule of RATE_LIMITS) {
-    if (pathname === rule.match || pathname.startsWith(rule.match + '/')) {
-      return rule;
-    }
-  }
-  return null;
-}
-
-function getClientIp(request) {
-  // Cloudflare always sets cf-connecting-ip
-  return request.headers.get('cf-connecting-ip')
-      || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      || 'unknown';
-}
-
-async function checkRateLimit(env, ip, rule) {
-  if (!env.AUTH_KV || ip === 'unknown') return { ok: true };
-  const key = `ratelimit:${ip}:${rule.match}`;
-  let count = 0;
-  try {
-    const raw = await env.AUTH_KV.get(key);
-    count = raw ? parseInt(raw, 10) || 0 : 0;
-  } catch {
-    // KV read failed — fail open so the API doesn't go down
-    return { ok: true };
-  }
-  if (count >= rule.max) {
-    return { ok: false, retryAfter: rule.window };
-  }
-  // Increment with TTL — first write of the window seeds the expiry
-  try {
-    await env.AUTH_KV.put(key, String(count + 1), { expirationTtl: rule.window });
-  } catch {
-    // Fail open
-  }
-  return { ok: true };
-}
-
-// Increment a per-day, per-path counter every time we serve a 429.
-// 30-day TTL. Read by /api/admin/ratelimit-stats. Errors are swallowed —
-// metrics must never break the API.
-async function recordRateLimitHit(env, pathname, ip) {
-  if (!env.AUTH_KV) return;
-  const date = new Date().toISOString().slice(0, 10);
-  const key = `ratelimit_metric:${date}:${pathname}`;
-  try {
-    const raw = await env.AUTH_KV.get(key);
-    const count = raw ? parseInt(raw, 10) || 0 : 0;
-    await env.AUTH_KV.put(key, String(count + 1), { expirationTtl: 30 * 86400 });
-  } catch {
-    // Swallow — metrics are best-effort
-  }
-  // Also log to console so it shows up in `wrangler pages deployment tail`
-  // for live observability.
-  try {
-    console.log(JSON.stringify({
-      event: 'rate_limit_hit',
-      path: pathname,
-      ip,
-      date,
-    }));
-  } catch {}
-}
+// Rate limiting: REMOVED from KV (2026-04-12).
+//
+// Previous implementation used AUTH_KV.put() on EVERY request to
+// rate-limited endpoints. With ~3,400 API requests/day, this consumed
+// the entire free-tier KV put budget (1,000/day) and caused 429 errors
+// on all KV writes across the project (including the publisher, uptime
+// monitor, and backup workers).
+//
+// Existing protections that remain:
+//  - magic-link: per-email rate limit in handler (magic_rate:{email} KV key)
+//  - admin endpoints: CF Access gate + Bearer ADMIN_TOKEN
+//  - billing: behind JWT auth
+//  - Stripe webhook: signature verification
+//  - CORS origin check on all state-changing requests (below)
+//  - Cloudflare's built-in bot management + DDoS protection at the edge
+//
+// If granular rate limiting is needed again, use Cloudflare WAF Rate
+// Limiting Rules (1 free rule available) at the edge level, which
+// requires zero KV writes.
 
 async function verifyJWT(token, secret) {
   try {
@@ -172,26 +112,6 @@ export async function onRequest(context) {
       JSON.stringify({ ok: false, error: 'Forbidden: invalid origin' }),
       { status: 403, headers },
     );
-  }
-
-  // Skip rate limiting for Stripe webhooks (Stripe must always reach us;
-  // signature verification protects them).
-  if (!isStripeWebhook) {
-    const rule = getRateLimit(url.pathname);
-    if (rule) {
-      const ip = getClientIp(context.request);
-      const result = await checkRateLimit(context.env, ip, rule);
-      if (!result.ok) {
-        await recordRateLimitHit(context.env, url.pathname, ip);
-        const headers = new Headers(corsHeadersFor(context.request));
-        headers.set('Content-Type', 'application/json');
-        headers.set('Retry-After', String(result.retryAfter));
-        return new Response(
-          JSON.stringify({ ok: false, error: 'Rate limit exceeded. Please try again later.' }),
-          { status: 429, headers },
-        );
-      }
-    }
   }
 
   // Extract JWT from cookie or Authorization header
