@@ -66,15 +66,15 @@ h1{font-size:1.8em;color:var(--gold);font-weight:600;margin-bottom:6px;}
 </div>
 <script>
 const LABELS = {
-  site: { name: 'Sitio web', desc: 'API, base de datos y contenido del dia' },
-  backup: { name: 'Respaldos D1', desc: 'Snapshots semanales en R2 con verificacion' },
-  usage: { name: 'Monitoreo de uso', desc: 'Cuotas de D1 / R2 / KV vs limites gratuitos' },
-  performance: { name: 'Rendimiento', desc: 'Tiempos de respuesta (ultimas 24h)' },
+  site: { name: 'Sitio web', desc: 'API, base de datos y contenido del día' },
+  backup: { name: 'Respaldos D1', desc: 'Snapshots semanales en R2 con verificación' },
+  usage: { name: 'Monitoreo de uso', desc: 'Cuotas de D1 / R2 / KV vs límites gratuitos' },
+  performance: { name: 'Rendimiento', desc: 'Tiempos de respuesta (últimas 24h)' },
 };
 const SEVERITY_LABEL = {
   ok: 'Operacional',
   degraded: 'Degradado',
-  down: 'Caido',
+  down: 'Caído',
 };
 const OVERALL_LABEL = {
   ok: 'Todos los sistemas operacionales',
@@ -112,12 +112,12 @@ function render(data) {
     const meta = LABELS[key] || { name: key, desc: '' };
     let desc = meta.desc;
     if (comp.age_hours != null) {
-      if (key === 'backup') desc += ' &middot; ultimo backup ' + fmtAge(comp.age_hours);
-      if (key === 'usage') desc += ' &middot; ultimo reporte ' + fmtAge(comp.age_hours);
+      if (key === 'backup') desc += ' &middot; último backup ' + fmtAge(comp.age_hours);
+      if (key === 'usage') desc += ' &middot; último reporte ' + fmtAge(comp.age_hours);
     }
     if (key === 'performance') {
       if (comp.samples === 0) {
-        desc += ' &middot; sin muestras aun';
+        desc += ' &middot; sin muestras aún';
       } else if (comp.api_ttfb_p95_ms != null && comp.home_total_p95_ms != null) {
         desc += ' &middot; API p95 ' + comp.api_ttfb_p95_ms + 'ms &middot; home p95 ' + comp.home_total_p95_ms + 'ms';
       } else if (comp.note) {
