@@ -9,7 +9,7 @@ export async function onRequestGet(context) {
 
   // Generate CSRF state token
   const state = crypto.randomUUID();
-  await context.env.AUTH_KV.put('oauth_state:' + state, lang, { expirationTtl: 600 });
+  await context.env.AUTH_KV.put('oauth_state:' + state, lang, { expirationTtl: 900 });
 
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,

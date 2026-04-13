@@ -29,7 +29,39 @@ export async function onRequestGet(context) {
   // Verify CSRF state
   const storedLang = await AUTH_KV.get('oauth_state:' + state);
   if (!storedLang) {
-    return new Response('Invalid or expired state', { status: 400 });
+    // Show a friendly error page instead of raw text
+    const errorHtml = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sesi\u00f3n expirada \u2014 Luz Estelar</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+           background: #0a0a12; color: #e8e0d0; display: flex; align-items: center;
+           justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
+    .card { background: rgba(255,255,255,.04); border: 1px solid rgba(212,168,73,.2);
+            border-radius: 16px; padding: 40px 32px; max-width: 400px; }
+    h1 { font-size: 1.3em; margin: 16px 0 8px; color: #d4a849; }
+    p { font-size: 0.95em; color: #a09880; line-height: 1.5; margin: 0 0 24px; }
+    a { display: inline-block; background: #d4a849; color: #0a0a12; font-weight: 600;
+        padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 0.95em; }
+    a:hover { background: #e0b85a; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="font-size:2.5em">\u23F3</div>
+    <h1>Sesi\u00f3n de login expirada</h1>
+    <p>El enlace de autenticaci\u00f3n con Google expir\u00f3 o ya fue utilizado. Esto pasa si tardaste m\u00e1s de 15 minutos en completar el login o si refrescaste la p\u00e1gina.</p>
+    <a href="/login.html">Intentar de nuevo</a>
+  </div>
+</body>
+</html>`;
+    return new Response(errorHtml, {
+      status: 400,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
   }
   await AUTH_KV.delete('oauth_state:' + state);
   const lang = storedLang || 'es';
@@ -48,7 +80,38 @@ export async function onRequestGet(context) {
   });
 
   if (!tokenRes.ok) {
-    return new Response('Failed to exchange token', { status: 400 });
+    const failHtml = `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error de autenticaci\u00f3n \u2014 Luz Estelar</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+           background: #0a0a12; color: #e8e0d0; display: flex; align-items: center;
+           justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
+    .card { background: rgba(255,255,255,.04); border: 1px solid rgba(212,168,73,.2);
+            border-radius: 16px; padding: 40px 32px; max-width: 400px; }
+    h1 { font-size: 1.3em; margin: 16px 0 8px; color: #d4a849; }
+    p { font-size: 0.95em; color: #a09880; line-height: 1.5; margin: 0 0 24px; }
+    a { display: inline-block; background: #d4a849; color: #0a0a12; font-weight: 600;
+        padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 0.95em; }
+    a:hover { background: #e0b85a; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="font-size:2.5em">\u26A0\uFE0F</div>
+    <h1>${lang === 'en' ? 'Authentication error' : 'Error de autenticaci\u00f3n'}</h1>
+    <p>${lang === 'en' ? 'Something went wrong communicating with Google. Please try again.' : 'Hubo un problema al comunicarse con Google. Por favor int\u00e9ntalo de nuevo.'}</p>
+    <a href="/${lang === 'en' ? 'en/' : ''}login.html">${lang === 'en' ? 'Try again' : 'Intentar de nuevo'}</a>
+  </div>
+</body>
+</html>`;
+    return new Response(failHtml, {
+      status: 400,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
   }
 
   const tokens = await tokenRes.json();
