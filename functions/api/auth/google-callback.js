@@ -24,11 +24,11 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
-  const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET, DB, AUTH_KV } = context.env;
+  const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET, DB, AUTH_KV, SUBSCRIBERS } = context.env;
 
   // Verify CSRF state
-  const storedLang = await AUTH_KV.get('oauth_state:' + state);
-  if (!storedLang) {
+  const storedRaw = await AUTH_KV.get('oauth_state:' + state);
+  if (!storedRaw) {
     // Show a friendly error page instead of raw text
     const errorHtml = `<!DOCTYPE html>
 <html lang="es">
@@ -64,7 +64,18 @@ export async function onRequestGet(context) {
     });
   }
   await AUTH_KV.delete('oauth_state:' + state);
-  const lang = storedLang || 'es';
+
+  // Parse state — may be JSON {lang, newsletter} or plain string (backward compat)
+  let lang = 'es';
+  let wantsNewsletter = false;
+  try {
+    const parsed = JSON.parse(storedRaw);
+    lang = parsed.lang || 'es';
+    wantsNewsletter = !!parsed.newsletter;
+  } catch {
+    // Old format: plain string = lang
+    lang = storedRaw || 'es';
+  }
 
   // Exchange code for tokens
   const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -135,6 +146,25 @@ export async function onRequestGet(context) {
     await DB.prepare(
       'UPDATE users SET name = ?, picture_url = ?, google_id = ?, updated_at = ? WHERE id = ?'
     ).bind(name, picture, googleId, now, user.id).run();
+  }
+
+  // Subscribe to newsletter if opted in during login
+  if (wantsNewsletter && SUBSCRIBERS && email) {
+    try {
+      const existing = await SUBSCRIBERS.get(email);
+      if (!existing) {
+        await SUBSCRIBERS.put(email, JSON.stringify({
+          email,
+          name: name || '',
+          lang,
+          source: 'google_login',
+          subscribed_at: now,
+        }));
+      }
+    } catch (e) {
+      // Non-blocking — don't fail login if newsletter write fails
+      console.error('Newsletter subscribe error:', e);
+    }
   }
 
   // Create JWT

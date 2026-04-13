@@ -6,10 +6,11 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const redirectUri = url.origin + '/api/auth/google-callback';
   const lang = url.searchParams.get('lang') || 'es';
+  const newsletter = url.searchParams.get('newsletter') === '1';
 
-  // Generate CSRF state token
+  // Generate CSRF state token — store JSON with lang + newsletter preference
   const state = crypto.randomUUID();
-  await context.env.AUTH_KV.put('oauth_state:' + state, lang, { expirationTtl: 900 });
+  await context.env.AUTH_KV.put('oauth_state:' + state, JSON.stringify({ lang, newsletter }), { expirationTtl: 900 });
 
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
