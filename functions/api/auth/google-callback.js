@@ -158,6 +158,7 @@ export async function onRequestGet(context) {
           name: name || '',
           lang,
           source: 'google_login',
+          status: 'active',
           subscribed_at: now,
         }));
       }
