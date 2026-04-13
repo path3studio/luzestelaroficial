@@ -2,7 +2,7 @@
  * POST /api/billing/webhook — Handle Stripe webhook events
  *
  * Events handled:
- *   checkout.session.completed — Activate subscription
+ *   checkout.session.completed — Record order + activate subscription (if sub)
  *   customer.subscription.updated — Update tier
  *   customer.subscription.deleted — Downgrade to free
  *   invoice.payment_failed — Log warning
@@ -11,6 +11,10 @@
  * with a 7-day TTL. Stripe retries failed deliveries for up to 3 days,
  * so 7 days gives a safe margin. Repeated deliveries return 200 ok
  * without re-running the side effects (no duplicate INSERT).
+ *
+ * Notifications: on checkout.session.completed, sends a Telegram
+ * alert if TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID are configured,
+ * and writes to AUTH_KV:sale_notification:last for the admin panel.
  */
 export async function onRequestPost(context) {
   const { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, DB, AUTH_KV } = context.env;
@@ -91,19 +95,64 @@ export async function onRequestPost(context) {
         const userId = session.client_reference_id || session.metadata?.user_id;
         if (!userId) break;
 
-        // Update user tier and store customer ID
-        await DB.prepare(
-          'UPDATE users SET tier = ?, stripe_customer_id = ?, updated_at = ? WHERE id = ?'
-        ).bind('premium', session.customer, now, userId).run();
+        const plan = session.metadata?.plan || 'premium';
+        const amountCents = session.amount_total || 0;
+        const customerEmail = session.customer_details?.email || session.customer_email || '';
+        const isSubscription = session.mode === 'subscription';
 
-        // Record subscription
-        await DB.prepare(
-          `INSERT INTO subscriptions (id, user_id, stripe_subscription_id, stripe_customer_id, plan, status, current_period_start, current_period_end, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        ).bind(
-          crypto.randomUUID(), userId, session.subscription, session.customer,
-          'premium', 'active', now, '', now
-        ).run();
+        // Update user: store customer ID, upgrade tier if subscription
+        if (isSubscription) {
+          await DB.prepare(
+            'UPDATE users SET tier = ?, stripe_customer_id = ?, updated_at = ? WHERE id = ?'
+          ).bind('premium', session.customer, now, userId).run();
+
+          // Record subscription
+          await DB.prepare(
+            `INSERT INTO subscriptions (id, user_id, stripe_subscription_id, stripe_customer_id, plan, status, current_period_start, current_period_end, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          ).bind(
+            crypto.randomUUID(), userId, session.subscription, session.customer,
+            plan, 'active', now, '', now
+          ).run();
+        } else {
+          // One-time purchase — just store customer ID
+          await DB.prepare(
+            'UPDATE users SET stripe_customer_id = COALESCE(stripe_customer_id, ?), updated_at = ? WHERE id = ?'
+          ).bind(session.customer, now, userId).run();
+        }
+
+        // Record order in user_orders (for ALL purchase types)
+        try {
+          await DB.prepare(
+            `INSERT OR IGNORE INTO user_orders (id, user_id, stripe_session_id, plan, amount_cents, currency, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`
+          ).bind(
+            crypto.randomUUID(), userId, session.id,
+            plan, amountCents, session.currency || 'usd', now
+          ).run();
+        } catch (orderErr) {
+          console.warn('Order insert failed (non-fatal):', orderErr.message);
+        }
+
+        // ── Notifications (non-fatal) ──
+        // Telegram alert
+        await notifyTelegram(context.env, plan, amountCents, customerEmail).catch(() => {});
+
+        // Write to KV for admin panel instant visibility
+        if (AUTH_KV) {
+          const saleNote = JSON.stringify({
+            plan, amount_cents: amountCents, email: customerEmail,
+            session_id: session.id, timestamp: now,
+          });
+          await AUTH_KV.put('sale_notification:last', saleNote, {
+            expirationTtl: 7 * 86400,
+          }).catch(() => {});
+        }
+
+        console.log(JSON.stringify({
+          event: 'checkout_completed',
+          plan, amount_cents: amountCents, mode: session.mode,
+        }));
         break;
       }
 
@@ -169,4 +218,43 @@ export async function onRequestPost(context) {
     console.error('Webhook processing error:', err);
     return new Response('Internal error', { status: 500 });
   }
+}
+
+// ── Telegram notification helper ────────────────────────────────
+
+const PRODUCT_NAMES = {
+  esencial: 'Consulta Esencial',
+  completo: 'Consulta Completa',
+  mapa_estelar: 'Mapa Estelar',
+  mapa_estelar_custom: 'Mapa Estelar Custom',
+  'plan-estelar': 'Plan Estelar (suscripción)',
+  premium: 'Suscripción Premium',
+};
+
+async function notifyTelegram(env, plan, amountCents, email) {
+  const token = env.TELEGRAM_BOT_TOKEN;
+  const chatId = env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return; // Telegram not configured — skip silently
+
+  const productName = PRODUCT_NAMES[plan] || plan;
+  const amount = (amountCents / 100).toFixed(2);
+  const escapedEmail = (email || 'anónimo').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const text = [
+    `💰 <b>¡Nueva venta!</b>`,
+    `${productName} — $${amount} USD`,
+    `<i>${escapedEmail}</i>`,
+    `<i>${new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}</i>`,
+  ].join('\n');
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+    }),
+  });
 }
