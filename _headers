@@ -28,3 +28,9 @@
 
 /workers/*
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+
+/mi-dia.html
+  Cache-Control: no-cache, must-revalidate
+
+/en/my-day.html
+  Cache-Control: no-cache, must-revalidate

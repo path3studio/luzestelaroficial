@@ -80,6 +80,41 @@
         .ennea-link{text-align:center;padding:18px 8px 14px;background:linear-gradient(135deg,rgba(212,168,73,0.06),rgba(124,92,191,0.04));border-radius:14px;border:1px dashed rgba(212,168,73,0.25);text-decoration:none;color:inherit;transition:transform 0.3s,border-color 0.3s;animation:cardFadeIn 0.5s ease-out both;}
         .ennea-link:hover{transform:translateY(-3px);border-color:var(--gold);}
 
+        /* Profile switcher */
+        .profile-switcher{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+        .ps-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text-dim);font-size:0.82em;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+        .ps-pill:hover{border-color:rgba(212,168,73,0.3);color:var(--text);}
+        .ps-pill.active{border-color:var(--gold);background:rgba(212,168,73,0.1);color:var(--gold);font-weight:600;}
+        .ps-pill .ps-dot{width:8px;height:8px;border-radius:50%;background:var(--glass-border);flex-shrink:0;}
+        .ps-pill.active .ps-dot{background:var(--gold);}
+        .ps-add{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:20px;border:1px dashed rgba(212,168,73,0.3);background:none;color:var(--gold);font-size:0.82em;cursor:pointer;transition:all 0.2s;}
+        .ps-add:hover{background:rgba(212,168,73,0.08);border-color:var(--gold);}
+
+        /* Profile manager */
+        .pm-card{background:rgba(255,255,255,0.02);border:1px solid var(--glass-border);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:border-color 0.2s;}
+        .pm-card:hover{border-color:rgba(212,168,73,0.2);}
+        .pm-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,0.15));display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0;}
+        .pm-info{flex:1;min-width:0;}
+        .pm-name{font-size:0.92em;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .pm-label{font-size:0.75em;color:var(--gold);margin-top:2px;}
+        .pm-date{font-size:0.72em;color:var(--text-dim);margin-top:1px;}
+        .pm-actions{display:flex;gap:6px;flex-shrink:0;}
+        .pm-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--glass-border);background:none;color:var(--text-dim);font-size:0.85em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+        .pm-btn:hover{border-color:var(--gold);color:var(--gold);}
+        .pm-btn.pm-del:hover{border-color:#ff8080;color:#ff8080;}
+        .pm-primary{font-size:0.65em;padding:2px 8px;border-radius:8px;background:rgba(212,168,73,0.12);color:var(--gold);font-weight:600;margin-left:8px;}
+        .pm-empty{text-align:center;padding:24px;color:var(--text-dim);font-size:0.88em;}
+
+        /* Add profile modal */
+        .pm-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+        .pm-modal-overlay.active{opacity:1;pointer-events:auto;}
+        .pm-modal{background:var(--bg-mid);border:1px solid var(--glass-border);border-radius:18px;padding:32px 28px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform 0.25s;}
+        .pm-modal-overlay.active .pm-modal{transform:translateY(0);}
+        .pm-modal h3{font-family:'Cormorant Garamond',serif;font-size:1.4em;color:#fff;margin-bottom:6px;}
+        .pm-modal p{font-size:0.85em;color:var(--text-dim);margin-bottom:18px;}
+        .pm-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-dim);font-size:1.2em;cursor:pointer;padding:4px 8px;}
+        .pm-close:hover{color:#fff;}
+
         /* Share buttons */
         .share-row{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
         .btn-share{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border:1px solid rgba(212,168,73,0.3);border-radius:10px;background:rgba(212,168,73,0.08);color:var(--gold);font-size:0.85em;font-weight:500;cursor:pointer;transition:all 0.2s;text-decoration:none;}
@@ -100,6 +135,19 @@
         /* Horoscope */
         .horoscope-text{font-size:0.92em;line-height:1.8;color:var(--text-dim);}
 
+        /* Daily Insights */
+        .di-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+        @media(max-width:640px){.di-grid{grid-template-columns:1fr;}}
+        .di-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;padding:12px 14px;}
+        .di-hd{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+        .di-sys{font-size:0.72em;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.04em;}
+        .di-arch{font-size:0.72em;color:var(--text-dim);}
+        .di-txt{font-size:0.85em;line-height:1.6;color:var(--text);}
+        .di-lock{position:relative;overflow:hidden;}
+        .di-lock .di-txt{filter:blur(5px);user-select:none;color:var(--text-dim);}
+        .di-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem;}
+        .di-up{display:block;text-align:center;padding:10px;margin-top:10px;background:linear-gradient(135deg,rgba(212,168,73,0.12),rgba(212,168,73,0.04));border:1px solid rgba(212,168,73,0.25);border-radius:10px;color:var(--gold);font-size:0.82em;font-weight:500;text-decoration:none;grid-column:1/-1;}
+
         /* Loading */
         .loading{text-align:center;padding:60px 20px;color:var(--text-dim);}
         .loading .spinner{width:36px;height:36px;border:3px solid var(--glass-border);border-top:3px solid var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
@@ -115,10 +163,42 @@
         .btn-upgrade{display:inline-block;padding:8px 24px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--accent-purple),#9b7fd4);color:#fff;font-weight:600;font-size:0.85em;cursor:pointer;text-decoration:none;transition:transform 0.2s;}
         .btn-upgrade:hover{transform:translateY(-1px);}
 
+        /* ── Mobile greeting (hidden on desktop) ── */
+        .mob-greeting{display:none;}
+
+        /* ── Mobile bottom nav ── */
+        .mob-nav{display:none;}
+
         @media(max-width:768px){
             .dash-grid{grid-template-columns:1fr;}
             .system-grid{grid-template-columns:repeat(2,1fr);}
             .topbar{padding:10px 16px;}
+
+            /* Mobile greeting */
+            .mob-greeting{display:block;text-align:center;padding:8px 0 4px;}
+            .mob-greeting .mg-name{font-family:'Cormorant Garamond',serif;font-size:1.5em;font-weight:700;color:#fff;}
+            .mob-greeting .mg-date{font-size:0.82em;color:var(--gold-light);margin-top:2px;}
+
+            /* Reorder: daily content first on mobile */
+            #main-dashboard{display:flex;flex-direction:column;}
+            #main-dashboard .mob-greeting{order:-3;}
+            #main-dashboard #sec-today{order:-2;}
+            #main-dashboard #sec-profile{order:-1;}
+
+            /* Compact profile: horizontal scroll on small screens */
+            .system-grid{display:flex;overflow-x:auto;gap:10px;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+            .system-grid .system-item,.system-grid .ennea-link{min-width:120px;flex-shrink:0;scroll-snap-align:start;}
+            .system-grid::-webkit-scrollbar{height:4px;}
+            .system-grid::-webkit-scrollbar-thumb{background:rgba(212,168,73,0.25);border-radius:2px;}
+
+            /* Bottom nav */
+            .mob-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,6,26,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));justify-content:space-around;align-items:center;}
+            .mob-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--text-dim);font-size:0.65em;font-weight:500;padding:4px 12px;transition:color 0.2s;-webkit-tap-highlight-color:transparent;}
+            .mob-nav a .mn-icon{font-size:1.5rem;}
+            .mob-nav a.active{color:var(--gold);}
+
+            /* Pad bottom for nav bar */
+            #main-dashboard{padding-bottom:80px;}
         }
     </style>
 </head>
@@ -188,34 +268,66 @@
     <!-- Main dashboard (authenticated + has profile) -->
     <div id="main-dashboard" class="dashboard hidden">
 
-        <!-- Multi-system summary (8 systems) -->
-        <div class="dash-card dash-full">
-            <h2><span class="icon">&#10024;</span> Your Multi-System Profile</h2>
-            <div class="system-grid" id="system-summary">
-                <!-- 7 date-based systems filled by JS + 1 enneagram link -->
+        <!-- Mobile greeting (hidden on desktop, shown first on mobile) -->
+        <div class="mob-greeting" id="mob-greeting">
+            <div class="mg-name" id="mg-name"></div>
+            <div class="mg-date" id="mg-date"></div>
+        </div>
+
+        <!-- Section: Today (daily content — shown first on mobile) -->
+        <div id="sec-today">
+            <!-- Daily Horoscope -->
+            <div class="dash-card" style="margin-bottom:20px;">
+                <h2><span class="icon">&#9788;</span> Your Day Today</h2>
+                <div id="daily-horoscope" class="horoscope-text">
+                    <p style="color:var(--text-dim);">Loading your horoscope...</p>
+                </div>
             </div>
-            <div class="share-row">
-                <button class="btn-share" onclick="downloadCard()">&#128247; Download Card</button>
-                <button class="btn-share" onclick="shareCard()">&#128279; Share</button>
-                <button class="btn-share" onclick="copyProfileLink()" id="btn-copy-link">&#128279; Copy Link</button>
+
+            <!-- Daily System Insights -->
+            <div class="dash-card" style="margin-bottom:20px;">
+                <h2><span class="icon">&#10022;</span> Daily Insights</h2>
+                <p style="font-size:0.82em;color:var(--text-dim);margin-bottom:12px;">Your daily energies according to each ancestral system.</p>
+                <div id="daily-insights" class="di-grid">
+                    <p style="color:var(--text-dim);font-size:0.85em;grid-column:1/-1;">Loading insights...</p>
+                </div>
             </div>
         </div>
 
-        <!-- Elemental Synthesis -->
-        <div class="dash-card dash-full">
-            <h2><span class="icon">&#127760;</span> Elemental Synthesis</h2>
-            <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:12px;">Element balance across your 7 ancestral systems.</p>
-            <div class="synthesis-grid" id="synth-grid">
-                <!-- Filled by JS: Fire, Earth, Air, Water bars -->
+        <!-- Section: Profile (systems, synthesis, chart) -->
+        <div id="sec-profile">
+            <!-- Profile switcher (shown when >1 profile) -->
+            <div id="profile-switcher-bar" class="hidden" style="margin-bottom:16px;">
+                <div class="profile-switcher" id="profile-switcher"></div>
             </div>
-            <div id="synth-insight" style="margin-top:18px;padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);">
-                <p style="font-size:0.88em;line-height:1.7;color:var(--text-dim);" id="synth-text"></p>
-            </div>
-        </div>
 
-        <div class="dash-grid">
+            <!-- Multi-system summary (8 systems) -->
+            <div class="dash-card dash-full">
+                <h2><span class="icon">&#10024;</span> Your Multi-System Profile</h2>
+                <div class="system-grid" id="system-summary">
+                    <!-- 7 date-based systems filled by JS + 1 enneagram link -->
+                </div>
+                <div class="share-row">
+                    <button class="btn-share" onclick="downloadCard()">&#128247; Download Card</button>
+                    <button class="btn-share" onclick="shareCard()">&#128279; Share</button>
+                    <button class="btn-share" onclick="copyProfileLink()" id="btn-copy-link">&#128279; Copy Link</button>
+                </div>
+            </div>
+
+            <!-- Elemental Synthesis -->
+            <div class="dash-card dash-full" style="margin-top:20px;">
+                <h2><span class="icon">&#127760;</span> Elemental Synthesis</h2>
+                <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:12px;">Element balance across your 7 ancestral systems.</p>
+                <div class="synthesis-grid" id="synth-grid">
+                    <!-- Filled by JS: Fire, Earth, Air, Water bars -->
+                </div>
+                <div id="synth-insight" style="margin-top:18px;padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);">
+                    <p style="font-size:0.88em;line-height:1.7;color:var(--text-dim);" id="synth-text"></p>
+                </div>
+            </div>
+
             <!-- Natal Chart -->
-            <div class="dash-card">
+            <div class="dash-card" style="margin-top:20px;">
                 <h2><span class="icon">&#9790;</span> Birth Chart</h2>
                 <div class="chart-container">
                     <canvas id="natal-chart-canvas"></canvas>
@@ -223,14 +335,73 @@
                 <p style="text-align:center;font-size:0.78em;color:var(--text-dim);margin-top:8px;" id="chart-notice">Approximate Sun and Moon positions. Get your full birth chart with 10 planets.</p>
             </div>
 
-            <!-- Daily Horoscope -->
-            <div class="dash-card">
-                <h2><span class="icon">&#9788;</span> Your Day Today</h2>
-                <div id="daily-horoscope" class="horoscope-text">
-                    <p style="color:var(--text-dim);">Loading your horoscope...</p>
+            <!-- Profile Manager (Premium: manage family/friends profiles) -->
+            <div class="dash-card dash-full" id="profile-manager-card" style="margin-top:20px;">
+                <h2><span class="icon">&#128101;</span> My Profiles</h2>
+                <p style="font-size:0.85em;color:var(--text-dim);margin-bottom:16px;">Manage profiles for your family and friends. Compare compatibility and discover their astral maps.</p>
+                <!-- Free gate -->
+                <div id="pm-free-gate" class="upgrade-cta hidden">
+                    <h3>&#128274; Additional Profiles</h3>
+                    <p>With Premium you can add up to 5 profiles for family and friends, each with a complete astral map across 8 systems.</p>
+                    <a href="/en/planes.html" class="btn-upgrade">View Premium Plans</a>
+                </div>
+                <!-- Profile list -->
+                <div id="pm-list"></div>
+                <!-- Add profile button -->
+                <div id="pm-add-wrap" class="hidden" style="margin-top:12px;">
+                    <button class="ps-add" onclick="openAddProfileModal()" id="pm-add-btn">+ Add profile</button>
+                    <span id="pm-count" style="font-size:0.75em;color:var(--text-dim);margin-left:10px;"></span>
                 </div>
             </div>
+        </div>
 
+        <!-- Add Profile Modal -->
+        <div class="pm-modal-overlay" id="pm-modal">
+            <div class="pm-modal" style="position:relative;">
+                <button class="pm-close" onclick="closeAddProfileModal()">&times;</button>
+                <h3>Add Profile</h3>
+                <p>Add a profile for a family member or friend to see their astral map and calculate compatibility.</p>
+                <form id="add-profile-form" class="setup-form" style="max-width:100%;">
+                    <div class="form-group">
+                        <label>Label</label>
+                        <select id="ap-label">
+                            <option value="Partner">Partner</option>
+                            <option value="Child">Child</option>
+                            <option value="Mother">Mother</option>
+                            <option value="Father">Father</option>
+                            <option value="Sibling">Sibling</option>
+                            <option value="Friend">Friend</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="ap-nombre" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of birth</label>
+                        <input type="date" id="ap-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time of birth (optional)</label>
+                        <input type="time" id="ap-hora">
+                    </div>
+                    <div class="form-group geo-wrapper">
+                        <label>Place of birth</label>
+                        <input type="text" id="ap-lugar" placeholder="City, Country" required autocomplete="off">
+                        <div class="geo-spinner" id="ap-geo-spinner"></div>
+                        <div class="geo-dropdown" id="ap-geo-dropdown"></div>
+                        <input type="hidden" id="ap-lat">
+                        <input type="hidden" id="ap-lon">
+                        <input type="hidden" id="ap-tz">
+                    </div>
+                    <div id="ap-error" style="display:none;padding:10px;background:rgba(220,80,80,0.08);border:1px solid rgba(220,80,80,0.25);border-radius:8px;color:#ff8080;font-size:0.82em;margin-bottom:10px;"></div>
+                    <button type="submit" class="btn-primary" id="ap-submit">Save Profile</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="dash-grid" id="sec-explore">
             <!-- Cross-cultural report preview -->
             <div class="dash-card dash-full">
                 <h2><span class="icon">&#127760;</span> Cross-Cultural Report</h2>
@@ -255,7 +426,7 @@
                 <!-- State: free user — upgrade gate -->
                 <div id="compat-upgrade-gate" class="upgrade-cta hidden">
                     <h3>&#128274; Premium Feature</h3>
-                    <p>Cross-cultural couple compatibility requires a Premium account. Includes analysis across 7 ancestral systems and up to 10 saved profiles.</p>
+                    <p>Cross-cultural couple compatibility requires a Premium account. Includes analysis across 7 ancestral systems and up to 5 saved profiles.</p>
                     <a href="/en/planes.html" class="btn-upgrade">View Premium Plans</a>
                 </div>
 
@@ -327,6 +498,14 @@
                 </div>
             </details>
         </div>
+
+        <!-- Mobile bottom nav (inside main-dashboard so it inherits hidden state) -->
+        <nav class="mob-nav" id="mob-nav">
+            <a href="#sec-today" class="active" data-sec="sec-today"><span class="mn-icon">&#9788;</span>Today</a>
+            <a href="#sec-profile" data-sec="sec-profile"><span class="mn-icon">&#10024;</span>Profile</a>
+            <a href="#sec-explore" data-sec="sec-explore"><span class="mn-icon">&#128302;</span>Explore</a>
+            <a href="/en/" data-sec="home"><span class="mn-icon">&#127968;</span>Home</a>
+        </nav>
     </div>
 
     <script src="/js/cross-cultural.js"></script>
@@ -385,15 +564,23 @@
         try {
             var res = await fetch('/api/dashboard/daily?lang=' + lang);
             var data = await res.json();
-            if (data.ok && data.horoscope && data.horoscope.text) {
-                var h = data.horoscope;
-                var bio = h.biorhythm || {};
-                var html = '<p>' + h.text + '</p>';
+            if (data.ok) {
+                var horoscopeText = (data.horoscope && data.horoscope.text)
+                    ? data.horoscope.text
+                    : 'Today, the cosmic energies favor ' + cc.western.name_en + '. With your life path number ' + cc.numerology.lifePathNumber + ' (' + cc.numerology.data.keyword_en + '), this is a good time to reflect on your purpose. Your Chinese animal, the ' + cc.chinese.animal.name_en + ', invites you to trust your intuition.';
+
+                var energy = data.energy || {};
+                var love = energy.love ? Math.round(energy.love / 10) : '—';
+                var career = energy.career ? Math.round(energy.career / 10) : '—';
+                var health = energy.health ? Math.round(energy.health / 10) : '—';
+                var overall = energy.overall ? Math.round(energy.overall / 10) : '—';
+
+                var html = '<p>' + horoscopeText + '</p>';
                 html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;">';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">❤️</div><div style="font-size:0.75em;color:var(--text-dim);">Love</div><div style="font-weight:600;color:var(--gold);">' + (bio.love || '—') + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">💼</div><div style="font-size:0.75em;color:var(--text-dim);">Career</div><div style="font-weight:600;color:var(--gold);">' + (bio.career || '—') + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">🌿</div><div style="font-size:0.75em;color:var(--text-dim);">Health</div><div style="font-weight:600;color:var(--gold);">' + (bio.health || '—') + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">⚡</div><div style="font-size:0.75em;color:var(--text-dim);">Energy</div><div style="font-weight:600;color:var(--gold);">' + (bio.energy || '—') + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">❤️</div><div style="font-size:0.75em;color:var(--text-dim);">Love</div><div style="font-weight:600;color:var(--gold);">' + love + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">💼</div><div style="font-size:0.75em;color:var(--text-dim);">Career</div><div style="font-weight:600;color:var(--gold);">' + career + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">🌿</div><div style="font-size:0.75em;color:var(--text-dim);">Health</div><div style="font-weight:600;color:var(--gold);">' + health + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;">⚡</div><div style="font-size:0.75em;color:var(--text-dim);">Energy</div><div style="font-weight:600;color:var(--gold);">' + overall + '/10</div></div>';
                 html += '</div>';
                 if (data.moon) {
                     html += '<p style="margin-top:14px;font-size:0.82em;color:var(--text-dim);">🌙 ' + data.moon.phase + ' — Illumination: ' + data.moon.illumination + '%</p>';
@@ -410,8 +597,7 @@
                 }
                 el.innerHTML = html;
             } else {
-                // Fallback: generic text from cross-cultural data
-                el.innerHTML = '<p>Today, the cosmic energies favor ' + cc.western.name_en + '. With your life path number ' + cc.numerology.lifePathNumber + ' (' + cc.numerology.data.keyword_en + '), this is a good time to reflect on your purpose. Your Chinese animal, the ' + cc.chinese.animal.name_en + ', invites you to trust your intuition.</p><p style="margin-top:12px;">The vibrations of the ' + cc.celtic.name_en + ' tree in the Celtic tradition resonate with the energy of the day.</p>';
+                el.innerHTML = '<p style="color:var(--text-dim);">Could not load horoscope. Try again later.</p>';
             }
         } catch(e) {
             el.innerHTML = '<p>Today, the cosmic energies favor ' + cc.western.name_en + '. Your Chinese animal, the ' + cc.chinese.animal.name_en + ', invites you to trust your intuition.</p>';
@@ -422,6 +608,30 @@
         ['loading-state','login-prompt','setup-state','main-dashboard'].forEach(function(s) {
             document.getElementById(s).classList.toggle('hidden', s !== id);
         });
+    }
+
+    async function loadDailyInsights(lang) {
+        var el = document.getElementById('daily-insights');
+        var SIC = {chinese:'🐉',numerology:'🔢',celtic:'🌳',mayan:'🏛️',vedic:'🕉️',human_design:'⚡',enneagram:'◎'};
+        try {
+            var res = await fetch('/api/dashboard/daily-reading?lang=' + lang);
+            if (!res.ok) { el.innerHTML = ''; return; }
+            var d = await res.json();
+            if (!d.ok || !d.systemInsights || !d.systemInsights.length) { el.innerHTML = '<p style="color:var(--text-dim);font-size:0.85em;grid-column:1/-1;">Daily insights will be available soon.</p>'; return; }
+            var html = '';
+            var hasLock = false;
+            d.systemInsights.forEach(function(ins) {
+                var icon = SIC[ins.system] || '✦';
+                if (ins.locked) {
+                    hasLock = true;
+                    html += '<div class="di-card di-lock"><div class="di-hd"><span>' + icon + '</span><span class="di-sys">' + ins.label + '</span><span class="di-arch">· ' + ins.archetype + '</span></div><p class="di-txt">This insight is available with the Premium plan.</p></div>';
+                } else {
+                    html += '<div class="di-card"><div class="di-hd"><span>' + icon + '</span><span class="di-sys">' + ins.label + '</span><span class="di-arch">· ' + ins.archetype + '</span></div><p class="di-txt">' + ins.text + '</p></div>';
+                }
+            });
+            if (hasLock) html += '<a class="di-up" href="/en/plans.html">✦ Unlock all systems with Premium</a>';
+            el.innerHTML = html;
+        } catch(e) { el.innerHTML = ''; }
     }
 
     function showUserInfo(user) {
@@ -438,6 +648,17 @@
 
     function showDashboard(user, profile) {
         showState('main-dashboard');
+
+        // Mobile greeting
+        var greetName = (profile.nombre || user.name || '').split(' ')[0];
+        if (greetName) {
+            var hour = new Date().getHours();
+            var saludo = hour < 12 ? 'Good morning' : hour < 19 ? 'Good afternoon' : 'Good evening';
+            document.getElementById('mg-name').textContent = saludo + ', ' + greetName;
+            try {
+                document.getElementById('mg-date').textContent = new Date().toLocaleDateString('en-US', {weekday:'long', day:'numeric', month:'long'});
+            } catch(e) {}
+        }
 
         // Parse birth date
         var parts = profile.fecha_nacimiento.split('-').map(Number);
@@ -479,34 +700,38 @@
         // Store cc for sharing
         window._dashCC = cc;
 
-        // Natal chart (Sun + Moon positions)
-        var sunLong = (parts[1] - 1) * 30 + parts[2]; // rough solar longitude
-        var moonLong = LuzEstelar.NatalChart.calcMoonLongitude(parts[0], parts[1], parts[2]);
-        var moonSign = LuzEstelar.NatalChart.signFromLongitude(moonLong);
-        var moonDeg  = LuzEstelar.NatalChart.degreeInSign(moonLong);
-        var chartData = {
-            planets: [
-                {name: 'Sun', longitude: sunLong, sign: cc.western.name_en, degree: parts[2]},
-                {name: 'Moon', longitude: moonLong, sign: LuzEstelar.NatalChart.SIGN_NAMES[moonSign], degree: moonDeg}
-            ],
-            aspects: []
-        };
+        // Natal chart (Sun + Moon positions) — wrapped in try-catch for graceful degradation
+        try {
+            var sunLong = (parts[1] - 1) * 30 + parts[2]; // rough solar longitude
+            var chartData = { planets: [{name: 'Sun', longitude: sunLong, sign: cc.western.name_en, degree: parts[2]}], aspects: [] };
 
-        if (profile.natal_chart) {
-            try { chartData = JSON.parse(profile.natal_chart); } catch(e) {}
+            if (typeof LuzEstelar.NatalChart.calcMoonLongitude === 'function') {
+                var moonLong = LuzEstelar.NatalChart.calcMoonLongitude(parts[0], parts[1], parts[2]);
+                var moonSign = LuzEstelar.NatalChart.signFromLongitude(moonLong);
+                var moonDeg  = LuzEstelar.NatalChart.degreeInSign(moonLong);
+                chartData.planets.push({name: 'Moon', longitude: moonLong, sign: LuzEstelar.NatalChart.SIGN_NAMES[moonSign], degree: moonDeg});
+            }
+
+            if (profile.natal_chart) {
+                try { chartData = JSON.parse(profile.natal_chart); } catch(e) {}
+            }
+
+            var canvas = document.getElementById('natal-chart-canvas');
+            LuzEstelar.NatalChart.render(canvas, chartData);
+
+            if (profile.hora_nacimiento) {
+                document.getElementById('chart-notice').textContent = profile.nombre + ' \u2014 ' + profile.fecha_nacimiento + ' ' + profile.hora_nacimiento;
+            } else {
+                document.getElementById('chart-notice').textContent = 'Approximate Sun & Moon \u2014 enter your time of birth for a complete chart.';
+            }
+        } catch(chartErr) {
+            console.warn('Natal chart render failed:', chartErr.message);
+            document.getElementById('chart-notice').textContent = 'Natal chart temporarily unavailable.';
         }
 
-        var canvas = document.getElementById('natal-chart-canvas');
-        LuzEstelar.NatalChart.render(canvas, chartData);
-
-        if (profile.hora_nacimiento) {
-            document.getElementById('chart-notice').textContent = profile.nombre + ' \u2014 ' + profile.fecha_nacimiento + ' ' + profile.hora_nacimiento;
-        } else {
-            document.getElementById('chart-notice').textContent = 'Approximate Sun & Moon \u2014 enter your time of birth for a complete chart.';
-        }
-
-        // Fetch daily horoscope from API
+        // Fetch daily horoscope + system insights from API
         loadDailyHoroscope(cc, 'en');
+        loadDailyInsights('en');
 
         // Upgrade CTA visibility
         if (user.tier !== 'free') {
@@ -515,6 +740,10 @@
 
         // Initialize Couple Compatibility card state
         setupCompatCard();
+
+        // Profile switcher + manager
+        renderProfileSwitcher();
+        renderProfileManager();
     }
 
     // ── Couple Compatibility ───────────────────────────────
@@ -1008,7 +1237,295 @@
         }
     }
 
+    // ── Profile Manager ──────────────────────────────────────
+    var LABEL_ICONS = {'My Profile':'\u2B50','Mi Perfil':'\u2B50','Partner':'\u2764\uFE0F','Pareja':'\u2764\uFE0F','Child':'\uD83D\uDC76','Hijo/a':'\uD83D\uDC76','Mother':'\uD83D\uDC69','Madre':'\uD83D\uDC69','Father':'\uD83D\uDC68','Padre':'\uD83D\uDC68','Sibling':'\uD83D\uDC65','Hermano/a':'\uD83D\uDC65','Friend':'\uD83E\uDD1D','Amigo/a':'\uD83E\uDD1D','Other':'\u2728','Otro':'\u2728'};
+
+    function renderProfileSwitcher() {
+        var profiles = window._birthProfilesList || [];
+        var bar = document.getElementById('profile-switcher-bar');
+        var container = document.getElementById('profile-switcher');
+        if (profiles.length <= 1) { bar.classList.add('hidden'); return; }
+        bar.classList.remove('hidden');
+        var html = '';
+        profiles.forEach(function(p) {
+            var isActive = currentProfile && currentProfile.id === p.id;
+            var icon = LABEL_ICONS[p.label] || '\u2728';
+            html += '<button class="ps-pill' + (isActive ? ' active' : '') + '" onclick="switchProfile(\'' + p.id + '\')" title="' + escapeHtml(p.nombre) + '">';
+            html += '<span class="ps-dot"></span>' + icon + ' ' + escapeHtml(p.label || p.nombre) + '</button>';
+        });
+        container.innerHTML = html;
+    }
+
+    function switchProfile(profileId) {
+        var profiles = window._birthProfilesList || [];
+        var found = profiles.find(function(p) { return p.id === profileId; });
+        if (!found) return;
+        currentProfile = found;
+        showDashboard(currentUser, currentProfile);
+        renderProfileSwitcher();
+        renderProfileManager();
+        var el = document.getElementById('sec-profile');
+        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    function renderProfileManager() {
+        var profiles = window._birthProfilesList || [];
+        var isFree = !currentUser || currentUser.tier === 'free';
+        var maxProfiles = isFree ? 1 : 5;
+        var freeGate = document.getElementById('pm-free-gate');
+        var addWrap = document.getElementById('pm-add-wrap');
+        var listEl = document.getElementById('pm-list');
+
+        if (isFree && profiles.length >= 1) {
+            freeGate.classList.remove('hidden');
+            addWrap.classList.add('hidden');
+            listEl.innerHTML = '';
+            return;
+        } else {
+            freeGate.classList.add('hidden');
+        }
+
+        var html = '';
+        profiles.forEach(function(p) {
+            var icon = LABEL_ICONS[p.label] || '\u2728';
+            var isActive = currentProfile && currentProfile.id === p.id;
+            html += '<div class="pm-card' + (isActive ? ' active' : '') + '" style="' + (isActive ? 'border-color:rgba(212,168,73,0.3);' : '') + '">';
+            html += '<div class="pm-avatar">' + icon + '</div>';
+            html += '<div class="pm-info">';
+            html += '<div class="pm-name">' + escapeHtml(p.nombre) + (p.is_primary ? '<span class="pm-primary">Primary</span>' : '') + '</div>';
+            html += '<div class="pm-label">' + escapeHtml(p.label || 'No label') + '</div>';
+            html += '<div class="pm-date">' + escapeHtml(p.fecha_nacimiento) + (p.lugar_nacimiento ? ' \u2022 ' + escapeHtml(p.lugar_nacimiento.split(',')[0]) : '') + '</div>';
+            html += '</div>';
+            html += '<div class="pm-actions">';
+            if (!isActive) {
+                html += '<button class="pm-btn" onclick="switchProfile(\'' + p.id + '\')" title="View profile">\u{1F441}</button>';
+            }
+            if (profiles.length > 1) {
+                html += '<button class="pm-btn pm-del" onclick="deleteProfile(\'' + p.id + '\',\'' + escapeHtml(p.nombre) + '\')" title="Delete">\u{1F5D1}</button>';
+            }
+            html += '</div>';
+            html += '</div>';
+        });
+        listEl.innerHTML = html;
+
+        if (profiles.length < maxProfiles) {
+            addWrap.classList.remove('hidden');
+            document.getElementById('pm-count').textContent = profiles.length + '/' + maxProfiles + ' profiles';
+        } else {
+            addWrap.classList.remove('hidden');
+            document.getElementById('pm-add-btn').style.display = 'none';
+            document.getElementById('pm-count').textContent = profiles.length + '/' + maxProfiles + ' profiles (maximum reached)';
+        }
+    }
+
+    function openAddProfileModal() {
+        document.getElementById('pm-modal').classList.add('active');
+        document.getElementById('ap-error').style.display = 'none';
+        document.getElementById('add-profile-form').reset();
+    }
+
+    function closeAddProfileModal() {
+        document.getElementById('pm-modal').classList.remove('active');
+    }
+
+    document.getElementById('pm-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeAddProfileModal();
+    });
+
+    document.getElementById('add-profile-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('ap-submit');
+        var errEl = document.getElementById('ap-error');
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+        errEl.style.display = 'none';
+
+        try {
+            var res = await fetch('/api/profile/birth-profiles', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    nombre: document.getElementById('ap-nombre').value,
+                    fechaNacimiento: document.getElementById('ap-fecha').value,
+                    horaNacimiento: document.getElementById('ap-hora').value || null,
+                    lugarNacimiento: document.getElementById('ap-lugar').value,
+                    lat: parseFloat(document.getElementById('ap-lat').value) || null,
+                    lon: parseFloat(document.getElementById('ap-lon').value) || null,
+                    timezone: document.getElementById('ap-tz').value || null,
+                    label: document.getElementById('ap-label').value
+                })
+            });
+            var data = await res.json();
+            if (!data.ok) {
+                errEl.textContent = data.error || 'Error creating profile';
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Save Profile';
+                return;
+            }
+            var listRes = await fetch('/api/profile/birth-profiles', { credentials: 'same-origin' });
+            var listData = await listRes.json();
+            window._birthProfilesList = listData.profiles || [];
+            closeAddProfileModal();
+            renderProfileSwitcher();
+            renderProfileManager();
+            setupCompatCard();
+            btn.disabled = false;
+            btn.textContent = 'Save Profile';
+        } catch(err) {
+            errEl.textContent = 'Connection error.';
+            errEl.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Save Profile';
+        }
+    });
+
+    async function deleteProfile(id, nombre) {
+        if (!confirm('Delete the profile for ' + nombre + '? This action cannot be undone.')) return;
+        try {
+            var res = await fetch('/api/profile/' + id, {
+                method: 'DELETE',
+                credentials: 'same-origin'
+            });
+            var data = await res.json();
+            if (!data.ok) { alert(data.error || 'Error'); return; }
+            var listRes = await fetch('/api/profile/birth-profiles', { credentials: 'same-origin' });
+            var listData = await listRes.json();
+            window._birthProfilesList = listData.profiles || [];
+            if (currentProfile && currentProfile.id === id) {
+                currentProfile = window._birthProfilesList[0] || null;
+                if (currentProfile) showDashboard(currentUser, currentProfile);
+            }
+            renderProfileSwitcher();
+            renderProfileManager();
+            setupCompatCard();
+        } catch(e) { alert('Connection error.'); }
+    }
+
+    // Geocoding for add-profile modal
+    (function(){
+        var input = document.getElementById('ap-lugar');
+        var dropdown = document.getElementById('ap-geo-dropdown');
+        var spinner = document.getElementById('ap-geo-spinner');
+        var latEl = document.getElementById('ap-lat');
+        var lonEl = document.getElementById('ap-lon');
+        var tzEl = document.getElementById('ap-tz');
+        var debounceTimer = null;
+        var highlighted = -1;
+        var results = [];
+
+        function tzFromCoords(lat, lon) {
+            var offset = Math.round(lon / 15);
+            var sign = offset >= 0 ? '+' : '';
+            return 'UTC' + sign + offset;
+        }
+
+        function formatResult(r) {
+            var addr = r.address || {};
+            var city = addr.city || addr.town || addr.village || addr.hamlet || r.name || '';
+            var state = addr.state || addr.region || '';
+            var country = addr.country || '';
+            return { main: city || r.display_name.split(',')[0], sub: [state, country].filter(Boolean).join(', '), full: r.display_name, lat: r.lat, lon: r.lon };
+        }
+
+        function renderDropdown() {
+            if (results.length === 0) { dropdown.classList.remove('active'); return; }
+            var html = '';
+            results.forEach(function(r, i) {
+                var f = formatResult(r);
+                html += '<div class="geo-option' + (i === highlighted ? ' highlighted' : '') + '" data-idx="' + i + '"><span class="geo-main">' + f.main + '</span><span class="geo-sub">' + f.sub + '</span></div>';
+            });
+            dropdown.innerHTML = html;
+            dropdown.classList.add('active');
+            dropdown.querySelectorAll('.geo-option').forEach(function(el) {
+                el.addEventListener('mousedown', function(ev) {
+                    ev.preventDefault();
+                    selectResult(parseInt(el.dataset.idx));
+                });
+            });
+        }
+
+        function selectResult(idx) {
+            var r = results[idx];
+            if (!r) return;
+            var f = formatResult(r);
+            input.value = f.full;
+            latEl.value = r.lat;
+            lonEl.value = r.lon;
+            tzEl.value = tzFromCoords(parseFloat(r.lat), parseFloat(r.lon));
+            dropdown.classList.remove('active');
+            results = [];
+            highlighted = -1;
+        }
+
+        async function searchLocation(query) {
+            if (query.length < 3) { dropdown.classList.remove('active'); return; }
+            spinner.style.display = 'block';
+            try {
+                var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1&accept-language=en';
+                var res = await fetch(url, { headers: { 'User-Agent': 'LuzEstelar/1.0 (luzestelaroficial.com)' } });
+                results = await res.json();
+                highlighted = -1;
+                renderDropdown();
+            } catch(e) { console.error('Geocode error', e); }
+            spinner.style.display = 'none';
+        }
+
+        input.addEventListener('input', function() {
+            latEl.value = ''; lonEl.value = ''; tzEl.value = '';
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() { searchLocation(input.value.trim()); }, 400);
+        });
+        input.addEventListener('keydown', function(e) {
+            if (!dropdown.classList.contains('active')) return;
+            if (e.key === 'ArrowDown') { e.preventDefault(); highlighted = Math.min(highlighted + 1, results.length - 1); renderDropdown(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); highlighted = Math.max(highlighted - 1, 0); renderDropdown(); }
+            else if (e.key === 'Enter' && highlighted >= 0) { e.preventDefault(); selectResult(highlighted); }
+            else if (e.key === 'Escape') { dropdown.classList.remove('active'); }
+        });
+        input.addEventListener('blur', function() {
+            setTimeout(function() { dropdown.classList.remove('active'); }, 200);
+        });
+    })();
+
     init();
+
+    // Mobile bottom nav: smooth scroll + active state
+    (function(){
+        var nav = document.getElementById('mob-nav');
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[data-sec]');
+        links.forEach(function(a){
+            a.addEventListener('click', function(e){
+                var sec = a.dataset.sec;
+                if (sec === 'home') return;
+                e.preventDefault();
+                var el = document.getElementById(sec);
+                if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+                links.forEach(function(l){l.classList.remove('active');});
+                a.classList.add('active');
+            });
+        });
+        var sections = ['sec-today','sec-profile','sec-explore'];
+        var ticking = false;
+        window.addEventListener('scroll', function(){
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(function(){
+                var scrollY = window.scrollY + 120;
+                var active = sections[0];
+                sections.forEach(function(id){
+                    var el = document.getElementById(id);
+                    if (el && el.offsetTop <= scrollY) active = id;
+                });
+                links.forEach(function(l){
+                    l.classList.toggle('active', l.dataset.sec === active);
+                });
+                ticking = false;
+            });
+        });
+    })();
     </script>
     <script src="/js/profile-card.js"></script>
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>

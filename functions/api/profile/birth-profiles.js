@@ -145,13 +145,13 @@ export async function onRequestPost(context) {
     'SELECT COUNT(*) as cnt FROM birth_profiles WHERE user_id = ?'
   ).bind(user.sub).first();
 
-  const maxProfiles = user.tier === 'free' ? 1 : 10;
+  const maxProfiles = user.tier === 'free' ? 1 : 5;
   if (countRes.cnt >= maxProfiles) {
     return Response.json({
       ok: false,
       error: user.tier === 'free'
-        ? 'Free tier limited to 1 profile. Upgrade to Premium for up to 10.'
-        : 'Maximum 10 profiles reached.'
+        ? 'Free tier limited to 1 profile. Upgrade to Premium for up to 5.'
+        : 'Maximum 5 profiles reached.'
     }, { status: 403 });
   }
 

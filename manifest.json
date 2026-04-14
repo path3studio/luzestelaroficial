@@ -2,7 +2,7 @@
   "name": "Luz Estelar Oficial",
   "short_name": "Luz Estelar",
   "description": "Horoscopo tecnico diario basado en datos astronomicos reales",
-  "start_url": "/",
+  "start_url": "/mi-dia.html",
   "display": "standalone",
   "background_color": "#06061a",
   "theme_color": "#d4a849",

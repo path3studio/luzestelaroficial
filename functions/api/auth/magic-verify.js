@@ -23,7 +23,7 @@ async function createJWT(payload, secret) {
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const token = url.searchParams.get('token');
-  const { JWT_SECRET, DB, AUTH_KV } = context.env;
+  const { JWT_SECRET, DB, AUTH_KV, SUBSCRIBERS } = context.env;
 
   if (!token) {
     return new Response('Missing token', { status: 400 });
@@ -44,7 +44,7 @@ export async function onRequestGet(context) {
   await AUTH_KV.delete(tokenKey);
 
   const tokenData = JSON.parse(tokenDataStr);
-  const { email, lang } = tokenData;
+  const { email, lang, newsletter } = tokenData;
 
   // Check expiry (15 min)
   if (Date.now() - tokenData.createdAt > 15 * 60 * 1000) {
@@ -59,7 +59,9 @@ export async function onRequestGet(context) {
   let user = await DB.prepare('SELECT id, tier, name FROM users WHERE email = ?')
     .bind(email).first();
 
+  let isNewUser = false;
   if (!user) {
+    isNewUser = true;
     const userId = crypto.randomUUID();
     const displayName = email.split('@')[0];
     await DB.prepare(
@@ -69,6 +71,31 @@ export async function onRequestGet(context) {
   } else {
     await DB.prepare('UPDATE users SET updated_at = ? WHERE id = ?')
       .bind(now, user.id).run();
+  }
+
+  // Subscribe to newsletter if opted in during login
+  if (newsletter && SUBSCRIBERS && email) {
+    try {
+      const existing = await SUBSCRIBERS.get(email);
+      if (!existing) {
+        await SUBSCRIBERS.put(email, JSON.stringify({
+          email,
+          name: user.name || '',
+          lang: lang || 'es',
+          source: 'magic_link',
+          subscribed_at: now,
+          status: 'active',
+        }));
+      }
+    } catch (e) {
+      // Non-blocking — don't fail login if newsletter write fails
+      console.error('Newsletter subscribe error:', e);
+    }
+  }
+
+  // Notify new registration via Telegram
+  if (isNewUser) {
+    notifyRegistration(context.env, email, 'email').catch(() => {});
   }
 
   // Create JWT
@@ -81,14 +108,46 @@ export async function onRequestGet(context) {
     exp: Math.floor(Date.now() / 1000) + 30 * 24 * 3600,
   }, JWT_SECRET);
 
-  // Set cookie and redirect to dashboard
-  const dashboardPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';
-  return new Response(null, {
-    status: 302,
-    headers: {
-      'Location': dashboardPath,
-      'Set-Cookie': `le_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}`,
-    },
+  // Set cookie and redirect (honor le_redirect cookie if present)
+  const defaultPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';
+  const cookies = context.request.headers.get('cookie') || '';
+  const rdMatch = cookies.match(/le_redirect=([^;]+)/);
+  let redirectPath = defaultPath;
+  if (rdMatch) {
+    const p = decodeURIComponent(rdMatch[1].trim());
+    if (p.startsWith('/') && !p.includes('//') && !p.includes('..')) redirectPath = p;
+  }
+  const headers = new Headers();
+  headers.append('Set-Cookie', `le_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}`);
+  headers.append('Set-Cookie', 'le_redirect=; Path=/; Max-Age=0');
+  headers.set('Location', redirectPath);
+  return new Response(null, { status: 302, headers });
+}
+
+async function notifyRegistration(env, email, method) {
+  const token = env.TELEGRAM_BOT_TOKEN;
+  const chatId = env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+
+  const escapedEmail = (email || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const methodIcon = method === 'google' ? '🔵' : '📧';
+  const timeStr = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
+
+  const text = [
+    `🆕 <b>¡Nuevo registro!</b>`,
+    `${methodIcon} ${escapedEmail}`,
+    `<i>Método: ${method} — ${timeStr}</i>`,
+  ].join('\n');
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+    }),
   });
 }
 

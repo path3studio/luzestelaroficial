@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My Day — Luz Estelar</title>
+<meta name="description" content="Your personalized daily astrological reading — Luz Estelar Oficial">
+<meta name="theme-color" content="#d4a849">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/app_icon.png">
+<link rel="apple-touch-icon" href="/app_icon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mi-dia.html">
+<link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/my-day.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
+<style>
+:root{--gold:#d4a849;--gold-light:#f0d078;--bg:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.state{display:none}.state.active{display:block}
+.spinner{width:32px;height:32px;border:3px solid var(--glass-b);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:45vh auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-box{max-width:340px;margin:30vh auto 0;padding:0 24px;text-align:center}
+.auth-box h1{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);margin-bottom:12px}
+.auth-box p{color:var(--text-dim);line-height:1.6;margin-bottom:24px;font-size:.9rem}
+.btn-gold{display:inline-block;padding:12px 32px;background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);font-weight:600;text-decoration:none;border-radius:8px;font-size:.9rem;transition:opacity .2s}
+.btn-gold:active{opacity:.8}
+.topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0));background:rgba(6,6,26,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-b)}
+.logo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.15rem;color:var(--gold);letter-spacing:.02em}
+.topbar .dt{font-size:.78rem;color:var(--text-dim)}
+main{max-width:480px;margin:0 auto;padding:0 16px 90px}
+.greet{text-align:center;padding:24px 0 4px}
+.greet h1{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;color:var(--gold);line-height:1.3}
+.greet p{font-size:.82rem;color:var(--text-dim);margin-top:4px}
+.energy{display:flex;flex-direction:column;align-items:center;padding:16px 0 8px}
+.ring-wrap{width:120px;height:120px}
+.ring-wrap svg{width:100%;height:100%}
+.ring-bg{fill:none;stroke:var(--glass-b);stroke-width:6}
+.ring-val{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:0 314.16;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s ease-out}
+.ring-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;fill:var(--gold);text-anchor:middle;dominant-baseline:central}
+.ring-lbl{font-size:10px;fill:var(--text-dim);text-anchor:middle;font-family:'Inter',sans-serif}
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;width:100%;max-width:280px;margin-top:12px}
+.bar{display:flex;align-items:center;gap:6px;font-size:.78rem}
+.bar-ic{width:18px;text-align:center;font-size:.85rem}
+.bar-tr{flex:1;height:3px;background:var(--glass-b);border-radius:2px;overflow:hidden}
+.bar-fl{height:100%;border-radius:2px;transition:width 1s ease-out}
+.bar-v{min-width:12px;text-align:right;color:var(--text-dim);font-size:.72rem}
+.slbl{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:500;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin:20px 0 8px}
+.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.rdg .card{padding:18px 16px}
+#rdg-text{font-size:.93rem;line-height:1.72;color:var(--text)}
+.ins-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:12px 14px;margin-bottom:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.ins-hd{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ins-sys{font-size:.72rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.04em}
+.ins-arch{font-size:.72rem;color:var(--text-dim)}
+.ins-txt{font-size:.88rem;line-height:1.6;color:var(--text)}
+.ins-lock{position:relative;overflow:hidden}
+.ins-lock .ins-txt{filter:blur(5px);user-select:none;color:var(--text-dim)}
+.ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.1rem}
+.up-cta{display:block;text-align:center;padding:10px;margin-top:8px;background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(212,168,73,.04));border:1px solid rgba(212,168,73,.25);border-radius:10px;color:var(--gold);font-size:.82rem;font-weight:500;text-decoration:none;transition:background .2s}
+.up-cta:active{background:rgba(212,168,73,.2)}
+.cosm .card{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.cosm-it{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text)}
+.btm{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:24px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0));background:rgba(6,6,26,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--glass-b);z-index:10}
+.btm a,.btm button{font-size:.82rem;color:var(--gold);text-decoration:none;background:none;border:none;cursor:pointer;font-family:inherit;padding:8px;-webkit-tap-highlight-color:transparent}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fade{animation:fadeUp .4s ease-out both}
+.fade-d1{animation-delay:.05s}.fade-d2{animation-delay:.1s}.fade-d3{animation-delay:.15s}.fade-d4{animation-delay:.2s}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="st-load" class="state active"><div class="spinner"></div></div>
+
+<div id="st-login" class="state">
+<div class="auth-box">
+<h1>Luz Estelar</h1>
+<p>Sign in to see your personalized daily astrological reading.</p>
+<a href="/login.html?redirect=/en/my-day.html" class="btn-gold">Sign in</a>
+<p style="margin-top:16px;font-size:.78rem"><a href="/mi-dia.html" style="color:var(--text-dim)">Español</a></p>
+</div>
+</div>
+
+<div id="st-setup" class="state">
+<div class="auth-box">
+<h1>Luz Estelar</h1>
+<p>Complete your birth profile to receive your personalized daily reading.</p>
+<a href="/dashboard.html" class="btn-gold">Set up profile</a>
+</div>
+</div>
+
+<div id="st-reading" class="state">
+<header class="topbar">
+<span class="logo">Luz Estelar</span>
+<span class="dt" id="hdr-dt"></span>
+</header>
+
+<main>
+<section class="greet fade">
+<h1 id="greeting"></h1>
+<p id="date-fmt"></p>
+</section>
+
+<section class="energy fade fade-d1">
+<div class="ring-wrap">
+<svg viewBox="0 0 120 120">
+<circle class="ring-bg" cx="60" cy="60" r="50"/>
+<circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
+<text class="ring-num" x="60" y="54" id="ring-n">—</text>
+<text class="ring-lbl" x="60" y="72">Energy</text>
+</svg>
+</div>
+<div class="bars" id="bars"></div>
+</section>
+
+<section class="rdg fade fade-d2">
+<div class="slbl"><span id="sign-sym"></span> Your reading today</div>
+<div class="card"><p id="rdg-text"></p></div>
+</section>
+
+<section class="ins fade fade-d3" id="ins-sec">
+<div class="slbl">System insights</div>
+<div id="ins-box"></div>
+</section>
+
+<section class="cosm fade fade-d4">
+<div class="slbl">Cosmos</div>
+<div class="card cosm-card">
+<span id="moon-txt"></span>
+</div>
+</section>
+</main>
+
+<nav class="btm">
+<a href="/dashboard.html">Dashboard</a>
+<button id="btn-share">Share</button>
+<a href="/mi-dia.html">ES</a>
+</nav>
+</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var LANG='en',API='/api/dashboard/daily-reading?lang=en',CK='le_daily_en';
+var SYS_IC={chinese:'\u{1F409}',numerology:'\u{1F522}',celtic:'\u{1F333}',mayan:'\u{1F3DB}',vedic:'\u{1F549}',human_design:'\u26A1',enneagram:'\u25CE'};
+var E_IC={love:'\u2764\uFE0F',career:'\u{1F4BC}',health:'\u{1F33F}',energy:'\u26A1'};
+var E_LBL={love:'Love',career:'Career',health:'Health',energy:'Energy'};
+var E_CLR={love:'#e8456a',career:'#d4a849',health:'#4aba7a',energy:'#7c5cbf'};
+var SIGNS={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
+
+function show(id){document.querySelectorAll('.state').forEach(function(e){e.classList.remove('active')});document.getElementById('st-'+id).classList.add('active')}
+
+function fmtDate(s){
+var d=new Date(s+'T12:00:00');
+var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var mos=['January','February','March','April','May','June','July','August','September','October','November','December'];
+return days[d.getDay()]+', '+mos[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+}
+
+function render(d){
+document.getElementById('hdr-dt').textContent=d.date;
+document.getElementById('greeting').textContent=d.greeting;
+document.getElementById('date-fmt').textContent=fmtDate(d.date);
+var ov=d.energy.overall,circ=2*Math.PI*50;
+document.getElementById('ring-n').textContent=ov;
+requestAnimationFrame(function(){document.getElementById('ring').style.strokeDasharray=(ov/10*circ)+' '+circ});
+var h='';['love','career','health','energy'].forEach(function(f){
+var v=d.energy[f],p=v/10*100;
+h+='<div class="bar"><span class="bar-ic">'+E_IC[f]+'</span><div class="bar-tr"><div class="bar-fl" style="width:'+p+'%;background:'+E_CLR[f]+'"></div></div><span class="bar-v">'+v+'</span></div>';
+});
+document.getElementById('bars').innerHTML=h;
+document.getElementById('sign-sym').textContent=SIGNS[d.profile.westernSign]||'\u2726';
+document.getElementById('rdg-text').textContent=d.reading||'Your reading will be available soon.';
+var box=document.getElementById('ins-box');box.innerHTML='';
+var hasLock=false;
+(d.systemInsights||[]).forEach(function(ins){
+var div=document.createElement('div');
+div.className='ins-card'+(ins.locked?' ins-lock':'');
+var txt=ins.locked?'This insight is available with the Premium plan.':ins.text;
+div.innerHTML='<div class="ins-hd"><span>'+(SYS_IC[ins.system]||'\u2726')+'</span><span class="ins-sys">'+ins.label+'</span><span class="ins-arch">\u00B7 '+ins.archetype+'</span></div><p class="ins-txt">'+txt+'</p>';
+box.appendChild(div);
+if(ins.locked)hasLock=true;
+});
+if(hasLock){var a=document.createElement('a');a.className='up-cta';a.href='/dashboard.html#premium';a.textContent='\u2726 Unlock all systems with Premium';box.appendChild(a)}
+document.getElementById('moon-txt').textContent='\u{1F319} '+d.moon.phase+' \u00B7 '+d.moon.illumination+'%';
+show('reading');
+}
+
+async function init(){
+try{var c=localStorage.getItem(CK);if(c){var cd=JSON.parse(c);if(cd.date===new Date().toISOString().split('T')[0])render(cd)}}catch(e){}
+try{
+var r=await fetch(API,{credentials:'same-origin',cache:'no-store'});
+if(r.status===401){document.cookie='le_redirect=/en/my-day.html;path=/;max-age=3600;SameSite=Lax;Secure';show('login');return}
+if(r.status===404){show('setup');return}
+if(!r.ok)throw new Error();
+var d=await r.json();
+if(!d.ok)throw new Error(d.error);
+try{localStorage.setItem(CK,JSON.stringify(d))}catch(e){}
+render(d);
+}catch(e){
+if(document.getElementById('st-reading').classList.contains('active'))return;
+show('login');
+}
+}
+
+document.getElementById('btn-share').addEventListener('click',function(){
+var b=this;
+if(navigator.share){navigator.share({title:'My Daily Reading — Luz Estelar',url:location.href})}
+else{navigator.clipboard.writeText(location.href).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Share'},2000)})}
+});
+
+init();
+})();
+</script>
+</body>
+</html>

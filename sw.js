@@ -5,12 +5,14 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-const CACHE_NAME = 'luzestelar-v2';
+const CACHE_NAME = 'luzestelar-v3';
 const OFFLINE_URL = '/offline.html';
+const READING_CACHE = 'luzestelar-reading-v1';
 
 // Static assets to precache on install
 const PRECACHE_URLS = [
   '/',
+  '/mi-dia.html',
   '/app_icon.png',
   '/manifest.json',
   OFFLINE_URL,
@@ -28,10 +30,11 @@ self.addEventListener('install', (event) => {
 
 // Activate: clean old caches
 self.addEventListener('activate', (event) => {
+  const KEEP = [CACHE_NAME, READING_CACHE];
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.filter((key) => !KEEP.includes(key)).map((key) => caches.delete(key))
       );
     })
   );
@@ -78,6 +81,24 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           }
           return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Daily reading API: stale-while-revalidate (offline support)
+  if (request.url.includes('/api/dashboard/daily-reading')) {
+    event.respondWith(
+      caches.open(READING_CACHE).then((cache) => {
+        return cache.match(request).then((cached) => {
+          const fetchPromise = fetch(request).then((response) => {
+            if (response.ok) {
+              cache.put(request, response.clone());
+            }
+            return response;
+          }).catch(() => cached);
+          return cached || fetchPromise;
         });
       })
     );

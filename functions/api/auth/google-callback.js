@@ -136,7 +136,9 @@ export async function onRequestGet(context) {
   let user = await DB.prepare('SELECT id, tier FROM users WHERE google_id = ? OR email = ?')
     .bind(googleId, email).first();
 
+  let isNewUser = false;
   if (!user) {
+    isNewUser = true;
     const userId = crypto.randomUUID();
     await DB.prepare(
       'INSERT INTO users (id, email, name, picture_url, auth_provider, google_id, tier, lang, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -168,6 +170,11 @@ export async function onRequestGet(context) {
     }
   }
 
+  // Notify new registration via Telegram
+  if (isNewUser) {
+    notifyRegistration(context.env, email, 'google').catch(() => {});
+  }
+
   // Create JWT
   const jwt = await createJWT({
     sub: user.id,
@@ -178,13 +185,45 @@ export async function onRequestGet(context) {
     exp: Math.floor(Date.now() / 1000) + 30 * 24 * 3600, // 30 days
   }, JWT_SECRET);
 
-  // Set cookie and redirect to dashboard
-  const dashboardPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';
-  return new Response(null, {
-    status: 302,
-    headers: {
-      'Location': dashboardPath,
-      'Set-Cookie': `le_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}`,
-    },
+  // Set cookie and redirect (honor le_redirect cookie if present)
+  const defaultPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';
+  const cookies = context.request.headers.get('cookie') || '';
+  const rdMatch = cookies.match(/le_redirect=([^;]+)/);
+  let redirectPath = defaultPath;
+  if (rdMatch) {
+    const p = decodeURIComponent(rdMatch[1].trim());
+    if (p.startsWith('/') && !p.includes('//') && !p.includes('..')) redirectPath = p;
+  }
+  const headers = new Headers();
+  headers.append('Set-Cookie', `le_token=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}`);
+  headers.append('Set-Cookie', 'le_redirect=; Path=/; Max-Age=0');
+  headers.set('Location', redirectPath);
+  return new Response(null, { status: 302, headers });
+}
+
+async function notifyRegistration(env, email, method) {
+  const token = env.TELEGRAM_BOT_TOKEN;
+  const chatId = env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+
+  const escapedEmail = (email || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const methodIcon = method === 'google' ? '🔵' : '📧';
+  const timeStr = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
+
+  const text = [
+    `🆕 <b>¡Nuevo registro!</b>`,
+    `${methodIcon} ${escapedEmail}`,
+    `<i>Método: ${method} — ${timeStr}</i>`,
+  ].join('\n');
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+    }),
   });
 }
