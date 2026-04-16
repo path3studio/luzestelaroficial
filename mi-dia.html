@@ -268,5 +268,7 @@ else{navigator.clipboard.writeText(location.href).then(function(){b.textContent=
 init();
 })();
 </script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+<script src="/js/install-prompt.js" defer></script>
 </body>
 </html>

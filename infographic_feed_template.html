@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gold: #d4a849;
+        --gold-light: #f0d078;
+        --gold-deep: #c89030;
+        --bg-deep: #06061a;
+        --bg-mid: #0c0c2a;
+        --text: #e8e4f0;
+        --text-dim: #9890a8;
+        --amber: #d4863a;
+        --amber-glow: rgba(212,134,58,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: {{WIDTH}}px;
+        height: {{HEIGHT}}px;
+        overflow: hidden;
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg-deep);
+    }
+
+    .canvas {
+        width: {{WIDTH}}px;
+        height: {{HEIGHT}}px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* ── Background ── */
+    .bg {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 70% 60% at 50% 35%, rgba(212,134,58,0.08) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 45% at 55% 30%, rgba(212,168,73,0.05) 0%, transparent 50%),
+            linear-gradient(175deg, #0a0a24 0%, #06061a 30%, #080818 60%, #04040e 100%);
+    }
+
+    /* ── Stars ── */
+    .star {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.8);
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+        position: absolute;
+        top: 28px;
+        left: 40px;
+        right: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+    }
+    .brand {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: 4px;
+        color: var(--gold);
+        text-transform: uppercase;
+        opacity: 0.7;
+    }
+    .moon-badge {
+        font-size: 17px;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .moon-badge .phase-icon {
+        font-size: 22px;
+    }
+
+    /* ── Central visualization ── */
+    .visual-zone {
+        position: absolute;
+        top: 7%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 85%;
+        height: 32%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .aspect-visual {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Planet orbs */
+    .planet-orb {
+        position: absolute;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .planet-orb.primary {
+        width: 150px;
+        height: 150px;
+        border: none;
+        top: 50%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+        overflow: visible;
+    }
+    .planet-orb.secondary {
+        width: 130px;
+        height: 130px;
+        border: none;
+        top: 50%;
+        right: 25%;
+        transform: translate(50%, -50%);
+        overflow: visible;
+    }
+    .planet-orb .planet-sphere {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        z-index: 0;
+    }
+    .planet-orb .planet-label {
+        position: absolute;
+        bottom: -32px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        white-space: nowrap;
+        z-index: 2;
+    }
+    .planet-orb .name {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text);
+        display: block;
+    }
+    .planet-orb .sign-info {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-top: 2px;
+        display: block;
+    }
+
+    /* Aspect line connecting planets */
+    .aspect-line {
+        position: absolute;
+        top: 50%;
+        left: 32%;
+        width: 36%;
+        height: 2px;
+        transform: translateY(-50%);
+    }
+    .aspect-line .line {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold), rgba(212,168,73,0.3) 50%, rgba(120,140,220,0.5));
+        box-shadow: 0 0 8px rgba(212,168,73,0.3);
+    }
+    .aspect-line .label {
+        position: absolute;
+        top: -26px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--gold);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        text-shadow: 0 0 12px rgba(212,168,73,0.4);
+    }
+    .aspect-line .orb-label {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: var(--text-dim);
+        white-space: nowrap;
+    }
+
+    /* ── Moon-centric visual ── */
+    .moon-visual {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 40% 35%, #e8e4f0, #b0a8c0 50%, #706880 80%, #3a3450);
+        box-shadow: 0 0 60px rgba(200,190,220,0.2), 0 0 120px rgba(160,150,180,0.08);
+    }
+    .moon-visual .phase-shadow {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: {{MOON_SHADOW_GRADIENT}};
+    }
+    .moon-visual .label {
+        position: absolute;
+        bottom: -32px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--text);
+        letter-spacing: 1.5px;
+        white-space: nowrap;
+    }
+
+    /* Constellation lines SVG */
+    .constellation-svg {
+        position: absolute;
+        inset: 0;
+        opacity: 0.35;
+    }
+
+    /* ── Title block ── */
+    .title-block {
+        position: absolute;
+        top: 38%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 0 40px;
+        z-index: 10;
+    }
+    .event-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 700;
+        font-size: 50px;
+        color: var(--gold-light);
+        line-height: 1.15;
+        text-shadow: 0 0 20px rgba(212,168,73,0.25);
+        margin-bottom: 12px;
+    }
+    .event-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-weight: 300;
+        font-size: 19px;
+        color: var(--text-dim);
+        letter-spacing: 0.5px;
+        line-height: 1.5;
+        max-width: 80%;
+        margin: 0 auto;
+    }
+
+    /* ── Divider ── */
+    .divider {
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        margin: 16px auto 0;
+        opacity: 0.5;
+    }
+
+    /* ── Fact panel (feed) ── */
+    .fact-panel {
+        position: absolute;
+        top: 57%;
+        left: 60px;
+        right: 60px;
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 18px 24px;
+        text-align: center;
+        z-index: 10;
+    }
+    .fact-panel .fact-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--gold);
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .fact-panel .fact-text {
+        font-size: 17px;
+        color: var(--text);
+        line-height: 1.5;
+    }
+
+    /* ── Orbital arc ── */
+    .orbital-arc {
+        position: absolute;
+        top: 58%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 500px;
+        height: 200px;
+        border: 1px solid rgba(212,168,73,0.06);
+        border-radius: 50%;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        z-index: 1;
+    }
+    .orbital-arc-2 {
+        position: absolute;
+        top: 54%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 700px;
+        height: 280px;
+        border: 1px solid rgba(120,140,220,0.04);
+        border-radius: 50%;
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+        z-index: 1;
+    }
+
+    /* ── Data ribbon ── */
+    .data-ribbon {
+        position: absolute;
+        bottom: 15%;
+        left: 40px;
+        right: 40px;
+        display: flex;
+        justify-content: center;
+        gap: 36px;
+        z-index: 10;
+    }
+    .data-item {
+        text-align: center;
+    }
+    .data-item .value {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--gold);
+    }
+    .data-item .label {
+        font-size: 12px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-top: 3px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+        position: absolute;
+        bottom: 3%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 20;
+    }
+    .footer .site-url {
+        font-size: 15px;
+        color: var(--text-dim);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    /* ── Decorative corners ── */
+    .corner {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        z-index: 5;
+    }
+    .corner::before, .corner::after {
+        content: '';
+        position: absolute;
+        background: var(--gold);
+        opacity: 0.2;
+    }
+    .corner::before { width: 100%; height: 1px; }
+    .corner::after { width: 1px; height: 100%; }
+    .corner.tl { top: 16px; left: 16px; }
+    .corner.tl::before { top: 0; left: 0; }
+    .corner.tl::after { top: 0; left: 0; }
+    .corner.tr { top: 16px; right: 16px; }
+    .corner.tr::before { top: 0; right: 0; }
+    .corner.tr::after { top: 0; right: 0; }
+    .corner.bl { bottom: 16px; left: 16px; }
+    .corner.bl::before { bottom: 0; left: 0; }
+    .corner.bl::after { bottom: 0; left: 0; }
+    .corner.br { bottom: 16px; right: 16px; }
+    .corner.br::before { bottom: 0; right: 0; }
+    .corner.br::after { bottom: 0; right: 0; }
+</style>
+</head>
+<body>
+<div class="canvas">
+    <div class="bg"></div>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <!-- Stars -->
+    {{STARS_HTML}}
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <div class="brand">Luz Estelar</div>
+        <div class="moon-badge">
+            <span class="phase-icon">{{MOON_EMOJI}}</span>
+            <span>{{MOON_PHASE}} {{MOON_PCT}}%</span>
+        </div>
+    </div>
+
+    <!-- Central visual -->
+    <div class="visual-zone">
+        {{VISUAL_HTML}}
+    </div>
+
+    <!-- Title -->
+    <div class="title-block">
+        <div class="event-title">{{EVENT_TITLE}}</div>
+        <div class="event-subtitle">{{EVENT_SUBTITLE}}</div>
+        <div class="divider"></div>
+    </div>
+
+    <!-- Fact panel -->
+    <div class="fact-panel">
+        <div class="fact-title">Dato Estelar</div>
+        <div class="fact-text">{{FACT_TEXT}}</div>
+    </div>
+
+    <!-- Orbital arcs -->
+    <div class="orbital-arc"></div>
+    <div class="orbital-arc-2"></div>
+
+    <!-- Data ribbon -->
+    <div class="data-ribbon">
+        {{DATA_RIBBON_HTML}}
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="site-url">@luzestelaroficial</div>
+    </div>
+</div>
+
+<script>
+// Generate stars
+(function() {
+    const canvas = document.querySelector('.canvas');
+    const seed = {{SEED}};
+    let s = seed;
+    function rng() { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; }
+    for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const x = rng() * 100;
+        const y = rng() * 100;
+        const size = 0.5 + rng() * 1.8;
+        const opacity = 0.15 + rng() * 0.5;
+        star.style.cssText = `left:${x}%;top:${y}%;width:${size}px;height:${size}px;opacity:${opacity}`;
+        canvas.appendChild(star);
+    }
+})();
+</script>
+</body>
+</html>
