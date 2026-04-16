@@ -108,15 +108,8 @@ main{max-width:480px;margin:0 auto;padding:0 16px 90px}
 <!-- Loading -->
 <div id="st-load" class="state active"><div class="spinner"></div></div>
 
-<!-- Login -->
-<div id="st-login" class="state">
-<div class="auth-box">
-<h1>Luz Estelar</h1>
-<p>Inicia sesión para ver tu lectura astrológica personalizada del día.</p>
-<a href="/login.html?redirect=/mi-dia.html" class="btn-gold">Iniciar sesión</a>
-<p style="margin-top:16px;font-size:.78rem"><a href="/en/my-day.html" style="color:var(--text-dim)">English</a></p>
-</div>
-</div>
+<!-- Login — handled by redirect in show() -->
+<div id="st-login" class="state"></div>
 
 <!-- Setup -->
 <div id="st-setup" class="state">
@@ -188,7 +181,7 @@ var E_LBL={love:'Amor',career:'Trabajo',health:'Salud',energy:'Energía'};
 var E_CLR={love:'#e8456a',career:'#d4a849',health:'#4aba7a',energy:'#7c5cbf'};
 var SIGNS={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
 
-function show(id){document.querySelectorAll('.state').forEach(function(e){e.classList.remove('active')});document.getElementById('st-'+id).classList.add('active')}
+function show(id){if(id==='login'){window.location.replace('/login.html');return}document.querySelectorAll('.state').forEach(function(e){e.classList.remove('active')});document.getElementById('st-'+id).classList.add('active')}
 
 function fmtDate(s){
 var d=new Date(s+'T12:00:00');
@@ -244,8 +237,9 @@ async function init(){
 try{var c=localStorage.getItem(CK);if(c){var cd=JSON.parse(c);if(cd.date===new Date().toISOString().split('T')[0])render(cd)}}catch(e){}
 
 try{
-var r=await fetch(API,{credentials:'same-origin',cache:'no-store'});
-if(r.status===401){document.cookie='le_redirect=/mi-dia.html;path=/;max-age=3600;SameSite=Lax;Secure';show('login');return}
+var hdr={};var tk=localStorage.getItem('le_token');if(tk)hdr['Authorization']='Bearer '+tk;
+var r=await fetch(API,{credentials:'same-origin',cache:'no-store',headers:hdr});
+if(r.status===401){show('login');return}
 if(r.status===404){show('setup');return}
 if(!r.ok)throw new Error();
 var d=await r.json();

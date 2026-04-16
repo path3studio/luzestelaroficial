@@ -2,6 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script>
+    // PWA standalone mode → redirect to app home (not website landing)
+    if(window.matchMedia('(display-mode:standalone)').matches||window.navigator.standalone){
+      window.location.replace('/mi-dia.html');
+    }
+    </script>
     <meta name="msvalidate.01" content="E3AB72FCA4F917C2C7CCAEFA12804EF5" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luz Estelar Oficial — Horóscopo Técnico Diario</title>
