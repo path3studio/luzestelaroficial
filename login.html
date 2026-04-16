@@ -1,170 +1,252 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión — Luz Estelar</title>
-    <meta name="description" content="Inicia sesión en tu cuenta de Luz Estelar para acceder a tu dashboard astrologico personalizado.">
-    <meta name="robots" content="noindex">
-    <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/login.html">
-    <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/login.html">
-    <link rel="icon" type="image/png" href="app_icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Iniciar Sesión — Luz Estelar</title>
+<link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/login.html">
+<link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/login.html">
+<link rel="icon" type="image/png" href="app_icon.png">
+<link rel="manifest" href="/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#d4a849;--gold-light:#f0d078;--bg:#06061a;--text:rgba(255,255,255,0.88);--text-dim:rgba(255,255,255,0.55);--text-muted:rgba(255,255,255,0.35);--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-rose:#e8788a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
 
-        .login-container{position:relative;z-index:1;width:100%;max-width:420px;padding:20px;}
+/* Stars */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{
+  position:absolute;width:2px;height:2px;
+  background:var(--gold-light);border-radius:50%;
+  animation:twinkle 3s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:0.15;}50%{opacity:0.7;}}
 
-        .login-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;padding:48px 32px;text-align:center;backdrop-filter:blur(12px);}
+/* Content */
+.login-content{
+  position:relative;z-index:1;
+  width:100%;max-width:340px;
+  padding:40px 24px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:36px;
+}
 
-        .login-card .logo{font-family:'Cormorant Garamond',serif;font-size:2.2em;font-weight:700;color:var(--gold);text-decoration:none;display:block;margin-bottom:8px;}
-        .login-card .tagline{font-size:0.88em;color:var(--text-dim);margin-bottom:36px;}
+/* Logo */
+.logo-section{text-align:center;}
+.logo-star{
+  font-size:3rem;display:block;margin-bottom:12px;
+  animation:float 4s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.logo-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.5rem;font-weight:700;color:var(--text);
+  letter-spacing:0.02em;line-height:1.1;
+}
+.logo-subtitle{font-size:0.94rem;color:var(--text-dim);margin-top:8px;}
 
-        .divider{display:flex;align-items:center;gap:12px;margin:28px 0;color:var(--text-dim);font-size:0.78em;}
-        .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--glass-border);}
+/* Login options */
+.login-options{width:100%;display:flex;flex-direction:column;gap:16px;}
 
-        /* Google button */
-        .btn-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:12px;border:1px solid var(--glass-border);border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text);font-size:0.92em;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:inherit;text-decoration:none;}
-        .btn-google:hover{background:rgba(255,255,255,0.1);border-color:var(--gold);}
-        .btn-google svg{width:20px;height:20px;}
+.google-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:14px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--glass-border);border-radius:14px;
+  font-size:0.94rem;font-weight:500;color:var(--text);
+  cursor:pointer;transition:background 0.2s;
+  font-family:inherit;text-decoration:none;
+}
+.google-btn:active{background:rgba(255,255,255,0.12);}
+.google-btn svg{width:20px;height:20px;flex-shrink:0;}
 
-        /* Email form */
-        .form-group{margin-bottom:16px;text-align:left;}
-        .form-group label{display:block;font-size:0.82em;color:var(--text-dim);margin-bottom:6px;font-weight:500;}
-        .form-group input{width:100%;padding:11px 14px;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9em;outline:none;transition:border-color 0.3s;font-family:inherit;}
-        .form-group input:focus{border-color:var(--gold);}
-        .btn-primary{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),#c89030);color:#1a1625;font-weight:700;font-size:0.95em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
-        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(212,168,73,0.3);}
-        .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.separator{display:flex;align-items:center;gap:12px;}
+.separator-line{flex:1;height:1px;background:var(--glass-border);}
+.separator-text{font-size:0.75rem;color:var(--text-muted);}
 
-        .success-msg{background:rgba(72,187,120,0.1);border:1px solid rgba(72,187,120,0.3);border-radius:10px;padding:16px;margin-top:16px;color:#68d391;font-size:0.88em;display:none;}
-        .error-msg{background:rgba(245,101,101,0.1);border:1px solid rgba(245,101,101,0.3);border-radius:10px;padding:12px;margin-top:12px;color:#fc8181;font-size:0.85em;display:none;}
+.magic-form{display:flex;flex-direction:column;gap:10px;width:100%;}
+.email-input{
+  width:100%;padding:14px 16px;
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
+  color:var(--text);font-family:inherit;font-size:0.94rem;outline:none;
+  transition:border-color 0.2s;
+}
+.email-input::placeholder{color:var(--text-muted);}
+.email-input:focus{border-color:var(--gold);}
 
-        .back-link{display:inline-block;margin-top:24px;color:var(--text-dim);font-size:0.82em;text-decoration:none;transition:color 0.2s;}
-        .back-link:hover{color:var(--gold);}
+.btn-gold{
+  width:100%;padding:14px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--gold),#c89030);
+  color:#1a1625;font-weight:700;font-size:0.95rem;
+  cursor:pointer;font-family:inherit;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.btn-gold:active{transform:scale(0.98);}
+.btn-gold:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
-        .lang-switch{position:fixed;top:16px;right:16px;z-index:10;font-size:0.8em;}
-        .lang-switch a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
-        .lang-switch a:hover{color:var(--gold);}
+.error-text{font-size:0.81rem;color:var(--accent-rose);text-align:center;}
 
-        .newsletter-check{display:flex;align-items:center;gap:8px;margin-top:16px;cursor:pointer;font-size:0.82em;color:var(--text-dim);text-align:left;}
-        .newsletter-check input[type="checkbox"]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
-        .newsletter-check span{line-height:1.3;}
+/* Sent state */
+.sent-card{
+  text-align:center;padding:28px 20px;
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.sent-icon{font-size:2.5rem;}
+.sent-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text);}
+.sent-text{font-size:0.88rem;color:var(--text-dim);line-height:1.5;}
+.sent-text strong{color:var(--gold);}
+.btn-subtle{
+  background:none;border:1px solid var(--glass-border);border-radius:10px;
+  padding:10px 20px;color:var(--text-dim);font-size:0.85rem;
+  cursor:pointer;font-family:inherit;transition:border-color 0.2s;
+}
+.btn-subtle:active{border-color:var(--gold);}
 
-        @media(max-width:480px){
-            .login-card{padding:36px 20px;}
-        }
-    </style>
+/* Legal */
+.legal-text{font-size:0.69rem;color:var(--text-muted);text-align:center;line-height:1.5;}
+.legal-text a{color:var(--gold);text-decoration:none;}
+
+.hidden{display:none!important;}
+</style>
 </head>
 <body>
-    <div class="starfield"><canvas id="stars"></canvas></div>
-    <div class="lang-switch"><a href="/en/login.html">English</a></div>
 
-    <div class="login-container">
-        <div class="login-card">
-            <a href="/" class="logo">Luz Estelar</a>
-            <p class="tagline">Tu mapa astral personalizado te espera</p>
+<!-- Stars -->
+<div class="stars" id="stars-container"></div>
 
-            <!-- Google OAuth -->
-            <a href="/api/auth/google?lang=es" class="btn-google" id="btn-google">
-                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Continuar con Google
-            </a>
+<div class="login-content">
+  <!-- Logo -->
+  <div class="logo-section">
+    <span class="logo-star">&#x2728;</span>
+    <h1 class="logo-title">Luz Estelar</h1>
+    <p class="logo-subtitle">Tu guía cósmica personal</p>
+  </div>
 
-            <!-- Newsletter opt-in -->
-            <label class="newsletter-check">
-                <input type="checkbox" id="newsletter-opt">
-                <span>Suscribirme al newsletter semanal con tips astrol&oacute;gicos</span>
-            </label>
+  <!-- Sent confirmation (hidden by default) -->
+  <div class="sent-card hidden" id="sent-state">
+    <span class="sent-icon">&#x2709;&#xFE0F;</span>
+    <h2 class="sent-title">Revisa tu correo</h2>
+    <p class="sent-text">Enviamos un link mágico a <strong id="sent-email"></strong>. Haz clic en el link para entrar.</p>
+    <button class="btn-subtle" id="btn-retry">Usar otro correo</button>
+  </div>
 
-            <div class="divider">o usa tu email</div>
+  <!-- Login options -->
+  <div class="login-options" id="login-state">
+    <!-- Google -->
+    <a href="/api/auth/google?lang=es" class="google-btn" id="btn-google">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span>Continuar con Google</span>
+    </a>
 
-            <!-- Magic Link -->
-            <form id="magic-form">
-                <div class="form-group">
-                    <label>Correo electrónico</label>
-                    <input type="email" id="magic-email" placeholder="tu@email.com" required>
-                </div>
-                <button type="submit" class="btn-primary" id="magic-btn">Enviar enlace mágico</button>
-                <div class="success-msg" id="magic-success">
-                    Revisa tu bandeja de entrada. Te enviamos un enlace para iniciar sesión.
-                </div>
-                <div class="error-msg" id="magic-error"></div>
-            </form>
-
-            <a href="/" class="back-link">Volver al inicio</a>
-        </div>
+    <!-- Separator -->
+    <div class="separator">
+      <span class="separator-line"></span>
+      <span class="separator-text">o</span>
+      <span class="separator-line"></span>
     </div>
 
-    <script>
-    // Starfield
-    (function(){var c=document.getElementById('stars');var ctx=c.getContext('2d');var w,h,stars=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}function init(){resize();stars=[];for(var i=0;i<120;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.2,a:Math.random()*0.4+0.1,speed:Math.random()*0.12+0.01,phase:Math.random()*Math.PI*2});}}function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}init();draw();window.addEventListener('resize',init);})();
+    <!-- Magic Link -->
+    <form class="magic-form" id="magic-form">
+      <input type="email" class="email-input" id="magic-email" placeholder="tu@email.com" required autocomplete="email" inputmode="email">
+      <button type="submit" class="btn-gold" id="magic-btn">Enviar link mágico</button>
+    </form>
 
-    // Newsletter checkbox → modify Google link dynamically
-    document.getElementById('btn-google').addEventListener('click', function(e) {
-        var checked = document.getElementById('newsletter-opt').checked;
-        if (checked) {
-            e.preventDefault();
-            window.location.href = '/api/auth/google?lang=es&newsletter=1';
-        }
-        // If unchecked, normal link works (no newsletter param)
-    });
+    <p class="error-text hidden" id="error-msg"></p>
+  </div>
 
-    // Check if already logged in
-    (async function(){
-        try {
-            var res = await fetch('/api/auth/me', {cache: 'no-store', credentials: 'same-origin'});
-            if (res.ok) {
-                var data = await res.json();
-                if (data.ok) window.location.href = '/dashboard.html';
-            }
-        } catch(e) {}
-    })();
+  <!-- Legal -->
+  <p class="legal-text">
+    Al continuar aceptas los <a href="/terms-of-service.html">términos</a> y la <a href="/privacy-policy.html">privacidad</a>
+  </p>
+</div>
 
-    // Magic Link
-    document.getElementById('magic-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        var btn = document.getElementById('magic-btn');
-        var email = document.getElementById('magic-email').value;
-        var successEl = document.getElementById('magic-success');
-        var errorEl = document.getElementById('magic-error');
+<script>
+(function(){
+  // Generate stars
+  var container = document.getElementById('stars-container');
+  for(var i=0;i<40;i++){
+    var s=document.createElement('span');
+    s.className='star';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;opacity:'+(0.2+Math.random()*0.5);
+    container.appendChild(s);
+  }
 
-        btn.disabled = true;
-        btn.textContent = 'Enviando...';
-        successEl.style.display = 'none';
-        errorEl.style.display = 'none';
+  // Elements
+  var loginState=document.getElementById('login-state');
+  var sentState=document.getElementById('sent-state');
+  var sentEmail=document.getElementById('sent-email');
+  var form=document.getElementById('magic-form');
+  var emailInput=document.getElementById('magic-email');
+  var btn=document.getElementById('magic-btn');
+  var errorEl=document.getElementById('error-msg');
+  var btnRetry=document.getElementById('btn-retry');
 
-        try {
-            var res = await fetch('/api/auth/magic-link', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({email: email, lang: 'es', newsletter: document.getElementById('newsletter-opt').checked})
-            });
-            var data = await res.json();
-            if (data.ok) {
-                successEl.style.display = 'block';
-                btn.textContent = 'Enlace enviado';
-            } else {
-                errorEl.textContent = data.error || 'Error al enviar el enlace';
-                errorEl.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'Enviar enlace mágico';
-            }
-        } catch(err) {
-            errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
-            errorEl.style.display = 'block';
-            btn.disabled = false;
-            btn.textContent = 'Enviar enlace mágico';
-        }
-    });
-    </script>
-    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
-    <script src="/js/bottom-tabs.js" defer></script>
-    <script src="/js/cookie-consent.js" defer></script>
+  // Check if already logged in (cookie or token)
+  (async function(){
+    try{
+      var headers={};
+      var t=localStorage.getItem('le_token');
+      if(t)headers['Authorization']='Bearer '+t;
+      var r=await fetch('/api/auth/me',{cache:'no-store',credentials:'same-origin',headers:headers});
+      if(r.ok){var d=await r.json();if(d.ok)window.location.href='/mi-dia.html';}
+    }catch(e){}
+  })();
+
+  // Handle token from callback (deep link or redirect)
+  var params=new URLSearchParams(location.search);
+  var token=params.get('token');
+  if(token){
+    localStorage.setItem('le_token',token);
+    window.location.href=params.get('redirect')||'/mi-dia.html';
+  }
+
+  // Magic link form
+  form.addEventListener('submit',async function(e){
+    e.preventDefault();
+    if(!emailInput.value||btn.disabled)return;
+    errorEl.classList.add('hidden');
+    btn.disabled=true;btn.textContent='Enviando...';
+    try{
+      var r=await fetch('/api/auth/magic-link',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email:emailInput.value,lang:'es'})
+      });
+      if(r.ok){
+        sentEmail.textContent=emailInput.value;
+        loginState.classList.add('hidden');
+        sentState.classList.remove('hidden');
+      }else{
+        var msg=r.status===429?'Demasiados intentos. Espera unos minutos.':'Error al enviar el link. Intenta de nuevo.';
+        errorEl.textContent=msg;errorEl.classList.remove('hidden');
+        btn.disabled=false;btn.textContent='Enviar link mágico';
+      }
+    }catch(err){
+      errorEl.textContent='Error de conexión. Intenta de nuevo.';
+      errorEl.classList.remove('hidden');
+      btn.disabled=false;btn.textContent='Enviar link mágico';
+    }
+  });
+
+  // Retry button
+  btnRetry.addEventListener('click',function(){
+    sentState.classList.add('hidden');
+    loginState.classList.remove('hidden');
+    emailInput.value='';btn.disabled=false;btn.textContent='Enviar link mágico';
+  });
+})();
+</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 </body>
 </html>
