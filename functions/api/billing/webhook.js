@@ -96,6 +96,7 @@ export async function onRequestPost(context) {
         if (!userId) break;
 
         const plan = session.metadata?.plan || 'premium';
+        const cadence = session.metadata?.cadence === 'annual' ? 'annual' : 'monthly';
         const amountCents = session.amount_total || 0;
         const customerEmail = session.customer_details?.email || session.customer_email || '';
         const isSubscription = session.mode === 'subscription';
@@ -106,14 +107,43 @@ export async function onRequestPost(context) {
             'UPDATE users SET tier = ?, stripe_customer_id = ?, updated_at = ? WHERE id = ?'
           ).bind('premium', session.customer, now, userId).run();
 
-          // Record subscription
-          await DB.prepare(
-            `INSERT INTO subscriptions (id, user_id, stripe_subscription_id, stripe_customer_id, plan, status, current_period_start, current_period_end, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-          ).bind(
-            crypto.randomUUID(), userId, session.subscription, session.customer,
-            plan, 'active', now, '', now
-          ).run();
+          // Fetch subscription trial_end from Stripe (checkout session doesn't include it directly)
+          let trialEnd = null;
+          try {
+            if (session.subscription && STRIPE_SECRET_KEY) {
+              const subRes = await fetch(
+                `https://api.stripe.com/v1/subscriptions/${session.subscription}`,
+                { headers: { 'Authorization': `Bearer ${STRIPE_SECRET_KEY}` } }
+              );
+              const subObj = await subRes.json();
+              if (subObj?.trial_end) {
+                trialEnd = new Date(subObj.trial_end * 1000).toISOString();
+              }
+            }
+          } catch (e) {
+            console.warn('trial_end fetch failed (non-fatal):', e.message);
+          }
+
+          // Record subscription — try new schema first, fall back to old if columns missing
+          try {
+            await DB.prepare(
+              `INSERT INTO subscriptions (id, user_id, stripe_subscription_id, stripe_customer_id, plan, cadence, status, current_period_start, current_period_end, trial_end, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            ).bind(
+              crypto.randomUUID(), userId, session.subscription, session.customer,
+              plan, cadence, 'active', now, '', trialEnd, now
+            ).run();
+          } catch (e) {
+            // Schema migration 0004 not applied yet — use legacy columns
+            console.warn('subscriptions insert (new schema) failed, using legacy:', e.message);
+            await DB.prepare(
+              `INSERT INTO subscriptions (id, user_id, stripe_subscription_id, stripe_customer_id, plan, status, current_period_start, current_period_end, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            ).bind(
+              crypto.randomUUID(), userId, session.subscription, session.customer,
+              plan, 'active', now, '', now
+            ).run();
+          }
         } else {
           // One-time purchase — just store customer ID
           await DB.prepare(

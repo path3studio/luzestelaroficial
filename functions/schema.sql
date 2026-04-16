@@ -64,9 +64,11 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   stripe_subscription_id TEXT,
   stripe_customer_id TEXT,
   plan TEXT NOT NULL DEFAULT 'premium',
+  cadence TEXT DEFAULT 'monthly',         -- monthly | annual (added in 0004)
   status TEXT DEFAULT 'active',
   current_period_start TEXT,
   current_period_end TEXT,
+  trial_end TEXT,                          -- ISO datetime or NULL (added in 0004)
   created_at TEXT NOT NULL
 );
 

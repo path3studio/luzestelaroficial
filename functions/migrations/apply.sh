@@ -61,11 +61,13 @@ for f in "$SCRIPT_DIR"/*.sql; do
     echo "  ▶  $name — applying..."
     npx wrangler d1 execute "$DB" --remote --file="$f" >/dev/null
 
-    # Record in _migrations (after the file ran successfully)
+    # Record in _migrations (after the file ran successfully).
+    # INSERT OR IGNORE so migrations that include their own idempotent INSERT
+    # (a safe habit) don't blow up on the PK conflict here.
     checksum="$(shasum -a 256 "$f" | awk '{print $1}')"
     now="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
     npx wrangler d1 execute "$DB" --remote \
-        --command="INSERT INTO _migrations (id, applied_at, checksum) VALUES ('$name', '$now', '$checksum')" \
+        --command="INSERT OR IGNORE INTO _migrations (id, applied_at, checksum) VALUES ('$name', '$now', '$checksum')" \
         >/dev/null
     echo "  ✓  $name applied at $now"
     applied_count=$((applied_count + 1))
