@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Wed, 15 Apr 2026 07:00:00 -0600</lastBuildDate>
+    <lastBuildDate>Thu, 16 Apr 2026 05:47:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,36 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 15 de abril de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 15 de abril de 2026
+      <title>Horóscopo del 16 de abril de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 16 de abril de 2026
 
 Biorritmo Astral:
-Aries: ★★★★☆ (8.5/10)
-Tauro: ★★★☆☆ (7.5/10)
-Géminis: ★★★★☆ (8.5/10)
-Cáncer: ★★★☆☆ (6.5/10)
-Leo: ★★★☆☆ (6.2/10)
-Virgo: ★★★★☆ (8.5/10)
-Libra: ★★★☆☆ (7.0/10)
-Escorpio: ★★★☆☆ (6.0/10)
-Sagitario: ★★★☆☆ (6.8/10)
-Capricornio: ★★★☆☆ (6.2/10)
-Acuario: ★★★☆☆ (6.5/10)
-Piscis: ★★★★☆ (8.2/10)
+Aries: ★★★☆☆ (7.8/10)
+Tauro: ★★★★☆ (8.2/10)
+Géminis: ★★★☆☆ (7.8/10)
+Cáncer: ★★★☆☆ (6.2/10)
+Leo: ★★★☆☆ (7.0/10)
+Virgo: ★★★☆☆ (7.5/10)
+Libra: ★★★★☆ (8.0/10)
+Escorpio: ★★★☆☆ (7.5/10)
+Sagitario: ★★☆☆☆ (5.8/10)
+Capricornio: ★★★★☆ (8.8/10)
+Acuario: ★★★★☆ (8.2/10)
+Piscis: ★★★☆☆ (7.2/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-04-16.mp3" length="24241004" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-04-16.mp3</guid>
+      <pubDate>Thu, 16 Apr 2026 07:00:00 -0600</pubDate>
+      <itunes:duration>00:16:49</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 15 de abril de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 15 de abril de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-04-15.mp3" length="26645228" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-04-15.mp3</guid>
       <pubDate>Wed, 15 Apr 2026 07:00:00 -0600</pubDate>
