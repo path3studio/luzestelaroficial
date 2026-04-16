@@ -108,6 +108,29 @@ export async function onRequestGet(context) {
     exp: Math.floor(Date.now() / 1000) + 30 * 24 * 3600,
   }, JWT_SECRET);
 
+  // App redirect: return HTML page that passes token to the app via URL
+  if (tokenData.redirect === 'app') {
+    const appPage = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Luz Estelar</title></head>
+<body style="font-family:sans-serif;background:#06061a;color:#e0dce8;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;">
+<div style="text-align:center;max-width:400px;padding:40px;">
+<h1 style="color:#d4a849;font-family:Georgia,serif;">&#10022; Luz Estelar</h1>
+<p style="margin:20px 0;color:#9890a8;">Sesion iniciada. Vuelve a la app.</p>
+<p style="font-size:0.75em;color:#6b6380;">Si no se abre automaticamente, copia este codigo:</p>
+<p style="font-family:monospace;color:#d4a849;word-break:break-all;font-size:0.7em;background:rgba(255,255,255,0.04);padding:12px;border-radius:8px;">${jwt}</p>
+</div>
+<script>
+  // Try to open the app via deep link with token
+  window.location.href = 'com.luzestelar.app://auth?token=${jwt}';
+  // Fallback: if running in browser dev mode, redirect to localhost
+  setTimeout(function() { window.location.href = 'http://localhost:5173/?token=${jwt}'; }, 2000);
+</script>
+</body></html>`;
+    return new Response(appPage, {
+      status: 200,
+      headers: { 'Content-Type': 'text/html;charset=UTF-8' },
+    });
+  }
+
   // Set cookie and redirect (honor le_redirect cookie if present)
   const defaultPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';
   const cookies = context.request.headers.get('cookie') || '';

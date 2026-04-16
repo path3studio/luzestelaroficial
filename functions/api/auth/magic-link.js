@@ -7,7 +7,7 @@
 export async function onRequestPost(context) {
   const { RESEND_API_KEY, AUTH_KV } = context.env;
   const body = await context.request.json();
-  const { email, lang, newsletter } = body;
+  const { email, lang, newsletter, redirect } = body;
 
   if (!email || !email.includes('@')) {
     return Response.json({ ok: false, error: 'Invalid email' }, { status: 400 });
@@ -37,6 +37,7 @@ export async function onRequestPost(context) {
     email: normalizedEmail,
     lang: language,
     newsletter: !!newsletter,
+    redirect: redirect || null,
     createdAt: Date.now()
   }), { expirationTtl: 900 });
 

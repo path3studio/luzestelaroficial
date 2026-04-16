@@ -68,10 +68,12 @@ export async function onRequestGet(context) {
   // Parse state — may be JSON {lang, newsletter} or plain string (backward compat)
   let lang = 'es';
   let wantsNewsletter = false;
+  let appRedirect = false;
   try {
     const parsed = JSON.parse(storedRaw);
     lang = parsed.lang || 'es';
     wantsNewsletter = !!parsed.newsletter;
+    appRedirect = parsed.redirect === 'app';
   } catch {
     // Old format: plain string = lang
     lang = storedRaw || 'es';
@@ -184,6 +186,25 @@ export async function onRequestGet(context) {
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 30 * 24 * 3600, // 30 days
   }, JWT_SECRET);
+
+  // App redirect: return HTML page that passes token to the app
+  if (appRedirect) {
+    const appPage = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Luz Estelar</title></head>
+<body style="font-family:sans-serif;background:#06061a;color:#e0dce8;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;">
+<div style="text-align:center;max-width:400px;padding:40px;">
+<h1 style="color:#d4a849;font-family:Georgia,serif;">&#10022; Luz Estelar</h1>
+<p style="margin:20px 0;color:#9890a8;">Sesion iniciada. Vuelve a la app.</p>
+</div>
+<script>
+  window.location.href = 'com.luzestelar.app://auth?token=${jwt}';
+  setTimeout(function() { window.location.href = 'http://localhost:5173/?token=${jwt}'; }, 2000);
+</script>
+</body></html>`;
+    return new Response(appPage, {
+      status: 200,
+      headers: { 'Content-Type': 'text/html;charset=UTF-8' },
+    });
+  }
 
   // Set cookie and redirect (honor le_redirect cookie if present)
   const defaultPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';

@@ -13,6 +13,9 @@
 const ALLOWED_ORIGINS = [
   'https://luzestelaroficial.com',
   'https://www.luzestelaroficial.com',
+  'capacitor://localhost',        // iOS Capacitor app
+  'https://localhost',            // Android Capacitor app
+  'http://localhost',             // Dev (Vite)
 ];
 
 const BASE_CORS = {
@@ -105,7 +108,9 @@ export async function onRequest(context) {
 
   // Origin / Referer check on state-changing requests
   // (Stripe webhook bypassed — it's a server-to-server POST without a browser Origin)
-  if (!isStripeWebhook && !isAllowedOrigin(context.request)) {
+  // (Bearer token requests from native app bypassed — no browser Origin header)
+  const hasBearerAuth = (context.request.headers.get('Authorization') || '').startsWith('Bearer ');
+  if (!isStripeWebhook && !hasBearerAuth && !isAllowedOrigin(context.request)) {
     const headers = new Headers(corsHeadersFor(context.request));
     headers.set('Content-Type', 'application/json');
     return new Response(
