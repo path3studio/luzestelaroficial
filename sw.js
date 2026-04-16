@@ -5,7 +5,7 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-const CACHE_NAME = 'luzestelar-v3';
+const CACHE_NAME = 'luzestelar-v4';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -13,6 +13,10 @@ const READING_CACHE = 'luzestelar-reading-v1';
 const PRECACHE_URLS = [
   '/',
   '/mi-dia.html',
+  '/dashboard.html',
+  '/compatibilidad-personal.html',
+  '/ajustes.html',
+  '/js/bottom-tabs.js',
   '/app_icon.png',
   '/manifest.json',
   OFFLINE_URL,

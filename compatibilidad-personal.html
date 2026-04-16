@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Compatibilidad — Luz Estelar</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="app_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  background:#06061a;
+  color:rgba(255,255,255,0.88);
+  min-height:100vh;
+  min-height:100dvh;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));
+}
+
+.page{max-width:480px;margin:0 auto;padding:20px 20px 40px;}
+
+/* Page title */
+.page-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:700;
+  color:#d4a849;
+  text-align:center;
+  margin-bottom:28px;
+  padding-top:12px;
+}
+
+/* Glass card base */
+.glass{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;
+}
+
+/* Profile selectors row */
+.selector-row{
+  display:flex;align-items:center;
+  gap:12px;margin-bottom:28px;
+}
+.profile-btn{
+  flex:1;padding:14px 12px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;
+  color:rgba(255,255,255,0.88);
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;text-align:center;
+  transition:border-color 0.2s,background 0.2s;
+  position:relative;
+  -webkit-tap-highlight-color:transparent;
+  min-width:0;
+}
+.profile-btn:hover,.profile-btn:focus{
+  border-color:rgba(212,168,73,0.35);
+  background:rgba(255,255,255,0.06);
+  outline:none;
+}
+.profile-btn.active{
+  border-color:#d4a849;
+  background:rgba(212,168,73,0.08);
+}
+.profile-btn .btn-label{
+  display:block;font-size:11px;
+  color:rgba(255,255,255,0.55);
+  margin-bottom:4px;font-weight:400;
+}
+.profile-btn .btn-name{
+  display:block;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vs-badge{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:700;
+  color:#d4a849;flex-shrink:0;
+  user-select:none;
+}
+
+/* Profile dropdown */
+.profile-dropdown{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  z-index:50;
+  background:rgba(12,12,42,0.97);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  max-height:240px;overflow-y:auto;
+  box-shadow:0 12px 40px rgba(0,0,0,0.5);
+  display:none;
+}
+.profile-dropdown.open{display:block;}
+.profile-dropdown .dd-item{
+  padding:12px 16px;
+  cursor:pointer;font-size:13px;
+  color:rgba(255,255,255,0.75);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:background 0.15s,color 0.15s;
+  display:flex;align-items:center;gap:8px;
+}
+.profile-dropdown .dd-item:last-child{border-bottom:none;}
+.profile-dropdown .dd-item:hover{
+  background:rgba(212,168,73,0.1);color:#fff;
+}
+.profile-dropdown .dd-item.selected{
+  color:#d4a849;font-weight:600;
+}
+.profile-dropdown .dd-emoji{font-size:18px;flex-shrink:0;}
+.profile-dropdown .dd-name{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* Empty state for < 2 profiles */
+.empty-state{
+  text-align:center;padding:48px 20px;
+}
+.empty-state .empty-icon{font-size:48px;margin-bottom:16px;display:block;}
+.empty-state p{
+  color:rgba(255,255,255,0.55);
+  font-size:14px;line-height:1.6;margin-bottom:20px;
+}
+.btn-cta{
+  display:inline-block;
+  padding:12px 28px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#d4a849,#c89030);
+  color:#1a1625;font-weight:700;font-size:14px;
+  cursor:pointer;text-decoration:none;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.btn-cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 20px rgba(212,168,73,0.3);
+}
+
+/* Default hint (no comparison yet) */
+.hint-state{
+  text-align:center;padding:40px 20px;
+}
+.hint-state .hint-icon{font-size:40px;margin-bottom:12px;display:block;}
+.hint-state p{
+  color:rgba(255,255,255,0.55);
+  font-size:14px;line-height:1.6;
+  font-style:italic;
+}
+
+/* Loading spinner */
+.loading-state{text-align:center;padding:48px 20px;}
+.spinner{
+  width:36px;height:36px;
+  border:3px solid rgba(255,255,255,0.08);
+  border-top:3px solid #d4a849;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  margin:0 auto 16px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state p{color:rgba(255,255,255,0.55);font-size:14px;}
+
+/* Upgrade gate */
+.upgrade-gate{text-align:center;padding:48px 20px;}
+.upgrade-gate .lock-icon{font-size:48px;margin-bottom:16px;display:block;}
+.upgrade-gate h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;color:#fff;
+  margin-bottom:8px;
+}
+.upgrade-gate p{
+  color:rgba(255,255,255,0.55);
+  font-size:14px;margin-bottom:24px;
+}
+.btn-upgrade{
+  display:inline-block;
+  padding:14px 32px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#d4a849,#c89030);
+  color:#1a1625;font-weight:700;font-size:15px;
+  cursor:pointer;text-decoration:none;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.btn-upgrade:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(212,168,73,0.35);
+}
+
+/* Error state */
+.error-state{text-align:center;padding:40px 20px;}
+.error-state p{color:#ff8080;font-size:14px;margin-bottom:16px;}
+.btn-retry{
+  padding:10px 24px;border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;background:rgba(255,255,255,0.04);
+  color:rgba(255,255,255,0.88);font-size:13px;font-weight:500;
+  cursor:pointer;transition:border-color 0.2s;
+}
+.btn-retry:hover{border-color:rgba(212,168,73,0.4);}
+
+/* === Results === */
+
+/* Overall score ring */
+.score-section{text-align:center;margin-bottom:28px;}
+.score-ring-wrap{display:inline-block;position:relative;width:150px;height:150px;}
+.score-ring-wrap svg{transform:rotate(-90deg);}
+.score-ring-wrap .ring-bg{
+  fill:none;stroke:rgba(255,255,255,0.06);stroke-width:10;
+}
+.score-ring-wrap .ring-fill{
+  fill:none;stroke:#e8788a;stroke-width:10;
+  stroke-linecap:round;
+  stroke-dasharray:0 408;
+  transition:stroke-dasharray 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.score-number{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Cormorant Garamond',serif;
+  font-weight:700;color:#fff;
+}
+.score-number .num{font-size:42px;line-height:1;}
+.score-number .pct{font-size:18px;color:rgba(255,255,255,0.55);}
+
+/* Breakdown rows */
+.breakdown{margin-bottom:28px;}
+.breakdown-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:600;color:#d4a849;
+  margin-bottom:14px;
+}
+.bd-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.bd-row:last-child{border-bottom:none;}
+.bd-name{
+  width:90px;flex-shrink:0;
+  font-size:13px;color:rgba(255,255,255,0.75);
+  font-weight:500;
+}
+.bd-bar{
+  flex:1;height:8px;border-radius:4px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bd-fill{
+  height:100%;border-radius:4px;
+  background:linear-gradient(90deg,#d4a849,#e8788a);
+  width:0;
+  transition:width 1s cubic-bezier(0.4,0,0.2,1);
+}
+.bd-score{
+  width:42px;flex-shrink:0;text-align:right;
+  font-size:13px;font-weight:600;color:#e8788a;
+}
+
+/* Synthesis card */
+.synthesis-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;
+  padding:20px;
+}
+.synthesis-card .synth-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:600;color:#d4a849;
+  margin-bottom:12px;
+}
+.synthesis-card .synth-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-style:italic;
+  line-height:1.7;
+  color:rgba(255,255,255,0.75);
+}
+
+/* Utility */
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1 class="page-title">Compatibilidad</h1>
+
+  <!-- Empty state: fewer than 2 profiles -->
+  <div id="empty-profiles" class="glass empty-state hidden">
+    <span class="empty-icon">💫</span>
+    <p>Necesitas al menos 2 perfiles para comparar</p>
+    <a href="/dashboard.html" class="btn-cta">Crear perfiles</a>
+  </div>
+
+  <!-- Profile selectors -->
+  <div id="selector-section" class="hidden">
+    <div class="selector-row">
+      <button class="profile-btn" id="btn-a" type="button" aria-haspopup="listbox">
+        <span class="btn-label">Perfil A</span>
+        <span class="btn-name" id="label-a">Seleccionar...</span>
+      </button>
+      <span class="vs-badge">VS</span>
+      <button class="profile-btn" id="btn-b" type="button" aria-haspopup="listbox">
+        <span class="btn-label">Perfil B</span>
+        <span class="btn-name" id="label-b">Seleccionar...</span>
+      </button>
+    </div>
+
+    <!-- Dropdown A -->
+    <div style="position:relative;">
+      <div class="profile-dropdown" id="dd-a" role="listbox" aria-label="Seleccionar perfil A"></div>
+    </div>
+    <!-- Dropdown B -->
+    <div style="position:relative;">
+      <div class="profile-dropdown" id="dd-b" role="listbox" aria-label="Seleccionar perfil B"></div>
+    </div>
+
+    <!-- Default hint -->
+    <div id="hint-state" class="glass hint-state">
+      <span class="hint-icon">🔮</span>
+      <p>Selecciona dos perfiles para ver tu analisis de compatibilidad</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-state" class="loading-state hidden">
+      <div class="spinner"></div>
+      <p>Calculando compatibilidad...</p>
+    </div>
+
+    <!-- Upgrade gate -->
+    <div id="upgrade-gate" class="glass upgrade-gate hidden">
+      <span class="lock-icon">🔒</span>
+      <h3>Compatibilidad es una funcion Plus</h3>
+      <p>Desbloquea analisis detallados de compatibilidad entre todos tus perfiles.</p>
+      <button class="btn-upgrade" id="btn-upgrade" type="button">$4.99/mes — Desbloquear</button>
+    </div>
+
+    <!-- Error -->
+    <div id="error-state" class="glass error-state hidden">
+      <p>Error al calcular. Intenta de nuevo.</p>
+      <button class="btn-retry" id="btn-retry" type="button">Reintentar</button>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden">
+      <!-- Overall score ring -->
+      <div class="score-section">
+        <div class="score-ring-wrap">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle class="ring-bg" cx="75" cy="75" r="65"/>
+            <circle class="ring-fill" id="ring-fill" cx="75" cy="75" r="65"/>
+          </svg>
+          <div class="score-number">
+            <span class="num" id="score-num">0</span><span class="pct">%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7-system breakdown -->
+      <div class="breakdown">
+        <div class="breakdown-title">Desglose por sistema</div>
+        <div id="breakdown-list"></div>
+      </div>
+
+      <!-- Synthesis -->
+      <div class="synthesis-card">
+        <div class="synth-title">Sintesis</div>
+        <div class="synth-text" id="synthesis-text"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var API_BASE = '';
+  var token = localStorage.getItem('le_token');
+
+  // Auth check
+  if(!token){
+    window.location.href = '/login.html';
+    return;
+  }
+
+  // Verify token
+  fetch(API_BASE + '/api/auth/me',{
+    headers:{'Authorization':'Bearer '+token}
+  }).then(function(r){
+    if(r.status === 401){
+      localStorage.removeItem('le_token');
+      window.location.href = '/login.html';
+      return null;
+    }
+    return r.json();
+  }).then(function(data){
+    if(data) loadProfiles();
+  }).catch(function(){
+    loadProfiles();
+  });
+
+  // Western sign emojis
+  var signEmoji = {
+    'aries':'♈','taurus':'♉','gemini':'♊','cancer':'♋',
+    'leo':'♌','virgo':'♍','libra':'♎','scorpio':'♏',
+    'sagittarius':'♐','capricorn':'♑','aquarius':'♒','pisces':'♓'
+  };
+
+  function getEmoji(profile){
+    if(!profile) return '✨';
+    var sign = (profile.westernSign || profile.western_sign || profile.sign || '').toLowerCase();
+    return signEmoji[sign] || '✨';
+  }
+
+  function getDisplayName(profile){
+    return profile.label || profile.name || profile.displayName || 'Perfil';
+  }
+
+  // State
+  var profiles = [];
+  var selectedA = null;
+  var selectedB = null;
+  var openDropdown = null;
+
+  // DOM refs
+  var elEmpty = document.getElementById('empty-profiles');
+  var elSelector = document.getElementById('selector-section');
+  var elBtnA = document.getElementById('btn-a');
+  var elBtnB = document.getElementById('btn-b');
+  var elLabelA = document.getElementById('label-a');
+  var elLabelB = document.getElementById('label-b');
+  var elDdA = document.getElementById('dd-a');
+  var elDdB = document.getElementById('dd-b');
+  var elHint = document.getElementById('hint-state');
+  var elLoading = document.getElementById('loading-state');
+  var elUpgrade = document.getElementById('upgrade-gate');
+  var elError = document.getElementById('error-state');
+  var elResults = document.getElementById('results');
+  var elRingFill = document.getElementById('ring-fill');
+  var elScoreNum = document.getElementById('score-num');
+  var elBreakdown = document.getElementById('breakdown-list');
+  var elSynthesis = document.getElementById('synthesis-text');
+
+  // System display names
+  var systemNames = {
+    western: 'Occidental',
+    chinese: 'Chino',
+    numerology: 'Numerologia',
+    celtic: 'Celta',
+    mayan: 'Maya',
+    vedic: 'Vedico',
+    humanDesign: 'H. Design'
+  };
+  var systemOrder = ['western','chinese','numerology','celtic','mayan','vedic','humanDesign'];
+
+  function loadProfiles(){
+    fetch(API_BASE + '/api/profile/birth-profiles',{
+      headers:{'Authorization':'Bearer '+token}
+    }).then(function(r){ return r.json(); })
+    .then(function(data){
+      profiles = Array.isArray(data) ? data : (data.profiles || []);
+      if(profiles.length < 2){
+        elEmpty.classList.remove('hidden');
+        elSelector.classList.add('hidden');
+      } else {
+        elEmpty.classList.add('hidden');
+        elSelector.classList.remove('hidden');
+        selectedA = profiles[0];
+        selectedB = profiles[1];
+        updateButtons();
+        buildDropdowns();
+        fetchCompatibility();
+      }
+    }).catch(function(){
+      elEmpty.classList.remove('hidden');
+      elSelector.classList.add('hidden');
+    });
+  }
+
+  function updateButtons(){
+    if(selectedA){
+      elLabelA.textContent = getEmoji(selectedA) + ' ' + getDisplayName(selectedA);
+      elBtnA.classList.add('active');
+    } else {
+      elLabelA.textContent = 'Seleccionar...';
+      elBtnA.classList.remove('active');
+    }
+    if(selectedB){
+      elLabelB.textContent = getEmoji(selectedB) + ' ' + getDisplayName(selectedB);
+      elBtnB.classList.add('active');
+    } else {
+      elLabelB.textContent = 'Seleccionar...';
+      elBtnB.classList.remove('active');
+    }
+  }
+
+  function buildDropdowns(){
+    elDdA.innerHTML = '';
+    elDdB.innerHTML = '';
+    for(var i = 0; i < profiles.length; i++){
+      elDdA.appendChild(createDdItem(profiles[i], 'a'));
+      elDdB.appendChild(createDdItem(profiles[i], 'b'));
+    }
+    markSelected();
+  }
+
+  function createDdItem(profile, slot){
+    var div = document.createElement('div');
+    div.className = 'dd-item';
+    div.setAttribute('role','option');
+    div.setAttribute('data-id', profile.id);
+    div.innerHTML = '<span class="dd-emoji">' + getEmoji(profile) + '</span>'
+                  + '<span class="dd-name">' + escHtml(getDisplayName(profile)) + '</span>';
+    div.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(slot === 'a'){
+        selectedA = profile;
+      } else {
+        selectedB = profile;
+      }
+      closeDropdowns();
+      updateButtons();
+      markSelected();
+      maybeCompare();
+    });
+    return div;
+  }
+
+  function markSelected(){
+    var itemsA = elDdA.querySelectorAll('.dd-item');
+    var itemsB = elDdB.querySelectorAll('.dd-item');
+    for(var i = 0; i < itemsA.length; i++){
+      itemsA[i].classList.toggle('selected', selectedA && itemsA[i].getAttribute('data-id') == selectedA.id);
+    }
+    for(var i = 0; i < itemsB.length; i++){
+      itemsB[i].classList.toggle('selected', selectedB && itemsB[i].getAttribute('data-id') == selectedB.id);
+    }
+  }
+
+  function maybeCompare(){
+    if(selectedA && selectedB && selectedA.id !== selectedB.id){
+      fetchCompatibility();
+    } else if(selectedA && selectedB && selectedA.id === selectedB.id){
+      showState('hint');
+    }
+  }
+
+  // Dropdown toggle
+  elBtnA.addEventListener('click', function(e){
+    e.stopPropagation();
+    toggleDropdown('a');
+  });
+  elBtnB.addEventListener('click', function(e){
+    e.stopPropagation();
+    toggleDropdown('b');
+  });
+
+  function toggleDropdown(slot){
+    var dd = slot === 'a' ? elDdA : elDdB;
+    var btn = slot === 'a' ? elBtnA : elBtnB;
+    if(dd.classList.contains('open')){
+      closeDropdowns();
+      return;
+    }
+    closeDropdowns();
+    // Position dropdown relative to button
+    var rect = btn.getBoundingClientRect();
+    dd.style.position = 'fixed';
+    dd.style.top = (rect.bottom + 6) + 'px';
+    dd.style.left = rect.left + 'px';
+    dd.style.width = rect.width + 'px';
+    dd.classList.add('open');
+    openDropdown = slot;
+  }
+
+  function closeDropdowns(){
+    elDdA.classList.remove('open');
+    elDdB.classList.remove('open');
+    openDropdown = null;
+  }
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', function(){
+    closeDropdowns();
+  });
+
+  // Show state helper
+  function showState(state){
+    elHint.classList.toggle('hidden', state !== 'hint');
+    elLoading.classList.toggle('hidden', state !== 'loading');
+    elUpgrade.classList.toggle('hidden', state !== 'upgrade');
+    elError.classList.toggle('hidden', state !== 'error');
+    elResults.classList.toggle('hidden', state !== 'results');
+  }
+
+  // Fetch compatibility
+  function fetchCompatibility(){
+    if(!selectedA || !selectedB || selectedA.id === selectedB.id) return;
+    showState('loading');
+    var url = API_BASE + '/api/reports/compatibility?profile_a=' + encodeURIComponent(selectedA.id)
+            + '&profile_b=' + encodeURIComponent(selectedB.id);
+    fetch(url, {
+      headers:{'Authorization':'Bearer '+token}
+    }).then(function(r){
+      if(r.status === 403){
+        showState('upgrade');
+        return null;
+      }
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(data){
+      if(!data) return;
+      var report = data.report || data;
+      renderResults(report);
+    }).catch(function(){
+      showState('error');
+    });
+  }
+
+  // Render results
+  function renderResults(report){
+    var overall = report.overallScore || 0;
+
+    // Animate score ring
+    var circumference = 2 * Math.PI * 65; // ~408.4
+    var target = (overall / 100) * circumference;
+    elRingFill.style.strokeDasharray = '0 ' + circumference;
+    // Force reflow for animation
+    void elRingFill.offsetWidth;
+    requestAnimationFrame(function(){
+      elRingFill.style.strokeDasharray = target.toFixed(1) + ' ' + circumference;
+    });
+
+    // Animate number
+    animateNumber(elScoreNum, 0, overall, 1000);
+
+    // Breakdown
+    var bd = report.breakdown || {};
+    elBreakdown.innerHTML = '';
+    for(var i = 0; i < systemOrder.length; i++){
+      var key = systemOrder[i];
+      var sysData = bd[key] || {};
+      var score = typeof sysData === 'number' ? sysData : (sysData.score || 0);
+      var row = document.createElement('div');
+      row.className = 'bd-row';
+      row.innerHTML = '<span class="bd-name">' + systemNames[key] + '</span>'
+                    + '<div class="bd-bar"><div class="bd-fill" data-score="' + score + '"></div></div>'
+                    + '<span class="bd-score">' + Math.round(score) + '%</span>';
+      elBreakdown.appendChild(row);
+    }
+
+    // Synthesis
+    elSynthesis.textContent = report.synthesis || '';
+
+    showState('results');
+
+    // Animate bars after DOM update
+    requestAnimationFrame(function(){
+      var fills = elBreakdown.querySelectorAll('.bd-fill');
+      for(var i = 0; i < fills.length; i++){
+        (function(el){
+          setTimeout(function(){
+            el.style.width = el.getAttribute('data-score') + '%';
+          }, i * 80);
+        })(fills[i]);
+      }
+    });
+  }
+
+  function animateNumber(el, from, to, duration){
+    var start = performance.now();
+    var diff = to - from;
+    function step(now){
+      var progress = Math.min((now - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(from + diff * eased);
+      if(progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Upgrade button
+  document.getElementById('btn-upgrade').addEventListener('click', function(){
+    this.disabled = true;
+    this.textContent = 'Procesando...';
+    var self = this;
+    fetch(API_BASE + '/api/billing/create-subscription', {
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+token,
+        'Content-Type':'application/json'
+      }
+    }).then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.url){
+        window.open(data.url, '_blank');
+      }
+      self.disabled = false;
+      self.textContent = '$4.99/mes — Desbloquear';
+    }).catch(function(){
+      self.disabled = false;
+      self.textContent = '$4.99/mes — Desbloquear';
+    });
+  });
+
+  // Retry button
+  document.getElementById('btn-retry').addEventListener('click', function(){
+    fetchCompatibility();
+  });
+
+  function escHtml(str){
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+  }
+
+})();
+</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+<script src="/js/bottom-tabs.js" defer></script>
+</body>
+</html>

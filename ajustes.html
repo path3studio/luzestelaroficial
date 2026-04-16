@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#d4a849">
+<title>Ajustes — Luz Estelar</title>
+<link rel="icon" type="image/png" href="app_icon.png">
+<link rel="apple-touch-icon" href="app_icon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  background:#06061a;
+  color:rgba(255,255,255,0.88);
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+body::-webkit-scrollbar{display:none}
+
+/* Layout */
+main{
+  max-width:480px;
+  margin:0 auto;
+  padding:20px 20px calc(80px + env(safe-area-inset-bottom,0));
+  padding-top:calc(20px + env(safe-area-inset-top,0));
+}
+
+/* Page title */
+.page-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;
+  font-weight:700;
+  color:#d4a849;
+  margin-bottom:24px;
+}
+
+/* Glass cards */
+.card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;
+  padding:20px;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  margin-bottom:16px;
+}
+.card-label{
+  font-size:12px;
+  font-weight:500;
+  color:rgba(255,255,255,0.55);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  margin-bottom:14px;
+}
+
+/* Account card */
+.account-name{
+  font-size:20px;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:2px;
+}
+.account-email{
+  font-size:14px;
+  color:rgba(255,255,255,0.55);
+  margin-bottom:12px;
+}
+.tier-badge{
+  display:inline-block;
+  font-size:12px;
+  font-weight:600;
+  padding:4px 12px;
+  border-radius:20px;
+  margin-bottom:16px;
+}
+.tier-badge.premium{
+  background:rgba(212,168,73,0.15);
+  color:#d4a849;
+}
+.tier-badge.free{
+  background:rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.55);
+}
+.renewal-text{
+  font-size:13px;
+  color:rgba(255,255,255,0.55);
+  margin-top:10px;
+}
+
+/* Buttons */
+.btn-gold{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,#d4a849,#c89030);
+  color:#06061a;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:opacity 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-gold:active{opacity:0.8}
+.btn-outline{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:transparent;
+  color:#d4a849;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  border:1px solid rgba(212,168,73,0.3);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:border-color 0.2s,background 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-outline:active{background:rgba(212,168,73,0.08)}
+.btn-danger-outline{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:transparent;
+  color:#e85454;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  border:1px solid rgba(232,84,84,0.3);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:border-color 0.2s,background 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-danger-outline:active{background:rgba(232,84,84,0.08)}
+.btn-danger-fill{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:#e85454;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:opacity 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-danger-fill:active{opacity:0.8}
+.btn-gray{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:rgba(255,255,255,0.06);
+  color:rgba(255,255,255,0.7);
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:background 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-gray:active{background:rgba(255,255,255,0.1)}
+.btn-logout{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:transparent;
+  color:rgba(255,255,255,0.55);
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:center;
+  transition:border-color 0.2s,color 0.2s;
+  -webkit-tap-highlight-color:transparent;
+  margin-bottom:20px;
+}
+.btn-logout:active{border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.75)}
+
+/* Preference rows */
+.pref-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+}
+.pref-row+.pref-row{
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.pref-label{
+  font-size:14px;
+  color:rgba(255,255,255,0.88);
+}
+.pref-value{
+  font-size:14px;
+  color:rgba(255,255,255,0.55);
+}
+
+/* Link rows */
+.link-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  text-decoration:none;
+  transition:opacity 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.link-row+.link-row{
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.link-row:active{opacity:0.7}
+.link-label{
+  font-size:14px;
+  color:#d4a849;
+}
+.link-arrow{
+  font-size:14px;
+  color:rgba(212,168,73,0.6);
+}
+
+/* Delete modal */
+.modal-overlay{
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  z-index:9999;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+.modal-overlay.active{display:flex}
+.modal-card{
+  background:#0e0e28;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:28px 24px;
+  max-width:360px;
+  width:100%;
+  text-align:center;
+}
+.modal-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:12px;
+}
+.modal-text{
+  font-size:14px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.6;
+  margin-bottom:24px;
+}
+.modal-actions{
+  display:flex;
+  gap:12px;
+}
+.modal-actions button{flex:1}
+
+/* Version footer */
+.version-footer{
+  text-align:center;
+  font-size:12px;
+  color:rgba(255,255,255,0.3);
+  padding:8px 0 12px;
+}
+
+/* Loading & auth states */
+.state{display:none}
+.state.active{display:block}
+.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,0.08);border-top-color:#d4a849;border-radius:50%;animation:spin 0.8s linear infinite;margin:45vh auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-box{max-width:340px;margin:30vh auto 0;padding:0 24px;text-align:center}
+.auth-box h1{font-family:'Cormorant Garamond',serif;font-size:2rem;color:#d4a849;margin-bottom:12px}
+.auth-box p{color:rgba(255,255,255,0.55);line-height:1.6;margin-bottom:24px;font-size:0.9rem}
+.auth-box .btn-gold{display:inline-block;width:auto;padding:12px 32px;text-decoration:none;border-radius:8px;font-size:0.9rem}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fade{animation:fadeUp 0.4s ease-out both}
+.fade-d1{animation-delay:0.05s}
+.fade-d2{animation-delay:0.1s}
+.fade-d3{animation-delay:0.15s}
+.fade-d4{animation-delay:0.2s}
+.fade-d5{animation-delay:0.25s}
+.fade-d6{animation-delay:0.3s}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- Loading -->
+<div id="st-load" class="state active"><div class="spinner"></div></div>
+
+<!-- Login redirect -->
+<div id="st-login" class="state">
+<div class="auth-box">
+<h1>Luz Estelar</h1>
+<p>Inicia sesion para acceder a tus ajustes.</p>
+<a href="/login.html?redirect=/ajustes.html" class="btn-gold">Iniciar sesion</a>
+</div>
+</div>
+
+<!-- Settings -->
+<div id="st-settings" class="state">
+<main>
+
+<h1 class="page-title fade">Ajustes</h1>
+
+<!-- Account card -->
+<div class="card fade fade-d1" id="account-card">
+  <div class="account-name" id="user-name"></div>
+  <div class="account-email" id="user-email"></div>
+  <div id="tier-badge-wrap"></div>
+  <div id="billing-actions"></div>
+  <div id="renewal-wrap"></div>
+</div>
+
+<!-- Preferencias card -->
+<div class="card fade fade-d2">
+  <div class="card-label">Preferencias</div>
+  <div class="pref-row">
+    <span class="pref-label">Idioma</span>
+    <span class="pref-value">Espanol</span>
+  </div>
+  <div class="pref-row">
+    <span class="pref-label">Notificaciones</span>
+    <span class="pref-value">Activadas</span>
+  </div>
+</div>
+
+<!-- Datos y Privacidad card -->
+<div class="card fade fade-d3">
+  <div class="card-label">Datos y Privacidad</div>
+  <button class="btn-outline" id="btn-export" style="margin-bottom:12px">Exportar mis datos</button>
+  <button class="btn-danger-outline" id="btn-delete-open">Eliminar mi cuenta</button>
+</div>
+
+<!-- Soporte card -->
+<div class="card fade fade-d4">
+  <div class="card-label">Soporte</div>
+  <a href="mailto:hola@luzestelaroficial.com" class="link-row">
+    <span class="link-label">Contacto</span>
+    <span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="/terms-of-service.html" class="link-row">
+    <span class="link-label">Terminos de servicio</span>
+    <span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="/privacy-policy.html" class="link-row">
+    <span class="link-label">Politica de privacidad</span>
+    <span class="link-arrow">&rarr;</span>
+  </a>
+</div>
+
+<!-- Logout -->
+<button class="btn-logout fade fade-d5" id="btn-logout">Cerrar sesion</button>
+
+<!-- Version -->
+<div class="version-footer fade fade-d6">Luz Estelar v1.0.0</div>
+
+</main>
+</div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="modal-overlay" id="delete-modal">
+<div class="modal-card">
+  <div class="modal-title">Eliminar tu cuenta?</div>
+  <div class="modal-text">Esta accion es permanente. Se borraran todos tus datos y no podras recuperarlos.</div>
+  <div class="modal-actions">
+    <button class="btn-gray" id="btn-delete-cancel">Cancelar</button>
+    <button class="btn-danger-fill" id="btn-delete-confirm">Eliminar</button>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* --- Helpers --- */
+function show(id){
+  document.querySelectorAll('.state').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('st-'+id).classList.add('active');
+}
+
+function getToken(){
+  return localStorage.getItem('le_token') || null;
+}
+
+function authHeaders(){
+  var t = getToken();
+  var h = {'Content-Type':'application/json'};
+  if(t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+
+function authFetch(url, opts){
+  opts = opts || {};
+  opts.credentials = 'same-origin';
+  if(!opts.headers) opts.headers = {};
+  var t = getToken();
+  if(t) opts.headers['Authorization'] = 'Bearer ' + t;
+  return fetch(url, opts);
+}
+
+function fmtDateES(iso){
+  if(!iso) return '';
+  try{
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return iso;
+    var months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return d.getDate() + ' de ' + months[d.getMonth()] + ' de ' + d.getFullYear();
+  }catch(e){return iso}
+}
+
+/* --- Init --- */
+async function init(){
+  try{
+    var res = await authFetch('/api/auth/me', {cache:'no-store'});
+    if(!res.ok) throw new Error('auth');
+    var data = await res.json();
+    if(!data.ok) throw new Error('auth');
+    renderSettings(data.user);
+  }catch(e){
+    show('login');
+  }
+}
+
+/* --- Render --- */
+function renderSettings(user){
+  document.getElementById('user-name').textContent = user.name || 'Usuario';
+  document.getElementById('user-email').textContent = user.email || '';
+
+  /* Tier badge */
+  var badgeWrap = document.getElementById('tier-badge-wrap');
+  var isPremium = user.tier === 'premium';
+  var badge = document.createElement('span');
+  badge.className = 'tier-badge ' + (isPremium ? 'premium' : 'free');
+  badge.textContent = isPremium ? 'Plus \u2728' : 'Gratis';
+  badgeWrap.appendChild(badge);
+
+  /* Billing actions */
+  var actions = document.getElementById('billing-actions');
+
+  if(isPremium){
+    var manageBtn = document.createElement('button');
+    manageBtn.className = 'btn-outline';
+    manageBtn.textContent = 'Gestionar suscripcion';
+    manageBtn.addEventListener('click', handlePortal);
+    actions.appendChild(manageBtn);
+    loadRenewal();
+  }else{
+    var upgradeBtn = document.createElement('button');
+    upgradeBtn.className = 'btn-gold';
+    upgradeBtn.textContent = 'Actualizar a Plus \u2014 $4.99/mes';
+    upgradeBtn.addEventListener('click', handleUpgrade);
+    actions.appendChild(upgradeBtn);
+  }
+
+  show('settings');
+}
+
+/* --- Billing --- */
+async function handleUpgrade(){
+  this.disabled = true;
+  this.textContent = 'Cargando\u2026';
+  try{
+    var res = await authFetch('/api/billing/create-subscription',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({lang:'es'})
+    });
+    var data = await res.json();
+    if(data.ok && data.url){
+      window.open(data.url,'_blank');
+    }else{
+      alert(data.error || 'Error al crear la suscripcion.');
+    }
+  }catch(e){
+    alert('No se pudo conectar con el servicio de pago.');
+  }
+  this.disabled = false;
+  this.textContent = 'Actualizar a Plus \u2014 $4.99/mes';
+}
+
+async function handlePortal(){
+  this.disabled = true;
+  this.textContent = 'Cargando\u2026';
+  try{
+    var res = await authFetch('/api/billing/portal',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({lang:'es'})
+    });
+    var data = await res.json();
+    if(data.ok && data.url){
+      window.open(data.url,'_blank');
+    }else{
+      alert(data.error || 'Error al abrir el portal.');
+    }
+  }catch(e){
+    alert('No se pudo conectar con el servicio.');
+  }
+  this.disabled = false;
+  this.textContent = 'Gestionar suscripcion';
+}
+
+async function loadRenewal(){
+  try{
+    var res = await authFetch('/api/billing/status',{cache:'no-store'});
+    var data = await res.json();
+    if(data.ok && data.subscription && data.subscription.currentPeriodEnd){
+      var wrap = document.getElementById('renewal-wrap');
+      var p = document.createElement('div');
+      p.className = 'renewal-text';
+      p.textContent = 'Renueva: ' + fmtDateES(data.subscription.currentPeriodEnd);
+      wrap.appendChild(p);
+    }
+  }catch(e){/* silent */}
+}
+
+/* --- Export --- */
+document.getElementById('btn-export').addEventListener('click', async function(){
+  var btn = this;
+  btn.disabled = true;
+  btn.textContent = 'Exportando\u2026';
+  try{
+    var res = await authFetch('/api/account/export',{method:'GET'});
+    if(res.ok){
+      alert('Te enviaremos tus datos por correo.');
+    }else{
+      var d = await res.json().catch(function(){return {}});
+      alert(d.error || 'Error al exportar datos.');
+    }
+  }catch(e){
+    alert('No se pudo conectar con el servidor.');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Exportar mis datos';
+});
+
+/* --- Delete account --- */
+var modal = document.getElementById('delete-modal');
+
+document.getElementById('btn-delete-open').addEventListener('click', function(){
+  modal.classList.add('active');
+});
+
+document.getElementById('btn-delete-cancel').addEventListener('click', function(){
+  modal.classList.remove('active');
+});
+
+modal.addEventListener('click', function(e){
+  if(e.target === modal) modal.classList.remove('active');
+});
+
+document.getElementById('btn-delete-confirm').addEventListener('click', async function(){
+  var btn = this;
+  btn.disabled = true;
+  btn.textContent = 'Eliminando\u2026';
+  try{
+    var res = await authFetch('/api/account/delete',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({confirm:'DELETE'})
+    });
+    var data = await res.json();
+    if(data.ok){
+      localStorage.removeItem('le_token');
+      localStorage.removeItem('le_daily_es');
+      localStorage.removeItem('le_daily_en');
+      window.location.href = '/';
+    }else{
+      alert(data.error || 'Error al eliminar la cuenta.');
+      btn.disabled = false;
+      btn.textContent = 'Eliminar';
+    }
+  }catch(e){
+    alert('No se pudo conectar con el servidor.');
+    btn.disabled = false;
+    btn.textContent = 'Eliminar';
+  }
+});
+
+/* --- Logout --- */
+document.getElementById('btn-logout').addEventListener('click', async function(){
+  try{
+    await authFetch('/api/auth/logout',{method:'POST'});
+  }catch(e){/* cookie clear may fail, still clear local */}
+  localStorage.removeItem('le_token');
+  localStorage.removeItem('le_daily_es');
+  localStorage.removeItem('le_daily_en');
+  window.location.href = '/login.html';
+});
+
+init();
+})();
+</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+<script src="/js/bottom-tabs.js" defer></script>
+</body>
+</html>
