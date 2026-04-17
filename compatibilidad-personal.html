@@ -12,6 +12,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Design system (shared with mi-dia.html — tokens, PWA patterns, icons) -->
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link rel="stylesheet" href="/css/pwa.css">
+<link rel="stylesheet" href="/css/icons.css">
+<script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -258,7 +263,7 @@ body{
   font-size:13px;font-weight:600;color:#e8788a;
 }
 
-/* Synthesis card */
+/* Synthesis card (legacy fallback) */
 .synthesis-card{
   background:rgba(255,255,255,0.04);
   border:1px solid rgba(255,255,255,0.06);
@@ -275,6 +280,40 @@ body{
   font-size:16px;font-style:italic;
   line-height:1.7;
   color:rgba(255,255,255,0.75);
+}
+
+/* v2 narrative sections */
+.v2-sec{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:14px;
+  padding:16px 18px;
+  margin-bottom:10px;
+}
+.v2-sec h4{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:700;color:#d4a849;
+  margin-bottom:6px;letter-spacing:.02em;
+}
+.v2-sec p{
+  font-size:14px;line-height:1.65;
+  color:rgba(255,255,255,0.82);
+}
+.v2-sec ul{
+  margin:4px 0 0;padding-left:18px;
+  display:flex;flex-direction:column;gap:5px;
+}
+.v2-sec li{
+  font-size:13.5px;line-height:1.55;
+  color:rgba(255,255,255,0.78);
+}
+.v2-sec.ritual{
+  background:linear-gradient(135deg,rgba(212,168,73,0.1),rgba(212,168,73,0.02));
+  border-color:rgba(212,168,73,0.3);
+}
+.v2-dom{
+  text-align:center;font-size:12px;color:rgba(255,255,255,0.55);
+  margin:-8px 0 14px;letter-spacing:.04em;text-transform:uppercase;
 }
 
 /* Utility */
@@ -331,9 +370,10 @@ body{
     <!-- Upgrade gate -->
     <div id="upgrade-gate" class="glass upgrade-gate hidden">
       <span class="lock-icon">🔒</span>
-      <h3>Compatibilidad es una funcion Plus</h3>
-      <p>Desbloquea analisis detallados de compatibilidad entre todos tus perfiles.</p>
-      <button class="btn-upgrade" id="btn-upgrade" type="button">$4.99/mes — Desbloquear</button>
+      <h3>Compatibilidad Cross-Cultural</h3>
+      <p style="margin-bottom:10px;">Análisis profundo entre dos perfiles en 7 sistemas ancestrales: panorama, fortalezas, tensiones, crecimiento y un ritual compartido personalizado.</p>
+      <p style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 días gratis</strong> · Después desde <strong style="color:#f0d078;">$2,50/mes</strong> (plan anual).</p>
+      <button type="button" class="btn-upgrade" id="btn-upgrade-open">Empezar 7 días gratis</button>
     </div>
 
     <!-- Error -->
@@ -363,8 +403,11 @@ body{
         <div id="breakdown-list"></div>
       </div>
 
-      <!-- Synthesis -->
-      <div class="synthesis-card">
+      <!-- v2 narrative (panorama, strengths, tensions, growth, ritual) -->
+      <div id="v2-sections"></div>
+
+      <!-- v1 synthesis fallback (hidden if v2 sections render) -->
+      <div class="synthesis-card" id="synthesis-card" style="display:none;">
         <div class="synth-title">Sintesis</div>
         <div class="synth-text" id="synthesis-text"></div>
       </div>
@@ -378,16 +421,19 @@ body{
 
   var API_BASE = '';
   var token = localStorage.getItem('le_token');
+  var currentTier = 'free';
 
-  // Auth check
-  if(!token){
-    window.location.href = '/login.html';
-    return;
+  function authHeaders(){
+    var h={};
+    if(token) h['Authorization']='Bearer '+token;
+    return h;
   }
 
-  // Verify token
+  // Auth check — allow cookie-session fallback (no token) for PWA cookie auth
   fetch(API_BASE + '/api/auth/me',{
-    headers:{'Authorization':'Bearer '+token}
+    credentials:'same-origin',
+    headers:authHeaders(),
+    cache:'no-store'
   }).then(function(r){
     if(r.status === 401){
       localStorage.removeItem('le_token');
@@ -396,7 +442,16 @@ body{
     }
     return r.json();
   }).then(function(data){
-    if(data) loadProfiles();
+    if(!data) return;
+    if(data.user) currentTier = data.user.tier || 'free';
+    // Free users see upgrade gate immediately — the report IS the product
+    if(currentTier === 'free'){
+      elEmpty.classList.add('hidden');
+      elSelector.classList.remove('hidden');
+      showState('upgrade');
+      return;
+    }
+    loadProfiles();
   }).catch(function(){
     loadProfiles();
   });
@@ -442,6 +497,8 @@ body{
   var elScoreNum = document.getElementById('score-num');
   var elBreakdown = document.getElementById('breakdown-list');
   var elSynthesis = document.getElementById('synthesis-text');
+  var elSynthesisCard = document.getElementById('synthesis-card');
+  var elV2 = document.getElementById('v2-sections');
 
   // System display names
   var systemNames = {
@@ -457,7 +514,8 @@ body{
 
   function loadProfiles(){
     fetch(API_BASE + '/api/profile/birth-profiles',{
-      headers:{'Authorization':'Bearer '+token}
+      credentials:'same-origin',
+      headers:authHeaders()
     }).then(function(r){ return r.json(); })
     .then(function(data){
       profiles = Array.isArray(data) ? data : (data.profiles || []);
@@ -600,9 +658,10 @@ body{
     if(!selectedA || !selectedB || selectedA.id === selectedB.id) return;
     showState('loading');
     var url = API_BASE + '/api/reports/compatibility?profile_a=' + encodeURIComponent(selectedA.id)
-            + '&profile_b=' + encodeURIComponent(selectedB.id);
+            + '&profile_b=' + encodeURIComponent(selectedB.id) + '&lang=es';
     fetch(url, {
-      headers:{'Authorization':'Bearer '+token}
+      credentials:'same-origin',
+      headers:authHeaders()
     }).then(function(r){
       if(r.status === 403){
         showState('upgrade');
@@ -651,8 +710,54 @@ body{
       elBreakdown.appendChild(row);
     }
 
-    // Synthesis
-    elSynthesis.textContent = report.synthesis || '';
+    // v2 narrative sections (panorama, strengths, tensions, growth, ritual)
+    elV2.innerHTML = '';
+    var sec = report.sections;
+    if(sec && typeof sec === 'object'){
+      elSynthesisCard.style.display = 'none';
+      if(report.dominantElement){
+        var dom = document.createElement('div');
+        dom.className = 'v2-dom';
+        dom.textContent = 'Elemento dominante · ' + report.dominantElement;
+        elV2.appendChild(dom);
+      }
+      function textSec(s, extraClass){
+        if(!s || !s.text) return;
+        var d = document.createElement('div');
+        d.className = 'v2-sec' + (extraClass ? ' ' + extraClass : '');
+        d.innerHTML = '<h4></h4><p></p>';
+        d.querySelector('h4').textContent = s.title || '';
+        d.querySelector('p').textContent = s.text;
+        elV2.appendChild(d);
+      }
+      function listSec(s){
+        if(!s || !s.items || !s.items.length) return;
+        var d = document.createElement('div');
+        d.className = 'v2-sec';
+        var ul = '';
+        for(var i=0;i<s.items.length;i++){
+          var li = document.createElement('li');
+          li.textContent = s.items[i];
+          ul += '<li>' + li.innerHTML + '</li>';
+        }
+        var h = document.createElement('h4');
+        h.textContent = s.title || '';
+        d.innerHTML = '';
+        d.appendChild(h);
+        var u = document.createElement('ul');
+        u.innerHTML = ul;
+        d.appendChild(u);
+        elV2.appendChild(d);
+      }
+      textSec(sec.panorama);
+      listSec(sec.strengths);
+      listSec(sec.tensions);
+      textSec(sec.growth);
+      textSec(sec.ritual, 'ritual');
+    } else if (report.synthesis) {
+      elSynthesisCard.style.display = 'block';
+      elSynthesis.textContent = report.synthesis;
+    }
 
     showState('results');
 
@@ -681,29 +786,17 @@ body{
     requestAnimationFrame(step);
   }
 
-  // Upgrade button
-  document.getElementById('btn-upgrade').addEventListener('click', function(){
-    this.disabled = true;
-    this.textContent = 'Procesando...';
-    var self = this;
-    fetch(API_BASE + '/api/billing/create-subscription', {
-      method:'POST',
-      headers:{
-        'Authorization':'Bearer '+token,
-        'Content-Type':'application/json'
+  // Upgrade button — open inline Plus sheet (stays inside PWA shell)
+  var btnUpgrade = document.getElementById('btn-upgrade-open');
+  if (btnUpgrade) {
+    btnUpgrade.addEventListener('click', function(){
+      if (window.LuzEstelar && LuzEstelar.UpgradeSheet) {
+        LuzEstelar.UpgradeSheet.open({ lang: 'es' });
+      } else {
+        window.location.assign('/planes.html');
       }
-    }).then(function(r){ return r.json(); })
-    .then(function(data){
-      if(data.url){
-        window.open(data.url, '_blank');
-      }
-      self.disabled = false;
-      self.textContent = '$4.99/mes — Desbloquear';
-    }).catch(function(){
-      self.disabled = false;
-      self.textContent = '$4.99/mes — Desbloquear';
     });
-  });
+  }
 
   // Retry button
   document.getElementById('btn-retry').addEventListener('click', function(){
@@ -719,6 +812,8 @@ body{
 })();
 </script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+<script src="/js/icons.js" defer></script>
+<script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
 </body>
 </html>

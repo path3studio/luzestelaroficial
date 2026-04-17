@@ -14,6 +14,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Design system (shared with mi-dia.html — tokens, PWA patterns, icons) -->
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link rel="stylesheet" href="/css/pwa.css">
+<link rel="stylesheet" href="/css/icons.css">
+<script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
@@ -211,6 +216,7 @@ main{
   justify-content:space-between;
   align-items:center;
   padding:10px 0;
+  gap:12px;
 }
 .pref-row+.pref-row{
   border-top:1px solid rgba(255,255,255,0.04);
@@ -219,9 +225,62 @@ main{
   font-size:14px;
   color:rgba(255,255,255,0.88);
 }
+.pref-sub{
+  font-size:12px;
+  color:rgba(255,255,255,0.45);
+  margin-top:2px;
+}
 .pref-value{
   font-size:14px;
   color:rgba(255,255,255,0.55);
+}
+
+/* Toggle switch */
+.tgl{
+  position:relative;
+  width:46px;
+  height:26px;
+  flex-shrink:0;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:999px;
+  cursor:pointer;
+  transition:background .2s,border-color .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.tgl::after{
+  content:"";
+  position:absolute;
+  top:2px;left:2px;
+  width:20px;height:20px;
+  border-radius:50%;
+  background:#fff;
+  transition:transform .22s ease, background .22s ease;
+}
+.tgl.on{background:rgba(212,168,73,0.45);border-color:rgba(212,168,73,0.55)}
+.tgl.on::after{transform:translateX(20px);background:#d4a849}
+.tgl[disabled],.tgl.loading{opacity:.5;cursor:wait}
+
+/* Hour select */
+.hour-sel{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;
+  color:#fff;
+  padding:6px 10px;
+  font-size:13px;
+  font-family:inherit;
+  -webkit-appearance:none;
+     -moz-appearance:none;
+          appearance:none;
+  cursor:pointer;
+}
+.hour-sel:focus{outline:none;border-color:rgba(212,168,73,0.45)}
+.notif-status{
+  font-size:12px;
+  color:rgba(255,255,255,0.45);
+  margin-top:6px;
+  min-height:14px;
 }
 
 /* Link rows */
@@ -355,10 +414,29 @@ main{
     <span class="pref-label">Idioma</span>
     <span class="pref-value">Espanol</span>
   </div>
-  <div class="pref-row">
-    <span class="pref-label">Notificaciones</span>
-    <span class="pref-value">Activadas</span>
+  <div class="pref-row" id="notif-row">
+    <div style="flex:1;min-width:0">
+      <div class="pref-label">Lectura diaria</div>
+      <div class="pref-sub" id="notif-sub">Recibe tu horoscopo al despertar</div>
+    </div>
+    <div class="tgl" id="notif-tgl" role="switch" aria-checked="false" aria-label="Notificaciones push"></div>
   </div>
+  <div class="pref-row" id="hour-row" style="display:none">
+    <span class="pref-label">Hora de envio</span>
+    <select class="hour-sel" id="notif-hour" aria-label="Hora de envio">
+      <option value="6">06:00</option>
+      <option value="7">07:00</option>
+      <option value="8" selected>08:00</option>
+      <option value="9">09:00</option>
+      <option value="10">10:00</option>
+      <option value="11">11:00</option>
+      <option value="12">12:00</option>
+      <option value="18">18:00</option>
+      <option value="20">20:00</option>
+      <option value="22">22:00</option>
+    </select>
+  </div>
+  <div class="notif-status" id="notif-status" role="status" aria-live="polite"></div>
 </div>
 
 <!-- Datos y Privacidad card -->
@@ -385,8 +463,31 @@ main{
   </a>
 </div>
 
+<!-- Follow us -->
+<div class="section-title fade fade-d5" style="margin-top:22px">Siguenos</div>
+<div class="link-group fade fade-d5">
+  <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" rel="noopener" class="link-row">
+    <span class="link-label">YouTube</span><span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="https://www.instagram.com/luzestelarastral" target="_blank" rel="noopener" class="link-row">
+    <span class="link-label">Instagram</span><span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="https://www.tiktok.com/@luzestelaroficial" target="_blank" rel="noopener" class="link-row">
+    <span class="link-label">TikTok</span><span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="https://www.facebook.com/profile.php?id=1028673273666619" target="_blank" rel="noopener" class="link-row">
+    <span class="link-label">Facebook</span><span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="https://open.spotify.com/show/0Zq3f1xgTrIn4PONmHSUrS" target="_blank" rel="noopener" class="link-row">
+    <span class="link-label">Spotify</span><span class="link-arrow">&rarr;</span>
+  </a>
+  <a href="https://podcasts.apple.com/us/podcast/luz-estelar-oficial-—-horóscopo-técnico-diario/id1891252034" target="_blank" rel="noopener" class="link-row">
+    <span class="link-label">Apple Podcasts</span><span class="link-arrow">&rarr;</span>
+  </a>
+</div>
+
 <!-- Logout -->
-<button class="btn-logout fade fade-d5" id="btn-logout">Cerrar sesion</button>
+<button class="btn-logout fade fade-d5" id="btn-logout"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;fill:currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>Cerrar sesion</button>
 
 <!-- Version -->
 <div class="version-footer fade fade-d6">Luz Estelar v1.0.0</div>
@@ -485,9 +586,17 @@ function renderSettings(user){
     loadRenewal();
   }else{
     var upgradeBtn = document.createElement('button');
+    upgradeBtn.type = 'button';
     upgradeBtn.className = 'btn-gold';
-    upgradeBtn.textContent = 'Actualizar a Plus \u2014 $4.99/mes';
-    upgradeBtn.addEventListener('click', handleUpgrade);
+    upgradeBtn.textContent = 'Empezar 7 d\u00EDas gratis \u2014 desde $2,50/mes';
+    upgradeBtn.addEventListener('click', function(){
+      if (window.LuzEstelar && LuzEstelar.UpgradeSheet) {
+        LuzEstelar.UpgradeSheet.open({ lang: 'es' });
+      } else {
+        // Fallback in the unlikely case the module failed to load
+        handleUpgrade.call(upgradeBtn);
+      }
+    });
     actions.appendChild(upgradeBtn);
   }
 
@@ -514,7 +623,7 @@ async function handleUpgrade(){
     alert('No se pudo conectar con el servicio de pago.');
   }
   this.disabled = false;
-  this.textContent = 'Actualizar a Plus \u2014 $4.99/mes';
+  this.textContent = 'Actualizar a Plus \u2014 desde $2.50/mes';
 }
 
 async function handlePortal(){
@@ -616,6 +725,191 @@ document.getElementById('btn-delete-confirm').addEventListener('click', async fu
   }
 });
 
+/* --- Push notifications --- */
+var pushState = { sub:null, vapid:null, supported:false, endpoint:null, sendHour:8 };
+
+function b64UrlToUint8(b64){
+  var pad = '='.repeat((4 - b64.length % 4) % 4);
+  var norm = (b64 + pad).replace(/-/g,'+').replace(/_/g,'/');
+  var raw = atob(norm);
+  var out = new Uint8Array(raw.length);
+  for(var i=0;i<raw.length;i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+function notifStatus(msg){
+  var el = document.getElementById('notif-status');
+  if(el) el.textContent = msg || '';
+}
+function setToggle(on){
+  var t = document.getElementById('notif-tgl');
+  if(!t) return;
+  t.classList.toggle('on', !!on);
+  t.setAttribute('aria-checked', on ? 'true' : 'false');
+  document.getElementById('hour-row').style.display = on ? 'flex' : 'none';
+}
+
+async function initPush(){
+  var row = document.getElementById('notif-row');
+  var tgl = document.getElementById('notif-tgl');
+  var hourSel = document.getElementById('notif-hour');
+  if(!row || !tgl) return;
+
+  pushState.supported = ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window);
+  if(!pushState.supported){
+    notifStatus('Tu navegador no soporta notificaciones push.');
+    tgl.setAttribute('disabled','');
+    return;
+  }
+
+  try{
+    var res = await authFetch('/api/notifications/status',{cache:'no-store'});
+    var data = await res.json();
+    if(!data.ok) throw new Error('status');
+    pushState.vapid = data.vapidPublicKey;
+
+    var reg = await navigator.serviceWorker.ready;
+    var current = await reg.pushManager.getSubscription();
+    var permission = Notification.permission;
+    var active = !!current && permission === 'granted' && data.hasAny;
+    setToggle(active);
+
+    if(active && data.subscriptions && data.subscriptions[0]){
+      pushState.endpoint = current.endpoint;
+      pushState.sendHour = data.subscriptions[0].sendHourLocal || 8;
+      hourSel.value = String(pushState.sendHour);
+    }
+
+    if(!pushState.vapid){
+      notifStatus('Servicio de notificaciones aun no esta configurado.');
+      tgl.setAttribute('disabled','');
+    }
+  }catch(e){
+    notifStatus('No se pudo comprobar las notificaciones.');
+  }
+
+  tgl.addEventListener('click', onToggleClick);
+  hourSel.addEventListener('change', onHourChange);
+}
+
+async function onToggleClick(){
+  var tgl = document.getElementById('notif-tgl');
+  if(tgl.hasAttribute('disabled') || tgl.classList.contains('loading')) return;
+  var wasOn = tgl.classList.contains('on');
+  tgl.classList.add('loading');
+  notifStatus(wasOn ? 'Desactivando...' : 'Activando...');
+  try{
+    if(wasOn){ await disablePush(); }
+    else    { await enablePush(); }
+  }catch(e){
+    notifStatus('Algo fallo. Intenta de nuevo.');
+  }
+  tgl.classList.remove('loading');
+}
+
+async function enablePush(){
+  if(!pushState.vapid){
+    notifStatus('Servicio no configurado todavia.');
+    return;
+  }
+  var permission = await Notification.requestPermission();
+  if(permission !== 'granted'){
+    setToggle(false);
+    notifStatus('Permiso denegado. Actualiza en los ajustes del navegador.');
+    return;
+  }
+  var reg = await navigator.serviceWorker.ready;
+  var sub = await reg.pushManager.getSubscription();
+  if(!sub){
+    sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: b64UrlToUint8(pushState.vapid),
+    });
+  }
+  var tz;
+  try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone; }catch(e){ tz = 'America/Mexico_City'; }
+  var hour = parseInt(document.getElementById('notif-hour').value,10);
+  if(!(hour>=0 && hour<=23)) hour = 8;
+
+  var res = await authFetch('/api/notifications/subscribe',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      subscription: sub.toJSON(),
+      lang:'es',
+      timezone: tz,
+      sendHourLocal: hour,
+    }),
+  });
+  var data = await res.json();
+  if(!data.ok) throw new Error(data.error||'subscribe failed');
+  pushState.endpoint = sub.endpoint;
+  pushState.sendHour = hour;
+  setToggle(true);
+  notifStatus('Listo. Te avisaremos cada dia a las ' + String(hour).padStart(2,'0')+':00.');
+}
+
+async function disablePush(){
+  var reg = await navigator.serviceWorker.ready;
+  var sub = await reg.pushManager.getSubscription();
+  if(sub){
+    var ep = sub.endpoint;
+    try{ await sub.unsubscribe(); }catch(e){ /* continue */ }
+    try{
+      await authFetch('/api/notifications/unsubscribe',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ endpoint: ep }),
+      });
+    }catch(e){ /* best-effort */ }
+  }
+  pushState.endpoint = null;
+  setToggle(false);
+  notifStatus('Notificaciones desactivadas.');
+}
+
+async function onHourChange(){
+  var sel = document.getElementById('notif-hour');
+  var hour = parseInt(sel.value,10);
+  if(!pushState.endpoint){ pushState.sendHour = hour; return; }
+  var reg = await navigator.serviceWorker.ready;
+  var sub = await reg.pushManager.getSubscription();
+  if(!sub) return;
+  var tz;
+  try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone; }catch(e){ tz = 'America/Mexico_City'; }
+  try{
+    var res = await authFetch('/api/notifications/subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        subscription: sub.toJSON(),
+        lang:'es',
+        timezone: tz,
+        sendHourLocal: hour,
+      }),
+    });
+    var data = await res.json();
+    if(!data.ok) throw new Error();
+    pushState.sendHour = hour;
+    notifStatus('Horario actualizado a ' + String(hour).padStart(2,'0')+':00.');
+  }catch(e){
+    notifStatus('No se pudo actualizar el horario.');
+  }
+}
+
+/* Called after settings render */
+window.addEventListener('DOMContentLoaded', function(){
+  // Run once the settings view is actually on screen.
+  var tries = 0;
+  (function waitForSettings(){
+    if(document.getElementById('st-settings').classList.contains('active')){
+      initPush();
+      return;
+    }
+    if(tries++ > 40) return; // ~4s max
+    setTimeout(waitForSettings, 100);
+  })();
+});
+
 /* --- Logout --- */
 document.getElementById('btn-logout').addEventListener('click', async function(){
   try{
@@ -631,6 +925,8 @@ init();
 })();
 </script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+<script src="/js/icons.js" defer></script>
+<script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
 </body>
 </html>
