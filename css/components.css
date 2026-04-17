@@ -1,0 +1,253 @@
+/*!
+ * Luz Estelar — Components
+ * ─────────────────────────
+ * Shared component library extracted from the inline <style> blocks
+ * of the 12 app-shell pages. Safe to include on any page — these
+ * rules are the canonical source of truth going forward.
+ *
+ * Phase 3 ethos: DEDUPLICATE. Any page that includes this file
+ * should (eventually, incrementally) delete the equivalent rules
+ * from its own inline <style> block. We do not remove inline
+ * blocks yet in this phase to keep the rollout risk-free.
+ *
+ * Depends on: design-tokens.css (tokens + legacy aliases)
+ */
+
+/* ── Universal reset ────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── State machine helper (multi-screen single-page apps) ───────── */
+.state           { display: none; }
+.state.active    { display: block; }
+
+/* ── Spinner ────────────────────────────────────────────────────── */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--glass-b);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 45vh auto;
+}
+.spinner-sm {
+  width: 30px;
+  height: 30px;
+  border-width: 3px;
+}
+.spinner-xs {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Card ───────────────────────────────────────────────────────── */
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 1px 0 var(--gold-whisper),
+    0 1px 14px rgba(0, 0, 0, 0.2);
+}
+.card-tight { padding: 11px 13px; }
+.card-loose { padding: var(--sp-6); }
+
+/* ── Section label (above a card) ───────────────────────────────── */
+.slbl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 18px 0 6px;
+}
+.slbl .ic {
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+.slbl .badge-new {
+  margin-left: auto;
+  font-size: 0.58rem;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--purple-dim);
+  color: var(--purple);
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn-gold {
+  display: inline-block;
+  padding: 11px 28px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--text-inverse);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--r-md);
+  font-size: 0.88rem;
+  transition: opacity var(--dur-base) var(--ease-standard),
+              transform var(--dur-base) var(--ease-standard),
+              box-shadow var(--dur-base) var(--ease-standard);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  min-height: var(--tap-min);
+}
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-gold);
+}
+.btn-gold:active { opacity: 0.88; transform: scale(0.98); }
+.btn-gold:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-gold-block {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: var(--fs-base);
+}
+
+.btn-ghost {
+  display: inline-block;
+  padding: 11px 24px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-md);
+  font-weight: 500;
+  font-family: inherit;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: border-color var(--dur-base) var(--ease-standard),
+              color        var(--dur-base) var(--ease-standard);
+  cursor: pointer;
+  min-height: var(--tap-min);
+}
+.btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+/* ── Newsletter component (6 pages) ─────────────────────────────── */
+.newsletter-box {
+  max-width: 440px;
+  margin: var(--sp-6) auto var(--sp-5);
+  padding: 20px 24px;
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-lg);
+  background: var(--glass);
+  text-align: center;
+}
+.newsletter-title {
+  font-size: 1em;
+  color: var(--gold);
+  margin: 0 0 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.newsletter-form {
+  display: flex;
+  gap: var(--sp-2);
+}
+.newsletter-form input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.88em;
+  outline: none;
+  transition: border-color var(--dur-base) var(--ease-standard);
+  min-height: var(--tap-min);
+}
+.newsletter-form input:focus { border-color: var(--gold); }
+.newsletter-form input::placeholder { color: var(--text-dim); }
+.newsletter-form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--text-inverse);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.88em;
+  transition: transform var(--dur-base) var(--ease-standard),
+              box-shadow var(--dur-base) var(--ease-standard);
+  min-height: var(--tap-min);
+}
+.newsletter-form button:hover { transform: translateY(-1px); box-shadow: var(--shadow-gold); }
+.newsletter-form button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.newsletter-msg {
+  font-size: 0.82em;
+  margin: 8px 0 0;
+  min-height: 1.2em;
+}
+@media (max-width: 480px) {
+  .newsletter-form { flex-direction: column; }
+  .newsletter-form button { width: 100%; }
+}
+
+/* ── Badges ─────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: 0.58rem;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+.badge-gold   { background: var(--gold-dim);   color: var(--gold); }
+.badge-purple { background: var(--purple-dim); color: var(--purple); }
+.badge-rose   { background: var(--rose-dim);   color: var(--rose); }
+.badge-green  { background: var(--green-dim);  color: var(--green); }
+
+/* ── Fade-in motion (common scroll reveal) ──────────────────────── */
+.fade {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fade-in-up 0.6s var(--ease-standard) forwards;
+}
+.fade.d1 { animation-delay: 0.08s; }
+.fade.d2 { animation-delay: 0.16s; }
+.fade.d3 { animation-delay: 0.24s; }
+.fade.d4 { animation-delay: 0.32s; }
+.fade.d5 { animation-delay: 0.40s; }
+.fade.d6 { animation-delay: 0.48s; }
+.fade.d7 { animation-delay: 0.56s; }
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

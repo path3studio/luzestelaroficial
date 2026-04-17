@@ -125,6 +125,18 @@
   --safe-right:    env(safe-area-inset-right, 0px);
 }
 
+/* ── Legacy aliases (Phase 3 backward-compat) ───────────────────
+ * Pages authored before the token file exist use different var
+ * names for the same concept. Rather than rewrite every reference
+ * in 100+ files, we map the old names to the new ones here so
+ * deleting the inline `:root` blocks becomes a safe drop-in.
+ */
+:root {
+  --glass-border:     var(--glass-b);      /* dashboard.html et al. */
+  --accent-purple:    var(--purple);       /* dashboard.html */
+  /* --bg → --bg-deep is already defined above */
+}
+
 /* Reduced-motion users: disable animations that aren't essential. */
 @media (prefers-reduced-motion: reduce) {
   :root {
