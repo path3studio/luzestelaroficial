@@ -43,6 +43,10 @@
 }
 
 /* ── Standalone-mode tweaks (only when launched from home screen) ── */
+/* Keep iOS legacy `navigator.standalone` users covered via an
+   additional body class set by install-prompt.js / a small init
+   script on mi-dia. We target `.is-standalone` too so both code
+   paths agree. */
 @media (display-mode: standalone) {
   /* Hide elements that only make sense in a browser tab */
   .only-web { display: none !important; }
@@ -52,12 +56,56 @@
     padding-top: var(--safe-top);
   }
 
-  /* Any sticky top bar picks up the safe-top automatically */
+  /* Topbar: compact and less busy in the app shell. The web
+     version keeps its full padding + blur so the landing pages
+     still feel editorial. */
   .topbar,
   .pwa-topbar {
-    padding-top: calc(var(--sp-3) + var(--safe-top));
+    padding: calc(6px + var(--safe-top)) var(--sp-4) 6px;
+    border-bottom-color: transparent;
+    background: linear-gradient(
+      to bottom,
+      rgba(6, 6, 26, 0.96) 0%,
+      rgba(6, 6, 26, 0.80) 100%
+    );
+  }
+  .topbar .logo,
+  .pwa-topbar .logo {
+    font-size: 0.95rem;
+    pointer-events: none; /* nowhere to go from home in an app */
+  }
+  .topbar .dt,
+  .pwa-topbar .dt {
+    font-size: 0.68rem;
+  }
+
+  /* Sections feel tighter on small screens in standalone mode */
+  main, .main {
+    padding-left: var(--sp-4);
+    padding-right: var(--sp-4);
+  }
+
+  /* Cards want a touch less corner radius on mobile — looks more
+     "native" than the soft web treatment. */
+  .card {
+    border-radius: var(--r-lg);
   }
 }
+
+/* Fallback selectors for browsers that set the class via JS but
+   don't report display-mode:standalone yet (older iOS versions).
+   The .is-standalone class is applied to <html> by an inline
+   script in the page head, so these selectors kick in before the
+   media query becomes reliable. */
+html.is-standalone .only-web      { display: none !important; }
+html.is-standalone body           { padding-top: var(--safe-top); }
+html.is-standalone .topbar,
+html.is-standalone .pwa-topbar    {
+  padding: calc(6px + var(--safe-top)) var(--sp-4) 6px;
+  border-bottom-color: transparent;
+}
+html.is-standalone .topbar .logo,
+html.is-standalone .pwa-topbar .logo { pointer-events: none; }
 
 /* Inverse: only show these when running as installed PWA */
 .only-pwa { display: none; }
