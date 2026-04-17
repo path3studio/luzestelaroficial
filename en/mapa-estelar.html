@@ -17,6 +17,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <!-- Design system (shared — tokens, PWA patterns, icons) -->
+    <link rel="stylesheet" href="/css/design-tokens.css">
+    <link rel="stylesheet" href="/css/pwa.css">
+    <link rel="stylesheet" href="/css/icons.css">
+    <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
     <style>
         :root {
             --gold: #d4a849;
@@ -443,6 +448,30 @@
                         <div id="formError" class="form-error"></div>
 
                         <div class="form-group">
+                            <label class="format-option" style="display:block; margin-bottom:10px;">
+                                <input type="checkbox" name="giftToggle" id="giftToggle">
+                                <span class="format-label" style="display:inline-block; width:auto; padding:10px 20px;">
+                                    <span class="fmt-name">&#x1F381; This is a gift for someone</span>
+                                </span>
+                            </label>
+                            <div id="giftFields" style="display:none; border:1px solid var(--glass-border); border-radius:12px; padding:16px; margin-top:8px; background:rgba(124,92,191,0.06);">
+                                <div class="form-group">
+                                    <label for="regaloNombre">Recipient's name</label>
+                                    <input type="text" id="regaloNombre" placeholder="e.g. Maria Garcia">
+                                </div>
+                                <div class="form-group">
+                                    <label for="regaloFechaEntrega">When should we deliver it? (optional)</label>
+                                    <input type="date" id="regaloFechaEntrega">
+                                    <p class="hint">We'll email the files on the date you choose. Leave blank to receive them right away.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regaloMensaje">Gift message (optional)</label>
+                                    <input type="text" id="regaloMensaje" placeholder="Your note for the recipient">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="titulo">Custom title or message *</label>
                             <input type="text" id="titulo" name="titulo" placeholder="The night we met" required>
                             <p class="hint">This text will appear below your star map.</p>
@@ -622,6 +651,11 @@
             document.getElementById('customSize').classList.toggle('visible', this.checked);
         });
 
+        // Gift toggle — reveals recipient fields
+        document.getElementById('giftToggle').addEventListener('change', function(){
+            document.getElementById('giftFields').style.display = this.checked ? 'block' : 'none';
+        });
+
         // API
         var API_URL = 'https://luzestelar-consulta-api.path3studio.workers.dev';
 
@@ -693,6 +727,47 @@
                     customSize = document.getElementById('customW').value + 'x' + document.getElementById('customH').value;
                 }
 
+                // Gift fields (optional)
+                var isGift = document.getElementById('giftToggle').checked;
+                var giftParts = [];
+                if(isGift){
+                    giftParts.push('GIFT');
+                    var rNom = document.getElementById('regaloNombre').value.trim();
+                    var rFec = document.getElementById('regaloFechaEntrega').value;
+                    var rMsg = document.getElementById('regaloMensaje').value.trim();
+                    if(rNom) giftParts.push('For: ' + rNom);
+                    if(rFec) giftParts.push('Deliver: ' + rFec);
+                    if(rMsg) giftParts.push('Note: ' + rMsg);
+                }
+
+                var mensaje = 'MAPA ESTELAR | Formatos: ' + formatos.join(',')
+                    + (customSize ? ' | Custom: ' + customSize : '')
+                    + (form.notas.value.trim() ? ' | Notes: ' + form.notas.value.trim() : '')
+                    + (giftParts.length ? ' | ' + giftParts.join(' | ') : '');
+
+                // Fire-and-forget audit log (D1) — does not block checkout if it fails
+                try{
+                    fetch('/api/mapa-estelar/order', {
+                        method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body: JSON.stringify({
+                            titulo: form.titulo.value.trim(),
+                            fecha: form.fecha.value,
+                            hora: form.hora.value || null,
+                            lugar: form.lugar.value.trim(),
+                            email: form.correo.value.trim(),
+                            formatos: formatos,
+                            customSize: customSize || null,
+                            notas: form.notas.value.trim() || null,
+                            isGift: isGift,
+                            regaloNombre: isGift ? document.getElementById('regaloNombre').value.trim() : null,
+                            regaloFechaEntrega: isGift ? document.getElementById('regaloFechaEntrega').value || null : null,
+                            regaloMensaje: isGift ? document.getElementById('regaloMensaje').value.trim() : null,
+                            lang: 'en',
+                        }),
+                    }).catch(function(){});
+                }catch(e){ /* ignore */ }
+
                 var response = await fetch(API_URL + '/create-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -702,7 +777,7 @@
                         hora_nacimiento: form.hora.value || '21:00',
                         lugar_nacimiento: form.lugar.value.trim(),
                         email: form.correo.value.trim(),
-                        mensaje: 'MAPA ESTELAR | Formatos: ' + formatos.join(',') + (customSize ? ' | Custom: ' + customSize : '') + (form.notas.value.trim() ? ' | Notas: ' + form.notas.value.trim() : ''),
+                        mensaje: mensaje,
                         plan: formatos.includes('custom') ? 'mapa_estelar_custom' : 'mapa_estelar',
                         lang: 'en'
                     })
@@ -736,6 +811,7 @@
         });
     </script>
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
+<script src="/js/icons.js" defer></script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
 </body>
 </html>

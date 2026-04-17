@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plans & Pricing — Luz Estelar Oficial</title>
-    <meta name="description" content="Choose your personalized cosmic guide. Portal subscription or one-time consultation reports. Plans from $0 USD.">
-    <meta property="og:title" content="Plans & Pricing — Luz Estelar Oficial">
-    <meta property="og:description" content="Personalized astrological consultations. Birth chart, numerology, forecast and more.">
+    <title>Plus Subscription — Luz Estelar Oficial</title>
+    <meta name="description" content="Your unified daily horoscope: Western, Chinese and Numerology combined. Plus unlocks all 8 systems. 7-day free trial. From $2.50/mo.">
+    <meta property="og:title" content="Luz Estelar Plus — 7-day free trial">
+    <meta property="og:description" content="Your unified daily horoscope across 8 systems, birth chart, unlimited compatibility and star map. From $2.50/mo with a 7-day free trial.">
     <meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
     <meta property="og:url" content="https://luzestelaroficial.com/en/planes.html">
     <meta property="og:locale" content="en_US">
@@ -20,6 +20,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <!-- Design system (shared — tokens, PWA patterns, icons) -->
+    <link rel="stylesheet" href="/css/design-tokens.css">
+    <link rel="stylesheet" href="/css/pwa.css">
+    <link rel="stylesheet" href="/css/icons.css">
+    <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
     <style>
         :root {
             --gold: #d4a849;
@@ -64,7 +69,9 @@
         .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
         .nav-links a:hover { color: var(--gold); }
         .nav-links a.active { color: var(--gold); font-weight: 600; }
-        .lang-sep { color: var(--text-dim); font-size: 0.85rem; user-select: none; }
+        .lang-sep { color: var(--text-dim); font-size: 0.85rem; opacity: 0.5; user-select: none; }
+        .nav-links a.lang-link { font-size: 0.78rem; letter-spacing: 0.04em; padding: 2px 6px; border-radius: 4px; }
+        .nav-links a.lang-link.active { background: var(--gold-dim); color: var(--gold); }
         .mobile-portal-btn {
             display: none;
             align-items: center; gap: 6px;
@@ -309,6 +316,54 @@
         @media (max-width: 768px) {
             .mobile-portal-btn { display: inline-flex; }
         }
+
+        /* ── Cadence toggle (Annual/Monthly) ── */
+        .section-sub {
+            text-align: center; color: var(--text-dim); font-size: 0.9em;
+            margin: -0.8rem auto 1.3rem; max-width: 520px; line-height: 1.5;
+        }
+        .cadence-toggle {
+            display: flex; justify-content: center; gap: 0.5rem;
+            margin: 0 auto 1.6rem; max-width: 480px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 999px; padding: 4px;
+        }
+        .cad-btn {
+            flex: 1; padding: 0.6rem 1rem;
+            background: transparent; border: none;
+            color: var(--text-dim); font-size: 0.88rem; font-weight: 600;
+            border-radius: 999px; cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+            font-family: inherit;
+        }
+        .cad-btn:hover { color: var(--gold); }
+        .cad-btn.active {
+            background: linear-gradient(135deg, var(--gold), #8b6914);
+            color: #fff; box-shadow: 0 2px 12px rgba(212,168,73,0.25);
+        }
+        .cad-save {
+            display: inline-block; font-size: 0.72em; font-weight: 700;
+            color: #0c0c2a; background: #f0d078; padding: 2px 6px;
+            border-radius: 6px; margin-left: 4px; letter-spacing: 0.02em;
+        }
+        .cad-btn.active .cad-save { background: rgba(255,255,255,0.9); color: #8b6914; }
+        .trial-badge {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(67,160,71,0.2);
+            border: 1px solid rgba(67,160,71,0.5);
+            color: #8ed18f; font-size: 0.68em; font-weight: 700;
+            padding: 3px 10px; border-radius: 999px;
+            letter-spacing: 0.04em;
+        }
+        .plan-subprice {
+            font-size: 0.78em; color: var(--text-dim);
+            margin: 0.2rem 0 1.2rem;
+        }
+        .plan-foot {
+            font-size: 0.72em; color: var(--text-dim);
+            margin-top: 0.7rem; opacity: 0.8;
+        }
     </style>
 <script src="/js/cookie-consent.js" defer></script>
   </head>
@@ -321,11 +376,9 @@
             <a href="index.html">Home</a>
             <a href="compatibilidad.html">Compatibility</a>
             <a href="planes.html" class="active">Plans</a>
-            <a href="mapa-estelar.html">Star Map</a>
-            <a href="consulta.html" style="color:var(--gold)">Consultation</a>
             <span class="lang-sep">|</span>
-            <a href="../planes.html">ES</a>
-            <a href="planes.html" class="active">EN</a>
+            <a href="../planes.html" class="lang-link" hreflang="es">ES</a>
+            <a href="planes.html" class="lang-link active" aria-current="true">EN</a>
         </div>
         <a href="dashboard.html" class="mobile-portal-btn" aria-label="My Portal">
             <span class="star">&#x2726;</span>
@@ -336,126 +389,75 @@
     <main>
         <!-- ══ HERO ══ -->
         <section class="pricing-hero">
-            <h1>Two ways to explore your cosmos</h1>
-            <p>Ongoing access to your astral portal, or personalized one-time reports.</p>
+            <h1>Your unified daily horoscope</h1>
+            <p>Western, Chinese and Numerology combined into one coherent reading. Plus unlocks all 8 systems. <strong style="color:var(--gold-light)">7-day free trial</strong>, then from $2.50/mo.</p>
         </section>
 
-        <!-- ══ SECTION 1: Portal Subscription ══ -->
+        <!-- ══ SECTION 1: Plus Subscription ══ -->
         <section style="max-width:850px;margin:0 auto 3rem;padding:0 1.5rem;">
-            <h2 class="section-title">Astral Portal &mdash; Ongoing Access</h2>
+            <h2 class="section-title">Plus &mdash; Unlimited Access</h2>
+            <p class="section-sub">Pick your cadence. Start with 7 days free.</p>
+
+            <!-- Cadence toggle -->
+            <div class="cadence-toggle" role="tablist" aria-label="Choose cadence">
+                <button type="button" class="cad-btn active" data-cad="annual" role="tab" aria-selected="true">
+                    Annual <span class="cad-save">Save 37%</span>
+                </button>
+                <button type="button" class="cad-btn" data-cad="monthly" role="tab" aria-selected="false">Monthly</button>
+            </div>
+
             <div class="sub-grid">
                 <!-- FREE -->
                 <div class="plan-card">
                     <span class="plan-icon">&#10024;</span>
                     <h3 class="plan-name">Free</h3>
-                    <p class="plan-tagline">Explore your 8 systems</p>
+                    <p class="plan-tagline">Explore 3 combined systems</p>
                     <div class="plan-price" style="color:var(--gold);">$0</div>
-                    <p style="font-size:0.82em;color:var(--text-dim);margin-bottom:1.2rem;">Forever</p>
+                    <p class="plan-subprice">Forever &middot; No card</p>
                     <ul class="plan-features">
-                        <li>Profile with 8 ancestral systems</li>
+                        <li>Unified daily horoscope (Western + Chinese + Numerology)</li>
                         <li>Basic birth chart</li>
-                        <li>Daily horoscope</li>
                         <li>1 birth profile</li>
                         <li>Educational content (700+ pages)</li>
-                        <li style="color:var(--text-dim);opacity:0.5;">Expanded report &#128274;</li>
-                        <li style="color:var(--text-dim);opacity:0.5;">Multi-system compatibility &#128274;</li>
+                        <li style="color:var(--text-dim);opacity:0.55;">5 ancestral systems &#128274;</li>
+                        <li style="color:var(--text-dim);opacity:0.55;">Unlimited compatibility &#128274;</li>
+                        <li style="color:var(--text-dim);opacity:0.55;">Downloadable star map &#128274;</li>
                     </ul>
                     <a href="dashboard.html" class="plan-btn plan-btn-outline">Start Free</a>
                 </div>
-                <!-- PREMIUM -->
-                <div class="plan-card" style="border-color:var(--gold);background:linear-gradient(135deg,rgba(212,168,73,0.08),rgba(124,92,191,0.06));">
+                <!-- PLUS -->
+                <div class="plan-card featured">
+                    <span class="trial-badge">7 days free</span>
                     <span class="plan-icon">&#128142;</span>
-                    <h3 class="plan-name">Premium</h3>
+                    <h3 class="plan-name">Plus</h3>
                     <p class="plan-tagline">The complete cosmic experience</p>
-                    <div class="plan-price"><span class="currency">$</span>4<span class="period">.99/mo USD</span></div>
-                    <p style="font-size:0.82em;color:var(--text-dim);margin-bottom:1.2rem;">Cancel anytime</p>
+
+                    <div class="plan-price" data-cad-view="annual">
+                        <span class="currency">$</span>2<span class="period">.50/mo USD</span>
+                    </div>
+                    <div class="plan-price" data-cad-view="monthly" style="display:none;">
+                        <span class="currency">$</span>3<span class="period">.99/mo USD</span>
+                    </div>
+
+                    <p class="plan-subprice" data-cad-view="annual">$29.99 per year &middot; 12 months for the price of 7</p>
+                    <p class="plan-subprice" data-cad-view="monthly" style="display:none;">Monthly billing &middot; No commitment</p>
+
                     <ul class="plan-features">
                         <li class="highlight">Everything in the Free plan</li>
+                        <li>Daily reading across all 8 ancestral systems</li>
+                        <li>Extended weekly forecast + transits</li>
+                        <li>Unlimited multi-system compatibility</li>
                         <li>Up to 5 profiles (family, friends)</li>
-                        <li>Expanded 8-system report</li>
-                        <li>Extended weekly forecast</li>
-                        <li>Multi-system compatibility (partner)</li>
-                        <li>Expanded daily horoscope + transits</li>
-                        <li>Detailed Enneagram (wings, integration)</li>
-                        <li>Deep Gene Keys (Shadow/Gift/Siddhi)</li>
-                        <li>Shareable downloadable card (PNG)</li>
+                        <li>Detailed Enneagram + deep Gene Keys</li>
+                        <li>Downloadable personalized star map (PNG)</li>
                     </ul>
-                    <a href="dashboard.html" class="plan-btn plan-btn-primary" id="btn-premium">Activate Premium</a>
+                    <button type="button" class="plan-btn plan-btn-primary" id="btn-plus">Start 7-day free trial</button>
+                    <p class="plan-foot">Cancel anytime &middot; Secure payment by Stripe</p>
                 </div>
             </div>
         </section>
 
-        <!-- ══ DIVIDER ══ -->
-        <div class="section-divider">
-            <div class="line"></div>
-            <p>Or choose a personalized one-time consultation</p>
-        </div>
-
-        <!-- ══ SECTION 2: One-Time Consultations ══ -->
-        <section style="max-width:850px;margin:0 auto 3rem;padding:0 1.5rem;">
-            <h2 class="section-title">Personalized Consultations &mdash; One-Time Purchase</h2>
-            <div class="consult-grid" style="max-width:100%;padding:0;">
-                <!-- ESSENTIAL -->
-                <div class="plan-card">
-                    <span class="plan-icon">&#10022;</span>
-                    <h3 class="plan-name">Essential Consultation</h3>
-                    <p class="plan-tagline">Your first professional reading</p>
-                    <div class="plan-price"><span class="currency">$</span>9<span class="period">.99 USD</span></div>
-                    <p style="font-size:0.82em;color:var(--text-dim);margin-bottom:1.2rem;">One-time payment</p>
-                    <ul class="plan-features">
-                        <li>Professional birth chart (PDF ~6 pages)</li>
-                        <li>Analysis of 8 ancestral systems</li>
-                        <li>4 sections: Sun, Moon, Ascendant & Cosmic Advice</li>
-                        <li>Short narrated audio (~2&ndash;3 min)</li>
-                    </ul>
-                    <a href="consulta.html?plan=esencial" class="plan-btn plan-btn-outline">Choose Essential</a>
-                </div>
-                <!-- COMPLETE -->
-                <div class="plan-card featured">
-                    <span class="plan-icon">&#x1F52E;</span>
-                    <h3 class="plan-name">Complete Consultation</h3>
-                    <p class="plan-tagline">The deepest analysis</p>
-                    <div class="plan-price"><span class="currency">$</span>29<span class="period">.99 USD</span></div>
-                    <p style="font-size:0.82em;color:var(--text-dim);margin-bottom:1.2rem;">One-time payment</p>
-                    <ul class="plan-features">
-                        <li class="highlight">Everything in the Essential Consultation</li>
-                        <li>10 deep sections (career, love, health, spirituality&hellip;)</li>
-                        <li>Personalized 6-month forecast</li>
-                        <li>Extended narrated audio (~6&ndash;8 min)</li>
-                        <li>Personalized Star Map (3 formats)</li>
-                    </ul>
-                    <a href="consulta.html?plan=completo" class="plan-btn plan-btn-primary">Choose Complete</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ DIVIDER ══ -->
-        <div class="section-divider">
-            <div class="line"></div>
-        </div>
-
-        <!-- ══ SECTION 3: Star Map Standalone ══ -->
-        <section class="starmap-section">
-            <h2 class="section-title">Personalized Star Map</h2>
-            <div class="plan-card standalone" style="text-align:center;padding:2.5rem;border-color:var(--gold);background:linear-gradient(135deg,rgba(212,168,73,0.06),rgba(124,92,191,0.04));">
-                <span class="plan-icon">&#x1F30C;</span>
-                <h3 class="plan-name">Star Map</h3>
-                <p class="plan-tagline">A custom star map poster of your birth sky</p>
-                <div class="plan-price"><span class="currency">$</span>14<span class="period">.99 USD</span></div>
-                <a href="mapa-estelar.html" class="preview-link">See example &rarr;</a>
-                <ul class="plan-features">
-                    <li>Real star positions (Hipparcos catalog)</li>
-                    <li>Constellations visible from your location</li>
-                    <li>Custom title and message</li>
-                    <li>Formats: phone, desktop, 4K TV, small/medium/large print</li>
-                    <li>Ideal for weddings, births, anniversaries</li>
-                    <li>Custom size available (+$4.99)</li>
-                </ul>
-                <a href="mapa-estelar.html" class="plan-btn plan-btn-primary">Create my Star Map</a>
-            </div>
-        </section>
-
-        <!-- ══ COMPARISON TABLE ══ -->
+        <!-- ══ COMPARISON TABLE (Free vs Plus) ══ -->
         <section class="comparison-section">
             <h2>Full Comparison</h2>
             <table class="comparison-table">
@@ -463,21 +465,18 @@
                     <tr>
                         <th>Feature</th>
                         <th>Free</th>
-                        <th>Premium</th>
-                        <th>Essential</th>
-                        <th>Complete</th>
+                        <th>Plus</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>8-system profile</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
-                    <tr><td>Birth chart</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
-                    <tr><td>Daily horoscope</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td></tr>
-                    <tr><td>Multiple profiles</td><td class="dash">&#10007;</td><td class="check">&#10003;</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td></tr>
-                    <tr><td>Expanded report</td><td class="dash">&#10007;</td><td class="check">&#10003;</td><td class="dash">&#10007;</td><td class="check">&#10003;</td></tr>
-                    <tr><td>Professional PDF</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
-                    <tr><td>6-month forecast</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td><td class="check">&#10003;</td></tr>
-                    <tr><td>Narrated audio</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td><td>Short</td><td>Extended</td></tr>
-                    <tr><td>Star Map</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td><td class="dash">&#10007;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>8-system profile</td><td>3 systems</td><td class="check">&#10003; 8</td></tr>
+                    <tr><td>Unified daily horoscope</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>7-day free trial</td><td class="dash">&#10007;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>Birth chart</td><td>Basic</td><td class="check">&#10003; Expanded</td></tr>
+                    <tr><td>Multiple profiles</td><td>1</td><td class="check">&#10003; up to 5</td></tr>
+                    <tr><td>Unlimited compatibility</td><td class="dash">&#10007;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>Weekly forecast + transits</td><td class="dash">&#10007;</td><td class="check">&#10003;</td></tr>
+                    <tr><td>Downloadable star map</td><td class="dash">&#10007;</td><td class="check">&#10003; PNG</td></tr>
                 </tbody>
             </table>
         </section>
@@ -486,9 +485,9 @@
         <section class="trust-section">
             <div class="trust-bar">
                 <div class="trust-item">
-                    <span class="trust-icon">&#9201;&#65039;</span>
-                    <strong>24&ndash;48h</strong>
-                    <span class="trust-label">Guaranteed delivery</span>
+                    <span class="trust-icon">&#127873;</span>
+                    <strong>7 days free</strong>
+                    <span class="trust-label">No charge during your trial</span>
                 </div>
                 <div class="trust-item">
                     <span class="trust-icon">&#128274;</span>
@@ -496,21 +495,21 @@
                     <span class="trust-label">Encrypted by Stripe</span>
                 </div>
                 <div class="trust-item">
-                    <span class="trust-icon">&#128220;</span>
-                    <strong>Signed PDF</strong>
-                    <span class="trust-label">Authenticity seal</span>
+                    <span class="trust-icon">&#10060;</span>
+                    <strong>No commitment</strong>
+                    <span class="trust-label">Cancel anytime</span>
                 </div>
                 <div class="trust-item">
-                    <span class="trust-icon">♾️</span>
-                    <strong>Permanent download</strong>
-                    <span class="trust-label">Yours to keep forever</span>
+                    <span class="trust-icon">&#128241;</span>
+                    <strong>Instant access</strong>
+                    <span class="trust-label">The moment you activate Plus</span>
                 </div>
             </div>
             <div class="guarantee-badge">
                 <span class="g-icon">&#128737;&#65039;</span>
                 <div class="g-text">
                     <strong>Satisfaction guarantee</strong>
-                    If your analysis doesn't deliver what was promised, we'll review it and re-deliver at no extra cost.
+                    If something doesn't work as expected during your trial, cancel with no charge &mdash; we keep your data if you decide to return.
                 </div>
             </div>
         </section>
@@ -520,23 +519,23 @@
             <h2>Frequently Asked Questions</h2>
 
             <div class="faq-item">
-                <div class="faq-q">What's the difference between the portal and consultations?</div>
-                <div class="faq-a">The portal (Free or Premium) gives you ongoing access to interactive tools: calculators, daily horoscope, compatibility and weekly forecasts. Consultations are one-time professional reports (PDF + audio) generated specifically for you, delivered via email.</div>
+                <div class="faq-q">How does the 7-day free trial work?</div>
+                <div class="faq-a">When you activate Plus you get 7 full days at no cost with access to everything. You're not charged during the trial. Cancel anytime from your dashboard before day 7 and you won't be charged. If you don't cancel, your selected cadence (annual or monthly) begins.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">Do I need Premium to buy a consultation?</div>
-                <div class="faq-a">No. Consultations are independent from the portal. You can purchase an Essential or Complete Consultation without having a Premium subscription. They are separate products.</div>
+                <div class="faq-q">What's the difference between Annual and Monthly?</div>
+                <div class="faq-a">The <strong>Annual</strong> cadence costs $29.99 per year (equivalent to $2.50/mo) &mdash; a 37% saving vs monthly. The <strong>Monthly</strong> cadence costs $3.99/mo and renews every 30 days. Both include the 7-day free trial and all Plus features. You can switch cadence later.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">How long does my report take?</div>
-                <div class="faq-a">The Essential Consultation is delivered within 24-48 hours and the Complete Consultation within 24 hours. You will receive your professional PDF and audio directly to your email.</div>
+                <div class="faq-q">Can I cancel Plus anytime?</div>
+                <div class="faq-a">Yes. Cancel from your dashboard anytime, no questions asked. Access continues until the end of your billed period and your data is preserved if you decide to come back.</div>
             </div>
 
             <div class="faq-item">
-                <div class="faq-q">Can I change my plan later?</div>
-                <div class="faq-a">Yes. You can activate or cancel Premium anytime from your dashboard. No commitments. Your access continues until the end of your billing period and your data is preserved.</div>
+                <div class="faq-q">Do you offer a discount code?</div>
+                <div class="faq-a">Yes &mdash; during Stripe checkout you can enter the promo code <strong>ESTELAR!10</strong> for 10% off your chosen plan.</div>
             </div>
         </section>
     </main>
@@ -545,10 +544,15 @@
         <div class="footer-links">
             <a href="index.html">Home</a>
             <a href="planes.html">Plans</a>
-            <a href="consulta.html">Consultation</a>
             <a href="compatibilidad.html">Compatibility</a>
             <a href="terms-of-service.html">Terms</a>
             <a href="mailto:contacto@luzestelaroficial.com">Contact</a>
+        </div>
+        <div class="footer-social" style="display:flex;justify-content:center;gap:14px;margin:12px 0 4px;flex-wrap:wrap">
+            <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" rel="noopener" style="color:#d4a849;text-decoration:none;font-size:0.82em;font-weight:500;letter-spacing:0.3px">YouTube</a>
+            <a href="https://www.instagram.com/luzestelarastral" target="_blank" rel="noopener" style="color:#d4a849;text-decoration:none;font-size:0.82em;font-weight:500;letter-spacing:0.3px">Instagram</a>
+            <a href="https://www.tiktok.com/@luzestelaroficial" target="_blank" rel="noopener" style="color:#d4a849;text-decoration:none;font-size:0.82em;font-weight:500;letter-spacing:0.3px">TikTok</a>
+            <a href="https://www.facebook.com/profile.php?id=1028673273666619" target="_blank" rel="noopener" style="color:#d4a849;text-decoration:none;font-size:0.82em;font-weight:500;letter-spacing:0.3px">Facebook</a>
         </div>
         <style>.newsletter-box{max-width:440px;margin:24px auto 20px;padding:20px 24px;border:1px solid var(--glass-border,rgba(255,255,255,0.08));border-radius:12px;background:var(--glass-bg,rgba(255,255,255,0.04));}.newsletter-title{font-size:1em;color:var(--gold,#d4a849);margin:0 0 12px;font-weight:600;}.newsletter-form{display:flex;gap:8px;}.newsletter-form input{flex:1;padding:10px 14px;border:1px solid var(--glass-border,rgba(255,255,255,0.08));border-radius:8px;background:rgba(255,255,255,0.05);color:var(--text-main,#e0dce8);font-size:0.9em;outline:none;transition:border-color 0.3s;}.newsletter-form input:focus{border-color:var(--gold,#d4a849);}.newsletter-form input::placeholder{color:var(--text-dim,#9890a8);}.newsletter-form button{padding:10px 20px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold,#d4a849),#c89030);color:#1a1625;font-weight:700;font-size:0.9em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;white-space:nowrap;}.newsletter-form button:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(212,168,73,0.3);}.newsletter-form button:disabled{opacity:0.6;cursor:not-allowed;transform:none;}.newsletter-msg{font-size:0.82em;margin:8px 0 0;min-height:1.2em;}@media(max-width:480px){.newsletter-form{flex-direction:column;}.newsletter-form button{width:100%;}}</style>
                     <div class="newsletter-box">
@@ -580,8 +584,63 @@
                 this.parentElement.classList.toggle('open');
             });
         });
+
+        // ── Cadence toggle (Annual/Monthly) ─────────────────────────────
+        (function(){
+            var cadence = 'annual';
+            var buttons = document.querySelectorAll('.cad-btn');
+            function applyCadence(cad){
+                cadence = cad;
+                buttons.forEach(function(b){
+                    var active = b.dataset.cad === cad;
+                    b.classList.toggle('active', active);
+                    b.setAttribute('aria-selected', active ? 'true' : 'false');
+                });
+                document.querySelectorAll('[data-cad-view]').forEach(function(el){
+                    el.style.display = (el.dataset.cadView === cad) ? '' : 'none';
+                });
+            }
+            buttons.forEach(function(b){
+                b.addEventListener('click', function(){ applyCadence(b.dataset.cad); });
+            });
+
+            // ── Plus checkout trigger ──
+            var btn = document.getElementById('btn-plus');
+            if (btn) {
+                btn.addEventListener('click', async function(){
+                    btn.disabled = true;
+                    var originalText = btn.textContent;
+                    btn.textContent = 'Loading…';
+                    try {
+                        var r = await fetch('/api/billing/create-subscription', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ cadence: cadence })
+                        });
+                        if (r.status === 401) {
+                            window.location.href = '/login.html?next=' + encodeURIComponent('/en/planes.html');
+                            return;
+                        }
+                        var data = await r.json();
+                        if (data && data.url) {
+                            window.location.href = data.url;
+                        } else {
+                            alert((data && data.error) || 'Could not start checkout. Please try again.');
+                            btn.disabled = false;
+                            btn.textContent = originalText;
+                        }
+                    } catch (e) {
+                        alert('Connection error. Please try again.');
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    }
+                });
+            }
+        })();
     </script>
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
+<script src="/js/icons.js" defer></script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
 </body>
 </html>

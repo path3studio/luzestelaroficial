@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>My Day — Luz Estelar</title>
-<meta name="description" content="Your personalized daily astrological reading — Luz Estelar Oficial">
+<title>Home — Luz Estelar</title>
+<meta name="description" content="Your personal universe: cross-cultural report, daily reading and multi-system profile — Luz Estelar Oficial">
 <meta name="theme-color" content="#d4a849">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,213 +12,1524 @@
 <link rel="icon" type="image/png" href="/app_icon.png">
 <link rel="apple-touch-icon" href="/app_icon.png">
 <link rel="manifest" href="/manifest.json">
-<link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mi-dia.html">
 <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/my-day.html">
+<link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mi-dia.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
+<!-- Design system (shared — tokens, PWA patterns, icons) -->
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link rel="stylesheet" href="/css/stars.css">
+<link rel="stylesheet" href="/css/pwa.css">
+<link rel="stylesheet" href="/css/icons.css">
+<script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
 <style>
-:root{--gold:#d4a849;--gold-light:#f0d078;--bg:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.08)}
+:root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--purple:#7c5cbf;--bg:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--text-mute:#6b6478;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
 .state{display:none}.state.active{display:block}
-.spinner{width:32px;height:32px;border:3px solid var(--glass-b);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:45vh auto}
+.spinner{width:30px;height:30px;border:3px solid var(--glass-b);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:45vh auto}
 @keyframes spin{to{transform:rotate(360deg)}}
-.auth-box{max-width:340px;margin:30vh auto 0;padding:0 24px;text-align:center}
-.auth-box h1{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);margin-bottom:12px}
-.auth-box p{color:var(--text-dim);line-height:1.6;margin-bottom:24px;font-size:.9rem}
-.btn-gold{display:inline-block;padding:12px 32px;background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);font-weight:600;text-decoration:none;border-radius:8px;font-size:.9rem;transition:opacity .2s}
+
+/* Subtle animated starfield */
+.stars{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:.55}
+.stars span{position:absolute;background:#fff;border-radius:50%;animation:twinkle ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.85}}
+.stars::before{content:"";position:absolute;top:-40%;left:50%;width:140vw;height:140vw;transform:translateX(-50%);background:radial-gradient(circle,rgba(212,168,73,.05) 0%,transparent 55%);pointer-events:none}
+
+/* Auth / setup */
+.auth-box{max-width:340px;margin:28vh auto 0;padding:0 24px;text-align:center}
+.auth-box h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);margin-bottom:10px}
+.auth-box p{color:var(--text-dim);line-height:1.6;margin-bottom:22px;font-size:.88rem}
+.btn-gold{display:inline-block;padding:11px 28px;background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);font-weight:600;text-decoration:none;border-radius:8px;font-size:.88rem;transition:opacity .2s;border:none;cursor:pointer;font-family:inherit}
 .btn-gold:active{opacity:.8}
-.topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0));background:rgba(6,6,26,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-b)}
-.logo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.15rem;color:var(--gold);letter-spacing:.02em}
-.topbar .dt{font-size:.78rem;color:var(--text-dim)}
-main{max-width:480px;margin:0 auto;padding:0 16px 90px}
-.greet{text-align:center;padding:24px 0 4px}
-.greet h1{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;color:var(--gold);line-height:1.3}
-.greet p{font-size:.82rem;color:var(--text-dim);margin-top:4px}
-.energy{display:flex;flex-direction:column;align-items:center;padding:16px 0 8px}
-.ring-wrap{width:120px;height:120px}
+
+/* Topbar — compact with subtle gold nimbus */
+.topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top,0));background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(212,168,73,.08),rgba(6,6,26,.94) 70%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-b)}
+.logo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.05rem;color:var(--gold);letter-spacing:.02em;text-decoration:none}
+.topbar .dt{font-size:.72rem;color:var(--text-dim)}
+.tier-pill{font-size:.62rem;padding:2px 8px;border-radius:10px;background:var(--gold-dim);color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.tier-pill.plus{background:rgba(124,92,191,.18);color:var(--purple)}
+.hdr-actions{display:flex;align-items:center;gap:6px}
+.lang-pill{font-size:.62rem;padding:2px 8px;border-radius:10px;background:transparent;color:var(--text-dim);font-weight:600;letter-spacing:.04em;border:1px solid var(--glass-b);text-decoration:none;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s}
+.lang-pill:active,.lang-pill:hover{color:var(--gold);border-color:var(--gold-dim)}
+
+main{max-width:520px;margin:0 auto;padding:0 14px 90px}
+
+/* Greeting */
+.greet{text-align:center;padding:18px 0 2px}
+.greet h1{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:var(--gold);line-height:1.25}
+.greet p{font-size:.72rem;color:var(--text-dim);margin-top:2px;text-transform:capitalize}
+.greet-sub{font-size:.7rem;color:var(--text-dim);margin-top:4px;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
+.greet-sub .gs-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;border:1px solid var(--glass-b);background:rgba(255,255,255,.02)}
+.greet-sub .gs-tag b{color:var(--gold);font-weight:600}
+
+/* Newsletter */
+.news-card{padding:14px}
+.news-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.news-hd .nh-ic{font-size:1rem;color:var(--gold)}
+.news-hd .nh-tt{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--text);font-weight:600}
+.news-sub{font-size:.74rem;color:var(--text-dim);line-height:1.5;margin-bottom:10px}
+.news-form{display:flex;gap:6px}
+.news-inp{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--glass-b);border-radius:8px;background:rgba(255,255,255,.03);color:var(--text);font-family:inherit;font-size:.82rem;outline:none;transition:border-color .2s}
+.news-inp:focus{border-color:var(--gold)}
+.news-inp::placeholder{color:var(--text-mute)}
+.news-btn{padding:10px 16px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;white-space:nowrap;transition:transform .2s,box-shadow .2s}
+.news-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,168,73,.28)}
+.news-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.news-msg{font-size:.74rem;margin-top:6px;min-height:1em}
+
+/* SVG icon helper */
+.ic-svg{width:14px;height:14px;display:inline-block;vertical-align:-2px;fill:currentColor}
+
+/* Section label */
+.slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:500;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
+.slbl .ic{font-size:.82rem;opacity:.85}
+.slbl .badge-new{margin-left:auto;font-size:.58rem;padding:1px 6px;border-radius:6px;background:rgba(124,92,191,.18);color:var(--purple);letter-spacing:.04em;font-weight:600}
+
+/* Card */
+.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(212,168,73,.06),0 1px 14px rgba(0,0,0,.2)}
+.card-tight{padding:11px 13px}
+
+/* Cross-cultural hero (top sales hook) */
+.cc-hero{background:linear-gradient(135deg,rgba(212,168,73,.08),rgba(124,92,191,.04));border:1px solid rgba(212,168,73,.22);border-radius:14px;padding:14px}
+.cc-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.cc-title{font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:700;color:var(--gold)}
+.cc-sub{font-size:.66rem;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em}
+.cc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.cc-chip{font-size:.66rem;padding:3px 9px;border-radius:999px;background:rgba(212,168,73,.1);border:1px solid rgba(212,168,73,.22);color:var(--gold-light);letter-spacing:.02em}
+.cc-sec{background:rgba(255,255,255,.025);border:1px solid var(--glass-b);border-radius:10px;padding:11px 13px;margin-top:8px}
+.cc-sec h4{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:.95rem;font-weight:700;margin-bottom:3px;letter-spacing:.02em}
+.cc-sec p{font-size:.84rem;line-height:1.6;color:var(--text)}
+
+/* Locked CTA for free users */
+.cc-lock{text-align:center;padding:14px 12px}
+.cc-lock .lc-ic{font-size:1.4rem;margin-bottom:6px}
+.cc-lock h3{font-family:'Cormorant Garamond',serif;font-size:1.02rem;color:var(--gold-light);margin-bottom:4px}
+.cc-lock p{font-size:.8rem;line-height:1.55;color:var(--text-dim);margin-bottom:12px}
+.cc-lock .btn-gold{font-size:.82rem;padding:9px 22px}
+
+/* Energy ring + bars */
+.energy{display:flex;flex-direction:column;align-items:center;padding:10px 0 4px}
+.ring-wrap{width:108px;height:108px}
 .ring-wrap svg{width:100%;height:100%}
 .ring-bg{fill:none;stroke:var(--glass-b);stroke-width:6}
 .ring-val{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:0 314.16;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s ease-out}
-.ring-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;fill:var(--gold);text-anchor:middle;dominant-baseline:central}
-.ring-lbl{font-size:10px;fill:var(--text-dim);text-anchor:middle;font-family:'Inter',sans-serif}
-.bars{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;width:100%;max-width:280px;margin-top:12px}
-.bar{display:flex;align-items:center;gap:6px;font-size:.78rem}
-.bar-ic{width:18px;text-align:center;font-size:.85rem}
+.ring-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;fill:var(--gold);text-anchor:middle;dominant-baseline:central}
+.ring-lbl{font-size:9px;fill:var(--text-dim);text-anchor:middle;font-family:'Inter',sans-serif}
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;width:100%;max-width:280px;margin-top:10px}
+.bar{display:flex;align-items:center;gap:5px;font-size:.74rem}
+.bar-ic{width:16px;text-align:center;font-size:.78rem}
 .bar-tr{flex:1;height:3px;background:var(--glass-b);border-radius:2px;overflow:hidden}
 .bar-fl{height:100%;border-radius:2px;transition:width 1s ease-out}
-.bar-v{min-width:12px;text-align:right;color:var(--text-dim);font-size:.72rem}
-.slbl{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:500;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin:20px 0 8px}
-.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.rdg .card{padding:18px 16px}
-#rdg-text{font-size:.93rem;line-height:1.72;color:var(--text)}
-.ins-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:12px 14px;margin-bottom:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.ins-hd{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.ins-sys{font-size:.72rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.04em}
-.ins-arch{font-size:.72rem;color:var(--text-dim)}
-.ins-txt{font-size:.88rem;line-height:1.6;color:var(--text)}
+.bar-v{min-width:12px;text-align:right;color:var(--text-dim);font-size:.68rem}
+
+/* Daily reading text */
+.rdg-text{font-size:.88rem;line-height:1.68;color:var(--text)}
+
+/* Per-system insights */
+.ins-grid{display:flex;flex-direction:column;gap:6px}
+.ins-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:10px;padding:10px 12px}
+.ins-hd{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.ins-sys{font-size:.66rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.03em}
+.ins-arch{font-size:.66rem;color:var(--text-mute)}
+.ins-txt{font-size:.82rem;line-height:1.55;color:var(--text)}
 .ins-lock{position:relative;overflow:hidden}
 .ins-lock .ins-txt{filter:blur(5px);user-select:none;color:var(--text-dim)}
-.ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.1rem}
-.up-cta{display:block;text-align:center;padding:10px;margin-top:8px;background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(212,168,73,.04));border:1px solid rgba(212,168,73,.25);border-radius:10px;color:var(--gold);font-size:.82rem;font-weight:500;text-decoration:none;transition:background .2s}
-.up-cta:active{background:rgba(212,168,73,.2)}
-.cosm .card{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.cosm-it{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text)}
-.btm{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:24px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0));background:rgba(6,6,26,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--glass-b);z-index:10}
-.btm a,.btm button{font-size:.82rem;color:var(--gold);text-decoration:none;background:none;border:none;cursor:pointer;font-family:inherit;padding:8px;-webkit-tap-highlight-color:transparent}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.fade{animation:fadeUp .4s ease-out both}
-.fade-d1{animation-delay:.05s}.fade-d2{animation-delay:.1s}.fade-d3{animation-delay:.15s}.fade-d4{animation-delay:.2s}
+.ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
+.up-cta{display:block;text-align:center;padding:9px;margin-top:6px;background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(212,168,73,.04));border:1px solid rgba(212,168,73,.25);border-radius:10px;color:var(--gold);font-size:.78rem;font-weight:500;text-decoration:none}
+
+/* Moon + cosmic strip */
+.cosm{display:flex;gap:10px;flex-wrap:wrap;font-size:.76rem;color:var(--text-dim)}
+.cosm span{display:inline-flex;align-items:center;gap:4px}
+
+/* 8-system grid */
+.sys-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.sys-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px 10px;background:rgba(255,255,255,.02);border:1px solid var(--glass-b);border-radius:12px;text-decoration:none;color:inherit;overflow:hidden;transition:transform .2s,border-color .2s,background .2s}
+.sys-item:active{transform:scale(.98);background:rgba(212,168,73,.04)}
+.sys-item:hover{border-color:rgba(212,168,73,.25)}
+.sys-item .sbar{position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0}
+.sys-item .ssym{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.12),rgba(212,168,73,.02) 70%);border:1px solid rgba(212,168,73,.18);color:var(--gold);font-size:1.05rem;margin-top:4px;font-family:'Cormorant Garamond',serif;font-weight:600}
+.sys-item .ssym svg.sysv{width:20px;height:20px}
+
+/* Skeleton loaders — shimmer until loadDaily() populates content */
+.sk{background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(212,168,73,.08) 50%,rgba(255,255,255,.04) 100%);background-size:200% 100%;animation:skShimmer 1.4s ease-in-out infinite;border-radius:6px;color:transparent;user-select:none;pointer-events:none}
+@keyframes skShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-line{height:.88rem;margin:6px 0}
+.sk-line.w-full{width:100%}
+.sk-line.w-90{width:90%}
+.sk-line.w-75{width:75%}
+.sk-line.w-60{width:60%}
+.sk-chip{display:inline-block;width:78px;height:20px;border-radius:999px;margin-right:5px;margin-bottom:5px}
+.sk-block{height:72px;width:100%;border-radius:10px;margin-top:6px}
+
+/* Offline banner */
+.offline-ind{position:fixed;top:0;left:0;right:0;z-index:200;padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top,0));background:linear-gradient(135deg,#3a1e1e,#1e0e0e);color:#f4c5a3;font-size:.76rem;text-align:center;letter-spacing:.04em;transform:translateY(-100%);transition:transform .25s ease;border-bottom:1px solid rgba(244,197,163,.18)}
+.offline-ind.show{transform:translateY(0)}
+.offline-ind.reconnected{background:linear-gradient(135deg,#1e3a24,#0e1e12);color:#a3f4bf;border-bottom-color:rgba(163,244,191,.18)}
+.offline-ind .oi-ic{display:inline-block;margin-right:6px;vertical-align:-2px}
+
+/* Pull-to-refresh indicator */
+.ptr{position:fixed;top:0;left:0;right:0;display:flex;justify-content:center;align-items:center;height:0;z-index:60;pointer-events:none;color:var(--gold);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;overflow:hidden;transition:height .18s ease}
+.ptr.active{height:52px}
+.ptr .ptr-ic{display:inline-block;margin-right:6px;transform:rotate(0deg);transition:transform .25s ease}
+.ptr.ready .ptr-ic{transform:rotate(180deg)}
+.ptr.spin .ptr-ic{animation:ptrSpin .7s linear infinite}
+@keyframes ptrSpin{to{transform:rotate(360deg)}}
+.sys-item .snam{font-size:.72rem;color:var(--gold);font-weight:600;text-align:center}
+.sys-item .sdet{font-size:.62rem;color:var(--text-mute);text-align:center;line-height:1.2}
+
+/* Elemental synthesis */
+.synth-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.synth-it{text-align:center;padding:9px 4px;border-radius:9px;background:rgba(255,255,255,.02);border:1px solid var(--glass-b)}
+.synth-it .slb{font-size:.64rem;color:var(--text-mute);margin-bottom:3px}
+.synth-it .sbr{height:5px;border-radius:3px;background:var(--glass-b);margin:4px 0;overflow:hidden}
+.synth-it .sfl{height:100%;border-radius:3px;transition:width 1s ease-out}
+.synth-it .sv{font-size:.72rem;color:var(--gold);font-weight:600}
+.synth-insight{margin-top:10px;padding:10px 12px;background:rgba(212,168,73,.05);border-radius:10px;border:1px solid rgba(212,168,73,.15);font-size:.8rem;line-height:1.55;color:var(--text-dim)}
+
+/* Natal chart */
+.chart-wrap{display:flex;justify-content:center;padding:4px 0}
+#natal{max-width:100%;width:260px;height:260px}
+.chart-meta{text-align:center;font-size:.7rem;color:var(--text-mute);margin-top:4px}
+
+/* Mapa Estelar — gift product */
+.mapa-card{padding:0;overflow:hidden}
+.mapa-preview{position:relative;aspect-ratio:1/1;max-height:320px;background:radial-gradient(ellipse at center,#1a1340 0%,#06061a 70%);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.mapa-stars{position:absolute;inset:0;pointer-events:none}
+.mapa-stars span{position:absolute;background:#fff;border-radius:50%;animation:twinkle ease-in-out infinite}
+.mapa-frame{position:relative;width:72%;aspect-ratio:1/1;border:1px solid rgba(212,168,73,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 10%;box-shadow:inset 0 0 30px rgba(212,168,73,.06)}
+.mapa-frame::before{content:"";position:absolute;inset:-7px;border:1px solid rgba(212,168,73,.18);border-radius:50%;pointer-events:none}
+.mapa-frame::after{content:"";position:absolute;inset:-14px;border:1px dashed rgba(212,168,73,.08);border-radius:50%;pointer-events:none}
+.mapa-caption{position:relative;z-index:2;text-align:center;pointer-events:none}
+.mapa-caption .mc-ttl{font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;line-height:1.15}
+.mapa-caption .mc-sub{font-size:.66rem;color:var(--text-dim);margin-top:5px;letter-spacing:.08em}
+.mapa-caption .mc-div{width:28px;height:1px;background:rgba(212,168,73,.4);margin:6px auto}
+.mapa-body{padding:16px 14px 14px}
+.mapa-tag{display:inline-block;font-size:.58rem;color:var(--gold);background:var(--gold-dim);padding:3px 8px;border-radius:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.mapa-hd{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:6px}
+.mapa-desc{font-size:.78rem;color:var(--text-dim);line-height:1.55;margin-bottom:12px}
+.mapa-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mapa-cta{flex:1;min-width:140px;padding:10px 12px;border-radius:9px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s}
+.mapa-cta-primary{background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);border:none}
+.mapa-cta-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,168,73,.28)}
+.mapa-cta-sec{background:transparent;color:var(--text);border:1px solid var(--glass-b)}
+.mapa-cta-sec:hover{border-color:var(--gold-dim)}
+.mapa-gift-note{font-size:.7rem;color:var(--text-mute);text-align:center;margin-top:10px;line-height:1.5}
+.mapa-gift-note b{color:var(--gold);font-weight:600}
+
+/* Profiles list */
+.pf-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--glass-b)}
+.pf-row:last-of-type{border-bottom:none}
+.pf-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.15));display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.pf-info{flex:1;min-width:0}
+.pf-name{font-size:.84rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-sub{font-size:.66rem;color:var(--text-mute);margin-top:1px}
+.pf-star{font-size:.6rem;padding:1px 7px;border-radius:8px;background:var(--gold-dim);color:var(--gold);font-weight:600}
+.pf-add{display:block;width:100%;margin-top:10px;padding:9px;text-align:center;border:1px dashed rgba(212,168,73,.35);background:none;color:var(--gold);font-size:.82rem;border-radius:10px;cursor:pointer;font-family:inherit}
+.pf-add:active{background:rgba(212,168,73,.08)}
+
+/* Share row */
+.share-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.btn-share{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border:1px solid rgba(212,168,73,.3);border-radius:8px;background:rgba(212,168,73,.06);color:var(--gold);font-size:.76rem;font-weight:500;cursor:pointer;font-family:inherit}
+.btn-share:active{background:rgba(212,168,73,.14)}
+
+/* Social row */
+.soc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.soc-it{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 4px;border:1px solid var(--glass-b);border-radius:10px;background:rgba(255,255,255,.02);text-decoration:none;color:var(--text-dim);transition:border-color .2s,color .2s,background .2s}
+.soc-it:active{background:rgba(255,255,255,.04)}
+.soc-it:hover{border-color:var(--c);color:var(--text)}
+.soc-ic{width:20px;height:20px;color:var(--c);line-height:0;display:flex;align-items:center;justify-content:center}
+.soc-ic svg{width:100%;height:100%;fill:currentColor}
+.soc-nm{font-size:.66rem;letter-spacing:.02em}
+
+/* Modal (add profile) */
+.mdl-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:80;opacity:0;pointer-events:none;transition:opacity .18s}
+.mdl-bg.active{opacity:1;pointer-events:auto}
+.mdl-sheet{position:fixed;left:0;right:0;bottom:0;max-height:88vh;background:var(--bg-mid);border-top-left-radius:18px;border-top-right-radius:18px;border:1px solid var(--glass-b);border-bottom:none;z-index:81;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .24s cubic-bezier(.25,.1,.25,1);padding-bottom:env(safe-area-inset-bottom,0)}
+.mdl-sheet.active{transform:translateY(0)}
+.mdl-handle{width:38px;height:4px;border-radius:2px;background:var(--glass-b);margin:8px auto 0}
+.mdl-head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 6px}
+.mdl-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)}
+.mdl-close{background:none;border:none;color:var(--text-dim);font-size:1.1rem;cursor:pointer;padding:4px 8px}
+.mdl-body{padding:6px 18px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+/* Scroll lock for page body while the modal is open */
+body.modal-open{overflow:hidden;touch-action:none}
+.fl{font-size:.68rem;color:var(--text-mute);text-transform:uppercase;letter-spacing:.05em;margin-top:9px}
+.inp{width:100%;padding:11px 13px;background:var(--glass);border:1px solid var(--glass-b);border-radius:9px;color:var(--text);font-size:.88rem;font-family:inherit;outline:none;color-scheme:dark;transition:border-color .2s}
+.inp:focus{border-color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:3px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;background:var(--glass);border:1px solid var(--glass-b);border-radius:999px;font-size:.76rem;color:var(--text-dim);cursor:pointer;font-family:inherit}
+.chip.on{background:var(--gold-dim);border-color:var(--gold);color:var(--text)}
+.geo-w{position:relative;display:flex;flex-direction:column;gap:3px}
+.sugs{background:#0a0a22;border:1px solid var(--glass-b);border-radius:9px;overflow:hidden;max-height:170px;overflow-y:auto;margin-top:2px}
+.sug-it{display:block;width:100%;padding:10px 13px;text-align:left;font-size:.78rem;color:var(--text);border:none;border-bottom:1px solid var(--glass-b);background:transparent;cursor:pointer;font-family:inherit}
+.sug-it:last-child{border-bottom:none}
+.meta{font-size:.72rem;color:var(--text-mute);margin:3px 0 0}
+.meta.ok{color:#7cb97c}
+.err-t{font-size:.78rem;color:#e07a7a;margin:9px 0 0}
+.sub-btn{margin-top:14px;width:100%;padding:12px}
+.sub-btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fade{animation:fadeUp .35s ease-out both}
+.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}.d6{animation-delay:.24s}
+
+/* Streak pill (habit reinforcement) */
+.streak{display:none;align-items:center;gap:4px;margin-left:8px;padding:3px 9px;border-radius:999px;background:rgba(231,122,59,.12);border:1px solid rgba(231,122,59,.3);color:#e79a3b;font-size:.6rem;font-weight:600;letter-spacing:.04em;vertical-align:middle;font-family:inherit}
+.streak.big{background:rgba(231,122,59,.18);border-color:rgba(231,122,59,.45);box-shadow:0 0 12px rgba(231,122,59,.18)}
+.streak .stk-ic{font-size:.72rem}
+
+/* Sol+Luna+Ascendente badges (above natal canvas) */
+.slma{display:flex;justify-content:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.slma-item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:58px}
+.slma-ic{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.18),rgba(212,168,73,.04) 70%);border:1px solid rgba(212,168,73,.28);color:var(--gold);display:inline-flex;align-items:center;justify-content:center;font-size:1.18rem}
+.slma-item .slma-lb{font-size:.58rem;color:var(--text-mute);letter-spacing:.05em;text-transform:uppercase}
+.slma-item .slma-vl{font-size:.7rem;color:var(--text);font-weight:500}
+.slma-item.muted .slma-ic{opacity:.35;border-style:dashed}
+.slma-item.muted .slma-vl{color:var(--text-mute);font-style:italic}
+
+/* Empty / setup states (richer hook) */
+.empty{max-width:320px;margin:0 auto;text-align:center;padding:16px}
+.empty-ic{font-size:3rem;color:var(--gold);margin-bottom:10px;opacity:.85}
+.empty-title{font-family:'Cormorant Garamond',serif;font-size:1.45rem;color:#fff;margin-bottom:8px}
+.empty-cta{margin-top:14px;font-size:.75rem;color:var(--text-mute)}
+
+/* Day navigation — prev/next buttons on reading card */
+.day-nav-btn{background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.2);color:var(--gold);width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.88rem;line-height:1;cursor:pointer;font-family:inherit;padding:0;transition:background .15s,opacity .15s;-webkit-tap-highlight-color:transparent}
+.day-nav-btn:active{background:rgba(212,168,73,.16)}
+.day-nav-btn:disabled{opacity:.25;cursor:default}
+#rdg-card.swiping{transition:opacity .15s;opacity:.4}
+
+/* Onboarding tour overlay */
+.tour-overlay{position:fixed;inset:0;z-index:300;background:rgba(6,6,26,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
+.tour-overlay.show{display:flex;opacity:1}
+.tour-card{max-width:340px;width:100%;background:linear-gradient(135deg,#140f30,#0a0a20);border:1px solid rgba(212,168,73,.25);border-radius:20px;padding:28px 24px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.tour-ic{font-size:2.4rem;color:var(--gold);margin-bottom:8px;line-height:1}
+.tour-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:#fff;font-weight:700;margin-bottom:8px}
+.tour-body{font-size:.82rem;color:var(--text-dim);line-height:1.55;margin-bottom:18px}
+.tour-dots{display:flex;justify-content:center;gap:6px;margin-bottom:14px}
+.tour-dot{width:6px;height:6px;border-radius:50%;background:rgba(212,168,73,.25);transition:background .2s,transform .2s}
+.tour-dot.active{background:var(--gold);transform:scale(1.4)}
+.tour-actions{display:flex;gap:8px;justify-content:center}
+.tour-btn{flex:1;padding:10px 14px;border-radius:10px;font-size:.78rem;font-weight:500;font-family:inherit;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--text);transition:background .15s;-webkit-tap-highlight-color:transparent}
+.tour-btn:active{background:rgba(255,255,255,.08)}
+.tour-btn.primary{background:linear-gradient(135deg,#d4a849,#c89030);color:#06061a;border-color:transparent;font-weight:600}
+.tour-skip{margin-top:10px;font-size:.7rem;color:var(--text-mute);cursor:pointer;background:none;border:none;font-family:inherit;padding:4px}
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- Loading -->
 <div id="st-load" class="state active"><div class="spinner"></div></div>
 
-<div id="st-login" class="state">
-<div class="auth-box">
-<h1>Luz Estelar</h1>
-<p>Sign in to see your personalized daily astrological reading.</p>
-<a href="/login.html?redirect=/en/my-day.html" class="btn-gold">Sign in</a>
-<p style="margin-top:16px;font-size:.78rem"><a href="/mi-dia.html" style="color:var(--text-dim)">Español</a></p>
-</div>
-</div>
+<!-- Login redirect -->
+<div id="st-login" class="state"></div>
 
+<!-- No birth profile yet -->
 <div id="st-setup" class="state">
-<div class="auth-box">
-<h1>Luz Estelar</h1>
-<p>Complete your birth profile to receive your personalized daily reading.</p>
-<a href="/dashboard.html" class="btn-gold">Set up profile</a>
+  <div class="auth-box">
+    <div class="empty-ic">&#10024;</div>
+    <h1>Your universe awaits</h1>
+    <p>Add your birth date so we can map your 8 systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and your enneagram.</p>
+    <a href="/en/dashboard.html" class="btn-gold">Create my first profile</a>
+    <p class="empty-cta">Takes a minute. You can add more profiles later (partner, kids, friends).</p>
+  </div>
+</div>
+
+<!-- Subtle animated starfield behind everything -->
+<div class="stars" aria-hidden="true" id="stars"></div>
+
+<!-- Offline / reconnection banner -->
+<div class="offline-ind" id="offline-ind" role="status" aria-live="polite">
+  <span class="oi-ic" id="oi-ic">&#9888;</span>
+  <span id="oi-tx">You're offline. Showing saved content.</span>
+</div>
+
+<!-- Pull-to-refresh indicator -->
+<div class="ptr" id="ptr" aria-hidden="true"><span class="ptr-ic">&#8595;</span><span class="ptr-tx">Release to refresh</span></div>
+
+<!-- Main -->
+<div id="st-home" class="state">
+  <header class="topbar">
+    <a href="/" class="logo">Luz Estelar</a>
+    <span class="dt" id="hdr-dt"></span>
+    <div class="hdr-actions">
+      <a href="/mi-dia.html" class="lang-pill" id="hdr-lang" aria-label="Cambiar a español">ES</a>
+      <span class="tier-pill" id="tier-pill">Free</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="greet fade">
+      <h1 id="greeting">Hello<span id="streak-pill" class="streak" style="display:none"><span class="stk-ic">&#128293;</span><span id="streak-txt">0</span></span></h1>
+      <p id="date-fmt"></p>
+      <div class="greet-sub" id="greet-sub" style="display:none"></div>
+    </section>
+
+    <!-- 1. Daily reading -->
+    <section class="fade d1">
+      <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+        <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Your reading today</span></span>
+        <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
+          <button type="button" class="day-nav-btn" id="day-prev" aria-label="Previous day">&#8249;</button>
+          <span id="day-label" style="font-size:.64rem;color:var(--text-mute);min-width:42px;text-align:center">today</span>
+          <button type="button" class="day-nav-btn" id="day-next" aria-label="Next day" disabled>&#8250;</button>
+        </span>
+      </div>
+      <div class="card" id="rdg-card">
+        <div class="energy">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="50"/>
+              <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
+              <text class="ring-num" x="60" y="54" id="ring-n">—</text>
+              <text class="ring-lbl" x="60" y="72">Energy</text>
+            </svg>
+          </div>
+          <div class="bars" id="bars"></div>
+        </div>
+        <p id="rdg-text" class="rdg-text" style="margin-top:12px">
+          <span class="sk sk-line w-full"></span>
+          <span class="sk sk-line w-90"></span>
+          <span class="sk sk-line w-75"></span>
+        </p>
+        <div class="cosm" id="cosm" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- 2. System-level insights -->
+    <section class="fade d2" id="ins-sec" style="display:none">
+      <div class="slbl"><span class="ic le-ic" data-icon="sparkles"></span> Insights by system</div>
+      <div id="ins-box" class="ins-grid"></div>
+    </section>
+
+    <!-- 3. CROSS-CULTURAL (depth — upsell for Free, reflection for Plus) -->
+    <section class="fade d3">
+      <div class="slbl"><span class="ic le-ic" data-icon="star"></span> Your Cross-Cultural Report <span class="badge-new" id="cc-badge">Plus</span></div>
+      <div class="cc-hero" id="cc-hero">
+        <div class="cc-head">
+          <span class="cc-title" id="cc-hero-title">Your personal synthesis</span>
+          <span class="cc-sub" id="cc-hero-sub">8 systems</span>
+        </div>
+        <div id="cc-chips" class="cc-chips">
+          <span class="sk sk-chip"></span><span class="sk sk-chip"></span><span class="sk sk-chip"></span>
+          <span class="sk sk-chip"></span><span class="sk sk-chip"></span><span class="sk sk-chip"></span>
+        </div>
+        <div id="cc-body"><div class="sk sk-block"></div></div>
+      </div>
+    </section>
+
+    <!-- 4. 8 systems -->
+    <section class="fade d4">
+      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Your Multi-System Profile</div>
+      <div class="sys-grid" id="sys-grid"></div>
+      <div class="share-row">
+        <button class="btn-share" id="btn-share" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg> Share</button>
+      </div>
+    </section>
+
+    <!-- 5. Elemental synthesis -->
+    <section class="fade d5">
+      <div class="slbl"><span class="ic le-ic" data-icon="globe"></span> Elemental Synthesis</div>
+      <div class="card">
+        <div class="synth-grid" id="synth-grid"></div>
+        <div class="synth-insight" id="synth-text">—</div>
+      </div>
+    </section>
+
+    <!-- 6. Natal chart -->
+    <section class="fade d6">
+      <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Natal Chart</div>
+      <div class="card">
+        <div class="slma">
+          <div class="slma-item muted" id="slma-sun"><span class="slma-ic">&#9788;</span><span class="slma-lb">Sun</span><span class="slma-vl">—</span></div>
+          <div class="slma-item muted" id="slma-moon"><span class="slma-ic">&#9790;</span><span class="slma-lb">Moon</span><span class="slma-vl">—</span></div>
+          <div class="slma-item muted" id="slma-asc"><span class="slma-ic">&#8593;</span><span class="slma-lb">Asc</span><span class="slma-vl">—</span></div>
+        </div>
+        <div class="chart-wrap"><canvas id="natal"></canvas></div>
+        <p class="chart-meta" id="chart-meta"></p>
+      </div>
+    </section>
+
+    <!-- 7. My profiles -->
+    <section class="fade d6">
+      <div class="slbl"><span class="ic le-ic" data-icon="users"></span> My Profiles</div>
+      <div class="card">
+        <div id="pf-list"></div>
+        <button class="pf-add" id="btn-add-profile">+ Add profile</button>
+        <p style="font-size:.68rem;color:var(--text-mute);text-align:center;margin-top:6px" id="pf-count"></p>
+      </div>
+    </section>
+
+    <!-- 7.5 Star Map — giftable product -->
+    <section class="fade d6" style="margin-top:6px">
+      <div class="slbl" style="justify-content:center;text-align:center"><span class="ic le-ic" data-icon="sparkles"></span> Star Map</div>
+      <div class="card mapa-card">
+        <div class="mapa-preview">
+          <div class="mapa-stars" id="mapa-stars-preview" aria-hidden="true"></div>
+          <div class="mapa-frame">
+            <div class="mapa-caption">
+              <p class="mc-ttl" id="mapa-name">Your Name</p>
+              <div class="mc-div"></div>
+              <p class="mc-sub" id="mapa-info">Date &middot; Place</p>
+            </div>
+          </div>
+        </div>
+        <div class="mapa-body">
+          <p class="mapa-hd">A sky worth remembering</p>
+          <p class="mapa-desc">A unique print of the exact sky at your birth date and place. A collectible keepsake, ideal for gifting to someone you love.</p>
+          <div class="mapa-actions">
+            <a href="/en/mapa-estelar.html" class="mapa-cta mapa-cta-primary">Gift a Star Map</a>
+            <a href="/en/mapa-estelar.html#example" class="mapa-cta mapa-cta-sec">See example</a>
+          </div>
+          <p class="mapa-gift-note">&#10024; Included with <b>Plus</b> &middot; also available as a gift</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7.5 Newsletter -->
+    <section class="fade d6" style="margin-top:6px">
+      <div class="slbl"><span class="ic le-ic" data-icon="mail"></span> Weekly Digest</div>
+      <div class="card news-card">
+        <div class="news-hd">
+          <span class="nh-ic">&#10024;</span>
+          <span class="nh-tt">Your horoscope, every week</span>
+        </div>
+        <p class="news-sub">Get the key cosmic movements and a personal reading straight to your inbox. No spam, unsubscribe anytime.</p>
+        <form id="news-form" class="news-form" autocomplete="on">
+          <input type="email" id="news-email" class="news-inp" placeholder="Your email" required autocomplete="email">
+          <button type="submit" class="news-btn">Subscribe</button>
+        </form>
+        <p id="news-msg" class="news-msg"></p>
+      </div>
+    </section>
+
+    <!-- 8. Follow us -->
+    <section class="fade d6" style="margin-top:6px">
+      <div class="slbl"><span class="ic le-ic" data-icon="heart"></span> Follow us</div>
+      <div class="card" style="padding:12px">
+        <div class="soc-row">
+          <a class="soc-it" href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" rel="noopener" style="--c:#FF0000" aria-label="YouTube">
+            <span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span><span class="soc-nm">YouTube</span>
+          </a>
+          <a class="soc-it" href="https://www.instagram.com/luzestelarastral" target="_blank" rel="noopener" style="--c:#E4405F" aria-label="Instagram">
+            <span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></span><span class="soc-nm">Instagram</span>
+          </a>
+          <a class="soc-it" href="https://www.tiktok.com/@luzestelaroficial" target="_blank" rel="noopener" style="--c:#00F2EA" aria-label="TikTok">
+            <span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span><span class="soc-nm">TikTok</span>
+          </a>
+          <a class="soc-it" href="https://www.facebook.com/profile.php?id=1028673273666619" target="_blank" rel="noopener" style="--c:#1877F2" aria-label="Facebook">
+            <span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span><span class="soc-nm">Facebook</span>
+          </a>
+          <a class="soc-it" href="https://open.spotify.com/show/0Zq3f1xgTrIn4PONmHSUrS" target="_blank" rel="noopener" style="--c:#1DB954" aria-label="Spotify">
+            <span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></span><span class="soc-nm">Spotify</span>
+          </a>
+          <a class="soc-it" href="https://podcasts.apple.com/us/podcast/luz-estelar-oficial-—-horóscopo-técnico-diario/id1891252034" target="_blank" rel="noopener" style="--c:#9933CC" aria-label="Apple Podcasts">
+            <span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0zm6.525 2.568c2.336 0 4.448.902 6.056 2.587 1.076 1.126 1.72 2.376 1.736 2.413l.003.006-.039.019-.652.314-.038.018-.019-.037c-.016-.032-.635-1.248-1.669-2.332-1.527-1.6-3.456-2.41-5.378-2.41-1.922 0-3.85.81-5.378 2.41-1.034 1.084-1.653 2.3-1.67 2.332l-.018.037-.038-.018-.652-.314-.04-.019.004-.006c.017-.037.66-1.287 1.736-2.413 1.608-1.685 3.72-2.587 6.056-2.587zM11.862 6.63c1.585 0 3.07.62 4.164 1.742.834.856 1.322 1.838 1.342 1.878l.003.006-.04.019-.644.318-.036.018-.02-.038c-.018-.035-.489-.98-1.282-1.793-.99-1.016-2.27-1.578-3.487-1.578-1.218 0-2.497.562-3.488 1.578-.793.814-1.264 1.758-1.282 1.793l-.02.038-.035-.018-.644-.318-.04-.02.003-.005c.02-.04.508-1.022 1.342-1.878 1.093-1.123 2.579-1.742 4.164-1.742zm.003 3.482c.704 0 1.378.279 1.893.785.397.39.638.862.677.944l.035.073-.068.034-.646.32-.034.017-.018-.035a1.882 1.882 0 00-.513-.683 1.689 1.689 0 00-1.058-.384h-.538c-.394.001-.77.14-1.058.384a1.88 1.88 0 00-.513.683l-.018.035-.034-.017-.646-.32-.068-.034.035-.073c.039-.082.28-.554.677-.944a2.715 2.715 0 011.893-.785zm.268 3.076h-.538c-.89 0-1.615.72-1.615 1.61v3.062c0 .891.724 1.611 1.615 1.611h.538c.89 0 1.614-.72 1.614-1.61v-3.063c0-.89-.724-1.61-1.614-1.61z"/></svg></span><span class="soc-nm">Podcast</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 </div>
 
-<div id="st-reading" class="state">
-<header class="topbar">
-<span class="logo">Luz Estelar</span>
-<span class="dt" id="hdr-dt"></span>
-</header>
-
-<main>
-<section class="greet fade">
-<h1 id="greeting"></h1>
-<p id="date-fmt"></p>
-</section>
-
-<section class="energy fade fade-d1">
-<div class="ring-wrap">
-<svg viewBox="0 0 120 120">
-<circle class="ring-bg" cx="60" cy="60" r="50"/>
-<circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
-<text class="ring-num" x="60" y="54" id="ring-n">—</text>
-<text class="ring-lbl" x="60" y="72">Energy</text>
-</svg>
-</div>
-<div class="bars" id="bars"></div>
-</section>
-
-<section class="rdg fade fade-d2">
-<div class="slbl"><span id="sign-sym"></span> Your reading today</div>
-<div class="card"><p id="rdg-text"></p></div>
-</section>
-
-<section class="ins fade fade-d3" id="ins-sec">
-<div class="slbl">System insights</div>
-<div id="ins-box"></div>
-</section>
-
-<section class="cosm fade fade-d4">
-<div class="slbl">Cosmos</div>
-<div class="card cosm-card">
-<span id="moon-txt"></span>
-</div>
-</section>
-</main>
-
-<nav class="btm">
-<a href="/dashboard.html">Dashboard</a>
-<button id="btn-share">Share</button>
-<a href="/mi-dia.html">ES</a>
-</nav>
-</div>
+<!-- Add Profile Modal -->
+<div class="mdl-bg" id="mdl-bg"></div>
+<div class="mdl-sheet" id="mdl-sheet" role="dialog" aria-modal="true" aria-labelledby="mdl-t">
+  <div class="mdl-handle"></div>
+  <div class="mdl-head">
+    <h2 id="mdl-t" class="mdl-title">Add profile</h2>
+    <button class="mdl-close" id="mdl-close" aria-label="Close">✕</button>
+  </div>
+  <form class="mdl-body" id="ap-form">
+    <label class="fl">Relationship</label>
+    <div class="chips" id="ap-chips"></div>
+    <label class="fl" for="ap-name">Name</label>
+    <input id="ap-name" type="text" class="inp" placeholder="Name" autocomplete="off">
+    <label class="fl" for="ap-date">Date of birth</label>
+    <input id="ap-date" type="date" class="inp">
+    <label class="fl" for="ap-time">Time <span style="color:var(--text-mute);text-transform:none;letter-spacing:0">(optional)</span></label>
+    <input id="ap-time" type="time" class="inp">
+    <label class="fl" for="ap-place">Place of birth</label>
+    <div class="geo-w">
+      <input id="ap-place" type="text" class="inp" placeholder="City, country" autocomplete="off">
+      <div id="ap-sugs" class="sugs" style="display:none"></div>
+      <p id="ap-meta" class="meta" style="display:none"></p>
+    </div>
+    <p id="ap-err" class="err-t" style="display:none"></p>
+    <button type="submit" class="btn-gold sub-btn" id="ap-submit" disabled>Save Profile</button>
+  </form>
 </div>
 
+<!-- Onboarding tour (shown once after first profile) -->
+<div class="tour-overlay" id="tour" role="dialog" aria-modal="true" aria-labelledby="tour-title">
+  <div class="tour-card">
+    <div class="tour-ic" id="tour-ic">&#10024;</div>
+    <h2 class="tour-title" id="tour-title">Welcome to your day</h2>
+    <p class="tour-body" id="tour-body">Every morning we bring you a personalized reading drawn from 8 spiritual systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and enneagram.</p>
+    <div class="tour-dots" id="tour-dots">
+      <span class="tour-dot active"></span>
+      <span class="tour-dot"></span>
+      <span class="tour-dot"></span>
+    </div>
+    <div class="tour-actions">
+      <button type="button" class="tour-btn" id="tour-back" style="display:none">Back</button>
+      <button type="button" class="tour-btn primary" id="tour-next">Next</button>
+    </div>
+    <button type="button" class="tour-skip" id="tour-skip">Skip</button>
+  </div>
+</div>
+
+<script src="/js/cross-cultural.js"></script>
+<script src="/js/natal-chart.js"></script>
 <script>
 (function(){
 'use strict';
-var LANG='en',API='/api/dashboard/daily-reading?lang=en',CK='le_daily_en';
+// ── Language persistence: if user previously chose ES, redirect to Spanish ──
+try{
+  var savedLang=localStorage.getItem('le_lang');
+  if(savedLang==='es' && !sessionStorage.getItem('le_lang_redirected')){
+    sessionStorage.setItem('le_lang_redirected','1');
+    window.location.replace('/mi-dia.html');
+    return;
+  }
+}catch(e){/* private mode — carry on */}
+var LANG='en';
 var SYS_IC={chinese:'\u{1F409}',numerology:'\u{1F522}',celtic:'\u{1F333}',mayan:'\u{1F3DB}',vedic:'\u{1F549}',human_design:'\u26A1',enneagram:'\u25CE'};
 var E_IC={love:'\u2764\uFE0F',career:'\u{1F4BC}',health:'\u{1F33F}',energy:'\u26A1'};
-var E_LBL={love:'Love',career:'Career',health:'Health',energy:'Energy'};
 var E_CLR={love:'#e8456a',career:'#d4a849',health:'#4aba7a',energy:'#7c5cbf'};
 var SIGNS={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
+var LABEL_OPTS=[{v:'Partner',ic:'💞'},{v:'Family',ic:'👨‍👩‍👧'},{v:'Child',ic:'🧒'},{v:'Friend',ic:'🤝'},{v:'Other',ic:'✨'}];
 
-function show(id){document.querySelectorAll('.state').forEach(function(e){e.classList.remove('active')});document.getElementById('st-'+id).classList.add('active')}
-
-function fmtDate(s){
-var d=new Date(s+'T12:00:00');
-var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-var mos=['January','February','March','April','May','June','July','August','September','October','November','December'];
-return days[d.getDay()]+', '+mos[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+function show(id){
+  if(id==='login'){window.location.replace('/en/login.html');return;}
+  document.querySelectorAll('.state').forEach(function(e){e.classList.remove('active');});
+  document.getElementById('st-'+id).classList.add('active');
 }
 
-function render(d){
-document.getElementById('hdr-dt').textContent=d.date;
-document.getElementById('greeting').textContent=d.greeting;
-document.getElementById('date-fmt').textContent=fmtDate(d.date);
-var ov=d.energy.overall,circ=2*Math.PI*50;
-document.getElementById('ring-n').textContent=ov;
-requestAnimationFrame(function(){document.getElementById('ring').style.strokeDasharray=(ov/10*circ)+' '+circ});
-var h='';['love','career','health','energy'].forEach(function(f){
-var v=d.energy[f],p=v/10*100;
-h+='<div class="bar"><span class="bar-ic">'+E_IC[f]+'</span><div class="bar-tr"><div class="bar-fl" style="width:'+p+'%;background:'+E_CLR[f]+'"></div></div><span class="bar-v">'+v+'</span></div>';
-});
-document.getElementById('bars').innerHTML=h;
-document.getElementById('sign-sym').textContent=SIGNS[d.profile.westernSign]||'\u2726';
-document.getElementById('rdg-text').textContent=d.reading||'Your reading will be available soon.';
-var box=document.getElementById('ins-box');box.innerHTML='';
-var hasLock=false;
-(d.systemInsights||[]).forEach(function(ins){
-var div=document.createElement('div');
-div.className='ins-card'+(ins.locked?' ins-lock':'');
-var txt=ins.locked?'This insight is available with the Premium plan.':ins.text;
-div.innerHTML='<div class="ins-hd"><span>'+(SYS_IC[ins.system]||'\u2726')+'</span><span class="ins-sys">'+ins.label+'</span><span class="ins-arch">\u00B7 '+ins.archetype+'</span></div><p class="ins-txt">'+txt+'</p>';
-box.appendChild(div);
-if(ins.locked)hasLock=true;
-});
-if(hasLock){var a=document.createElement('a');a.className='up-cta';a.href='/dashboard.html#premium';a.textContent='\u2726 Unlock all systems with Premium';box.appendChild(a)}
-document.getElementById('moon-txt').textContent='\u{1F319} '+d.moon.phase+' \u00B7 '+d.moon.illumination+'%';
-show('reading');
+function fmtDate(s){
+  var d=s?new Date(s+'T12:00:00'):new Date();
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var mos=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return days[d.getDay()]+', '+mos[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+}
+
+function todayStr(){var d=new Date();return d.toISOString().split('T')[0];}
+
+// Monochrome SVG icons for the cross-cultural system grid.
+// Returns an inline <svg> string sized to match .ssym font-size (1.3rem ≈ 21px).
+function sysIcon(key){
+  var s='<svg class="sysv" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+  var e='</svg>';
+  switch(key){
+    case 'chinese': // yin-yang
+      return s+'<circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 0 1 0 9 4.5 4.5 0 0 0 0 9"/><circle cx="12" cy="7.5" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="16.5" r=".9" fill="currentColor" stroke="none"/>'+e;
+    case 'celtic': // triquetra
+      return s+'<path d="M12 4c3 2.5 3 7.5 0 10s-6.5 2-8-1 1-7 4-7"/><path d="M12 4c-3 2.5-3 7.5 0 10s6.5 2 8-1-1-7-4-7"/><path d="M12 20c-3-2.5-3-7.5 0-10s6.5-2 8 1"/>'+e;
+    case 'mayan': // sun with rays
+      return s+'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>'+e;
+    case 'vedic': // lotus
+      return s+'<path d="M12 18c-4 0-7-2-7-4 0 0 2 1 4 0 0 0 0-3 3-5 3 2 3 5 3 5 2 1 4 0 4 0 0 2-3 4-7 4z"/><path d="M12 18V9"/><path d="M9 14c-2 0-3-1-3-2"/><path d="M15 14c2 0 3-1 3-2"/>'+e;
+    case 'humanDesign': // body-graph (9 centers simplified)
+      return s+'<circle cx="12" cy="4" r="1.3"/><path d="M9 8l3-2.5 3 2.5"/><rect x="9" y="8" width="6" height="3" rx=".5"/><path d="M7 14l5-3 5 3-5 3z"/><circle cx="12" cy="20" r="1.3"/><path d="M12 17v1.8"/>'+e;
+    case 'enneagram': // 9-point star inside circle
+      return s+'<circle cx="12" cy="12" r="9"/><path d="M12 3l6 15-12-9h12l-12 9z"/>'+e;
+  }
+  return '\u2726';
+}
+
+// Inline Plus upgrade — keeps the user inside the PWA shell.
+// Falls back to /en/planes.html only if the module failed to load.
+function openUpgrade(){
+  if(window.LuzEstelar&&LuzEstelar.UpgradeSheet){
+    LuzEstelar.UpgradeSheet.open({lang:'en'});
+  }else{
+    window.location.assign('/en/planes.html');
+  }
+}
+
+var currentUser=null, currentProfile=null, profilesList=[];
+
+async function api(path, opts){
+  opts=opts||{};
+  opts.credentials='same-origin';
+  opts.cache=opts.cache||'no-store';
+  opts.headers=opts.headers||{};
+  var tk=localStorage.getItem('le_token');
+  if(tk) opts.headers['Authorization']='Bearer '+tk;
+  return fetch(path, opts);
+}
+
+// ── Daily streak — best-effort, localStorage only ──
+function bumpStreak(){
+  try{
+    var raw=localStorage.getItem('le_streak');
+    var s=raw?JSON.parse(raw):{last:null,count:0};
+    var today=new Date();var y=today.getFullYear(),m=today.getMonth()+1,d2=today.getDate();
+    var todayStrL=y+'-'+(m<10?'0'+m:m)+'-'+(d2<10?'0'+d2:d2);
+    if(s.last===todayStrL){/* already counted */}
+    else{
+      var yest=new Date(today.getTime()-86400000);
+      var yStr=yest.getFullYear()+'-'+((yest.getMonth()+1<10?'0':'')+(yest.getMonth()+1))+'-'+((yest.getDate()<10?'0':'')+yest.getDate());
+      s.count=(s.last===yStr)?(s.count+1):1;
+      s.last=todayStrL;
+    }
+    try{localStorage.setItem('le_streak',JSON.stringify(s));}catch(e){}
+    if(s.count>=2){
+      var pill=document.getElementById('streak-pill');
+      var txt=document.getElementById('streak-txt');
+      if(pill && txt){
+        txt.textContent=s.count+' days';
+        pill.style.display='inline-flex';
+        if(s.count>=7) pill.classList.add('big');
+      }
+    }
+  }catch(e){/* streak is best-effort */}
+}
+
+// ── Onboarding tour ──
+var TOUR_SLIDES=[
+  {ic:'\u2728',title:'Welcome to your day',body:'Every morning we bring you a personalized reading drawn from 8 spiritual systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and enneagram.'},
+  {ic:'\ud83d\udd2e',title:'Your cosmic signature',body:'Below you\u2019ll see a cross-cultural synthesis — how your eight systems align with each other. The days they converge are special moments to act.'},
+  {ic:'\ud83d\udc46',title:'Swipe through time',body:'Swipe the reading card left to see tomorrow, or right to revisit yesterday. You can also use the \u2039 \u203a arrows.'}
+];
+function maybeShowTour(){
+  try{
+    if(localStorage.getItem('le_tour_seen')==='1') return;
+  }catch(e){ return; }
+  var ov=document.getElementById('tour');
+  if(!ov) return;
+  var idx=0;
+  var icEl=document.getElementById('tour-ic');
+  var titleEl=document.getElementById('tour-title');
+  var bodyEl=document.getElementById('tour-body');
+  var dotsEl=document.getElementById('tour-dots');
+  var nextBtn=document.getElementById('tour-next');
+  var backBtn=document.getElementById('tour-back');
+  var skipBtn=document.getElementById('tour-skip');
+  function render(){
+    var s=TOUR_SLIDES[idx];
+    icEl.innerHTML=s.ic;
+    titleEl.textContent=s.title;
+    bodyEl.textContent=s.body;
+    var dots=dotsEl.querySelectorAll('.tour-dot');
+    for(var i=0;i<dots.length;i++){
+      if(i===idx) dots[i].classList.add('active');
+      else dots[i].classList.remove('active');
+    }
+    backBtn.style.display=idx===0?'none':'';
+    nextBtn.textContent=idx===TOUR_SLIDES.length-1?'Start':'Next';
+  }
+  function close(){
+    try{localStorage.setItem('le_tour_seen','1');}catch(e){}
+    ov.classList.remove('show');
+    setTimeout(function(){ov.style.display='none';},260);
+  }
+  nextBtn.onclick=function(){
+    if(idx<TOUR_SLIDES.length-1){idx++;render();}
+    else{close();}
+  };
+  backBtn.onclick=function(){
+    if(idx>0){idx--;render();}
+  };
+  skipBtn.onclick=close;
+  render();
+  setTimeout(function(){
+    ov.style.display='flex';
+    requestAnimationFrame(function(){ov.classList.add('show');});
+  },700);
 }
 
 async function init(){
-try{var c=localStorage.getItem(CK);if(c){var cd=JSON.parse(c);if(cd.date===new Date().toISOString().split('T')[0])render(cd)}}catch(e){}
-try{
-var r=await fetch(API,{credentials:'same-origin',cache:'no-store'});
-if(r.status===401){document.cookie='le_redirect=/en/my-day.html;path=/;max-age=3600;SameSite=Lax;Secure';show('login');return}
-if(r.status===404){show('setup');return}
-if(!r.ok)throw new Error();
-var d=await r.json();
-if(!d.ok)throw new Error(d.error);
-try{localStorage.setItem(CK,JSON.stringify(d))}catch(e){}
-render(d);
-}catch(e){
-if(document.getElementById('st-reading').classList.contains('active'))return;
-show('login');
-}
+  try{
+    var r=await api('/api/auth/me');
+    if(!r.ok){show('login');return;}
+    var d=await r.json();
+    if(!d.ok){show('login');return;}
+    currentUser=d.user;
+    profilesList=d.birthProfiles||[];
+    window._pfList=profilesList;
+    if(!profilesList.length){show('setup');return;}
+    currentProfile=profilesList[0];
+    // Show home FIRST so canvas parent has real offsetWidth for natal chart render.
+    // Otherwise canvas.parentElement.offsetWidth === 0 and the chart draws at size 0.
+    show('home');
+    requestAnimationFrame(function(){
+      renderAll();
+      bumpStreak();
+      loadDaily();
+      loadUnified();
+      try{maybeShowTour();}catch(e){}
+    });
+  }catch(e){
+    show('login');
+  }
 }
 
-document.getElementById('btn-share').addEventListener('click',function(){
-var b=this;
-if(navigator.share){navigator.share({title:'My Daily Reading — Luz Estelar',url:location.href})}
-else{navigator.clipboard.writeText(location.href).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Share'},2000)})}
+function renderAll(){
+  // Topbar
+  document.getElementById('hdr-dt').textContent=todayStr();
+  var tier=document.getElementById('tier-pill');
+  var lab='Free';
+  if(currentUser.tier==='premium'){lab='Plus';tier.classList.add('plus');}
+  else if(currentUser.tier&&currentUser.tier!=='free'){lab=currentUser.tier[0].toUpperCase()+currentUser.tier.slice(1);}
+  tier.textContent=lab;
+
+  // Greeting
+  var firstName=(currentProfile.nombre||currentUser.name||'').split(' ')[0];
+  var hr=new Date().getHours();
+  var greet=hr<12?'Good morning':hr<19?'Good afternoon':'Good evening';
+  document.getElementById('greeting').textContent=firstName?(greet+', '+firstName):greet;
+  document.getElementById('date-fmt').textContent=fmtDate(null);
+
+  // Cross-cultural calc for chips + chart + synthesis
+  var parts=currentProfile.fecha_nacimiento.split('-').map(Number);
+  var cc=LuzEstelar.CrossCultural.calculateProfile(parts[0],parts[1],parts[2]);
+  window._cc=cc;
+
+  // Sign symbol
+  document.getElementById('sign-sym').textContent=SIGNS[cc.western.name_en]||'\u2726';
+
+  // CC chips (always shown, even for free as teaser)
+  var chipHTML='';
+  chipHTML+='<span class="cc-chip">'+cc.western.symbol+' '+cc.western.name_en+'</span>';
+  chipHTML+='<span class="cc-chip">'+cc.chinese.animal.symbol+' '+cc.chinese.animal.name_en+'</span>';
+  chipHTML+='<span class="cc-chip">#'+cc.numerology.lifePathNumber+' '+cc.numerology.data.keyword_en+'</span>';
+  chipHTML+='<span class="cc-chip">'+cc.celtic.name_en+'</span>';
+  chipHTML+='<span class="cc-chip">'+cc.mayan.seal.name_en+'</span>';
+  chipHTML+='<span class="cc-chip">'+cc.vedic.rashi.name_sa+'</span>';
+  chipHTML+='<span class="cc-chip">Gate '+cc.humanDesign.gate+'</span>';
+  if(currentProfile.enneagram_type) chipHTML+='<span class="cc-chip">E-'+currentProfile.enneagram_type+'</span>';
+  document.getElementById('cc-chips').innerHTML=chipHTML;
+
+  // 8-system grid — EN slugs under /en/ SEO pages where they exist
+  var colors=[cc.western.color,cc.chinese.animal.color,cc.numerology.data.color,cc.celtic.color,cc.mayan.seal.color,cc.vedic.rashi.color,'#7c5cbf','#b47ad4'];
+  var items=[
+    {href:'/en/signs/'+(cc.western.slug_en||cc.western.slug_es)+'.html',sym:cc.western.symbol,nam:cc.western.name_en,det:cc.western.element_en},
+    {href:'/en/chinese-horoscope/'+(cc.chinese.animal.slug_en||cc.chinese.animal.slug_es)+'.html',sym:sysIcon('chinese'),nam:cc.chinese.animal.name_en,det:cc.chinese.element.en+' · '+cc.chinese.yinYang},
+    {href:'/en/numerology/'+(cc.numerology.data.slug_en||cc.numerology.data.slug_es)+'.html',sym:String(cc.numerology.lifePathNumber),nam:cc.numerology.data.keyword_en,det:'Life Path'},
+    {href:'/en/celtic-zodiac/'+(cc.celtic.slug_en||cc.celtic.slug_es)+'.html',sym:sysIcon('celtic'),nam:cc.celtic.name_en,det:'Ogham '+cc.celtic.ogham},
+    {href:'/en/mayan-astrology/'+(cc.mayan.seal.slug_en||cc.mayan.seal.slug_es)+'.html',sym:sysIcon('mayan'),nam:cc.mayan.seal.name_en,det:'Kin '+cc.mayan.kin+' · T'+cc.mayan.tone.num},
+    {href:'/en/vedic-astrology/'+(cc.vedic.rashi.slug_en||cc.vedic.rashi.slug_es)+'.html',sym:sysIcon('vedic'),nam:cc.vedic.rashi.name_sa,det:cc.vedic.nakshatra.name_sa},
+    {href:'/en/human-design/gate-'+cc.humanDesign.gate+'.html',sym:sysIcon('humanDesign'),nam:'Gate '+cc.humanDesign.gate,det:cc.humanDesign.gateData.name_en}
+  ];
+  if(currentProfile.enneagram_type){
+    var et=LuzEstelar.CrossCultural.ENNEAGRAM_TYPES[currentProfile.enneagram_type];
+    items.push({href:'/en/enneagram/'+(et.slug_en||et.slug_es)+'.html',sym:sysIcon('enneagram'),nam:'Type '+currentProfile.enneagram_type,det:et.name_en});
+  }else{
+    items.push({href:'/en/enneagram/',sym:sysIcon('enneagram'),nam:'Enneagram',det:'Discover your type →'});
+  }
+  var sgh='';
+  items.forEach(function(it,i){
+    sgh+='<a href="'+it.href+'" class="sys-item"><span class="sbar" style="background:'+(colors[i]||'#7c5cbf')+'"></span><span class="ssym">'+it.sym+'</span><span class="snam">'+it.nam+'</span><span class="sdet">'+it.det+'</span></a>';
+  });
+  document.getElementById('sys-grid').innerHTML=sgh;
+
+  // Elemental synthesis
+  buildSynth(cc);
+
+  // Natal chart — explicit size avoids offsetWidth=0 race during first render.
+  try{
+    var sunLong=(parts[1]-1)*30+parts[2];
+    var chartData={planets:[{name:'Sun',longitude:sunLong,sign:cc.western.name_en,degree:parts[2]}],aspects:[]};
+    if(LuzEstelar.NatalChart.calcMoonLongitude){
+      var ml=LuzEstelar.NatalChart.calcMoonLongitude(parts[0],parts[1],parts[2]);
+      var ms=LuzEstelar.NatalChart.signFromLongitude(ml);
+      var md=LuzEstelar.NatalChart.degreeInSign(ml);
+      chartData.planets.push({name:'Moon',longitude:ml,sign:LuzEstelar.NatalChart.SIGN_NAMES[ms],degree:md});
+    }
+    if(currentProfile.natal_chart){try{chartData=JSON.parse(currentProfile.natal_chart);}catch(e){}}
+    var natalCanvas=document.getElementById('natal');
+    // Compute size from available width; fallback to 280px if parent isn't laid out yet.
+    var parentW=natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
+    var size=parentW>0 ? Math.min(parentW, 320) : 280;
+    LuzEstelar.NatalChart.render(natalCanvas, chartData, {size:size});
+    document.getElementById('chart-meta').textContent=currentProfile.hora_nacimiento
+      ? (currentProfile.nombre+' · '+currentProfile.fecha_nacimiento+' '+currentProfile.hora_nacimiento)
+      : 'Sun and Moon approximate · add birth time for the full chart';
+
+    // Populate Sun / Moon / Ascendant badges
+    try{
+      var signSym={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
+      function setSlma(id,symbol,value,muted){
+        var el=document.getElementById(id);
+        if(!el) return;
+        if(muted){el.classList.add('muted');}
+        else{el.classList.remove('muted');}
+        var icEl=el.querySelector('.slma-ic');
+        var vlEl=el.querySelector('.slma-vl');
+        if(symbol && icEl) icEl.textContent=symbol;
+        if(vlEl) vlEl.textContent=value||'—';
+      }
+      var sunP=chartData.planets.find(function(p){return p.name==='Sun';});
+      var moonP=chartData.planets.find(function(p){return p.name==='Moon';});
+      var ascP=chartData.planets.find(function(p){return p.name==='Ascendant';}) || (chartData.ascendant?{sign:chartData.ascendant.sign}:null);
+      if(sunP) setSlma('slma-sun',signSym[sunP.sign]||'\u2609',sunP.sign,false);
+      if(moonP) setSlma('slma-moon',signSym[moonP.sign]||'\u263E',moonP.sign,false);
+      if(ascP && ascP.sign) setSlma('slma-asc',signSym[ascP.sign]||'\u2191',ascP.sign,false);
+      else setSlma('slma-asc','\u2191','Add birth time',true);
+    }catch(e){/* slma is decorative */}
+  }catch(e){
+    document.getElementById('chart-meta').textContent='Chart temporarily unavailable';
+  }
+
+  // Star Map — personalized preview
+  try{
+    var mNm=document.getElementById('mapa-name');
+    var mIn=document.getElementById('mapa-info');
+    if(mNm) mNm.textContent=(firstName||'Your name').toUpperCase();
+    if(mIn){
+      var dd=currentProfile.fecha_nacimiento||'';
+      var lug=currentProfile.lugar_nacimiento||'';
+      mIn.textContent=(dd?fmtDate(dd):'Date')+(lug?(' · '+lug):'');
+    }
+    var mst=document.getElementById('mapa-stars-preview');
+    if(mst && !mst.dataset.ready){
+      var mhtml='';
+      for(var mi=0;mi<45;mi++){
+        var msz=(Math.random()*2+0.6).toFixed(1);
+        var mtx=(Math.random()*100).toFixed(1);
+        var mty=(Math.random()*100).toFixed(1);
+        var mdur=(Math.random()*3+2).toFixed(1);
+        var mdel=(Math.random()*3).toFixed(1);
+        var mop=(Math.random()*0.6+0.3).toFixed(2);
+        mhtml+='<span style="width:'+msz+'px;height:'+msz+'px;left:'+mtx+'%;top:'+mty+'%;animation-duration:'+mdur+'s;animation-delay:'+mdel+'s;opacity:'+mop+'"></span>';
+      }
+      mst.innerHTML=mhtml;
+      mst.dataset.ready='1';
+    }
+  }catch(e){}
+
+  // Perfiles
+  renderProfiles();
+}
+
+function buildSynth(cc){
+  var els={Fire:0,Earth:0,Air:0,Water:0};
+  var map={fire:'Fire',earth:'Earth',air:'Air',water:'Water'};
+  function add(k){if(k&&map[k])els[map[k]]++;}
+  try{add((cc.western.element_en||'').toLowerCase());}catch(e){}
+  try{add((cc.chinese.element.en||'').toLowerCase());}catch(e){}
+  try{add((cc.celtic.element_en||'').toLowerCase());}catch(e){}
+  try{add((cc.mayan.seal.element_en||'').toLowerCase());}catch(e){}
+  try{add((cc.vedic.rashi.element_en||'').toLowerCase());}catch(e){}
+  var total=Object.values(els).reduce(function(a,b){return a+b;},0)||1;
+  var clrs={Fire:'#e8456a',Earth:'#4aba7a',Air:'#f0d078',Water:'#6bb6e0'};
+  var icons={Fire:'🔥',Earth:'🌍',Air:'💨',Water:'💧'};
+  var h='';
+  ['Fire','Earth','Air','Water'].forEach(function(k){
+    var pct=Math.round(els[k]/total*100);
+    h+='<div class="synth-it"><div class="slb">'+icons[k]+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
+  });
+  document.getElementById('synth-grid').innerHTML=h;
+
+  // Insight text
+  var top=Object.entries(els).sort(function(a,b){return b[1]-a[1];})[0];
+  var insights={
+    Fire:'Your essence is driving energy. Act on intuition when your mind hesitates.',
+    Earth:'Your strength is steadiness. What you build today is tomorrow\u2019s foundation.',
+    Air:'Your gift is connecting ideas and people. Say what you think, unfiltered.',
+    Water:'You feel before you think. Trust what your body already knows.'
+  };
+  document.getElementById('synth-text').textContent=insights[top[0]]||'Elemental balance in progress.';
+}
+
+function renderProfiles(){
+  var box=document.getElementById('pf-list');
+  if(!profilesList.length){box.innerHTML='<p style="color:var(--text-dim);font-size:.82rem;text-align:center;padding:6px 0">No profiles yet.</p>';return;}
+  var h='';
+  profilesList.forEach(function(p){
+    var pri=p.is_primary;
+    h+='<div class="pf-row"><span class="pf-av">'+(pri?'⭐':'👤')+'</span>';
+    h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
+    if(pri) h+='<span class="pf-star">Primary</span>';
+    h+='</div>';
+  });
+  box.innerHTML=h;
+  var isPlus=currentUser.tier==='premium';
+  var lim=isPlus?5:1;
+  document.getElementById('pf-count').textContent=profilesList.length+' of '+lim+' profile'+(lim===1?'':'s');
+  document.getElementById('btn-add-profile').disabled=profilesList.length>=lim;
+}
+
+var _dayOffset=0;
+function _dateKeyForOffset(off){
+  var t=new Date();t.setDate(t.getDate()+off);
+  var y=t.getFullYear(),m=t.getMonth()+1,dd=t.getDate();
+  return y+'-'+(m<10?'0'+m:m)+'-'+(dd<10?'0'+dd:dd);
+}
+function _dayLabel(off){
+  if(off===0) return 'today';
+  if(off===-1) return 'yesterday';
+  if(off===1) return 'tomorrow';
+  return (off<0?'':'+')+off+'d';
+}
+async function loadDaily(offset){
+  if(typeof offset==='number') _dayOffset=offset;
+  var dk=_dateKeyForOffset(_dayOffset);
+  // Update UI chrome
+  var dl=document.getElementById('day-label');
+  if(dl) dl.textContent=_dayLabel(_dayOffset);
+  var pb=document.getElementById('day-prev'), nb=document.getElementById('day-next');
+  if(pb) pb.disabled=_dayOffset<=-7;
+  if(nb) nb.disabled=_dayOffset>=1;
+  var title=document.getElementById('rdg-title');
+  if(title){
+    title.textContent = _dayOffset===0?'Your reading today':_dayOffset===-1?'Yesterday\u2019s reading':_dayOffset===1?'Tomorrow\u2019s reading':'Reading · '+_dayLabel(_dayOffset);
+  }
+  try{
+    var qs='?lang='+LANG+(_dayOffset!==0?('&date='+dk):'');
+    var r=await api('/api/dashboard/daily-reading'+qs);
+    if(!r.ok)return;
+    var d=await r.json();
+    if(!d.ok)return;
+
+    // Energy ring + bars
+    var ov=d.energy?d.energy.overall:null;
+    if(ov!=null){
+      var circ=2*Math.PI*50;
+      document.getElementById('ring-n').textContent=ov;
+      requestAnimationFrame(function(){document.getElementById('ring').style.strokeDasharray=(ov/10*circ)+' '+circ;});
+    }
+    if(d.energy){
+      var bh='';
+      ['love','career','health','energy'].forEach(function(f){
+        var v=d.energy[f];if(v==null)return;
+        var p=v/10*100;
+        bh+='<div class="bar"><span class="bar-ic">'+E_IC[f]+'</span><div class="bar-tr"><div class="bar-fl" style="width:'+p+'%;background:'+E_CLR[f]+'"></div></div><span class="bar-v">'+v+'</span></div>';
+      });
+      document.getElementById('bars').innerHTML=bh;
+    }
+
+    // Reading text
+    var fallback = _dayOffset<0 ? 'No reading saved for that day.' : _dayOffset>0 ? 'Tomorrow\u2019s reading isn\u2019t ready yet. Check back in the morning.' : 'Your reading will be available soon.';
+    document.getElementById('rdg-text').textContent=d.reading||fallback;
+
+    // Cosmic strip
+    var cos=[];
+    if(d.moon) cos.push('<span>🌙 '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
+    if(d.luckyNumber) cos.push('<span>🍀 '+d.luckyNumber+'</span>');
+    document.getElementById('cosm').innerHTML=cos.join('');
+
+    // Greeting subtitle — moon phase + energy at a glance
+    var gs=document.getElementById('greet-sub');
+    if(gs){
+      var pieces=[];
+      if(d.moon&&d.moon.phase) pieces.push('<span class="gs-tag">🌙 <b>'+d.moon.phase+'</b></span>');
+      if(ov!=null) pieces.push('<span class="gs-tag">⚡ <b>'+ov+'</b>/10</span>');
+      if(pieces.length){gs.innerHTML=pieces.join('');gs.style.display='flex';}
+    }
+
+    // Insights
+    if(d.systemInsights&&d.systemInsights.length){
+      var ih='', hasLock=false;
+      d.systemInsights.forEach(function(ins){
+        var ic=SYS_IC[ins.system]||'✦';
+        var locked=ins.locked;
+        if(locked) hasLock=true;
+        var txt=locked?'Available with Plus.':ins.text;
+        ih+='<div class="ins-card'+(locked?' ins-lock':'')+'"><div class="ins-hd"><span>'+ic+'</span><span class="ins-sys">'+ins.label+'</span><span class="ins-arch">· '+ins.archetype+'</span></div><p class="ins-txt">'+txt+'</p></div>';
+      });
+      if(hasLock) ih+='<button type="button" class="up-cta" id="ins-upgrade-btn" style="border:none;cursor:pointer;font-family:inherit;width:100%">✦ Unlock all systems with Plus</button>';
+      document.getElementById('ins-box').innerHTML=ih;
+      document.getElementById('ins-sec').style.display='block';
+      var insBtn=document.getElementById('ins-upgrade-btn');
+      if(insBtn) insBtn.addEventListener('click',openUpgrade);
+    }
+  }catch(e){}
+}
+
+async function loadUnified(){
+  var hero=document.getElementById('cc-hero');
+  var body=document.getElementById('cc-body');
+  var badge=document.getElementById('cc-badge');
+  var isPlus=currentUser.tier==='premium';
+
+  if(!isPlus){
+    badge.textContent='Plus';
+    body.innerHTML=
+      '<div class="cc-lock">'+
+        '<div class="lc-ic">✦</div>'+
+        '<h3>Full 8-system analysis</h3>'+
+        '<p>Core identity, elemental balance, soul path and inner mechanics — a unique synthesis only Luz Estelar builds.</p>'+
+        '<button type="button" class="btn-gold" id="cc-upgrade-btn">Unlock Plus</button>'+
+      '</div>';
+    var ccBtn=document.getElementById('cc-upgrade-btn');
+    if(ccBtn) ccBtn.addEventListener('click',openUpgrade);
+    return;
+  }
+
+  badge.textContent='Active';
+  body.innerHTML='<p style="font-size:.8rem;color:var(--text-dim);padding:8px 0">Generating your report…</p>';
+  try{
+    var r=await api('/api/reports/unified?lang='+LANG);
+    var d=await r.json();
+    if(!d.ok||!d.report||!d.report.synthesis){body.innerHTML='<p style="font-size:.8rem;color:var(--text-dim)">Your report will be ready soon.</p>';return;}
+    var s=d.report.synthesis;
+    var labels={coreIdentity:'Core Identity',elementalBalance:'Elemental Balance',soulPath:'Soul Path',innerMechanics:'Inner Mechanics',strengths:'This Season\u2019s Focus'};
+    var h='';
+    ['coreIdentity','elementalBalance','soulPath','innerMechanics','strengths'].forEach(function(k){
+      if(s[k]) h+='<div class="cc-sec"><h4>'+labels[k]+'</h4><p>'+s[k]+'</p></div>';
+    });
+    body.innerHTML=h||'<p style="font-size:.8rem;color:var(--text-dim)">Your report will be ready soon.</p>';
+  }catch(e){
+    body.innerHTML='<p style="font-size:.8rem;color:var(--text-dim)">Couldn\u2019t load the report right now.</p>';
+  }
+}
+
+// ── Share card generator (Canvas → PNG → navigator.share files) ──
+// Renders a 1080×1080 branded card with today's reading, pipes it through
+// the Web Share API where available, downloads as PNG otherwise.
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+  var words=text.split(' '),lines=[],current='';
+  for(var i=0;i<words.length;i++){
+    var test=current?current+' '+words[i]:words[i];
+    if(ctx.measureText(test).width>maxWidth&&current){lines.push(current);current=words[i];}
+    else{current=test;}
+  }
+  if(current)lines.push(current);
+  var startY=y-((lines.length-1)*lineHeight)/2;
+  for(var j=0;j<lines.length;j++)ctx.fillText(lines[j],x,startY+j*lineHeight);
+  return lines.length;
+}
+
+async function generateShareCard(){
+  var firstName=((currentProfile&&currentProfile.nombre)||'').split(' ')[0]||'Your name';
+  var cc=window._cc||{};
+  var signGlyph=(cc.western&&cc.western.symbol)||'\u2728';
+  var signName=(cc.western&&(cc.western.name_en||cc.western.name_es))||'';
+  var raw=(document.getElementById('rdg-text').textContent||'').trim();
+  var excerpt=raw.split(/[.!?](\s|$)/)[0]||raw;
+  if(excerpt.length>140)excerpt=excerpt.slice(0,137)+'...';
+  if(!excerpt)excerpt='Your sky today, via Luz Estelar.';
+
+  var c=document.createElement('canvas');
+  c.width=1080;c.height=1080;
+  var ctx=c.getContext('2d');
+
+  // Background gradient
+  var g=ctx.createRadialGradient(540,540,0,540,540,820);
+  g.addColorStop(0,'#1a1340');g.addColorStop(1,'#06061a');
+  ctx.fillStyle=g;ctx.fillRect(0,0,1080,1080);
+
+  // Stars
+  ctx.fillStyle='#ffffff';
+  for(var i=0;i<90;i++){
+    var sx=Math.random()*1080,sy=Math.random()*1080,sr=Math.random()*2+0.4;
+    ctx.globalAlpha=Math.random()*0.6+0.25;
+    ctx.beginPath();ctx.arc(sx,sy,sr,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+
+  // Golden rings
+  ctx.strokeStyle='rgba(212,168,73,0.55)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(540,540,380,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(212,168,73,0.22)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(540,540,400,0,Math.PI*2);ctx.stroke();
+  ctx.setLineDash([4,6]);ctx.strokeStyle='rgba(212,168,73,0.12)';
+  ctx.beginPath();ctx.arc(540,540,420,0,Math.PI*2);ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.textAlign='center';ctx.textBaseline='middle';
+
+  // Zodiac glyph
+  ctx.fillStyle='#d4a849';
+  ctx.font='700 110px "Cormorant Garamond", serif';
+  ctx.fillText(signGlyph,540,350);
+
+  // Sign name
+  ctx.font='500 22px Inter, sans-serif';
+  ctx.fillStyle='#9890a8';
+  ctx.fillText(signName.toUpperCase(),540,420);
+
+  // Divider
+  ctx.strokeStyle='rgba(212,168,73,0.45)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(500,450);ctx.lineTo(580,450);ctx.stroke();
+
+  // Reading excerpt
+  ctx.fillStyle='#e0dce8';
+  ctx.font='italic 400 36px "Cormorant Garamond", serif';
+  wrapText(ctx,'\u201C'+excerpt+'\u201D',540,560,600,52);
+
+  // Divider
+  ctx.strokeStyle='rgba(212,168,73,0.45)';
+  ctx.beginPath();ctx.moveTo(500,660);ctx.lineTo(580,660);ctx.stroke();
+
+  // Name
+  ctx.fillStyle='#d4a849';
+  ctx.font='600 28px Inter, sans-serif';
+  ctx.fillText(firstName.toUpperCase(),540,700);
+
+  // Date
+  ctx.fillStyle='#9890a8';
+  ctx.font='400 20px Inter, sans-serif';
+  ctx.fillText(fmtDate(null),540,735);
+
+  // Brand footer
+  ctx.fillStyle='#d4a849';
+  ctx.font='700 34px "Cormorant Garamond", serif';
+  ctx.fillText('\u2726 Luz Estelar \u2726',540,990);
+  ctx.fillStyle='#9890a8';
+  ctx.font='400 18px Inter, sans-serif';
+  ctx.fillText('luzestelaroficial.com',540,1030);
+
+  return new Promise(function(resolve){c.toBlob(resolve,'image/png',0.92);});
+}
+
+document.getElementById('btn-share').addEventListener('click',async function(){
+  var b=this;
+  var url='https://luzestelaroficial.com/en/my-day.html';
+  var origHTML=b.innerHTML;
+  function flash(msg){b.textContent=msg;setTimeout(function(){b.innerHTML=origHTML;},1800);}
+  b.disabled=true;
+  b.textContent='Generating...';
+  if(navigator.vibrate)navigator.vibrate(8);
+  try{
+    var blob=await generateShareCard();
+    var file=new File([blob],'luz-estelar-'+todayStr()+'.png',{type:'image/png'});
+    // Web Share with files (iOS 15+, modern Android)
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'My reading today — Luz Estelar',text:'My sky today at luzestelaroficial.com'});
+      b.disabled=false;b.innerHTML=origHTML;return;
+    }
+    // Fallback: download
+    var objUrl=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=objUrl;a.download=file.name;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(objUrl);},1000);
+    flash('\u2713 Image downloaded');
+  }catch(e){
+    // Final fallback: share URL or copy
+    try{
+      if(navigator.share){await navigator.share({title:'Luz Estelar',url:url});}
+      else if(navigator.clipboard){await navigator.clipboard.writeText(url);flash('\u2713 Link copied');}
+    }catch(e2){flash('Could not share');}
+  }
+  b.disabled=false;
 });
+
+// ── Language switch (ES) — topbar pill, plus persist preference ──
+(function(){
+  var lp=document.getElementById('hdr-lang');
+  if(!lp)return;
+  lp.addEventListener('click',function(){
+    try{localStorage.setItem('le_lang','es');}catch(err){}
+  });
+})();
+
+// ── Starfield: sprinkle twinkling dots behind every section ──
+(function(){
+  var box=document.getElementById('stars');
+  if(!box)return;
+  var n=window.innerWidth<420?50:70;
+  var frag=document.createDocumentFragment();
+  for(var i=0;i<n;i++){
+    var s=document.createElement('span');
+    var sz=(Math.random()*1.4+.4).toFixed(2);
+    var dur=(2.5+Math.random()*3.5).toFixed(2);
+    var delay=(Math.random()*4).toFixed(2);
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+(Math.random()*100).toFixed(2)+'%;left:'+(Math.random()*100).toFixed(2)+'%;animation-duration:'+dur+'s;animation-delay:'+delay+'s';
+    frag.appendChild(s);
+  }
+  box.appendChild(frag);
+})();
+
+// ── Haptic feedback ──
+function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms||8);}catch(e){}}
+(function(){
+  document.addEventListener('click',function(ev){
+    var t=ev.target.closest&&ev.target.closest('.chip, .btn-share, .pf-add, .sub-btn, .news-btn, .lang-pill, .le-tab');
+    if(t)buzz(8);
+  },true);
+})();
+
+// ── Newsletter subscribe ──
+(function(){
+  var form=document.getElementById('news-form');
+  if(!form)return;
+  var msg=document.getElementById('news-msg');
+  var btn=form.querySelector('button');
+  form.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var email=document.getElementById('news-email').value.trim();
+    if(!email)return;
+    btn.disabled=true;btn.textContent='Sending…';
+    msg.textContent='';msg.style.color='var(--text-dim)';
+    fetch('/api/newsletter/subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,lang:'en',source:'app_my_day'})
+    }).then(function(r){return r.json();}).then(function(d){
+      if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message||'All set! Check your inbox.';form.reset();}
+      else{msg.style.color='#e07a7a';msg.textContent=d.error||'Error, try again.';}
+    }).catch(function(){
+      msg.style.color='#e07a7a';msg.textContent='Connection error. Try again.';
+    }).finally(function(){
+      btn.disabled=false;btn.textContent='Subscribe';
+    });
+  });
+})();
+
+// ── External-link helper: force window.open for PWA standalone mode ──
+(function(){
+  document.addEventListener('click',function(ev){
+    var a=ev.target.closest&&ev.target.closest('a[target="_blank"]');
+    if(!a)return;
+    if(!/^https?:/i.test(a.href))return;
+    ev.preventDefault();
+    var win=window.open(a.href,'_blank','noopener,noreferrer');
+    if(!win){try{window.location.href=a.href;}catch(e){}}
+  },false);
+})();
+
+// ── Add Profile Modal ──
+var apLabel='Partner', apLat=null, apLng=null, apSTO=null;
+function buildLabelChips(){
+  var box=document.getElementById('ap-chips');
+  box.innerHTML=LABEL_OPTS.map(function(o){
+    return '<button type="button" class="chip'+(o.v===apLabel?' on':'')+'" data-v="'+o.v+'"><span>'+o.ic+'</span><span>'+o.v+'</span></button>';
+  }).join('');
+  box.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click',function(){apLabel=c.dataset.v;buildLabelChips();});
+  });
+}
+function apCanSubmit(){
+  var n=document.getElementById('ap-name').value.trim();
+  var d=document.getElementById('ap-date').value;
+  var p=document.getElementById('ap-place').value.trim();
+  return n.length>=2 && d && p && apLat!=null;
+}
+function apUpdateSubmit(){document.getElementById('ap-submit').disabled=!apCanSubmit();}
+function apSearchPlace(q){
+  var box=document.getElementById('ap-sugs');
+  var meta=document.getElementById('ap-meta');
+  if(q.length<2){box.style.display='none';meta.style.display='none';return;}
+  box.innerHTML='<div class="sug-it" style="color:var(--text-mute);cursor:default;pointer-events:none">Searching…</div>';
+  box.style.display='block';
+  clearTimeout(apSTO);
+  apSTO=setTimeout(async function(){
+    try{
+      var r=await fetch('/api/geocode?lang=en&q='+encodeURIComponent(q),{credentials:'same-origin',cache:'no-store'});
+      var d=await r.json().catch(function(){return {ok:false,results:[]};});
+      var list=(d&&d.results)||[];
+      if(!list.length){
+        box.innerHTML='<div class="sug-it" style="color:var(--text-mute);cursor:default;pointer-events:none">No results. Try "City, Country".</div>';
+        box.style.display='block';
+        return;
+      }
+      box.innerHTML=list.map(function(pl){
+        var nm=(pl.name||'').replace(/"/g,'&quot;');
+        return '<button type="button" class="sug-it" data-lat="'+pl.lat+'" data-lon="'+pl.lon+'" data-n="'+nm+'">'+nm+'</button>';
+      }).join('');
+      box.style.display='block';
+      box.querySelectorAll('.sug-it[data-lat]').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          document.getElementById('ap-place').value=btn.dataset.n;
+          apLat=parseFloat(btn.dataset.lat);apLng=parseFloat(btn.dataset.lon);
+          box.style.display='none';
+          meta.style.display='block';meta.className='meta ok';meta.textContent='✓ Location selected';
+          apUpdateSubmit();
+        });
+      });
+    }catch(e){
+      box.innerHTML='<div class="sug-it" style="color:#e07a7a;cursor:default;pointer-events:none">Couldn\u2019t search right now. Check your connection.</div>';
+      box.style.display='block';
+    }
+  },350);
+}
+function openModal(){
+  buildLabelChips();
+  document.getElementById('mdl-bg').classList.add('active');
+  document.getElementById('mdl-sheet').classList.add('active');
+  document.body.classList.add('modal-open');
+}
+function closeModal(){
+  document.getElementById('mdl-bg').classList.remove('active');
+  document.getElementById('mdl-sheet').classList.remove('active');
+  document.body.classList.remove('modal-open');
+  document.getElementById('ap-form').reset();
+  document.getElementById('ap-sugs').style.display='none';
+  document.getElementById('ap-meta').style.display='none';
+  document.getElementById('ap-err').style.display='none';
+  apLat=null;apLng=null;apLabel='Partner';
+  apUpdateSubmit();
+}
+document.getElementById('btn-add-profile').addEventListener('click',openModal);
+document.getElementById('mdl-close').addEventListener('click',closeModal);
+document.getElementById('mdl-bg').addEventListener('click',closeModal);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+document.getElementById('ap-name').addEventListener('input',apUpdateSubmit);
+document.getElementById('ap-date').addEventListener('input',apUpdateSubmit);
+document.getElementById('ap-place').addEventListener('input',function(e){apLat=null;apLng=null;document.getElementById('ap-meta').style.display='none';apUpdateSubmit();apSearchPlace(e.target.value);});
+document.getElementById('ap-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+  if(!apCanSubmit())return;
+  var btn=document.getElementById('ap-submit');
+  btn.disabled=true;btn.textContent='Saving…';
+  try{
+    var body={
+      nombre:document.getElementById('ap-name').value.trim(),
+      fechaNacimiento:document.getElementById('ap-date').value,
+      horaNacimiento:document.getElementById('ap-time').value||null,
+      lugarNacimiento:document.getElementById('ap-place').value.trim(),
+      lat:apLat, lon:apLng,
+      label:apLabel
+    };
+    var r=await api('/api/profile/birth-profiles',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    var d=await r.json();
+    if(!r.ok||!d.ok){throw new Error(d.error||'Could not create profile');}
+    // Refresh list
+    var m=await api('/api/auth/me');var md=await m.json();
+    profilesList=md.birthProfiles||profilesList;window._pfList=profilesList;
+    renderProfiles();
+    closeModal();
+    btn.textContent='Save Profile';
+  }catch(err){
+    var e1=document.getElementById('ap-err');
+    e1.textContent=err.message||'Save failed';e1.style.display='block';
+    btn.disabled=false;btn.textContent='Save Profile';
+  }
+});
+
+// Online/offline banner — listens to connectivity changes.
+(function setupOffline(){
+  var el=document.getElementById('offline-ind');
+  if(!el) return;
+  var ic=document.getElementById('oi-ic');
+  var tx=document.getElementById('oi-tx');
+  var reconnectTimer=null;
+  function show(kind){
+    el.classList.remove('reconnected');
+    if(kind==='reconnected'){
+      el.classList.add('reconnected');
+      ic.innerHTML='&#10003;';
+      tx.textContent='Back online. Refreshing...';
+    }else{
+      ic.innerHTML='&#9888;';
+      tx.textContent="You're offline. Showing saved content.";
+    }
+    el.classList.add('show');
+  }
+  function hide(){el.classList.remove('show');}
+  window.addEventListener('offline',function(){
+    if(reconnectTimer){clearTimeout(reconnectTimer);reconnectTimer=null;}
+    show('offline');
+  });
+  window.addEventListener('online',function(){
+    show('reconnected');
+    try{loadDaily();}catch(e){}
+    reconnectTimer=setTimeout(hide,2500);
+  });
+  if(!navigator.onLine) show('offline');
+})();
+
+// Pull-to-refresh — only activates when scrolled to the top.
+// Threshold 70px triggers refresh; anything less is a bounce.
+(function setupPTR(){
+  var ptr=document.getElementById('ptr');
+  if(!ptr) return;
+  var tx=ptr.querySelector('.ptr-tx');
+  var startY=0, pulling=false, ready=false;
+  var MIN=16, THRESH=70;
+  function atTop(){return (window.scrollY||window.pageYOffset||0)<=0;}
+  document.addEventListener('touchstart',function(ev){
+    if(!atTop()) return;
+    if(document.body.classList.contains('modal-open')) return;
+    if(ev.touches.length!==1) return;
+    startY=ev.touches[0].clientY;
+    pulling=true;ready=false;
+  },{passive:true});
+  document.addEventListener('touchmove',function(ev){
+    if(!pulling) return;
+    var dy=ev.touches[0].clientY-startY;
+    if(dy<MIN){ptr.classList.remove('active','ready');return;}
+    ptr.classList.add('active');
+    if(dy>=THRESH){
+      if(!ready){ready=true;ptr.classList.add('ready');if(tx) tx.textContent='Release to refresh';if(navigator.vibrate) navigator.vibrate(8);}
+    }else{
+      if(ready){ready=false;ptr.classList.remove('ready');if(tx) tx.textContent='Pull to refresh';}
+    }
+  },{passive:true});
+  document.addEventListener('touchend',function(){
+    if(!pulling) return;
+    pulling=false;
+    if(ready){
+      ptr.classList.add('spin');
+      if(tx) tx.textContent='Refreshing...';
+      try{loadDaily();}catch(e){}
+      setTimeout(function(){
+        ptr.classList.remove('active','ready','spin');
+        if(tx) tx.textContent='Release to refresh';
+      },900);
+    }else{
+      ptr.classList.remove('active','ready');
+    }
+  },{passive:true});
+})();
+
+// ── Day navigation: prev/next buttons + swipe + keyboard arrows ──
+(function(){
+  var prev=document.getElementById('day-prev');
+  var next=document.getElementById('day-next');
+  var card=document.getElementById('rdg-card');
+  function go(delta){
+    var target=_dayOffset+delta;
+    if(target<-7||target>1) return;
+    if(card){card.classList.add('swiping');}
+    loadDaily(target).then(function(){
+      if(card){setTimeout(function(){card.classList.remove('swiping');},180);}
+    },function(){if(card){card.classList.remove('swiping');}});
+    if(navigator.vibrate) navigator.vibrate(6);
+  }
+  if(prev) prev.addEventListener('click',function(){go(-1);});
+  if(next) next.addEventListener('click',function(){go(1);});
+  // Keyboard arrows for desktop users
+  document.addEventListener('keydown',function(ev){
+    if(ev.target && /INPUT|TEXTAREA|SELECT/.test(ev.target.tagName)) return;
+    if(ev.key==='ArrowLeft') go(-1);
+    else if(ev.key==='ArrowRight') go(1);
+  });
+  // Horizontal swipe on the reading card
+  if(card){
+    var sx=0, sy=0, tracking=false;
+    card.addEventListener('touchstart',function(ev){
+      if(ev.touches.length!==1) return;
+      sx=ev.touches[0].clientX; sy=ev.touches[0].clientY; tracking=true;
+    },{passive:true});
+    card.addEventListener('touchmove',function(ev){
+      if(!tracking) return;
+      var dx=ev.touches[0].clientX-sx, dy=ev.touches[0].clientY-sy;
+      // Abort if vertical dominates
+      if(Math.abs(dy)>40 && Math.abs(dy)>Math.abs(dx)){tracking=false;}
+    },{passive:true});
+    card.addEventListener('touchend',function(ev){
+      if(!tracking) return;
+      tracking=false;
+      var t=ev.changedTouches[0];
+      var dx=t.clientX-sx, dy=t.clientY-sy;
+      if(Math.abs(dx)<60) return;
+      if(Math.abs(dy)>Math.abs(dx)) return;
+      if(dx<0) go(1); else go(-1);
+    },{passive:true});
+  }
+})();
 
 init();
 })();
 </script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+<script src="/js/icons.js" defer></script>
+<script src="/js/stars.js" defer></script>
+<script src="/js/install-prompt.js" defer></script>
+<script src="/js/upgrade-sheet.js" defer></script>
+<script src="/js/bottom-tabs.js" defer></script>
 </body>
 </html>

@@ -10,6 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+    <!-- Design system (shared — tokens, PWA patterns, icons) -->
+    <link rel="stylesheet" href="/css/design-tokens.css">
+    <link rel="stylesheet" href="/css/pwa.css">
+    <link rel="stylesheet" href="/css/icons.css">
+    <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
     <style>
         :root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--bg-deep:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-purple:#7c5cbf;}
         *{margin:0;padding:0;box-sizing:border-box;}
@@ -162,6 +167,15 @@
         .upgrade-cta p{font-size:0.82em;color:var(--text-dim);margin-bottom:12px;}
         .btn-upgrade{display:inline-block;padding:8px 24px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--accent-purple),#9b7fd4);color:#fff;font-weight:600;font-size:0.85em;cursor:pointer;text-decoration:none;transition:transform 0.2s;}
         .btn-upgrade:hover{transform:translateY(-1px);}
+
+        /* Unified cross-cultural report (Plus) */
+        .unif-report{display:flex;flex-direction:column;gap:14px;margin-top:4px;}
+        .unif-sec{background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:14px 16px;}
+        .unif-sec h4{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:1.02em;font-weight:700;margin-bottom:6px;letter-spacing:0.02em;}
+        .unif-sec p{font-size:0.88em;line-height:1.65;color:var(--text);}
+        .unif-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;}
+        .unif-chip{font-size:0.72em;padding:4px 10px;border-radius:999px;background:rgba(212,168,73,0.1);border:1px solid rgba(212,168,73,0.22);color:var(--gold-light);letter-spacing:0.02em;}
+        .unif-err{font-size:0.85em;color:var(--text-dim);padding:10px 0;}
 
         /* ── Mobile greeting (hidden on desktop) ── */
         .mob-greeting{display:none;}
@@ -342,8 +356,8 @@
                 <!-- Free gate -->
                 <div id="pm-free-gate" class="upgrade-cta hidden">
                     <h3>&#128274; Additional Profiles</h3>
-                    <p>With Premium you can add up to 5 profiles for family and friends, each with a complete astral map across 8 systems.</p>
-                    <a href="/en/planes.html" class="btn-upgrade">View Premium Plans</a>
+                    <p>With Plus you can add up to 5 profiles for family and friends, each with a complete astral map across 8 systems.</p>
+                    <button type="button" class="btn-upgrade" onclick="window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:'en'})">View Plus</button>
                 </div>
                 <!-- Profile list -->
                 <div id="pm-list"></div>
@@ -411,7 +425,7 @@
                 <div class="upgrade-cta" id="upgrade-cta">
                     <h3>&#9733; Unlock Your Full Report</h3>
                     <p>Detailed analysis connecting your 8 systems: zodiac, Chinese, numerology, Celtic, Mayan, Vedic, Human Design and Enneagram.</p>
-                    <a href="/en/planes.html" class="btn-upgrade">View Premium Plans</a>
+                    <button type="button" class="btn-upgrade" onclick="window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:'en'})">View Plus</button>
                 </div>
             </div>
 
@@ -425,9 +439,9 @@
 
                 <!-- State: free user — upgrade gate -->
                 <div id="compat-upgrade-gate" class="upgrade-cta hidden">
-                    <h3>&#128274; Premium Feature</h3>
-                    <p>Cross-cultural couple compatibility requires a Premium account. Includes analysis across 7 ancestral systems and up to 5 saved profiles.</p>
-                    <a href="/en/planes.html" class="btn-upgrade">View Premium Plans</a>
+                    <h3>&#128274; Plus Feature</h3>
+                    <p>Cross-cultural couple compatibility requires a Plus account. Includes analysis across 7 ancestral systems and up to 5 saved profiles.</p>
+                    <button type="button" class="btn-upgrade" onclick="window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:'en'})">View Plus</button>
                 </div>
 
                 <!-- State: premium, no partner profile yet -->
@@ -448,7 +462,14 @@
                         </div>
                         <div class="form-group">
                             <label>Place of birth</label>
-                            <input type="text" id="partner-lugar" placeholder="City, Country" required>
+                            <div class="geo-wrapper">
+                                <input type="text" id="partner-lugar" placeholder="City, Country" required autocomplete="off">
+                                <div class="geo-spinner" id="partner-geo-spinner"></div>
+                                <div class="geo-dropdown" id="partner-geo-dropdown"></div>
+                            </div>
+                            <input type="hidden" id="partner-lat">
+                            <input type="hidden" id="partner-lon">
+                            <input type="hidden" id="partner-tz">
                         </div>
                         <button type="submit" class="btn-primary">Save and Calculate Compatibility</button>
                     </form>
@@ -624,20 +645,72 @@
                 var icon = SIC[ins.system] || '✦';
                 if (ins.locked) {
                     hasLock = true;
-                    html += '<div class="di-card di-lock"><div class="di-hd"><span>' + icon + '</span><span class="di-sys">' + ins.label + '</span><span class="di-arch">· ' + ins.archetype + '</span></div><p class="di-txt">This insight is available with the Premium plan.</p></div>';
+                    html += '<div class="di-card di-lock"><div class="di-hd"><span>' + icon + '</span><span class="di-sys">' + ins.label + '</span><span class="di-arch">· ' + ins.archetype + '</span></div><p class="di-txt">This insight is available with the Plus plan.</p></div>';
                 } else {
                     html += '<div class="di-card"><div class="di-hd"><span>' + icon + '</span><span class="di-sys">' + ins.label + '</span><span class="di-arch">· ' + ins.archetype + '</span></div><p class="di-txt">' + ins.text + '</p></div>';
                 }
             });
-            if (hasLock) html += '<a class="di-up" href="/en/plans.html">✦ Unlock all systems with Premium</a>';
+            if (hasLock) html += '<a class="di-up" href="#" onclick="event.preventDefault();window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:\'en\'});return false;">✦ Unlock all systems with Plus</a>';
             el.innerHTML = html;
         } catch(e) { el.innerHTML = ''; }
+    }
+
+    // Premium cross-cultural unified report — fetches /api/reports/unified
+    // and renders the synthesis narrative into #cross-cultural-preview.
+    async function loadUnifiedReport(lang) {
+        var el = document.getElementById('cross-cultural-preview');
+        if (!el) return;
+        var L = {
+            loading: 'Generating your unified report…',
+            empty: 'Your unified report will be ready soon.',
+            elementalBalance: 'Elemental Balance',
+            coreIdentity: 'Core Identity',
+            soulPath: 'Soul Path',
+            innerMechanics: 'Inner Mechanics',
+            strengths: 'This Season\u2019s Focus',
+        };
+        el.innerHTML = '<p class="unif-err">' + L.loading + '</p>';
+        try {
+            var res = await fetch('/api/reports/unified?lang=' + lang, { credentials: 'same-origin' });
+            var data = await res.json();
+            if (!data.ok || !data.report || !data.report.synthesis) {
+                el.innerHTML = '<p class="unif-err">' + L.empty + '</p>';
+                return;
+            }
+            var s = data.report.synthesis;
+            var sys = data.report.systems || {};
+            var chipHTML = '';
+            if (sys.western)     chipHTML += '<span class="unif-chip">' + sys.western.sign + ' · ' + (sys.western.element || '') + '</span>';
+            if (sys.chinese)     chipHTML += '<span class="unif-chip">' + sys.chinese.animal + ' · ' + (sys.chinese.element || '') + '</span>';
+            if (sys.numerology)  chipHTML += '<span class="unif-chip">#' + sys.numerology.lifePathNumber + ' · ' + sys.numerology.theme + '</span>';
+            if (sys.celtic)      chipHTML += '<span class="unif-chip">' + sys.celtic.tree + '</span>';
+            if (sys.mayan)       chipHTML += '<span class="unif-chip">' + sys.mayan.seal + ' · Kin ' + sys.mayan.kin + '</span>';
+            if (sys.vedic)       chipHTML += '<span class="unif-chip">' + sys.vedic.rashi + '</span>';
+            if (sys.humanDesign) chipHTML += '<span class="unif-chip">Gate ' + sys.humanDesign.gate + '</span>';
+            if (sys.enneagram)   chipHTML += '<span class="unif-chip">E-' + sys.enneagram.type + '</span>';
+            var html = '<div class="unif-meta">' + chipHTML + '</div>';
+            html += '<div class="unif-report">';
+            if (s.coreIdentity)      html += '<div class="unif-sec"><h4>' + L.coreIdentity      + '</h4><p>' + s.coreIdentity      + '</p></div>';
+            if (s.elementalBalance)  html += '<div class="unif-sec"><h4>' + L.elementalBalance  + '</h4><p>' + s.elementalBalance  + '</p></div>';
+            if (s.soulPath)          html += '<div class="unif-sec"><h4>' + L.soulPath          + '</h4><p>' + s.soulPath          + '</p></div>';
+            if (s.innerMechanics)    html += '<div class="unif-sec"><h4>' + L.innerMechanics    + '</h4><p>' + s.innerMechanics    + '</p></div>';
+            if (s.strengths)         html += '<div class="unif-sec"><h4>' + L.strengths         + '</h4><p>' + s.strengths         + '</p></div>';
+            html += '</div>';
+            el.innerHTML = html;
+        } catch(e) {
+            el.innerHTML = '<p class="unif-err">' + L.empty + '</p>';
+        }
     }
 
     function showUserInfo(user) {
         document.getElementById('user-name').textContent = user.name || user.email;
         var badge = document.getElementById('tier-badge');
-        badge.textContent = user.tier === 'free' ? 'Free' : user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
+        // Display: free → "Free", premium → "Plus" (customer-facing brand).
+        var label;
+        if (user.tier === 'free') label = 'Free';
+        else if (user.tier === 'premium') label = 'Plus';
+        else label = user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
+        badge.textContent = label;
         if (user.tier !== 'free') badge.classList.add('premium');
         if (user.picture) {
             var img = document.getElementById('user-avatar');
@@ -733,9 +806,10 @@
         loadDailyHoroscope(cc, 'en');
         loadDailyInsights('en');
 
-        // Upgrade CTA visibility
+        // Upgrade CTA visibility — hide for subscribers and load full report instead
         if (user.tier !== 'free') {
             document.getElementById('upgrade-cta').classList.add('hidden');
+            loadUnifiedReport('en');
         }
 
         // Initialize Couple Compatibility card state
@@ -866,9 +940,31 @@
             html += '</div>';
         });
         html += '</div>';
-        html += '<div style="padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);">';
-        html += '  <p style="font-size:0.9em;line-height:1.7;color:var(--text-dim);">' + escapeHtml(report.synthesis || '') + '</p>';
-        html += '</div>';
+        // v2 sections (panorama / strengths / tensions / growth / ritual)
+        var sec = report.sections;
+        if (sec && typeof sec === 'object') {
+            var sectionCSS = 'padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);margin-bottom:12px;';
+            var titleCSS = 'font-family:\'Cormorant Garamond\',serif;color:var(--gold);font-size:1.1em;margin-bottom:8px;';
+            var textCSS = 'font-size:0.9em;line-height:1.7;color:var(--text-dim);margin:0;';
+            function renderTextSec(s) {
+                if (!s) return '';
+                return '<div style="' + sectionCSS + '"><div style="' + titleCSS + '">' + escapeHtml(s.title) + '</div><p style="' + textCSS + '">' + escapeHtml(s.text || '') + '</p></div>';
+            }
+            function renderListSec(s) {
+                if (!s || !s.items || !s.items.length) return '';
+                var lis = s.items.map(function(it) { return '<li style="margin-bottom:6px;">' + escapeHtml(it) + '</li>'; }).join('');
+                return '<div style="' + sectionCSS + '"><div style="' + titleCSS + '">' + escapeHtml(s.title) + '</div><ul style="' + textCSS + ';padding-left:20px;">' + lis + '</ul></div>';
+            }
+            html += renderTextSec(sec.panorama);
+            html += renderListSec(sec.strengths);
+            html += renderListSec(sec.tensions);
+            html += renderTextSec(sec.growth);
+            html += renderTextSec(sec.ritual);
+        } else if (report.synthesis) {
+            html += '<div style="padding:16px;background:rgba(212,168,73,0.05);border-radius:12px;border:1px solid rgba(212,168,73,0.15);">';
+            html += '  <p style="font-size:0.9em;line-height:1.7;color:var(--text-dim);">' + escapeHtml(report.synthesis) + '</p>';
+            html += '</div>';
+        }
         container.innerHTML = html;
         container.classList.remove('hidden');
     }
@@ -899,6 +995,9 @@
                         fechaNacimiento: document.getElementById('partner-fecha').value,
                         horaNacimiento: document.getElementById('partner-hora').value || null,
                         lugarNacimiento: document.getElementById('partner-lugar').value,
+                        lat: parseFloat(document.getElementById('partner-lat').value) || null,
+                        lon: parseFloat(document.getElementById('partner-lon').value) || null,
+                        timezone: document.getElementById('partner-tz').value || null,
                         label: 'Partner'
                     })
                 });
@@ -971,14 +1070,16 @@
         }
     });
 
-    // ── Geocoding autocomplete (Nominatim) ─────────────────
-    (function(){
-        var input = document.getElementById('setup-lugar');
-        var dropdown = document.getElementById('geo-dropdown');
-        var spinner = document.getElementById('geo-spinner');
-        var latEl = document.getElementById('setup-lat');
-        var lonEl = document.getElementById('setup-lon');
-        var tzEl = document.getElementById('setup-tz');
+    // ── Geocoding autocomplete (Nominatim) — shared helper ─────
+    function attachGeoAutocomplete(opts) {
+        var input = document.getElementById(opts.inputId);
+        var dropdown = document.getElementById(opts.dropdownId);
+        var spinner = opts.spinnerId ? document.getElementById(opts.spinnerId) : null;
+        var latEl = document.getElementById(opts.latId);
+        var lonEl = document.getElementById(opts.lonId);
+        var tzEl = document.getElementById(opts.tzId);
+        if (!input || !dropdown || !latEl || !lonEl || !tzEl) return;
+        var lang = opts.lang || 'en';
         var debounceTimer = null;
         var highlighted = -1;
         var results = [];
@@ -988,7 +1089,6 @@
             var sign = offset >= 0 ? '+' : '';
             return 'UTC' + sign + offset;
         }
-
         function formatResult(r) {
             var addr = r.address || {};
             var city = addr.city || addr.town || addr.village || addr.hamlet || r.name || '';
@@ -996,7 +1096,6 @@
             var country = addr.country || '';
             return { main: city || r.display_name.split(',')[0], sub: [state, country].filter(Boolean).join(', '), full: r.display_name, lat: r.lat, lon: r.lon };
         }
-
         function renderDropdown() {
             if (results.length === 0) { dropdown.classList.remove('active'); return; }
             var html = '';
@@ -1013,7 +1112,6 @@
                 });
             });
         }
-
         function selectResult(idx) {
             var r = results[idx];
             if (!r) return;
@@ -1026,26 +1124,23 @@
             results = [];
             highlighted = -1;
         }
-
         async function searchLocation(query) {
             if (query.length < 3) { dropdown.classList.remove('active'); return; }
-            spinner.style.display = 'block';
+            if (spinner) spinner.style.display = 'block';
             try {
-                var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1&accept-language=en';
+                var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1&accept-language=' + lang;
                 var res = await fetch(url, { headers: { 'User-Agent': 'LuzEstelar/1.0 (luzestelaroficial.com)' } });
                 results = await res.json();
                 highlighted = -1;
                 renderDropdown();
             } catch(e) { console.error('Geocode error', e); }
-            spinner.style.display = 'none';
+            if (spinner) spinner.style.display = 'none';
         }
-
         input.addEventListener('input', function() {
             latEl.value = ''; lonEl.value = ''; tzEl.value = '';
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(function() { searchLocation(input.value.trim()); }, 400);
         });
-
         input.addEventListener('keydown', function(e) {
             if (!dropdown.classList.contains('active')) return;
             if (e.key === 'ArrowDown') { e.preventDefault(); highlighted = Math.min(highlighted + 1, results.length - 1); renderDropdown(); }
@@ -1053,11 +1148,19 @@
             else if (e.key === 'Enter' && highlighted >= 0) { e.preventDefault(); selectResult(highlighted); }
             else if (e.key === 'Escape') { dropdown.classList.remove('active'); }
         });
-
         input.addEventListener('blur', function() {
             setTimeout(function() { dropdown.classList.remove('active'); }, 200);
         });
-    })();
+    }
+
+    attachGeoAutocomplete({
+        inputId: 'setup-lugar', dropdownId: 'geo-dropdown', spinnerId: 'geo-spinner',
+        latId: 'setup-lat', lonId: 'setup-lon', tzId: 'setup-tz', lang: 'en'
+    });
+    attachGeoAutocomplete({
+        inputId: 'partner-lugar', dropdownId: 'partner-geo-dropdown', spinnerId: 'partner-geo-spinner',
+        latId: 'partner-lat', lonId: 'partner-lon', tzId: 'partner-tz', lang: 'en'
+    });
 
     async function logout() {
         await fetch('/api/auth/logout', {method: 'POST'});
@@ -1121,7 +1224,7 @@
             };
             document.getElementById('synth-text').textContent = insights[dominant.key] || '';
         } else {
-            document.getElementById('synth-text').innerHTML = 'Your dominant element is <strong style="color:var(--gold)">' + dominant.label + '</strong>. <a href="/en/planes.html" style="color:var(--gold);">Activate Premium</a> to see the full synthesis of your 8 systems.';
+            document.getElementById('synth-text').innerHTML = 'Your dominant element is <strong style="color:var(--gold)">' + dominant.label + '</strong>. <a href="#" style="color:var(--gold);" onclick="event.preventDefault();window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:\'en\'});return false;">Activate Plus</a> to see the full synthesis of your 8 systems.';
         }
     }
 
@@ -1404,90 +1507,10 @@
     }
 
     // Geocoding for add-profile modal
-    (function(){
-        var input = document.getElementById('ap-lugar');
-        var dropdown = document.getElementById('ap-geo-dropdown');
-        var spinner = document.getElementById('ap-geo-spinner');
-        var latEl = document.getElementById('ap-lat');
-        var lonEl = document.getElementById('ap-lon');
-        var tzEl = document.getElementById('ap-tz');
-        var debounceTimer = null;
-        var highlighted = -1;
-        var results = [];
-
-        function tzFromCoords(lat, lon) {
-            var offset = Math.round(lon / 15);
-            var sign = offset >= 0 ? '+' : '';
-            return 'UTC' + sign + offset;
-        }
-
-        function formatResult(r) {
-            var addr = r.address || {};
-            var city = addr.city || addr.town || addr.village || addr.hamlet || r.name || '';
-            var state = addr.state || addr.region || '';
-            var country = addr.country || '';
-            return { main: city || r.display_name.split(',')[0], sub: [state, country].filter(Boolean).join(', '), full: r.display_name, lat: r.lat, lon: r.lon };
-        }
-
-        function renderDropdown() {
-            if (results.length === 0) { dropdown.classList.remove('active'); return; }
-            var html = '';
-            results.forEach(function(r, i) {
-                var f = formatResult(r);
-                html += '<div class="geo-option' + (i === highlighted ? ' highlighted' : '') + '" data-idx="' + i + '"><span class="geo-main">' + f.main + '</span><span class="geo-sub">' + f.sub + '</span></div>';
-            });
-            dropdown.innerHTML = html;
-            dropdown.classList.add('active');
-            dropdown.querySelectorAll('.geo-option').forEach(function(el) {
-                el.addEventListener('mousedown', function(ev) {
-                    ev.preventDefault();
-                    selectResult(parseInt(el.dataset.idx));
-                });
-            });
-        }
-
-        function selectResult(idx) {
-            var r = results[idx];
-            if (!r) return;
-            var f = formatResult(r);
-            input.value = f.full;
-            latEl.value = r.lat;
-            lonEl.value = r.lon;
-            tzEl.value = tzFromCoords(parseFloat(r.lat), parseFloat(r.lon));
-            dropdown.classList.remove('active');
-            results = [];
-            highlighted = -1;
-        }
-
-        async function searchLocation(query) {
-            if (query.length < 3) { dropdown.classList.remove('active'); return; }
-            spinner.style.display = 'block';
-            try {
-                var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=5&addressdetails=1&accept-language=en';
-                var res = await fetch(url, { headers: { 'User-Agent': 'LuzEstelar/1.0 (luzestelaroficial.com)' } });
-                results = await res.json();
-                highlighted = -1;
-                renderDropdown();
-            } catch(e) { console.error('Geocode error', e); }
-            spinner.style.display = 'none';
-        }
-
-        input.addEventListener('input', function() {
-            latEl.value = ''; lonEl.value = ''; tzEl.value = '';
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function() { searchLocation(input.value.trim()); }, 400);
-        });
-        input.addEventListener('keydown', function(e) {
-            if (!dropdown.classList.contains('active')) return;
-            if (e.key === 'ArrowDown') { e.preventDefault(); highlighted = Math.min(highlighted + 1, results.length - 1); renderDropdown(); }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); highlighted = Math.max(highlighted - 1, 0); renderDropdown(); }
-            else if (e.key === 'Enter' && highlighted >= 0) { e.preventDefault(); selectResult(highlighted); }
-            else if (e.key === 'Escape') { dropdown.classList.remove('active'); }
-        });
-        input.addEventListener('blur', function() {
-            setTimeout(function() { dropdown.classList.remove('active'); }, 200);
-        });
-    })();
+    attachGeoAutocomplete({
+        inputId: 'ap-lugar', dropdownId: 'ap-geo-dropdown', spinnerId: 'ap-geo-spinner',
+        latId: 'ap-lat', lonId: 'ap-lon', tzId: 'ap-tz', lang: 'en'
+    });
 
     init();
 
@@ -1529,6 +1552,8 @@
     </script>
     <script src="/js/profile-card.js"></script>
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
+    <script src="/js/icons.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
+    <script src="/js/upgrade-sheet.js" defer></script>
 </body>
 </html>
