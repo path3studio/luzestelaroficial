@@ -1,0 +1,180 @@
+/*!
+ * Luz Estelar — PWA patterns
+ * ───────────────────────────
+ * Mobile-first adjustments that apply ONLY when the app runs in
+ * standalone (installed) mode or on narrow viewports. Desktop web
+ * stays untouched.
+ *
+ * Depends on: design-tokens.css (safe-area vars, tap-min, spacing)
+ */
+
+/* ── Touch target minimums ──────────────────────────────────────── */
+/* Anything the user can tap must meet 44×44px (Apple HIG / Material).
+   This is a safety net — use it on any clickable pill / icon / link. */
+.tap-safe,
+.tap-safe * {
+  min-height: var(--tap-min);
+  min-width: var(--tap-min);
+}
+
+/* For inline links that genuinely should stay compact, opt out with
+   .tap-compact. Use sparingly — only when spacing is otherwise OK. */
+.tap-compact {
+  min-height: 0;
+  min-width: 0;
+}
+
+/* ── Safe-area insets (iPhone notch + home indicator) ───────────── */
+.safe-area {
+  padding-top:    max(var(--safe-top),    0px);
+  padding-bottom: max(var(--safe-bottom), 0px);
+  padding-left:   max(var(--safe-left),   0px);
+  padding-right:  max(var(--safe-right),  0px);
+}
+
+/* Specific helpers for common patterns */
+.safe-top    { padding-top:    max(var(--safe-top),    0px); }
+.safe-bottom { padding-bottom: max(var(--safe-bottom), 0px); }
+
+/* Bottom tabs specifically need safe-bottom so they don't collide
+   with the iPhone home indicator. Add to any fixed bottom nav. */
+.pwa-bottom-nav {
+  padding-bottom: calc(var(--sp-3) + var(--safe-bottom));
+}
+
+/* ── Standalone-mode tweaks (only when launched from home screen) ── */
+@media (display-mode: standalone) {
+  /* Hide elements that only make sense in a browser tab */
+  .only-web { display: none !important; }
+
+  /* iOS standalone needs extra top padding under the status bar */
+  body {
+    padding-top: var(--safe-top);
+  }
+
+  /* Any sticky top bar picks up the safe-top automatically */
+  .topbar,
+  .pwa-topbar {
+    padding-top: calc(var(--sp-3) + var(--safe-top));
+  }
+}
+
+/* Inverse: only show these when running as installed PWA */
+.only-pwa { display: none; }
+@media (display-mode: standalone) {
+  .only-pwa { display: initial; }
+}
+
+/* ── iOS tap-highlight cleanup ──────────────────────────────────── */
+/* iOS adds a grey flash on tap that clashes with our gold theme.
+   Disable globally; provide our own :active states. */
+a, button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Default :active feedback — subtle scale + opacity. Overridable. */
+.tap-feedback:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+  transition: transform var(--dur-fast) var(--ease-standard),
+              opacity   var(--dur-fast) var(--ease-standard);
+}
+
+/* ── Scroll behaviour ───────────────────────────────────────────── */
+/* Prevent horizontal rubberbanding on iOS — page never scrolls sideways. */
+html, body {
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: contain;
+}
+
+/* Smooth momentum scroll on iOS for scrollable containers */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* ── Focus rings (keyboard-only, not on tap) ────────────────────── */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ── Install banner slot (JS toggles .is-shown) ─────────────────── */
+.install-banner {
+  position: fixed;
+  left: var(--sp-4);
+  right: var(--sp-4);
+  bottom: calc(var(--sp-4) + var(--safe-bottom));
+  padding: var(--sp-4);
+  background: linear-gradient(135deg, var(--bg-mid), var(--bg-high));
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+  display: none;
+  gap: var(--sp-3);
+  align-items: center;
+  z-index: var(--z-toast);
+  transform: translateY(calc(100% + 24px));
+  transition: transform var(--dur-slow) var(--ease-emphasis);
+}
+.install-banner.is-shown {
+  display: flex;
+  transform: translateY(0);
+}
+.install-banner .ib-icon {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: var(--gold-dim);
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  font-size: 1.4rem;
+}
+.install-banner .ib-body {
+  flex: 1;
+  min-width: 0;
+}
+.install-banner .ib-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  color: var(--text);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+}
+.install-banner .ib-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  margin-top: 2px;
+  line-height: var(--lh-snug);
+}
+.install-banner .ib-actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+.install-banner button {
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-md);
+  font: 600 var(--fs-sm)/1 var(--font-body);
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-dim);
+  transition: color var(--dur-base) var(--ease-standard);
+}
+.install-banner button.ib-primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--text-inverse);
+}
+.install-banner button.ib-primary:hover {
+  box-shadow: var(--shadow-gold);
+}
+.install-banner button.ib-dismiss:hover {
+  color: var(--text);
+}

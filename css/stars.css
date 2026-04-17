@@ -1,0 +1,92 @@
+/*!
+ * Luz Estelar — Starfield
+ * ────────────────────────
+ * Reusable twinkling starfield. Attach via JS to any element with
+ *   [data-stars]         → populates with random dots
+ *   [data-stars="dense"] → higher density (for hero sections)
+ *   [data-stars="soft"]  → lower density (background ambience)
+ *
+ * The [data-stars-global] root (fixed, full-viewport, z=-1) lives
+ * behind every page as a subtle ambient layer. Sections that want a
+ * stronger effect add their own local [data-stars].
+ */
+
+/* ── Global ambient layer ───────────────────────────────────────── */
+[data-stars-global] {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-bg);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* Soft gold corona anchors brand identity above the starfield */
+[data-stars-global]::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  width: 140vw;
+  height: 140vw;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    circle,
+    var(--gold-whisper) 0%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+/* ── Local (scoped) starfields ──────────────────────────────────── */
+[data-stars] {
+  position: relative;
+}
+
+[data-stars] > .star-dot,
+[data-stars-global] > .star-dot {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: star-twinkle ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.85; }
+}
+
+/* ── Shooting star (occasional accent) ──────────────────────────── */
+[data-stars-global] > .star-shoot {
+  position: absolute;
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.9),
+    transparent
+  );
+  opacity: 0;
+  animation: star-shoot 8s linear infinite;
+}
+
+@keyframes star-shoot {
+  0%   { transform: translate(-10vw, 0) rotate(-18deg); opacity: 0; }
+  5%   { opacity: 0.8; }
+  15%  { transform: translate(110vw, 32vh) rotate(-18deg); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Respect reduced-motion — freeze all twinkling. */
+@media (prefers-reduced-motion: reduce) {
+  [data-stars] > .star-dot,
+  [data-stars-global] > .star-dot {
+    animation: none;
+    opacity: 0.4;
+  }
+  [data-stars-global] > .star-shoot {
+    display: none;
+  }
+}

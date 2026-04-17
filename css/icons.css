@@ -1,0 +1,65 @@
+/*!
+ * Luz Estelar — Icon system
+ * ──────────────────────────
+ * Sizing + color conventions for [data-icon] SVG icons.
+ * Depends on: design-tokens.css (uses currentColor inheritance)
+ *
+ * Default icon size = 1em so icons inherit the parent font-size.
+ * Size variants:
+ *   .le-ic-sm    → 0.85em   compact (inside dense labels)
+ *   (default)    → 1em      aligned with adjacent text
+ *   .le-ic-lg    → 1.35em   section labels, feature callouts
+ *   .le-ic-xl    → 2em      hero, empty-states
+ *
+ * Tone variants (no color — just alpha / opacity presets):
+ *   .le-ic-dim   → 0.65 opacity (secondary role)
+ *   .le-ic-mute  → 0.4  opacity (tertiary)
+ *
+ * Named colors come from tokens via .text-gold / .text-dim / etc.
+ */
+
+.le-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: -0.125em; /* optical baseline with adjacent text */
+  flex: 0 0 auto;
+  color: inherit;
+}
+
+.le-ic > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* ── Size variants ─────────────────────────────────────────────── */
+.le-ic-sm { width: 0.85em; height: 0.85em; }
+.le-ic-lg { width: 1.35em; height: 1.35em; }
+.le-ic-xl { width: 2em;    height: 2em; }
+
+/* ── Tone variants ─────────────────────────────────────────────── */
+.le-ic-dim  { opacity: 0.65; }
+.le-ic-mute { opacity: 0.40; }
+
+/* ── Color utility classes (pair with .le-ic for quick tinting) ── */
+.text-gold     { color: var(--gold); }
+.text-gold-dim { color: var(--gold-light); }
+.text-dim      { color: var(--text-dim); }
+.text-mute     { color: var(--text-mute); }
+.text-purple   { color: var(--purple); }
+.text-rose     { color: var(--rose); }
+.text-green    { color: var(--green); }
+.text-blue     { color: var(--blue); }
+
+/* Before hydration the placeholder should take space so text doesn't
+   reflow. width/height are 1em by default, so this is automatic. */
+[data-icon]:not([data-icon-ready="1"]) {
+  min-width: 1em;
+  min-height: 1em;
+  display: inline-block;
+}
