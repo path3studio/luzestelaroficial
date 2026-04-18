@@ -128,11 +128,16 @@
 
     var cx = size / 2;
     var cy = size / 2;
-    var outerR = size * 0.46;
-    var signR  = size * 0.39;
-    var innerR = size * 0.33;
-    var planetR = size * 0.26;
-    var aspectR = size * 0.22;
+    // outerR shrunk from 0.46 → 0.42 (Apr 18) so the ASC/MC labels
+    // drawn at outerR + 14 always stay inside the canvas even at
+    // the far-left / far-right of the circle. Before, at size=320
+    // the label ended at px ≈ 161 which clipped by 1px on the
+    // edge — enough to eat the "M" of MC.
+    var outerR = size * 0.42;
+    var signR  = size * 0.36;
+    var innerR = size * 0.30;
+    var planetR = size * 0.24;
+    var aspectR = size * 0.20;
 
     // Only use ascendant offset if we have a verified ascendant (real time-of-birth calculation).
     // Accept both shapes: a bare number (legacy) OR an object { sign, degree, longitude }

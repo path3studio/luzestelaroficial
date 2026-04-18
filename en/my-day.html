@@ -227,9 +227,9 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .pf-row:last-of-type{border-bottom:none}
 .pf-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.15));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--text-dim)}
 .pf-av .le-ic{width:18px;height:18px}
-.pf-info{flex:1;min-width:0}
-.pf-name{font-size:.84rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pf-sub{font-size:.66rem;color:var(--text-mute);margin-top:1px}
+.pf-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pf-name{font-size:.84rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.pf-sub{font-size:.66rem;color:var(--text-mute);display:block}
 .pf-star{font-size:.6rem;padding:1px 7px;border-radius:8px;background:var(--gold-dim);color:var(--gold);font-weight:600}
 .pf-add{display:block;width:100%;margin-top:10px;padding:9px;text-align:center;border:1px dashed rgba(212,168,73,.35);background:none;color:var(--gold);font-size:.82rem;border-radius:10px;cursor:pointer;font-family:inherit}
 .pf-add:active{background:rgba(212,168,73,.08)}
@@ -360,7 +360,6 @@ body.modal-open{overflow:hidden;touch-action:none}
 <div id="st-home" class="state">
   <header class="topbar">
     <a href="/" class="logo">Luz Estelar</a>
-    <span class="dt" id="hdr-dt"></span>
     <div class="hdr-actions">
       <a href="/mi-dia.html" class="lang-pill" id="hdr-lang" aria-label="Cambiar a español">ES</a>
       <span class="tier-pill" id="tier-pill">Free</span>
@@ -776,8 +775,9 @@ async function init(){
 }
 
 function renderAll(){
-  // Topbar
-  document.getElementById('hdr-dt').textContent=todayStr();
+  // Topbar — date element removed; null-safe access in case any
+  // other surface re-adds #hdr-dt later.
+  var hdrDt=document.getElementById('hdr-dt'); if(hdrDt) hdrDt.textContent=todayStr();
   var tier=document.getElementById('tier-pill');
   var lab='Free';
   if(currentUser.tier==='premium'){lab='Plus';tier.classList.add('plus');}

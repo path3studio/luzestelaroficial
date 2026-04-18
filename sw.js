@@ -5,12 +5,12 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v22 → v23 (Apr 18 resilience): even with the shape fix
-// on natal-chart.js, a canvas-render failure can no longer mask
-// the Sol/Luna/Asc badges — they now render first, unconditionally,
-// in their own try/catch. Canvas draw is isolated. console.warn
-// surfaces any draw error to DevTools for remote debugging.
-const CACHE_NAME = 'luzestelar-v23';
+// Bumped v23 → v24 (Apr 18 UX polish): natal chart outerR shrunk
+// to 0.42 so ASC/MC labels never clip on the canvas edge. Profile
+// row name + sub now stacked (display:block + flex column) so they
+// stop running together into "ErnestoMi Perfil". Date removed from
+// the topbar — it's already shown inside the daily-energy card.
+const CACHE_NAME = 'luzestelar-v24';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
