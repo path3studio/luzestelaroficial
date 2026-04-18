@@ -16,7 +16,7 @@
 <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mi-dia.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
 <!-- Design system (source of truth → tokens, stars, PWA patterns, icons) -->
 <link rel="stylesheet" href="/css/design-tokens.css">
@@ -265,7 +265,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 /* Sol + Luna + Ascendente badges above natal chart */
 .slma{display:flex;justify-content:space-around;gap:8px;margin:0 0 14px;padding:10px 4px;border-bottom:1px solid rgba(212,168,73,.08)}
 .slma-item{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0}
-.slma-ic{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.16),rgba(212,168,73,.02) 70%);border:1px solid rgba(212,168,73,.2);color:var(--gold);font-size:1.15rem;font-family:'Cormorant Garamond',serif;font-weight:600}
+.slma-ic{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.16),rgba(212,168,73,.02) 70%);border:1px solid rgba(212,168,73,.2);color:var(--gold);font-size:1.15rem;font-family:'Noto Sans Symbols 2','Cormorant Garamond',serif;font-weight:600;font-variant-emoji:text;-webkit-font-feature-settings:normal}
 .slma-lbl{font-size:.56rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-mute)}
 .slma-nom{font-size:.74rem;color:var(--text);font-weight:500;text-align:center;line-height:1.2}
 .slma-item.muted .slma-ic{opacity:.55}
@@ -633,7 +633,10 @@ body.modal-open{overflow:hidden;touch-action:none}
 </div>
 
 <script src="/js/cross-cultural.js"></script>
-<script src="/js/natal-chart.js"></script>
+<!-- v6 query-string busts browser HTTP cache (max-age 4h) so the
+     phase 6.2 geocentric renderer lands immediately on the user's
+     device instead of waiting for the cache window to expire. -->
+<script src="/js/natal-chart.js?v=6"></script>
 <script>
 (function(){
 'use strict';
@@ -941,14 +944,19 @@ function renderAll(){
         'Escorpio':'Escorpio','Sagitario':'Sagitario','Capricornio':'Capricornio',
         'Acuario':'Acuario','Piscis':'Piscis'
       };
+      // Each glyph ends with U+FE0E (VS15) to force text-style rendering
+      // on Android/iOS — without it the OS picks its emoji-font fallback
+      // and the Sol/Luna/Asc badges show as blocky color emoji instead
+      // of the slim line glyphs the design calls for.
+      var VS = '\uFE0E';
       var signSym={
-        Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',
-        Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',
-        Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653',
+        Aries:'\u2648'+VS,Taurus:'\u2649'+VS,Gemini:'\u264A'+VS,Cancer:'\u264B'+VS,Leo:'\u264C'+VS,
+        Virgo:'\u264D'+VS,Libra:'\u264E'+VS,Scorpio:'\u264F'+VS,Sagittarius:'\u2650'+VS,
+        Capricorn:'\u2651'+VS,Aquarius:'\u2652'+VS,Pisces:'\u2653'+VS,
         // Spanish keys
-        'Tauro':'\u2649','G\u00e9minis':'\u264A','C\u00e1ncer':'\u264B',
-        'Escorpio':'\u264F','Sagitario':'\u2650','Capricornio':'\u2651',
-        'Acuario':'\u2652','Piscis':'\u2653'
+        'Tauro':'\u2649'+VS,'G\u00e9minis':'\u264A'+VS,'C\u00e1ncer':'\u264B'+VS,
+        'Escorpio':'\u264F'+VS,'Sagitario':'\u2650'+VS,'Capricornio':'\u2651'+VS,
+        'Acuario':'\u2652'+VS,'Piscis':'\u2653'+VS
       };
       function setSlma(id,planet,fallbackName,muted){
         var el=document.getElementById(id);
@@ -1066,10 +1074,13 @@ function renderAll(){
     function drawSky(){
       if (!window.__currentProfile || !window.__skyCatalogs) return;
       var p = window.__currentProfile;
-      if (!p.hora_nacimiento || p.lat === null || p.lon === null) {
-        // Can't render horizon view without complete birth data
+      // == null matches both null and undefined (the API may omit
+      // the field entirely if the DB row has NULL coordinates).
+      if (!p.hora_nacimiento || p.lat == null || p.lon == null) {
         var cm = document.getElementById('chart-meta');
         if (cm) cm.textContent = 'Cielo real requiere hora + lugar exactos';
+        if (window.console) console.warn('[sky view] missing:',
+          { hora: p.hora_nacimiento, lat: p.lat, lon: p.lon });
         return;
       }
       var dateParts = (p.fecha_nacimiento || '').split('-').map(Number);
