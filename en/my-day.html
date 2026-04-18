@@ -225,7 +225,8 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 /* Profiles list */
 .pf-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--glass-b)}
 .pf-row:last-of-type{border-bottom:none}
-.pf-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.15));display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.pf-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.15));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--text-dim)}
+.pf-av .le-ic{width:18px;height:18px}
 .pf-info{flex:1;min-width:0}
 .pf-name{font-size:.84rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pf-sub{font-size:.66rem;color:var(--text-mute);margin-top:1px}
@@ -948,12 +949,16 @@ function renderProfiles(){
   var h='';
   profilesList.forEach(function(p){
     var pri=p.is_primary;
-    h+='<div class="pf-row"><span class="pf-av">'+(pri?'⭐':'👤')+'</span>';
+    // Avatar icon: gold star for primary, neutral user for the rest.
+    var avIcon = pri ? 'star' : 'user';
+    var avFallback = pri ? '⭐' : '👤';
+    h+='<div class="pf-row"><span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
     h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
     if(pri) h+='<span class="pf-star">Primary</span>';
     h+='</div>';
   });
   box.innerHTML=h;
+  if (window.LuzEstelarIcons) window.LuzEstelarIcons.hydrate(box);
   var isPlus=currentUser.tier==='premium';
   var lim=isPlus?5:1;
   document.getElementById('pf-count').textContent=profilesList.length+' of '+lim+' profile'+(lim===1?'':'s');
@@ -1364,6 +1369,10 @@ function closeModal(){
   apUpdateSubmit();
 }
 document.getElementById('btn-add-profile').addEventListener('click',openModal);
+
+// Drag-to-dismiss integration (sheet-modal.js).
+document.getElementById('mdl-sheet').addEventListener('sheet:dismiss', closeModal);
+window.__closeAddProfileSheet = closeModal;
 document.getElementById('mdl-close').addEventListener('click',closeModal);
 document.getElementById('mdl-bg').addEventListener('click',closeModal);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
@@ -1529,6 +1538,7 @@ init();
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 <script src="/js/icons.js" defer></script>
 <script src="/js/stars.js" defer></script>
+<script src="/js/sheet-modal.js" defer></script>
 <script src="/js/install-prompt.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>

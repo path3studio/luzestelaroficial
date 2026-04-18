@@ -220,7 +220,7 @@
     </style>
 </head>
 <body>
-    <div class="starfield"><canvas id="stars"></canvas></div>
+    <div data-stars-global aria-hidden="true"></div>
 
     <div class="topbar">
         <a href="/" class="logo">Luz Estelar</a>
@@ -537,7 +537,7 @@
     <script src="js/natal-chart.js"></script>
     <script>
     // ── Starfield ──
-    (function(){var c=document.getElementById('stars');var ctx=c.getContext('2d');var w,h,stars=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}function init(){resize();stars=[];for(var i=0;i<120;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.2,a:Math.random()*0.4+0.1,speed:Math.random()*0.12+0.01,phase:Math.random()*Math.PI*2});}}function draw(){ctx.clearRect(0,0,w,h);var t=Date.now()*0.001;stars.forEach(function(s){var f=0.5+0.5*Math.sin(t*s.speed*6+s.phase);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+s.a*f+')';ctx.fill();});requestAnimationFrame(draw);}init();draw();window.addEventListener('resize',init);})();
+    /* Canvas starfield replaced by /js/stars.js DOM twinkle (design-system consistent) */
 
     // ── Dashboard App ──
     var currentUser = null;
@@ -1585,6 +1585,7 @@
     <script src="/js/profile-card.js"></script>
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
     <script src="/js/icons.js" defer></script>
+    <script src="/js/stars.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
     <script src="/js/upgrade-sheet.js" defer></script>
     <script src="/js/bottom-tabs.js" defer></script>

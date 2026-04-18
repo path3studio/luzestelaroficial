@@ -5,11 +5,11 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v17 → v18 (Apr 18 late late): phase 3.5 cleanup — removed
-// duplicate :root, .state, @keyframes spin from the inline style
-// blocks of 8 pages (tokens.css + components.css own them now).
-// Also added --glass-bg and --text-main legacy aliases to tokens.
-const CACHE_NAME = 'luzestelar-v18';
+// Bumped v18 → v19 (Apr 18 late³): phase-4 polish — sheet-modal
+// component + swipe-to-dismiss JS, avatar emoji → SVG in profile
+// row, dashboard starfield migrated from canvas to DOM twinkle
+// (consistent with every other app-shell page).
+const CACHE_NAME = 'luzestelar-v19';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -31,6 +31,7 @@ const PRECACHE_URLS = [
   '/css/components.css',
   '/js/icons.js',
   '/js/stars.js',
+  '/js/sheet-modal.js',
   '/js/bottom-tabs.js',
   '/js/upgrade-sheet.js',
   '/js/install-prompt.js',

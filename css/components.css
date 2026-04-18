@@ -233,6 +233,129 @@ body {
 .badge-rose   { background: var(--rose-dim);   color: var(--rose); }
 .badge-green  { background: var(--green-dim);  color: var(--green); }
 
+/* ── Sheet modal (bottom-sheet, native-app feel) ────────────────── */
+/* Usage:
+ *   <div class="sheet-bg" id="my-sheet-bg"></div>
+ *   <div class="sheet" id="my-sheet" role="dialog" aria-modal="true">
+ *     <div class="sheet-handle" aria-hidden="true"></div>
+ *     <header class="sheet-head">
+ *       <h2 class="sheet-title">Title</h2>
+ *       <button class="sheet-close" aria-label="Close">&times;</button>
+ *     </header>
+ *     <div class="sheet-body">…content…</div>
+ *   </div>
+ * JS toggles .is-active on both bg + sheet. For drag-to-dismiss
+ * include /js/sheet-modal.js (optional; sheet works without it).
+ *
+ * The legacy .mdl-bg / .mdl-sheet / .mdl-* classes in mi-dia.html
+ * are the canonical origin of this pattern — we keep them as
+ * aliases so the existing Add-Profile modal keeps working while
+ * new sheets adopt .sheet-* names.
+ */
+.sheet-bg,
+.mdl-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease-standard);
+}
+.sheet-bg.is-active,
+.sheet-bg.active,
+.mdl-bg.active { opacity: 1; pointer-events: auto; }
+
+.sheet,
+.mdl-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 88vh;
+  background: var(--bg-mid);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border: 1px solid var(--glass-b);
+  border-bottom: none;
+  z-index: 81;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 240ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  will-change: transform;
+}
+.sheet.is-active,
+.sheet.active,
+.mdl-sheet.active { transform: translateY(0); }
+
+.sheet-handle,
+.mdl-handle {
+  width: 38px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--glass-b);
+  margin: 8px auto 0;
+  /* Signal grabability — cursor + tiny hover color change */
+  cursor: grab;
+  transition: background 180ms var(--ease-standard);
+}
+.sheet-handle:hover,
+.mdl-handle:hover { background: var(--gold-dim); }
+.sheet-handle:active,
+.mdl-handle:active { cursor: grabbing; }
+
+.sheet-head,
+.mdl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 6px;
+}
+.sheet-title,
+.mdl-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text);
+}
+.sheet-close,
+.mdl-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+.sheet-close:hover,
+.mdl-close:hover { color: var(--gold); }
+
+.sheet-body,
+.mdl-body {
+  padding: 6px 18px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* When a sheet is open, lock body scroll so the whole page can't
+ * bleed past the sheet. Pair with document.body.classList.add('modal-open'). */
+body.modal-open,
+body.sheet-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
 /* ── Fade-in motion (common scroll reveal) ──────────────────────── */
 .fade {
   opacity: 0;
