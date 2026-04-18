@@ -533,20 +533,46 @@
 
     // ── Planets ──
     if (chartData.planets && chartData.planets.length > 0) {
+      // Per-planet radial offset from the base planetR.
+      // Grouped by classical astrological family so the chart reads
+      // as four concentric bands without losing the same-angle-means-
+      // same-zodiac-position principle of the traditional wheel:
+      //   luminaries → outermost (Sun/Moon stand out closest to signs)
+      //   personals  → next in
+      //   socials    → inner
+      //   outers     → innermost
+      // The tiny deltas (≤ 0.03 of size) keep planets visibly grouped
+      // by family while preserving the chart's legibility.
+      var PLANET_TIER = {
+        Sun: 0,      Moon: 0,                                   // luminaries
+        Mercury: 1,  Venus: 1,   Mars: 1,                       // personals
+        Jupiter: 2,  Saturn: 2,                                 // socials
+        Uranus: 3,   Neptune: 3, Pluto: 3,                      // transpersonals
+        NorthNode: 1, Chiron: 2
+      };
+      var TIER_OFFSETS = [0, -0.020, -0.040, -0.060];   // × size
+
       // Spread overlapping planets
       var sorted = chartData.planets.slice().sort(function(a,b) { return a.longitude - b.longitude; });
       var positions = [];
+      // Captured hit-regions for tap-to-identify. Stored on the canvas
+      // element so click handlers outside the renderer can hit-test.
+      var hitRegions = [];
       sorted.forEach(function(p) {
         var angle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
-        // Nudge if too close to previous
+        // Nudge if too close to previous (SAME tier only — different-tier
+        // planets already separate radially, so we shouldn't extra-nudge).
+        var tier = PLANET_TIER[p.name] !== undefined ? PLANET_TIER[p.name] : 1;
         for (var j = 0; j < positions.length; j++) {
-          var diff = Math.abs(angle - positions[j]);
+          if (positions[j].tier !== tier) continue;
+          var diff = Math.abs(angle - positions[j].angle);
           if (diff < 0.12) angle += 0.13;
         }
-        positions.push(angle);
+        positions.push({ angle: angle, tier: tier });
 
-        var px = cx + Math.cos(angle) * planetR;
-        var py = cy + Math.sin(angle) * planetR;
+        var myR = planetR + (TIER_OFFSETS[tier] || 0) * size;
+        var px = cx + Math.cos(angle) * myR;
+        var py = cy + Math.sin(angle) * myR;
         var glyph = PLANET_GLYPHS[p.name] || '?';
         var color = getPlanetColor(p.name, size);
 
@@ -583,15 +609,32 @@
         ctx.font = Math.round(size * 0.018) + 'px Inter, sans-serif';
         ctx.fillText(degStr, px, py + size * 0.035);
 
-        // Tick line from planet to zodiac ring
+        // Tick line from planet to zodiac ring (starts at the *actual*
+        // rendered planet radius, not the base, so the family-tiered
+        // rings get clean short lines and the outer ones longer).
         var tickAngle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
         ctx.strokeStyle = color + '33';
         ctx.lineWidth = 0.5;
         ctx.beginPath();
-        ctx.moveTo(cx + Math.cos(tickAngle) * (planetR + size * 0.04), cy + Math.sin(tickAngle) * (planetR + size * 0.04));
+        ctx.moveTo(cx + Math.cos(tickAngle) * (myR + size * 0.025), cy + Math.sin(tickAngle) * (myR + size * 0.025));
         ctx.lineTo(cx + Math.cos(tickAngle) * signR, cy + Math.sin(tickAngle) * signR);
         ctx.stroke();
+
+        // Register hit-region for tap-to-identify (consumer JS reads
+        // canvas._hitRegions and does a nearest-match by Euclidean).
+        hitRegions.push({
+          type: 'planet',
+          name: p.name,
+          sign: p.sign,
+          degree: p.degree,
+          longitude: p.longitude,
+          x: px, y: py, r: sphereR * 1.6,
+        });
       });
+      // Stash on the canvas so the UI can hit-test tap events.
+      canvas._hitRegions = hitRegions;
+    } else {
+      canvas._hitRegions = [];
     }
 
     // ── Center decoration — decorative pattern ──
@@ -712,10 +755,31 @@
     }
   }
 
+  /**
+   * Hit-test a click/tap against the last-rendered chart.
+   * Returns the closest region (planet) within its radius, or null.
+   *   hitTest(canvas, xRelativeToCanvas, yRelativeToCanvas)
+   */
+  function hitTest(canvas, x, y) {
+    var regions = canvas && canvas._hitRegions;
+    if (!regions || !regions.length) return null;
+    var best = null, bestD = Infinity;
+    for (var i = 0; i < regions.length; i++) {
+      var r = regions[i];
+      var dx = x - r.x, dy = y - r.y;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d <= r.r && d < bestD) {
+        best = r; bestD = d;
+      }
+    }
+    return best;
+  }
+
   // ─── Export ──
   global.LuzEstelar = global.LuzEstelar || {};
   global.LuzEstelar.NatalChart = {
     render: render,
+    hitTest: hitTest,
     calcMoonLongitude: calcMoonLongitude,
     signFromLongitude: signFromLongitude,
     degreeInSign: degreeInSign,

@@ -128,10 +128,38 @@ export async function onRequestPost(context) {
   if (!user) return Response.json({ ok: false, error: 'Not authenticated' }, { status: 401 });
 
   const body = await context.request.json();
-  const { nombre, fechaNacimiento, horaNacimiento, lugarNacimiento, lat, lon, timezone, label } = body;
+  let { nombre, fechaNacimiento, horaNacimiento, lugarNacimiento, lat, lon, timezone, label } = body;
 
   if (!nombre || !fechaNacimiento || !lugarNacimiento) {
     return Response.json({ ok: false, error: 'Missing required fields: nombre, fechaNacimiento, lugarNacimiento' }, { status: 400 });
+  }
+
+  // Server-side geocoding safety-net: if the client didn't resolve
+  // coordinates (autocomplete was skipped, freeform typing, older
+  // UI versions, etc.), try Nominatim via our /api/geocode proxy.
+  // Without this, the profile row ends up with lat/lon NULL and the
+  // Cielo Real view + any observational features fail downstream.
+  if ((lat == null || lon == null) && lugarNacimiento) {
+    try {
+      const gUrl = new URL('/api/geocode', context.request.url);
+      gUrl.searchParams.set('q', lugarNacimiento);
+      // Default to Spanish — matches most of our user base. Could be
+      // inferred from user.lang in a future iteration.
+      gUrl.searchParams.set('lang', 'es');
+      const gRes = await fetch(gUrl.toString(), {
+        headers: { 'User-Agent': 'LuzEstelar-Profile-Backfill/1.0' },
+      });
+      if (gRes.ok) {
+        const gData = await gRes.json();
+        if (gData && gData.ok && gData.results && gData.results[0]) {
+          lat = gData.results[0].lat;
+          lon = gData.results[0].lon;
+        }
+      }
+    } catch (_) {
+      // Non-fatal — profile still gets created, just without
+      // coordinates. User can resubmit with proper autocomplete.
+    }
   }
 
   // Parse birth date

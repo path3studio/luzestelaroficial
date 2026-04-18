@@ -261,6 +261,15 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .chart-toggle .ch-tab{flex:1;padding:8px 14px;border:none;background:transparent;color:var(--text-dim);font-family:inherit;font-size:.76rem;font-weight:500;cursor:pointer;border-radius:999px;transition:color .2s,background .2s;-webkit-tap-highlight-color:transparent}
 .chart-toggle .ch-tab.is-on{background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.12));color:var(--gold);font-weight:600;box-shadow:inset 0 1px 0 rgba(212,168,73,.15)}
 .chart-toggle .ch-tab:active{transform:scale(.97)}
+.chart-info{margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,168,73,.05),rgba(124,92,191,.03));border:1px solid var(--glass-b);border-radius:var(--r-lg);animation:fadeInUp .28s ease-out}
+.chart-info .ci-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.chart-info .ci-glyph{font-family:'Noto Sans Symbols 2',serif;font-size:1.7rem;line-height:1;color:var(--gold);font-variant-emoji:text}
+.chart-info .ci-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text);font-weight:600}
+.chart-info .ci-pos{font-size:.75rem;color:var(--gold);letter-spacing:.04em;font-weight:500;margin-left:auto;padding:4px 10px;border-radius:999px;background:var(--gold-dim)}
+.chart-info .ci-desc{font-size:.82rem;color:var(--text-dim);line-height:1.55}
+.chart-info .ci-close{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text-mute);font-size:1rem;cursor:pointer;padding:4px 6px}
+.chart-info{position:relative}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* Sol + Luna + Ascendente badges above natal chart */
 .slma{display:flex;justify-content:space-around;gap:8px;margin:0 0 14px;padding:10px 4px;border-bottom:1px solid rgba(212,168,73,.08)}
@@ -485,10 +494,14 @@ body.modal-open{overflow:hidden;touch-action:none}
           </div>
         </div>
         <div class="chart-wrap">
-          <canvas id="natal"></canvas>
-          <canvas id="sky" style="display:none"></canvas>
+          <canvas id="natal" style="cursor:pointer"></canvas>
+          <canvas id="sky" style="display:none;cursor:pointer"></canvas>
         </div>
         <p class="chart-meta" id="chart-meta"></p>
+        <!-- Contextual info card: becomes visible when the user taps
+             a planet or star on the canvas. Populated by the click
+             handler below, hydrated by the planet lookup table. -->
+        <div class="chart-info" id="chart-info" hidden aria-live="polite"></div>
         <!-- Toggle between the symbolic natal chart (geocentric,
              Earth + zodiac + planets + real zodiacal stars overlaid)
              and the observational horizon view (what you actually saw
@@ -636,7 +649,7 @@ body.modal-open{overflow:hidden;touch-action:none}
 <!-- v6 query-string busts browser HTTP cache (max-age 4h) so the
      phase 6.2 geocentric renderer lands immediately on the user's
      device instead of waiting for the cache window to expire. -->
-<script src="/js/natal-chart.js?v=6"></script>
+<script src="/js/natal-chart.js?v=7"></script>
 <script>
 (function(){
 'use strict';
@@ -1049,6 +1062,88 @@ function renderAll(){
 
   // Perfiles
   renderProfiles();
+
+  // ── Tap-to-identify on the natal canvas ──
+  // Wires once. Reads canvas._hitRegions populated by NatalChart.render
+  // and shows an info card with what was tapped. One-sentence meaning
+  // table baked in — enough for recognition, deep dives happen in the
+  // full Consulta report.
+  (function(){
+    var canv = document.getElementById('natal');
+    var info = document.getElementById('chart-info');
+    if (!canv || !info || canv.dataset.tapWired === '1') return;
+    canv.dataset.tapWired = '1';
+
+    var PLANET_GLYPH = {
+      Sun:'\u2609\uFE0E', Moon:'\u263D\uFE0E', Mercury:'\u263F\uFE0E',
+      Venus:'\u2640\uFE0E', Mars:'\u2642\uFE0E', Jupiter:'\u2643\uFE0E',
+      Saturn:'\u2644\uFE0E', Uranus:'\u2645\uFE0E', Neptune:'\u2646\uFE0E',
+      Pluto:'\u2647\uFE0E', NorthNode:'\u260A\uFE0E', Chiron:'\u26B7\uFE0E'
+    };
+    var PLANET_NAME_ES = {
+      Sun:'Sol', Moon:'Luna', Mercury:'Mercurio', Venus:'Venus',
+      Mars:'Marte', Jupiter:'Júpiter', Saturn:'Saturno', Uranus:'Urano',
+      Neptune:'Neptuno', Pluto:'Plutón', NorthNode:'Nodo Norte',
+      Chiron:'Quirón'
+    };
+    // One-line meaning in natal context. Brief, evocative, concrete.
+    var PLANET_MEANING = {
+      Sun:     'Tu esencia — cómo te expresas y dónde brillas.',
+      Moon:    'Tu mundo emocional — lo que te calma y te nutre.',
+      Mercury: 'Cómo piensas y comunicas — tu voz y tu curiosidad.',
+      Venus:   'Qué te atrae y cómo amas — estética y vínculo.',
+      Mars:    'Tu fuerza y tu deseo — cómo actúas y peleas por lo tuyo.',
+      Jupiter: 'Dónde creces y crees — expansión y oportunidades.',
+      Saturn:  'Tus límites y disciplina — dónde maduras con tiempo.',
+      Uranus:  'Qué rompes y reinventas — tu originalidad.',
+      Neptune: 'Lo que sueñas y disuelves — imaginación y entrega.',
+      Pluto:   'Lo que transformas desde la raíz — poder y renacimiento.',
+      NorthNode: 'Tu dirección evolutiva — adonde tu alma se dirige.',
+      Chiron:  'Tu herida sanadora — donde más duele y más enseñas.'
+    };
+    var SIGN_ES = {
+      Aries:'Aries', Taurus:'Tauro', Gemini:'Géminis', Cancer:'Cáncer',
+      Leo:'Leo', Virgo:'Virgo', Libra:'Libra', Scorpio:'Escorpio',
+      Sagittarius:'Sagitario', Capricorn:'Capricornio', Aquarius:'Acuario',
+      Pisces:'Piscis',
+      // Spanish pass-through
+      'Tauro':'Tauro','Géminis':'Géminis','Cáncer':'Cáncer','Escorpio':'Escorpio',
+      'Sagitario':'Sagitario','Capricornio':'Capricornio','Acuario':'Acuario','Piscis':'Piscis'
+    };
+
+    function renderInfo(hit) {
+      if (!hit || hit.type !== 'planet') return hide();
+      var name = PLANET_NAME_ES[hit.name] || hit.name;
+      var glyph = PLANET_GLYPH[hit.name] || '\u2726';
+      var sign  = SIGN_ES[hit.sign] || hit.sign || '';
+      var deg   = Math.floor(hit.degree || 0);
+      var desc  = PLANET_MEANING[hit.name] || '';
+      info.innerHTML =
+        '<button class="ci-close" aria-label="Cerrar" type="button">&times;</button>' +
+        '<div class="ci-hd">' +
+          '<span class="ci-glyph">' + glyph + '</span>' +
+          '<span class="ci-name">' + name + '</span>' +
+          '<span class="ci-pos">' + sign + ' ' + deg + '\u00B0</span>' +
+        '</div>' +
+        '<p class="ci-desc">' + desc + '</p>';
+      info.hidden = false;
+      info.querySelector('.ci-close').addEventListener('click', hide);
+      // Haptic nudge — confirms the tap was registered
+      if (window.LuzEstelar && window.LuzEstelar.haptic) {
+        window.LuzEstelar.haptic('select');
+      }
+    }
+    function hide() { info.hidden = true; info.innerHTML = ''; }
+
+    canv.addEventListener('click', function(e){
+      var rect = canv.getBoundingClientRect();
+      var x = (e.clientX - rect.left) * (canv.width / rect.width) / (window.devicePixelRatio || 1);
+      var y = (e.clientY - rect.top)  * (canv.height / rect.height) / (window.devicePixelRatio || 1);
+      if (!window.LuzEstelar || !window.LuzEstelar.NatalChart) return;
+      var hit = window.LuzEstelar.NatalChart.hitTest(canv, x, y);
+      if (hit) renderInfo(hit); else hide();
+    });
+  })();
 
   // ── Chart toggle: Carta Natal ↔ Cielo real ──
   // Wires the two-tab switch below the canvas. The sky view lazy-loads

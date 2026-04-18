@@ -5,14 +5,12 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v25 → v26 (Apr 18 p6.2 rollout fixes): cache-busting ?v=6
-// on natal-chart.js so devices with a live HTTP cache of the old
-// file see the new geocentric renderer immediately; VS15 variant
-// selectors on zodiac glyphs so Android stops swapping to its
-// color emoji font mid-word; Noto Sans Symbols 2 added to the
-// Google Fonts import so a proper typographic sign font is on
-// hand whatever platform the user is on.
-const CACHE_NAME = 'luzestelar-v26';
+// Bumped v26 → v27 (Apr 18 p6.3): planet tiers (luminaries outer,
+// outer planets innermost), tap-to-identify with info card, and
+// server-side geocoding safety-net on Add Profile so new entries
+// never land in D1 with NULL coordinates again. Natal chart
+// bumped to ?v=7 to skip any stale HTTP cache from the v=6 wave.
+const CACHE_NAME = 'luzestelar-v27';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
