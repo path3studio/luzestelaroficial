@@ -44,6 +44,92 @@
     NorthNode:'#888', Chiron:'#A0522D'
   };
 
+  // Realistic painted spheres — radial gradients with a top-left light
+  // source. Ported from infographic_generator.py so both the still-image
+  // infographics and the live canvas chart show the same planets.
+  // Each entry is [light → shadow color stops], rendered with the light
+  // source at ~30% x, 28% y of the circle.
+  var PLANET_SPHERES = {
+    Sun:     ['#fff8e0','#ffe040','#f0b020','#d08010','#a05008','#703000'],
+    Moon:    ['#f0ece0','#d8d0c0','#b0a898','#888078','#585050','#383030'],
+    Mercury: ['#c8c0b8','#a89888','#887868','#685848','#484038','#302820'],
+    Venus:   ['#f8f0d8','#e8d8a8','#d0c088','#b8a068','#987848','#705830'],
+    Mars:    ['#e8a878','#d07848','#c05830','#a04020','#802818','#501008'],
+    Jupiter: ['#f0d8b0','#d8b888','#c8a068','#b08848','#987038','#504018'],
+    Saturn:  ['#f0e0c0','#d8c898','#c0b078','#a89060','#887048','#604828'],
+    Uranus:  ['#c0e8e8','#80c8d0','#58a8b8','#3888a0','#206880','#104858'],
+    Neptune: ['#90b8e8','#5888d0','#3868b8','#2050a0','#103880','#082058'],
+    Pluto:   ['#c8b8a8','#a89080','#887060','#685040','#483828','#302018']
+  };
+
+  // Soft outer-glow color per planet (for the halo behind the sphere).
+  var PLANET_HALOS = {
+    Sun:     'rgba(255,200,50,0.50)',
+    Moon:    'rgba(200,210,230,0.32)',
+    Mercury: 'rgba(160,140,120,0.25)',
+    Venus:   'rgba(220,200,140,0.32)',
+    Mars:    'rgba(200,100,50,0.38)',
+    Jupiter: 'rgba(200,160,100,0.32)',
+    Saturn:  'rgba(200,180,120,0.32)',
+    Uranus:  'rgba(100,180,200,0.30)',
+    Neptune: 'rgba(60,100,200,0.36)',
+    Pluto:   'rgba(140,120,100,0.22)'
+  };
+
+  /**
+   * Paint a realistic 3D-looking planet sphere at (x, y) with given radius.
+   * Uses a 6-stop radial gradient (light-to-shadow) plus an outer halo.
+   * Falls back to a flat fill if the name isn't in the sphere table.
+   */
+  function drawPlanetSphere(ctx, x, y, r, name) {
+    var stops = PLANET_SPHERES[name];
+    var halo  = PLANET_HALOS[name];
+    if (!stops) {
+      ctx.fillStyle = PLANET_COLORS[name] || '#fff';
+      ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+      return;
+    }
+
+    // Outer halo
+    if (halo) {
+      var hg = ctx.createRadialGradient(x, y, r * 0.6, x, y, r * 2.4);
+      hg.addColorStop(0.0, halo);
+      hg.addColorStop(1.0, halo.replace(/[\d.]+\)$/, '0)'));
+      ctx.fillStyle = hg;
+      ctx.beginPath(); ctx.arc(x, y, r * 2.4, 0, TAU); ctx.fill();
+    }
+
+    // Sphere gradient — light source top-left, offset inward
+    var lx = x - r * 0.38, ly = y - r * 0.42;
+    var g = ctx.createRadialGradient(lx, ly, r * 0.05, x, y, r);
+    g.addColorStop(0.00, stops[0]);
+    g.addColorStop(0.15, stops[1]);
+    g.addColorStop(0.35, stops[2]);
+    g.addColorStop(0.55, stops[3]);
+    g.addColorStop(0.75, stops[4]);
+    g.addColorStop(1.00, stops[5]);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+
+    // Saturn rings — drawn as a thin ellipse across the sphere
+    if (name === 'Saturn') {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-0.35);                        // slight tilt
+      ctx.strokeStyle = 'rgba(240,220,170,0.75)';
+      ctx.lineWidth = Math.max(0.9, r * 0.14);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r * 1.65, r * 0.42, 0, 0, TAU);
+      ctx.stroke();
+      ctx.lineWidth = Math.max(0.5, r * 0.06);
+      ctx.strokeStyle = 'rgba(255,240,200,0.35)';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r * 1.85, r * 0.48, 0, 0, TAU);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
   // On mobile canvases the saturated magenta Venus (#DA70D6) and deep
   // purple Jupiter (#9400D3) read as harsh lilac/violet blobs against
   // the cosmic background — same colors desaturated slightly blend
@@ -287,6 +373,105 @@
       }
     }
 
+    // ── Real sky overlay (zodiacal constellations) ──
+    // Optional: when the caller passes `starCatalog` + `constellationCatalog`,
+    // we project each star in the catalog by its ecliptic coordinates and
+    // plot it inside the zodiac band. Stars near the ecliptic (|lat| < 18°)
+    // fit inside the signR↔outerR annulus; everything else is ignored
+    // because this view is the *zodiac* — north-polar stars belong to the
+    // horizon projection (sky-map.js), not the natal chart.
+    //
+    // We rely on LuzEstelar.SkyMap.equatorialToEcliptic if sky-map.js is
+    // loaded on the page; otherwise we inline a tiny equivalent. This keeps
+    // natal-chart.js usable even when sky-map.js isn't present.
+    var _eq2ecl = (window.LuzEstelar && window.LuzEstelar.SkyMap && window.LuzEstelar.SkyMap.equatorialToEcliptic)
+      ? window.LuzEstelar.SkyMap.equatorialToEcliptic
+      : (function () {
+          var EPS = 23.4392911 * DEG, HR15 = 15 * DEG;
+          return function (ra, dec) {
+            var r = ra * HR15, d = dec * DEG;
+            var sd = Math.sin(d), cd = Math.cos(d), sr = Math.sin(r), cr = Math.cos(r);
+            var se = Math.sin(EPS), ce = Math.cos(EPS);
+            var lat = Math.asin(sd * ce - cd * se * sr);
+            var lon = Math.atan2(sr * ce + Math.tan(d) * se, cr);
+            if (lon < 0) lon += TAU;
+            return { lon: lon / DEG, lat: lat / DEG };
+          };
+        })();
+
+    if (chartData.starCatalog && chartData.starCatalog.stars) {
+      // Band geometry: lat 0° sits at (signR + innerR) / 2, lat ±18° at the
+      // annulus edges (innerR ↔ outerR, symmetric around band center).
+      var bandCenter = (signR + outerR) / 2;
+      var bandHalf = (outerR - innerR) / 2.1;   // a little less than full half
+      var LAT_MAX = 18;
+
+      function projectEcl(lon, lat) {
+        var ang = ((lon + ascOffset) * DEG) - Math.PI / 2;
+        var r = bandCenter + (lat / LAT_MAX) * bandHalf;
+        return {
+          x: cx + Math.cos(ang) * r,
+          y: cy + Math.sin(ang) * r,
+          ang: ang, r: r,
+        };
+      }
+
+      // Cache projected positions keyed by star id
+      var starPos = {};
+      var rawStars = chartData.starCatalog.stars;
+      for (var si = 0; si < rawStars.length; si++) {
+        var rs = rawStars[si];
+        // Compact array form [id,name,ra,dec,mag,con,bayer] OR object
+        var sid, sra, sdec, smag;
+        if (Array.isArray(rs)) { sid = rs[0]; sra = rs[2]; sdec = rs[3]; smag = rs[4]; }
+        else { sid = rs.id; sra = rs.ra; sdec = rs.dec; smag = rs.mag; }
+        var ecl = _eq2ecl(sra, sdec);
+        if (Math.abs(ecl.lat) > LAT_MAX) continue;   // outside zodiacal band
+        starPos[sid] = Object.assign(projectEcl(ecl.lon, ecl.lat), { mag: smag });
+      }
+
+      // Constellation stick figures (only pairs where BOTH stars made it in)
+      var consts = (chartData.constellationCatalog && chartData.constellationCatalog.constellations) || [];
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,245,220,0.28)';
+      ctx.lineWidth = 0.7 * (size / 320);
+      ctx.lineCap = 'round';
+      for (var ci = 0; ci < consts.length; ci++) {
+        var lines = consts[ci].lines || [];
+        for (var li = 0; li < lines.length; li++) {
+          var pa = starPos[lines[li][0]];
+          var pb = starPos[lines[li][1]];
+          if (!pa || !pb) continue;
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+
+      // Stars: white dots, size scaled by magnitude, halo on the brightest
+      var sids = Object.keys(starPos);
+      for (var k = 0; k < sids.length; k++) {
+        var sp = starPos[sids[k]];
+        var r;
+        if      (sp.mag <=  0.5) r = 2.4;
+        else if (sp.mag <=  1.5) r = 1.9;
+        else if (sp.mag <=  2.5) r = 1.4;
+        else                     r = 1.0;
+        r *= (size / 320);
+        if (sp.mag <= 1.2) {
+          var sh = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, r * 3);
+          sh.addColorStop(0.0, 'rgba(255,248,220,0.55)');
+          sh.addColorStop(1.0, 'rgba(255,248,220,0)');
+          ctx.fillStyle = sh;
+          ctx.beginPath(); ctx.arc(sp.x, sp.y, r * 3, 0, TAU); ctx.fill();
+        }
+        ctx.fillStyle = 'rgba(255,253,245,0.95)';
+        ctx.beginPath(); ctx.arc(sp.x, sp.y, r, 0, TAU); ctx.fill();
+      }
+    }
+
     // ── ASC / MC markers — only render if ascendant is verified (real time-of-birth) ──
     if (hasVerifiedAsc) {
       var ascAngle = ((ascLongitude + ascOffset) * DEG) - Math.PI / 2;
@@ -365,57 +550,38 @@
         var glyph = PLANET_GLYPHS[p.name] || '?';
         var color = getPlanetColor(p.name, size);
 
-        // Sun gets a golden pulsating glow
-        if (p.name === 'Sun') {
-          ctx.shadowColor = '#FFD700';
-          ctx.shadowBlur = 12;
-          // Draw a golden glow circle behind the Sun
-          var sunGlowGrad = ctx.createRadialGradient(px, py, 0, px, py, size * 0.035);
-          sunGlowGrad.addColorStop(0, 'rgba(255,215,0,0.25)');
-          sunGlowGrad.addColorStop(0.6, 'rgba(255,180,0,0.08)');
-          sunGlowGrad.addColorStop(1, 'rgba(255,215,0,0)');
-          ctx.fillStyle = sunGlowGrad;
-          ctx.beginPath();
-          ctx.arc(px, py, size * 0.035, 0, TAU);
-          ctx.fill();
-        }
+        // Realistic planet sphere (radial gradient + halo + optional rings).
+        // Sol/Luna get bigger radii because they're the attention anchors.
+        var sphereR = size * (p.name === 'Sun' ? 0.024
+                            : p.name === 'Moon' ? 0.022
+                            : 0.019);
+        drawPlanetSphere(ctx, px, py, sphereR, p.name);
 
-        // Moon gets a silver/blue-white glow
-        if (p.name === 'Moon') {
-          ctx.shadowColor = '#b8c4e0';
-          ctx.shadowBlur = 8;
-          var moonGlowGrad = ctx.createRadialGradient(px, py, 0, px, py, size * 0.03);
-          moonGlowGrad.addColorStop(0, 'rgba(184,196,224,0.20)');
-          moonGlowGrad.addColorStop(0.6, 'rgba(184,196,224,0.06)');
-          moonGlowGrad.addColorStop(1, 'rgba(184,196,224,0)');
-          ctx.fillStyle = moonGlowGrad;
-          ctx.beginPath();
-          ctx.arc(px, py, size * 0.03, 0, TAU);
-          ctx.fill();
-        }
-
-        // Planet glyph
-        ctx.fillStyle = color;
-        ctx.font = Math.round(size * 0.042) + 'px "Noto Sans Symbols 2", serif';
+        // Planet glyph (drawn on top of the sphere with a subtle
+        // shadow so it stays legible against the gradient).
+        ctx.shadowColor = 'rgba(0,0,0,0.6)';
+        ctx.shadowBlur = 3;
+        ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
+                         p.name === 'Venus' || p.name === 'Saturn' ||
+                         p.name === 'Uranus')
+          ? 'rgba(20,12,6,0.85)'    // dark glyph on light planets
+          : 'rgba(255,248,230,0.92)'; // light glyph on dark planets
+        ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-
-        // Use crescent symbol for Moon
         if (p.name === 'Moon') {
           ctx.fillText('\u263D', px, py);
         } else {
           ctx.fillText(glyph, px, py);
         }
-
-        // Reset shadow
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
 
         // Degree label
         var degStr = Math.floor(p.degree) + '\u00B0';
-        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.font = Math.round(size * 0.018) + 'px Inter, sans-serif';
-        ctx.fillText(degStr, px, py + size * 0.03);
+        ctx.fillText(degStr, px, py + size * 0.035);
 
         // Tick line from planet to zodiac ring
         var tickAngle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
@@ -480,11 +646,70 @@
       ctx.fill();
     }
 
-    // Center point
-    ctx.fillStyle = '#d4a849';
-    ctx.beginPath();
-    ctx.arc(cx, cy, size * 0.005, 0, TAU);
-    ctx.fill();
+    // ── Earth at the center — the geocentric "you are here" anchor ──
+    // Drawn only when we have star data (so it signals real-sky context)
+    // OR when hasVerifiedAsc is true. Falls back to a small gold dot
+    // otherwise to preserve the legacy look.
+    if (chartData.starCatalog || hasVerifiedAsc) {
+      var earthR = size * 0.022;
+      // Outer glow
+      var earthGlow = ctx.createRadialGradient(cx, cy, earthR * 0.4, cx, cy, earthR * 2.2);
+      earthGlow.addColorStop(0.0, 'rgba(80,140,200,0.35)');
+      earthGlow.addColorStop(1.0, 'rgba(80,140,200,0)');
+      ctx.fillStyle = earthGlow;
+      ctx.beginPath(); ctx.arc(cx, cy, earthR * 2.2, 0, TAU); ctx.fill();
+
+      // Earth sphere — blue oceans with warm continents
+      var earthG = ctx.createRadialGradient(
+        cx - earthR * 0.35, cy - earthR * 0.4, earthR * 0.08,
+        cx, cy, earthR
+      );
+      earthG.addColorStop(0.00, '#b8d8f0');
+      earthG.addColorStop(0.30, '#5a9cc8');
+      earthG.addColorStop(0.65, '#2a6898');
+      earthG.addColorStop(1.00, '#0a2040');
+      ctx.fillStyle = earthG;
+      ctx.beginPath(); ctx.arc(cx, cy, earthR, 0, TAU); ctx.fill();
+
+      // Continents: three abstract green blobs suggesting land
+      ctx.save();
+      ctx.beginPath(); ctx.arc(cx, cy, earthR, 0, TAU); ctx.clip();
+      ctx.fillStyle = 'rgba(110,145,85,0.85)';
+      // Americas silhouette
+      ctx.beginPath();
+      ctx.ellipse(cx - earthR * 0.30, cy - earthR * 0.10, earthR * 0.22, earthR * 0.55, -0.3, 0, TAU);
+      ctx.fill();
+      // Africa / Europe
+      ctx.beginPath();
+      ctx.ellipse(cx + earthR * 0.20, cy + earthR * 0.05, earthR * 0.30, earthR * 0.50, 0.15, 0, TAU);
+      ctx.fill();
+      // Asia bulge
+      ctx.beginPath();
+      ctx.ellipse(cx + earthR * 0.55, cy - earthR * 0.25, earthR * 0.22, earthR * 0.30, 0.4, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+
+      // Specular highlight (top-left)
+      var spec = ctx.createRadialGradient(
+        cx - earthR * 0.45, cy - earthR * 0.5, 0,
+        cx - earthR * 0.45, cy - earthR * 0.5, earthR * 0.5
+      );
+      spec.addColorStop(0.0, 'rgba(255,255,255,0.55)');
+      spec.addColorStop(1.0, 'rgba(255,255,255,0)');
+      ctx.fillStyle = spec;
+      ctx.beginPath(); ctx.arc(cx, cy, earthR, 0, TAU); ctx.fill();
+
+      // Hairline gold outline so it reads against the dark background
+      ctx.strokeStyle = 'rgba(212,168,73,0.55)';
+      ctx.lineWidth = 0.8 * (size / 320);
+      ctx.beginPath(); ctx.arc(cx, cy, earthR, 0, TAU); ctx.stroke();
+    } else {
+      // Legacy minimalist center
+      ctx.fillStyle = '#d4a849';
+      ctx.beginPath();
+      ctx.arc(cx, cy, size * 0.005, 0, TAU);
+      ctx.fill();
+    }
   }
 
   // ─── Export ──

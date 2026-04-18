@@ -257,6 +257,10 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .chart-wrap{display:flex;justify-content:center;padding:4px 0}
 #natal{max-width:100%;width:260px;height:260px}
 .chart-meta{text-align:center;font-size:.7rem;color:var(--text-mute);margin-top:4px}
+.chart-toggle{display:flex;justify-content:center;gap:4px;margin-top:14px;padding:4px;background:rgba(255,255,255,.03);border:1px solid var(--glass-b);border-radius:999px;max-width:280px;margin-left:auto;margin-right:auto}
+.chart-toggle .ch-tab{flex:1;padding:8px 14px;border:none;background:transparent;color:var(--text-dim);font-family:inherit;font-size:.76rem;font-weight:500;cursor:pointer;border-radius:999px;transition:color .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.chart-toggle .ch-tab.is-on{background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.12));color:var(--gold);font-weight:600;box-shadow:inset 0 1px 0 rgba(212,168,73,.15)}
+.chart-toggle .ch-tab:active{transform:scale(.97)}
 
 /* Sol + Luna + Ascendente badges above natal chart */
 .slma{display:flex;justify-content:space-around;gap:8px;margin:0 0 14px;padding:10px 4px;border-bottom:1px solid rgba(212,168,73,.08)}
@@ -480,8 +484,19 @@ body.modal-open{overflow:hidden;touch-action:none}
             <span class="slma-nom">A&ntilde;ade hora</span>
           </div>
         </div>
-        <div class="chart-wrap"><canvas id="natal"></canvas></div>
+        <div class="chart-wrap">
+          <canvas id="natal"></canvas>
+          <canvas id="sky" style="display:none"></canvas>
+        </div>
         <p class="chart-meta" id="chart-meta"></p>
+        <!-- Toggle between the symbolic natal chart (geocentric,
+             Earth + zodiac + planets + real zodiacal stars overlaid)
+             and the observational horizon view (what you actually saw
+             in the sky at your birth moment over your birth location). -->
+        <div class="chart-toggle" id="chart-toggle" role="tablist" aria-label="Vista de la carta">
+          <button type="button" class="ch-tab is-on" data-view="natal" role="tab" aria-selected="true">Carta natal</button>
+          <button type="button" class="ch-tab" data-view="sky" role="tab" aria-selected="false">Cielo real</button>
+        </div>
       </div>
     </section>
 
@@ -955,11 +970,21 @@ function renderAll(){
   } catch (e) { /* badges best-effort */ }
 
   // ── Canvas render — isolated so a draw error can't mask the badges ──
+  // chartData might be referenced by the sky-view renderer too, so we
+  // stash it on window for the toggle callback below.
+  window.__currentChartData = chartData;
+  window.__currentProfile = currentProfile;
   try {
     var natalCanvas = document.getElementById('natal');
     if (natalCanvas && chartData) {
       var parentW = natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
       var size = parentW > 0 ? Math.min(parentW, 320) : 280;
+      // Attach the lazy-loaded sky catalogs so natal-chart overlays the
+      // real zodiacal constellations + earth at center when available.
+      if (window.__skyCatalogs) {
+        chartData.starCatalog = window.__skyCatalogs.stars;
+        chartData.constellationCatalog = window.__skyCatalogs.constellations;
+      }
       LuzEstelar.NatalChart.render(natalCanvas, chartData, { size: size });
       document.getElementById('chart-meta').textContent = currentProfile.hora_nacimiento
         ? (currentProfile.nombre + ' · ' + currentProfile.fecha_nacimiento + ' ' + currentProfile.hora_nacimiento)
@@ -970,6 +995,30 @@ function renderAll(){
     if (window.console && console.warn) console.warn('[natal-chart]', e);
     var cm = document.getElementById('chart-meta');
     if (cm) cm.textContent = 'Carta no disponible temporalmente';
+  }
+
+  // ── Fetch sky catalogs once + re-render when they arrive ──
+  if (!window.__skyCatalogs && !window.__skyLoading) {
+    window.__skyLoading = true;
+    Promise.all([
+      fetch('/data/stars.json').then(function(r){ return r.json(); }),
+      fetch('/data/constellations.json').then(function(r){ return r.json(); }),
+    ]).then(function(results){
+      window.__skyCatalogs = { stars: results[0], constellations: results[1] };
+      // Re-render current view with the catalogs
+      try {
+        if (window.__currentChartData) {
+          window.__currentChartData.starCatalog = results[0];
+          window.__currentChartData.constellationCatalog = results[1];
+          var canv = document.getElementById('natal');
+          if (canv) {
+            var w = canv.parentElement.offsetWidth;
+            LuzEstelar.NatalChart.render(canv, window.__currentChartData,
+              { size: w > 0 ? Math.min(w, 320) : 280 });
+          }
+        }
+      } catch(e){ console.warn('[sky reload]', e); }
+    }).catch(function(e){ console.warn('[sky catalogs]', e); });
   }
 
   // Mapa Estelar — personalized preview
@@ -992,6 +1041,116 @@ function renderAll(){
 
   // Perfiles
   renderProfiles();
+
+  // ── Chart toggle: Carta Natal ↔ Cielo real ──
+  // Wires the two-tab switch below the canvas. The sky view lazy-loads
+  // sky-map.js on first tap so pages that never toggle never pay the
+  // ~14KB download. Both canvases share the same chart-wrap container;
+  // we flip their display between none and block.
+  (function(){
+    var tg = document.getElementById('chart-toggle');
+    if (!tg || tg.dataset.wired === '1') return;
+    tg.dataset.wired = '1';
+    var natalCanv = document.getElementById('natal');
+    var skyCanv   = document.getElementById('sky');
+
+    function ensureSkyMap(cb){
+      if (window.LuzEstelar && window.LuzEstelar.SkyMap) return cb();
+      var s = document.createElement('script');
+      s.src = '/js/sky-map.js';
+      s.onload = cb;
+      s.onerror = function(){ console.warn('[sky-map] load failed'); };
+      document.head.appendChild(s);
+    }
+
+    function drawSky(){
+      if (!window.__currentProfile || !window.__skyCatalogs) return;
+      var p = window.__currentProfile;
+      if (!p.hora_nacimiento || p.lat === null || p.lon === null) {
+        // Can't render horizon view without complete birth data
+        var cm = document.getElementById('chart-meta');
+        if (cm) cm.textContent = 'Cielo real requiere hora + lugar exactos';
+        return;
+      }
+      var dateParts = (p.fecha_nacimiento || '').split('-').map(Number);
+      var timeParts = (p.hora_nacimiento || '00:00').split(':').map(Number);
+      // Convert local birth time to UTC. Profile stores local; tz offset
+      // defaults to Mexico City (-6) when unknown. A more accurate
+      // tz lookup would query lat/lng → tz, but that needs a roundtrip.
+      var tzHours = typeof p.tz_offset === 'number' ? p.tz_offset : -6;
+      var utcHour = timeParts[0] - tzHours;   // subtract because tz is "hours east of UTC"; negative means "hours behind UTC"
+      // Normalize the date if the UTC hour rolled over:
+      var d = new Date(Date.UTC(dateParts[0], dateParts[1]-1, dateParts[2],
+                                utcHour, timeParts[1] || 0));
+
+      // Planets from natal_chart (ecliptic longitudes) overlaid on real sky
+      var natal = window.__currentChartData;
+      var planetOverlays = [];
+      if (natal && natal.planets) {
+        var nameMap = {
+          Sun:  { name: 'Sol',      symbol: '☉', color: '#FFD700' },
+          Moon: { name: 'Luna',     symbol: '☾', color: '#C0C8E0' },
+          Mercury: { name: 'Mercurio', symbol: '☿', color: '#B0B0B0' },
+          Venus: { name: 'Venus',   symbol: '♀', color: '#F0C070' },
+          Mars: { name: 'Marte',    symbol: '♂', color: '#FF6060' },
+          Jupiter: { name: 'Júpiter', symbol: '♃', color: '#E0B060' },
+          Saturn: { name: 'Saturno', symbol: '♄', color: '#C0A080' },
+        };
+        natal.planets.forEach(function(pl){
+          var meta = nameMap[pl.name];
+          if (!meta) return;
+          planetOverlays.push({
+            name: meta.name,
+            symbol: meta.symbol,
+            color: meta.color,
+            longitude: pl.longitude,
+          });
+        });
+      }
+
+      ensureSkyMap(function(){
+        var w = skyCanv.parentElement.offsetWidth;
+        window.LuzEstelar.SkyMap.render(skyCanv, {
+          lat: p.lat,
+          lng: p.lon,
+          utc: d,
+          stars: window.__skyCatalogs.stars.stars,
+          constellations: window.__skyCatalogs.constellations.constellations,
+          planets: planetOverlays,
+          size: w > 0 ? Math.min(w, 320) : 280,
+          showLabels: true,
+        });
+        var cm = document.getElementById('chart-meta');
+        if (cm) cm.textContent = 'Cielo sobre ' + (p.lugar_nacimiento || 'tu ubicación') + ' · ' + (p.fecha_nacimiento || '') + ' ' + (p.hora_nacimiento || '');
+      });
+    }
+
+    tg.addEventListener('click', function(e){
+      var btn = e.target.closest('.ch-tab');
+      if (!btn) return;
+      var view = btn.getAttribute('data-view');
+      Array.prototype.forEach.call(tg.querySelectorAll('.ch-tab'), function(b){
+        var on = (b === btn);
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      if (view === 'sky') {
+        natalCanv.style.display = 'none';
+        skyCanv.style.display = 'block';
+        drawSky();
+      } else {
+        skyCanv.style.display = 'none';
+        natalCanv.style.display = 'block';
+        var cm = document.getElementById('chart-meta');
+        if (cm && window.__currentProfile) {
+          var p = window.__currentProfile;
+          cm.textContent = p.hora_nacimiento
+            ? (p.nombre + ' · ' + p.fecha_nacimiento + ' ' + p.hora_nacimiento)
+            : 'Sol y Luna aproximados · añade hora de nacimiento para carta completa';
+        }
+      }
+    });
+  })();
 }
 
 function buildSynth(cc){

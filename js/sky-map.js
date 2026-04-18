@@ -143,6 +143,33 @@
     };
   }
 
+  /**
+   * (RA hours, Dec deg) → (ecliptic lon deg, ecliptic lat deg).
+   * Used for the geocentric natal-chart view: given a star's
+   * equatorial coordinates, compute where it sits on the zodiac
+   * band (ecl_lon 0..360) and how far above/below the ecliptic
+   * plane (ecl_lat −90..+90).
+   * Planets orbit near ecl_lat ≈ 0; zodiacal constellations are
+   * within ±20° of it; polar constellations (Ursa Major, etc.)
+   * can reach ±70°.
+   */
+  function equatorialToEcliptic(raHours, decDeg) {
+    var ra  = raHours * HR;            // rad
+    var dec = decDeg  * DEG;
+    var sinDec = Math.sin(dec), cosDec = Math.cos(dec);
+    var sinRA  = Math.sin(ra),  cosRA  = Math.cos(ra);
+    var sinEps = Math.sin(OBLIQUITY), cosEps = Math.cos(OBLIQUITY);
+
+    var sinLat = sinDec * cosEps - cosDec * sinEps * sinRA;
+    var lat = Math.asin(sinLat);
+    var lon = Math.atan2(sinRA * cosEps + Math.tan(dec) * sinEps, cosRA);
+    if (lon < 0) lon += TAU;
+    return {
+      lon: lon / DEG,                  // degrees, 0..360
+      lat: lat / DEG,                  // degrees, −90..+90
+    };
+  }
+
   // ── Magnitude → pixel radius ─────────────────────────────────
   function starRadius(mag, sizeFactor) {
     var r;
@@ -171,7 +198,9 @@
     ctx.scale(dpr, dpr);
 
     var cx = size / 2, cy = size / 2;
-    var R = size * 0.45;                 // horizon radius on canvas
+    // R shrunk so the N/S/E/O cardinal letters drawn at R + ~5.5%
+    // always stay inside the canvas at any size.
+    var R = size * 0.42;                 // horizon radius on canvas
     var sizeFactor = size / 320;         // relative to baseline
 
     // ── Parse UTC moment ──
@@ -228,10 +257,12 @@
     // ── Cardinal letters (N/S/E/W) ──
     if (opts.showCardinal !== false) {
       ctx.fillStyle = 'rgba(212,168,73,0.78)';
-      ctx.font = 'bold ' + Math.round(size * 0.038) + 'px Inter, sans-serif';
+      ctx.font = 'bold ' + Math.round(size * 0.035) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      var off = R + size * 0.045;
+      // Offset = half-font so the letter sits *outside* the horizon
+      // circle with a comfortable gap yet never exceeds the canvas.
+      var off = R + size * 0.04;
       ctx.fillText('N', cx, cy - off);
       ctx.fillText('S', cx, cy + off);
       ctx.fillText('E', cx + off, cy);
@@ -377,7 +408,9 @@
     julianDate: julianDate,
     localSiderealTime: localSiderealTime,
     equatorialToHorizontal: equatorialToHorizontal,
+    equatorialToEcliptic: equatorialToEcliptic,
     stereographicFromZenith: stereographicFromZenith,
     eclipticLonToEquatorial: eclipticLonToEquatorial,
+    OBLIQUITY: OBLIQUITY,
   };
 })();

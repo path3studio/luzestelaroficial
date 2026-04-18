@@ -5,12 +5,12 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v23 → v24 (Apr 18 UX polish): natal chart outerR shrunk
-// to 0.42 so ASC/MC labels never clip on the canvas edge. Profile
-// row name + sub now stacked (display:block + flex column) so they
-// stop running together into "ErnestoMi Perfil". Date removed from
-// the topbar — it's already shown inside the daily-energy card.
-const CACHE_NAME = 'luzestelar-v24';
+// Bumped v24 → v25 (Apr 18 phase 6.2): the Carta Natal widget is
+// now geocentric with real stars overlaid on the zodiac band, a
+// painted Earth sphere at the center, realistic planet spheres
+// (painted gradients replacing flat fills), and a toggle that
+// swaps to the horizon view (sky-map.js lazy-loaded on demand).
+const CACHE_NAME = 'luzestelar-v25';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -40,6 +40,9 @@ const PRECACHE_URLS = [
   '/js/upgrade-sheet.js',
   '/js/install-prompt.js',
   '/js/hero-install.js',
+  '/js/sky-map.js',
+  '/data/stars.json',
+  '/data/constellations.json',
   '/app_icon.png',
   '/manifest.json',
   OFFLINE_URL,
