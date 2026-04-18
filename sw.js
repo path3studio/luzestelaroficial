@@ -5,11 +5,11 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v18 → v19 (Apr 18 late³): phase-4 polish — sheet-modal
-// component + swipe-to-dismiss JS, avatar emoji → SVG in profile
-// row, dashboard starfield migrated from canvas to DOM twinkle
-// (consistent with every other app-shell page).
-const CACHE_NAME = 'luzestelar-v19';
+// Bumped v19 → v20 (Apr 18 phase 5): "alma nativa" polish —
+// new toast / sw-update / haptic modules, skeleton loading CSS,
+// and the SW itself now accepts SKIP_WAITING so the sw-update
+// toast can hand the user to the new version instantly.
+const CACHE_NAME = 'luzestelar-v20';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -32,6 +32,9 @@ const PRECACHE_URLS = [
   '/js/icons.js',
   '/js/stars.js',
   '/js/sheet-modal.js',
+  '/js/toast.js',
+  '/js/sw-update.js',
+  '/js/haptic.js',
   '/js/bottom-tabs.js',
   '/js/upgrade-sheet.js',
   '/js/install-prompt.js',
@@ -40,6 +43,16 @@ const PRECACHE_URLS = [
   '/manifest.json',
   OFFLINE_URL,
 ];
+
+// Accept SKIP_WAITING messages from the client (sw-update.js toast).
+// When the user taps "Actualizar" on the new-version banner, the
+// page posts { type: 'SKIP_WAITING' }. We hand over control
+// immediately instead of waiting for every tab to close.
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 // Install: precache essential files
 self.addEventListener('install', (event) => {

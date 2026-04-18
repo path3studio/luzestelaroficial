@@ -356,6 +356,46 @@ body.sheet-open {
   touch-action: none;
 }
 
+/* ── Skeleton loading ───────────────────────────────────────────── */
+/* Drop-in placeholder that shimmers until real content replaces it.
+ * Usage:
+ *   <div class="skel skel-line"></div>           (single text line)
+ *   <div class="skel skel-line skel-line-sm"></div>
+ *   <div class="skel skel-block" style="height:80px"></div>
+ *   <div class="skel skel-circle" style="width:48px;height:48px"></div>
+ * Apply .skel to anything; the `skel-*` modifiers just set defaults
+ * for common shapes. When real content arrives, swap the element
+ * wholesale — no need to strip the class first.
+ */
+.skel {
+  background: linear-gradient(
+    90deg,
+    var(--glass) 0%,
+    var(--glass-hi, rgba(255,255,255,0.09)) 50%,
+    var(--glass) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--r-sm);
+  animation: skel-shimmer 1.4s ease-in-out infinite;
+  display: block;
+  min-height: 0.9em;
+  width: 100%;
+}
+.skel-line       { height: 0.9em; margin: 6px 0; border-radius: 4px; }
+.skel-line-sm    { height: 0.72em; max-width: 60%; }
+.skel-line-lg    { height: 1.2em; }
+.skel-block      { height: 120px; border-radius: var(--r-lg); margin: var(--sp-3) 0; }
+.skel-circle     { border-radius: var(--r-circle); }
+
+@keyframes skel-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel { animation: none; }
+}
+
 /* ── Fade-in motion (common scroll reveal) ──────────────────────── */
 .fade {
   opacity: 0;
