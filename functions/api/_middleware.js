@@ -131,7 +131,27 @@ export async function onRequest(context) {
   context.data = context.data || {};
   context.data.user = null;
   if (jwt && context.env.JWT_SECRET) {
-    context.data.user = await verifyJWT(jwt, context.env.JWT_SECRET);
+    const payload = await verifyJWT(jwt, context.env.JWT_SECRET);
+    if (payload) {
+      // Refresh tier from DB so a newly-subscribed user isn't stuck on a
+      // stale JWT claim. Stripe webhook updates users.tier; without this,
+      // the user would stay on "free" until their token expires.
+      //
+      // One D1 read per authenticated API call is cheap and catches every
+      // endpoint automatically (daily-reading, compatibility, unified, etc.).
+      if (context.env.DB && payload.sub) {
+        try {
+          const row = await context.env.DB
+            .prepare('SELECT tier FROM users WHERE id = ?')
+            .bind(payload.sub)
+            .first();
+          if (row && row.tier) payload.tier = row.tier;
+        } catch (e) {
+          // DB read failed — fall back to JWT tier claim silently
+        }
+      }
+      context.data.user = payload;
+    }
   }
 
   // Continue to route handler

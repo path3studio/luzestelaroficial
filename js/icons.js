@@ -112,6 +112,32 @@
       '<line x1="12" y1="22" x2="12" y2="7"/>' +
       '<path d="M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z"/>' +
       '<path d="M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>',
+
+    // Actions (download / share / copy / external)
+    download:
+      '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>' +
+      '<polyline points="7 10 12 15 17 10"/>' +
+      '<line x1="12" y1="15" x2="12" y2="3"/>',
+    share:
+      '<circle cx="18" cy="5" r="3"/>' +
+      '<circle cx="6" cy="12" r="3"/>' +
+      '<circle cx="18" cy="19" r="3"/>' +
+      '<line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>' +
+      '<line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+    'share-2':  // alternate share (box-with-arrow, more native-looking)
+      '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>' +
+      '<polyline points="16 6 12 2 8 6"/>' +
+      '<line x1="12" y1="2" x2="12" y2="15"/>',
+    link:
+      '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>' +
+      '<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    copy:
+      '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>' +
+      '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    'external-link':
+      '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>' +
+      '<polyline points="15 3 21 3 21 9"/>' +
+      '<line x1="10" y1="14" x2="21" y2="3"/>',
   };
 
   var SVG_ATTRS =

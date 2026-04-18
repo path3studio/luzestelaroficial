@@ -81,8 +81,25 @@ export async function onRequestGet(context) {
     return Response.json({ ok: false, error: 'No birth profile found' }, { status: 404 });
   }
 
+  // Optional ?date=YYYY-MM-DD — allows the client to browse yesterday/tomorrow.
+  // Hard-bounded to [today-7d, today+1d] so we never return arbitrary history
+  // (KV only holds a rolling window anyway).
   const today = new Date();
-  const dateKey = today.toISOString().split('T')[0];
+  const todayKey = today.toISOString().split('T')[0];
+  let dateKey = todayKey;
+  const requestedDate = url.searchParams.get('date');
+  if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+    const t = Date.parse(requestedDate + 'T12:00:00Z');
+    const nowMs = Date.parse(todayKey + 'T12:00:00Z');
+    const dayMs = 86400000;
+    if (!isNaN(t)) {
+      const diffDays = Math.round((t - nowMs) / dayMs);
+      if (diffDays >= -7 && diffDays <= 1) dateKey = requestedDate;
+    }
+  }
+  const dayOffset = Math.round(
+    (Date.parse(dateKey + 'T12:00:00Z') - Date.parse(todayKey + 'T12:00:00Z')) / 86400000
+  );
   const isPremium = user.tier === 'premium';
 
   // Systems the user's tier can access
@@ -165,8 +182,10 @@ export async function onRequestGet(context) {
     overall: Math.round(((bio.love || 5) + (bio.career || 5) + (bio.health || 5) + (bio.energy || 5)) / 4),
   };
 
-  // Moon phase
-  const moon = getMoonPhase(today.getFullYear(), today.getMonth() + 1, today.getDate());
+  // Moon phase — use the resolved date, not `today`, so swipe-to-yesterday
+  // shows yesterday's moon phase.
+  const [_y, _m, _d] = dateKey.split('-').map(Number);
+  const moon = getMoonPhase(_y, _m, _d);
   const moonPhases = lang === 'en' ? MOON_PHASES_EN : MOON_PHASES_ES;
 
   // Greeting (Mexico City time)
@@ -179,6 +198,7 @@ export async function onRequestGet(context) {
   return Response.json({
     ok: true,
     date: dateKey,
+    dayOffset, // -1 = yesterday, 0 = today, 1 = tomorrow
     tier: user.tier || 'free',
     greeting: `${greeting}, ${profile.nombre}`,
     profile: {

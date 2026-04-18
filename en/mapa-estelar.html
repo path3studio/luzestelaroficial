@@ -373,7 +373,7 @@
         </section>
 
         <!-- Live Preview -->
-        <section style="padding-top:0;">
+        <section id="example" style="padding-top:0;scroll-margin-top:80px;">
             <div class="section-inner">
                 <div class="card" style="text-align:center;">
                     <h2 style="margin-bottom:6px;">See what your map looks like</h2>
@@ -489,9 +489,10 @@
                             <p class="hint">If you don't remember, we'll use 9:00 PM (night sky).</p>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group lugar-group" style="position:relative;">
                             <label for="lugar">Event location *</label>
-                            <input type="text" id="lugar" name="lugar" placeholder="New York, United States" required>
+                            <input type="text" id="lugar" name="lugar" placeholder="New York, United States" required autocomplete="off" aria-autocomplete="list" aria-controls="lugar-suggest">
+                            <ul id="lugar-suggest" class="lugar-suggest" role="listbox" aria-label="Location suggestions" hidden></ul>
                             <p class="hint">City and country where the event took place.</p>
                         </div>
 
@@ -814,5 +815,57 @@
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
 <script src="/js/icons.js" defer></script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
+
+<!-- Lugar-autocomplete — Nominatim via /api/geocode -->
+<style>
+.lugar-suggest{position:absolute;left:0;right:0;top:100%;margin:4px 0 0;padding:0;list-style:none;background:#0c0c2a;border:1px solid var(--glass-b);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,0.5);z-index:50;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.lugar-suggest li{padding:10px 14px;cursor:pointer;font-size:0.88em;color:var(--text);border-bottom:1px solid var(--glass-b);line-height:1.35;}
+.lugar-suggest li:last-child{border-bottom:none}
+.lugar-suggest li:hover{background:rgba(212,168,73,0.09);color:var(--gold)}
+.lugar-suggest li .lsc{display:block;font-size:0.72em;color:var(--text-dim);margin-top:2px}
+.lugar-suggest li .lsloading{color:var(--text-dim);font-style:italic;cursor:default}
+</style>
+<script>
+(function(){
+  var input = document.getElementById('lugar');
+  var box   = document.getElementById('lugar-suggest');
+  if (!input || !box) return;
+  var timer = null, controller = null;
+  function hide(){ box.hidden = true; box.innerHTML = ''; }
+  function show(){ box.hidden = false; }
+  function render(items){
+    if (!items || !items.length){ hide(); return; }
+    box.innerHTML = items.slice(0,6).map(function(r){
+      var c = r.country ? '<span class="lsc">' + r.country + '</span>' : '';
+      return '<li role="option" data-name="' + r.name.replace(/"/g,'&quot;') + '">' + r.name + c + '</li>';
+    }).join('');
+    show();
+  }
+  input.addEventListener('input', function(){
+    var q = input.value.trim();
+    if (timer) clearTimeout(timer);
+    if (controller) controller.abort();
+    if (q.length < 2){ hide(); return; }
+    box.innerHTML = '<li class="lsloading">Searching…</li>';
+    show();
+    timer = setTimeout(function(){
+      controller = new AbortController();
+      fetch('/api/geocode?q=' + encodeURIComponent(q) + '&lang=en', { signal: controller.signal })
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if (d && d.ok) render(d.results); else hide(); })
+        .catch(function(err){ if (err.name !== 'AbortError') hide(); });
+    }, 250);
+  });
+  box.addEventListener('click', function(e){
+    var li = e.target.closest('li');
+    if (!li || !li.dataset.name) return;
+    input.value = li.dataset.name; hide(); input.focus();
+  });
+  input.addEventListener('keydown', function(e){ if (e.key === 'Escape') hide(); });
+  document.addEventListener('click', function(e){
+    if (!box.contains(e.target) && e.target !== input) hide();
+  });
+})();
+</script>
 </body>
 </html>

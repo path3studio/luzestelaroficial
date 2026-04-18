@@ -392,7 +392,7 @@
         </section>
 
         <!-- Live Preview -->
-        <section style="padding-top:0;">
+        <section id="ejemplo" style="padding-top:0;scroll-margin-top:80px;">
             <div class="section-inner">
                 <div class="card" style="text-align:center;">
                     <h2 style="margin-bottom:6px;">Así se ve tu mapa</h2>
@@ -619,9 +619,10 @@
                             <p class="hint">Si no la recuerdas, usaremos las 21:00 (cielo nocturno).</p>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group lugar-group" style="position:relative;">
                             <label for="lugar">Lugar del evento *</label>
-                            <input type="text" id="lugar" name="lugar" placeholder="Ciudad de México, México" required>
+                            <input type="text" id="lugar" name="lugar" placeholder="Ciudad de México, México" required autocomplete="off" aria-autocomplete="list" aria-controls="lugar-suggest">
+                            <ul id="lugar-suggest" class="lugar-suggest" role="listbox" aria-label="Sugerencias de lugar" hidden></ul>
                             <p class="hint">Ciudad y país donde ocurrió el evento.</p>
                         </div>
 
@@ -944,5 +945,84 @@
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
 <script src="/js/icons.js" defer></script>
 <script src="/js/cookie-consent.js" defer></script>
+
+<!-- Lugar-autocomplete — Nominatim via /api/geocode (250ms debounce,
+     dismiss on blur/Esc/outside-click, keyboard-less for now). -->
+<style>
+.lugar-suggest{position:absolute;left:0;right:0;top:100%;margin:4px 0 0;padding:0;list-style:none;
+  background:#0c0c2a;border:1px solid var(--glass-b);border-radius:8px;
+  box-shadow:0 10px 28px rgba(0,0,0,0.5);z-index:50;max-height:260px;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;}
+.lugar-suggest li{padding:10px 14px;cursor:pointer;font-size:0.88em;color:var(--text);
+  border-bottom:1px solid var(--glass-b);line-height:1.35;}
+.lugar-suggest li:last-child{border-bottom:none}
+.lugar-suggest li:hover,.lugar-suggest li.is-focused{background:rgba(212,168,73,0.09);color:var(--gold)}
+.lugar-suggest li .lsc{display:block;font-size:0.72em;color:var(--text-dim);margin-top:2px}
+.lugar-suggest li .lsloading{color:var(--text-dim);font-style:italic;cursor:default}
+</style>
+<script>
+(function(){
+  var input = document.getElementById('lugar');
+  var box   = document.getElementById('lugar-suggest');
+  if (!input || !box) return;
+
+  var timer = null;
+  var controller = null;  // AbortController for in-flight fetch
+  var isEn = location.pathname.indexOf('/en/') === 0;
+
+  function hide(){ box.hidden = true; box.innerHTML = ''; }
+  function show(){ box.hidden = false; }
+
+  function render(items){
+    if (!items || !items.length){ hide(); return; }
+    box.innerHTML = items.slice(0, 6).map(function(r){
+      var country = r.country ? '<span class="lsc">' + r.country + '</span>' : '';
+      return '<li role="option" data-name="' + r.name.replace(/"/g,'&quot;') + '">'
+           + r.name + country + '</li>';
+    }).join('');
+    show();
+  }
+
+  function renderLoading(){
+    box.innerHTML = '<li class="lsloading">' + (isEn ? 'Searching…' : 'Buscando…') + '</li>';
+    show();
+  }
+
+  input.addEventListener('input', function(){
+    var q = input.value.trim();
+    if (timer) clearTimeout(timer);
+    if (controller) controller.abort();
+    if (q.length < 2){ hide(); return; }
+
+    renderLoading();
+    timer = setTimeout(function(){
+      controller = new AbortController();
+      fetch('/api/geocode?q=' + encodeURIComponent(q) + '&lang=' + (isEn ? 'en' : 'es'),
+            { signal: controller.signal })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if (d && d.ok && Array.isArray(d.results)) render(d.results);
+          else hide();
+        })
+        .catch(function(err){ if (err.name !== 'AbortError') hide(); });
+    }, 250);
+  });
+
+  box.addEventListener('click', function(e){
+    var li = e.target.closest('li');
+    if (!li || !li.dataset.name) return;
+    input.value = li.dataset.name;
+    hide();
+    input.focus();
+  });
+
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){ hide(); }
+  });
+  document.addEventListener('click', function(e){
+    if (!box.contains(e.target) && e.target !== input) hide();
+  });
+})();
+</script>
 </body>
 </html>

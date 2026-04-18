@@ -5,11 +5,11 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v14 → v15 (Apr 17): design-system rollout.
-// Bumping this triggers `activate` → old caches are dropped →
-// clients re-fetch fresh HTML/CSS/JS on next load. Must bump on
-// any schema-breaking release (new precache URLs, strategy change).
-const CACHE_NAME = 'luzestelar-v15';
+// Bumped v15 → v16 (Apr 18): bug-fix pass (mapa-estelar anchor +
+// lugar autocomplete), dashboard icons migrated to SVG, bottom
+// tabs now PWA-only (hidden on mobile web), new hero CTA "Abrir
+// la App". Triggers activate → old cache dropped → fresh re-fetch.
+const CACHE_NAME = 'luzestelar-v16';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

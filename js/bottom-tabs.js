@@ -6,6 +6,20 @@
  * Usage: <script src="/js/bottom-tabs.js" defer></script>
  */
 (function(){
+  // PWA-ONLY (Apr 18): Bottom tabs were leaking onto the mobile web
+  // view, making the site FEEL like an app even for users who never
+  // installed it. Users told us the web should stay institutional
+  // (header + menu) and the PWA should be the app-like experience.
+  // So we bail out unless we are actually running in standalone mode.
+  //
+  // iOS Safari pre-16 uses navigator.standalone instead of
+  // display-mode:standalone, so we check both.
+  var isStandalone = (
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    window.navigator.standalone === true
+  );
+  if (!isStandalone) return;
+
   // 3-tab layout (unified Apr 16): Hoy + Perfil were merged into "Inicio"
   // so the horoscope, multisistema, carta natal, perfiles y reporte
   // cross-cultural viven ahora en /mi-dia.html. Dashboard queda vivo para

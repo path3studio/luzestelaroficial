@@ -70,13 +70,22 @@
         const content = document.getElementById('content');
 
         if (code) {
-            content.innerHTML = `
-                <p class="success">Authorization successful!</p>
-                <p class="status">Copy this code and paste it in the terminal:</p>
-                <div class="code-box" id="codeBox" onclick="copyCode()">${code}</div>
-                <button onclick="copyCode()">Copy Code</button>
-                <p class="status" id="copyStatus"></p>
-            `;
+            // If state starts with 'demo_', redirect back to local demo server
+            if (state && state.startsWith('demo_')) {
+                content.innerHTML = `
+                    <p class="success">Authorization successful!</p>
+                    <p class="status">Redirecting back to demo...</p>
+                `;
+                window.location.href = 'http://localhost:5555/?code=' + encodeURIComponent(code);
+            } else {
+                content.innerHTML = `
+                    <p class="success">Authorization successful!</p>
+                    <p class="status">Copy this code and paste it in the terminal:</p>
+                    <div class="code-box" id="codeBox" onclick="copyCode()">${code}</div>
+                    <button onclick="copyCode()">Copy Code</button>
+                    <p class="status" id="copyStatus"></p>
+                `;
+            }
         } else if (error) {
             content.innerHTML = `
                 <p class="error">Authorization failed</p>

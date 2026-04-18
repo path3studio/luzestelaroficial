@@ -324,9 +324,9 @@
                     <!-- 7 date-based systems filled by JS + 1 enneagram link -->
                 </div>
                 <div class="share-row">
-                    <button class="btn-share" onclick="downloadCard()">&#128247; Descargar Card</button>
-                    <button class="btn-share" onclick="shareCard()">&#128279; Compartir</button>
-                    <button class="btn-share" onclick="copyProfileLink()" id="btn-copy-link">&#128279; Copiar Link</button>
+                    <button class="btn-share" onclick="downloadCard()"><span class="le-ic" data-icon="download"></span> Descargar Card</button>
+                    <button class="btn-share" onclick="shareCard()"><span class="le-ic" data-icon="share-2"></span> Compartir</button>
+                    <button class="btn-share" onclick="copyProfileLink()" id="btn-copy-link"><span class="le-ic" data-icon="link"></span> Copiar Link</button>
                 </div>
             </div>
 
@@ -1277,7 +1277,7 @@
         navigator.clipboard.writeText(url).then(function() {
             var btn = document.getElementById('btn-copy-link');
             btn.textContent = '\u2705 Copiado!';
-            setTimeout(function() { btn.innerHTML = '&#128279; Copiar Link'; }, 2000);
+            setTimeout(function() { btn.innerHTML = '<span class="le-ic" data-icon="link"></span> Copiar Link'; if(window.LuzEstelarIcons) window.LuzEstelarIcons.hydrate(btn); }, 2000);
         }).catch(function() {
             prompt('Copia este link:', url);
         });

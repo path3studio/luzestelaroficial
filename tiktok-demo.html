@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luz Estelar — TikTok Integration Demo</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:linear-gradient(135deg,#0a0a2e 0%,#1a0a3e 50%,#0a0a2e 100%);
+  color:#e8e0f0;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Stars background */
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
+header{
+  text-align:center;padding:40px 20px 20px;position:relative;z-index:1;
+}
+header h1{
+  font-size:2.2em;font-weight:300;
+  background:linear-gradient(135deg,#ffd700,#ffaa00);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+header p{color:#b8a0d0;margin-top:8px;font-size:1.05em}
+
+.container{
+  max-width:700px;margin:0 auto;padding:20px;position:relative;z-index:1;
+}
+
+/* Steps */
+.step{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,215,0,.15);
+  border-radius:16px;
+  padding:28px;margin-bottom:24px;
+  transition:border-color .3s;
+}
+.step.active{border-color:rgba(255,215,0,.5)}
+.step.done{border-color:rgba(76,175,80,.5)}
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.step-number{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.95em;
+  background:rgba(255,215,0,.12);color:#ffd700;
+  border:1px solid rgba(255,215,0,.3);
+  flex-shrink:0;
+}
+.step.done .step-number{background:rgba(76,175,80,.2);color:#4caf50;border-color:rgba(76,175,80,.4)}
+.step-title{font-size:1.15em;font-weight:600}
+.step-desc{color:#b8a0d0;font-size:.9em;line-height:1.5;margin-bottom:16px}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 28px;border-radius:12px;
+  font-size:1em;font-weight:600;cursor:pointer;
+  border:none;transition:all .2s;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-tiktok{
+  background:#000;color:#fff;
+  border:2px solid #00f2ea;
+}
+.btn-tiktok:hover:not(:disabled){background:#111;box-shadow:0 0 20px rgba(0,242,234,.2)}
+.btn-tiktok svg{width:22px;height:22px}
+
+.btn-publish{
+  background:linear-gradient(135deg,#ff0050,#00f2ea);
+  color:#fff;border:none;
+}
+.btn-publish:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,0,80,.3)}
+
+/* User card */
+.user-card{
+  display:none;
+  background:rgba(0,242,234,.06);
+  border:1px solid rgba(0,242,234,.2);
+  border-radius:12px;padding:20px;
+  margin-top:16px;
+}
+.user-card.visible{display:flex;align-items:center;gap:16px}
+.user-avatar{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,#ff0050,#00f2ea);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6em;flex-shrink:0;
+}
+.user-info h3{font-size:1.1em;color:#00f2ea}
+.user-info p{color:#b8a0d0;font-size:.85em;margin-top:4px}
+
+/* Video selector */
+.video-select{
+  width:100%;padding:12px 16px;border-radius:10px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,215,0,.2);
+  color:#e8e0f0;font-size:.95em;margin-bottom:16px;
+  appearance:none;cursor:pointer;
+}
+.video-select option{background:#1a0a3e;color:#e8e0f0}
+
+/* Progress */
+.upload-progress{
+  display:none;margin-top:16px;
+}
+.upload-progress.visible{display:block}
+.progress-bar{
+  height:6px;background:rgba(255,255,255,.1);
+  border-radius:3px;overflow:hidden;margin:10px 0;
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#ff0050,#00f2ea);
+  border-radius:3px;transition:width .5s ease;
+}
+.progress-text{color:#b8a0d0;font-size:.85em}
+
+/* Status messages */
+.status-msg{
+  padding:12px 16px;border-radius:10px;
+  margin-top:12px;font-size:.9em;display:none;
+}
+.status-msg.visible{display:block}
+.status-msg.success{background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);color:#4caf50}
+.status-msg.error{background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.3);color:#f44336}
+.status-msg.info{background:rgba(0,242,234,.08);border:1px solid rgba(0,242,234,.2);color:#00f2ea}
+
+/* Log panel */
+.log-panel{
+  background:rgba(0,0,0,.3);border-radius:10px;
+  padding:16px;margin-top:16px;
+  font-family:'SF Mono',Monaco,monospace;
+  font-size:.8em;line-height:1.7;
+  max-height:200px;overflow-y:auto;
+  display:none;
+}
+.log-panel.visible{display:block}
+.log-panel .log-line{color:#b8a0d0}
+.log-panel .log-ok{color:#4caf50}
+.log-panel .log-err{color:#f44336}
+.log-panel .log-info{color:#00f2ea}
+
+/* Scope badges */
+.scope-badge{
+  display:inline-block;
+  padding:4px 10px;border-radius:6px;
+  font-size:.75em;font-weight:600;
+  margin-right:6px;
+}
+.scope-badge.auth{background:rgba(0,242,234,.12);color:#00f2ea;border:1px solid rgba(0,242,234,.3)}
+.scope-badge.publish{background:rgba(255,0,80,.12);color:#ff6090;border:1px solid rgba(255,0,80,.3)}
+
+footer{
+  text-align:center;padding:30px 20px 40px;
+  color:#6a5a8e;font-size:.8em;position:relative;z-index:1;
+}
+footer a{color:#b8a0d0;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<header>
+  <h1>Luz Estelar</h1>
+  <p>TikTok Integration — Sandbox Demo</p>
+</header>
+
+<div class="container">
+
+  <!-- STEP 1: Connect -->
+  <div class="step active" id="step1">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <div>
+        <div class="step-title">Connect TikTok Account</div>
+        <span class="scope-badge auth">user.info.basic</span>
+      </div>
+    </div>
+    <p class="step-desc">
+      Authorize Luz Estelar to access your TikTok account. This uses the
+      <strong>Login Kit</strong> with the <code>user.info.basic</code> scope
+      to read your profile information (display name, avatar).
+    </p>
+    <button class="btn btn-tiktok" id="btn-connect" onclick="connectTikTok()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.11a8.16 8.16 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.54z"/></svg>
+      Connect with TikTok
+    </button>
+
+    <div class="user-card" id="user-card">
+      <div class="user-avatar" id="user-avatar">&#9734;</div>
+      <div class="user-info">
+        <h3 id="user-name">—</h3>
+        <p id="user-detail">Connected via TikTok Login Kit</p>
+      </div>
+    </div>
+
+    <div class="status-msg" id="status-connect"></div>
+  </div>
+
+  <!-- STEP 2: Publish -->
+  <div class="step" id="step2">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <div>
+        <div class="step-title">Publish Video to TikTok</div>
+        <span class="scope-badge publish">video.upload</span>
+      </div>
+    </div>
+    <p class="step-desc">
+      Select a horoscope video and upload it to your TikTok account using the
+      <strong>Content Posting API</strong> with the <code>video.upload</code> scope.
+      The video will appear in your TikTok inbox for review before posting.
+    </p>
+
+    <select class="video-select" id="video-select" disabled>
+      <option value="">Select a horoscope video...</option>
+    </select>
+
+    <button class="btn btn-publish" id="btn-publish" onclick="publishVideo()" disabled>
+      Publish to TikTok
+    </button>
+
+    <div class="upload-progress" id="upload-progress">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <p class="progress-text" id="progress-text">Initializing upload...</p>
+    </div>
+
+    <div class="status-msg" id="status-publish"></div>
+
+    <div class="log-panel" id="log-panel"></div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Luz Estelar Oficial &mdash; <a href="https://luzestelaroficial.com">luzestelaroficial.com</a></p>
+  <p style="margin-top:6px">Sandbox demo for TikTok app review. Not for public use.</p>
+</footer>
+
+<script>
+// ─── Configuration ──────────────────────────────────────────────────────────
+// These are read from the URL hash after OAuth callback, or from a local dev server.
+// For the sandbox demo, we use a lightweight proxy on localhost to avoid exposing secrets.
+
+const TIKTOK_CLIENT_KEY = 'sbawpkinaz62q2h9xh';
+const REDIRECT_URI = 'https://luzestelaroficial.com/callback.html';
+const SCOPES = 'user.info.basic,video.upload';
+const API_BASE = 'http://localhost:5555';  // Local demo proxy (tiktok_demo_server.py)
+
+// ─── Stars ──────────────────────────────────────────────────────────────────
+(function(){
+  var c=document.getElementById('stars');
+  for(var i=0;i<60;i++){
+    var s=document.createElement('div');
+    s.className='star';
+    var size=Math.random()*2.5+1;
+    s.style.cssText='width:'+size+'px;height:'+size+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;animation-delay:'+Math.random()*3+'s';
+    c.appendChild(s);
+  }
+})();
+
+// ─── State ──────────────────────────────────────────────────────────────────
+var accessToken = null;
+var creatorInfo = null;
+
+// ─── Step 1: OAuth Connect ──────────────────────────────────────────────────
+function connectTikTok() {
+  var btn = document.getElementById('btn-connect');
+  btn.disabled = true;
+  btn.innerHTML = 'Connecting...';
+
+  // Generate CSRF state — prefix with 'demo_' so callback.html redirects back here
+  var state = 'demo_' + Array.from(crypto.getRandomValues(new Uint8Array(16)))
+    .map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+  sessionStorage.setItem('tiktok_state', state);
+
+  var params = new URLSearchParams({
+    client_key: TIKTOK_CLIENT_KEY,
+    scope: SCOPES,
+    response_type: 'code',
+    redirect_uri: REDIRECT_URI,
+    state: state
+  });
+
+  window.location.href = 'https://www.tiktok.com/v2/auth/authorize/?' + params.toString();
+}
+
+// ─── Handle OAuth Callback ──────────────────────────────────────────────────
+// After TikTok redirects to callback.html, user copies code and comes back here.
+// OR, if we detect ?code= on this page (if redirect is set to this page).
+function handleCallbackCode(code) {
+  showStatus('status-connect', 'info', 'Exchanging authorization code for access token...');
+
+  fetch(API_BASE + '/exchange', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({code: code, redirect_uri: REDIRECT_URI})
+  })
+  .then(function(r){return r.json()})
+  .then(function(data) {
+    if (data.access_token) {
+      accessToken = data.access_token;
+      showStatus('status-connect', 'success', 'Access token obtained! Fetching profile...');
+      fetchUserInfo();
+    } else {
+      showStatus('status-connect', 'error', 'Token exchange failed: ' + (data.error || JSON.stringify(data)));
+      resetConnectBtn();
+    }
+  })
+  .catch(function(e) {
+    showStatus('status-connect', 'error', 'Connection error: ' + e.message);
+    resetConnectBtn();
+  });
+}
+
+function fetchUserInfo() {
+  fetch(API_BASE + '/userinfo', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({access_token: accessToken})
+  })
+  .then(function(r){return r.json()})
+  .then(function(data) {
+    if (data.display_name) {
+      // Show user card
+      document.getElementById('user-name').textContent = '@' + (data.username || data.display_name);
+      document.getElementById('user-detail').textContent =
+        'Connected via TikTok Login Kit | ' + (data.display_name || '');
+      if (data.avatar_url) {
+        document.getElementById('user-avatar').innerHTML =
+          '<img src="'+data.avatar_url+'" style="width:56px;height:56px;border-radius:50%">';
+      }
+      document.getElementById('user-card').classList.add('visible');
+
+      showStatus('status-connect', 'success',
+        'Scope user.info.basic verified — profile loaded successfully.');
+
+      // Mark step 1 done, activate step 2
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step1').classList.add('done');
+      document.getElementById('step1').querySelector('.step-number').textContent = '\u2713';
+      document.getElementById('step2').classList.add('active');
+
+      // Enable video selection
+      loadVideoList();
+    } else {
+      showStatus('status-connect', 'error', 'Could not fetch user info: ' + JSON.stringify(data));
+      resetConnectBtn();
+    }
+  })
+  .catch(function(e) {
+    showStatus('status-connect', 'error', 'Error fetching user info: ' + e.message);
+    resetConnectBtn();
+  });
+}
+
+function resetConnectBtn() {
+  var btn = document.getElementById('btn-connect');
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.11a8.16 8.16 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.54z"/></svg> Connect with TikTok';
+}
+
+// ─── Step 2: Publish Video ──────────────────────────────────────────────────
+function loadVideoList() {
+  fetch(API_BASE + '/videos')
+  .then(function(r){return r.json()})
+  .then(function(data) {
+    var sel = document.getElementById('video-select');
+    if (data.videos && data.videos.length > 0) {
+      data.videos.forEach(function(v) {
+        var opt = document.createElement('option');
+        opt.value = v.path;
+        opt.textContent = v.sign + ' — ' + v.filename + ' (' + v.size_mb + ' MB)';
+        sel.appendChild(opt);
+      });
+      sel.disabled = false;
+      sel.onchange = function() {
+        document.getElementById('btn-publish').disabled = !this.value;
+      };
+    } else {
+      sel.innerHTML = '<option>No videos available</option>';
+    }
+  })
+  .catch(function(e) {
+    console.error('Failed to load videos:', e);
+  });
+}
+
+function publishVideo() {
+  var videoPath = document.getElementById('video-select').value;
+  if (!videoPath || !accessToken) return;
+
+  var btn = document.getElementById('btn-publish');
+  btn.disabled = true;
+  document.getElementById('video-select').disabled = true;
+
+  var progress = document.getElementById('upload-progress');
+  var fill = document.getElementById('progress-fill');
+  var text = document.getElementById('progress-text');
+  var logPanel = document.getElementById('log-panel');
+  progress.classList.add('visible');
+  logPanel.classList.add('visible');
+  logPanel.innerHTML = '';
+
+  addLog('info', 'Starting TikTok publish flow...');
+  addLog('info', 'Video: ' + videoPath.split('/').pop());
+  fill.style.width = '10%';
+  text.textContent = 'Initializing upload with TikTok API...';
+
+  fetch(API_BASE + '/publish', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      access_token: accessToken,
+      video_path: videoPath
+    })
+  })
+  .then(function(r){return r.json()})
+  .then(function(data) {
+    if (data.steps) {
+      // Animate through the steps
+      var steps = data.steps;
+      var i = 0;
+      function showNext() {
+        if (i >= steps.length) return;
+        var s = steps[i];
+        var pct = Math.round(((i+1)/steps.length)*100);
+        fill.style.width = pct + '%';
+        text.textContent = s.text;
+        addLog(s.ok ? 'ok' : 'err', s.text);
+        i++;
+        if (i < steps.length) {
+          setTimeout(showNext, 800);
+        } else {
+          // Final result
+          if (data.publish_id) {
+            fill.style.width = '100%';
+            text.textContent = 'Published successfully!';
+            showStatus('status-publish', 'success',
+              'Scope video.upload verified — Video uploaded to TikTok inbox! Publish ID: ' + data.publish_id);
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step2').classList.add('done');
+            document.getElementById('step2').querySelector('.step-number').textContent = '\u2713';
+            addLog('ok', 'Publish ID: ' + data.publish_id);
+          } else {
+            showStatus('status-publish', 'error',
+              'Publish failed: ' + (data.error || 'Unknown error'));
+            addLog('err', 'Error: ' + (data.error || 'Unknown'));
+            btn.disabled = false;
+            document.getElementById('video-select').disabled = false;
+          }
+        }
+      }
+      showNext();
+    } else if (data.error) {
+      showStatus('status-publish', 'error', 'Publish failed: ' + data.error);
+      addLog('err', data.error);
+      btn.disabled = false;
+      document.getElementById('video-select').disabled = false;
+    }
+  })
+  .catch(function(e) {
+    showStatus('status-publish', 'error', 'Connection error: ' + e.message);
+    addLog('err', e.message);
+    btn.disabled = false;
+    document.getElementById('video-select').disabled = false;
+  });
+}
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
+function showStatus(id, type, msg) {
+  var el = document.getElementById(id);
+  el.className = 'status-msg visible ' + type;
+  el.textContent = msg;
+}
+
+function addLog(type, msg) {
+  var panel = document.getElementById('log-panel');
+  var cls = type === 'ok' ? 'log-ok' : type === 'err' ? 'log-err' : 'log-info';
+  var time = new Date().toLocaleTimeString();
+  panel.innerHTML += '<div class="log-line '+cls+'">['+time+'] '+msg+'</div>';
+  panel.scrollTop = panel.scrollHeight;
+}
+
+// ─── Check for OAuth code in URL ────────────────────────────────────────────
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+  if (code) {
+    // Clear URL params without reload
+    history.replaceState(null, '', window.location.pathname);
+    handleCallbackCode(code);
+  }
+})();
+</script>
+</body>
+</html>
