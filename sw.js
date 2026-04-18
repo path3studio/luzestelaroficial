@@ -5,12 +5,12 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v21 → v22 (Apr 18 natal-shape fix): natal-chart.js now
-// accepts ascendant / midheaven as either number (legacy) OR object
-// {sign, degree, longitude} (what the pipeline emits). Fixes the
-// "Carta no disponible temporalmente" regression when the API
-// finally started returning the rich natal_chart payload.
-const CACHE_NAME = 'luzestelar-v22';
+// Bumped v22 → v23 (Apr 18 resilience): even with the shape fix
+// on natal-chart.js, a canvas-render failure can no longer mask
+// the Sol/Luna/Asc badges — they now render first, unconditionally,
+// in their own try/catch. Canvas draw is isolated. console.warn
+// surfaces any draw error to DevTools for remote debugging.
+const CACHE_NAME = 'luzestelar-v23';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

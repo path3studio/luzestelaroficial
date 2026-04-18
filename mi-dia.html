@@ -877,35 +877,42 @@ function renderAll(){
   buildSynth(cc);
 
   // Natal chart — explicit size avoids offsetWidth=0 race during first render.
-  try{
-    var sunLong=(parts[1]-1)*30+parts[2];
-    var chartData={planets:[{name:'Sun',longitude:sunLong,sign:cc.western.name_en,degree:parts[2]}],aspects:[]};
-    if(LuzEstelar.NatalChart.calcMoonLongitude){
-      var ml=LuzEstelar.NatalChart.calcMoonLongitude(parts[0],parts[1],parts[2]);
-      var ms=LuzEstelar.NatalChart.signFromLongitude(ml);
-      var md=LuzEstelar.NatalChart.degreeInSign(ml);
-      chartData.planets.push({name:'Moon',longitude:ml,sign:LuzEstelar.NatalChart.SIGN_NAMES[ms],degree:md});
+  //
+  // Resilience note (Apr 18): prior structure ran render() BEFORE badges,
+  // so any render throw (e.g. the object-vs-number ascendant regression)
+  // left the Sol/Luna/Asc chips at their "—" placeholders. Now chartData
+  // is prepared first, badges are set unconditionally, THEN render() is
+  // attempted in its own try/catch. A canvas failure no longer hides
+  // the three pieces of data that drive the rest of the page.
+  var chartData = null;
+  try {
+    var sunLong = (parts[1] - 1) * 30 + parts[2];
+    chartData = { planets: [{ name: 'Sun', longitude: sunLong, sign: cc.western.name_en, degree: parts[2] }], aspects: [] };
+    if (LuzEstelar.NatalChart.calcMoonLongitude) {
+      var ml = LuzEstelar.NatalChart.calcMoonLongitude(parts[0], parts[1], parts[2]);
+      var ms = LuzEstelar.NatalChart.signFromLongitude(ml);
+      var md = LuzEstelar.NatalChart.degreeInSign(ml);
+      chartData.planets.push({ name: 'Moon', longitude: ml, sign: LuzEstelar.NatalChart.SIGN_NAMES[ms], degree: md });
     }
-    if(currentProfile.natal_chart){try{chartData=JSON.parse(currentProfile.natal_chart);}catch(e){}}
-    var natalCanvas=document.getElementById('natal');
-    // Compute size from available width; fallback to 280px if parent isn't laid out yet.
-    var parentW=natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
-    var size=parentW>0 ? Math.min(parentW, 320) : 280;
-    LuzEstelar.NatalChart.render(natalCanvas, chartData, {size:size});
-    document.getElementById('chart-meta').textContent=currentProfile.hora_nacimiento
-      ? (currentProfile.nombre+' · '+currentProfile.fecha_nacimiento+' '+currentProfile.hora_nacimiento)
-      : 'Sol y Luna aproximados · añade hora de nacimiento para carta completa';
+    if (currentProfile.natal_chart) {
+      var raw = currentProfile.natal_chart;
+      try {
+        // D1 TEXT columns come back as strings; defensive: accept pre-parsed objects too.
+        chartData = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+      } catch (e) { /* keep the client-side fallback */ }
+    }
+  } catch (e) { /* chartData stays null */ }
 
-    // Sol + Luna + Ascendente badges (summary above canvas)
-    try{
-      var sunP=(chartData.planets||[]).filter(function(p){return p.name==='Sun';})[0];
-      var moonP=(chartData.planets||[]).filter(function(p){return p.name==='Moon';})[0];
-      // Ascendente: el generador de natal_chart (consultation_generator.py::calculate_natal_chart)
-      // lo expone como propiedad top-level `ascendant`, no como entrada del array `planets[]`.
-      // Aceptamos ambos shapes por robustez hacia atrás.
-      var ascP=(chartData.planets||[]).filter(function(p){return p.name==='Ascendant'||p.name==='ASC';})[0]
-              || (chartData.ascendant && chartData.ascendant.sign ? chartData.ascendant : null);
-      // Signs can arrive in English (legacy client-side calc via signFromLongitude)
+  // ── Sol + Luna + Ascendente badges — always run, independent of canvas ──
+  try {
+    var sunP  = chartData && (chartData.planets||[]).filter(function(p){return p.name==='Sun';})[0];
+    var moonP = chartData && (chartData.planets||[]).filter(function(p){return p.name==='Moon';})[0];
+    // Ascendente arrives as top-level object { sign, degree, longitude } from
+    // the pipeline, or as a planets[] entry { name:'Ascendant', sign } from the
+    // legacy client-side calc. Accept both.
+    var ascP = (chartData && (chartData.planets||[]).filter(function(p){return p.name==='Ascendant'||p.name==='ASC';})[0])
+            || (chartData && chartData.ascendant && chartData.ascendant.sign ? chartData.ascendant : null);
+    // Signs can arrive in English (legacy client-side calc via signFromLongitude)
       // OR Spanish (when sourced from calculate_natal_chart in the pipeline, which
       // emits Spanish-localized strings). Both keys map to the same glyph/name.
       var signES={
@@ -943,9 +950,24 @@ function renderAll(){
       setSlma('slma-sun',sunP||{sign:cc.western.name_en},null,false);
       setSlma('slma-moon',moonP,'Calculando...',!moonP);
       setSlma('slma-asc',ascP,currentProfile.hora_nacimiento?'No disponible':'A\u00f1ade hora',!ascP);
-    }catch(e){/* badges best-effort */}
-  }catch(e){
-    document.getElementById('chart-meta').textContent='Carta no disponible temporalmente';
+  } catch (e) { /* badges best-effort */ }
+
+  // ── Canvas render — isolated so a draw error can't mask the badges ──
+  try {
+    var natalCanvas = document.getElementById('natal');
+    if (natalCanvas && chartData) {
+      var parentW = natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
+      var size = parentW > 0 ? Math.min(parentW, 320) : 280;
+      LuzEstelar.NatalChart.render(natalCanvas, chartData, { size: size });
+      document.getElementById('chart-meta').textContent = currentProfile.hora_nacimiento
+        ? (currentProfile.nombre + ' · ' + currentProfile.fecha_nacimiento + ' ' + currentProfile.hora_nacimiento)
+        : 'Sol y Luna aproximados · añade hora de nacimiento para carta completa';
+    }
+  } catch (e) {
+    // Log so we can see what's going on in DevTools without silencing forever.
+    if (window.console && console.warn) console.warn('[natal-chart]', e);
+    var cm = document.getElementById('chart-meta');
+    if (cm) cm.textContent = 'Carta no disponible temporalmente';
   }
 
   // Mapa Estelar — personalized preview
