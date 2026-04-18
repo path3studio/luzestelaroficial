@@ -5,11 +5,11 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v15 → v16 (Apr 18): bug-fix pass (mapa-estelar anchor +
-// lugar autocomplete), dashboard icons migrated to SVG, bottom
-// tabs now PWA-only (hidden on mobile web), new hero CTA "Abrir
-// la App". Triggers activate → old cache dropped → fresh re-fetch.
-const CACHE_NAME = 'luzestelar-v16';
+// Bumped v16 → v17 (Apr 18 late): ascendant display fix (chartData
+// .ascendant was ignored), global starfield added to compat +
+// ajustes, and the hero "Abrir la App" CTA is now smart (install
+// prompt on Chromium, Share → Add to Home on iOS, navigate in PWA).
+const CACHE_NAME = 'luzestelar-v17';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -34,6 +34,7 @@ const PRECACHE_URLS = [
   '/js/bottom-tabs.js',
   '/js/upgrade-sheet.js',
   '/js/install-prompt.js',
+  '/js/hero-install.js',
   '/app_icon.png',
   '/manifest.json',
   OFFLINE_URL,
