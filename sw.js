@@ -5,11 +5,12 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v20 → v21 (Apr 18 bugfix): haptic now binds to every
-// button/link in standalone (not only .tap-feedback, which was
-// why vibration felt random) + /api/auth/me finally returns
-// natal_chart so the Ascendente column actually renders.
-const CACHE_NAME = 'luzestelar-v21';
+// Bumped v21 → v22 (Apr 18 natal-shape fix): natal-chart.js now
+// accepts ascendant / midheaven as either number (legacy) OR object
+// {sign, degree, longitude} (what the pipeline emits). Fixes the
+// "Carta no disponible temporalmente" regression when the API
+// finally started returning the rich natal_chart payload.
+const CACHE_NAME = 'luzestelar-v22';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

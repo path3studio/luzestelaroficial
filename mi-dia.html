@@ -905,8 +905,27 @@ function renderAll(){
       // Aceptamos ambos shapes por robustez hacia atrás.
       var ascP=(chartData.planets||[]).filter(function(p){return p.name==='Ascendant'||p.name==='ASC';})[0]
               || (chartData.ascendant && chartData.ascendant.sign ? chartData.ascendant : null);
-      var signES={Aries:'Aries',Taurus:'Tauro',Gemini:'G\u00e9minis',Cancer:'C\u00e1ncer',Leo:'Leo',Virgo:'Virgo',Libra:'Libra',Scorpio:'Escorpio',Sagittarius:'Sagitario',Capricorn:'Capricornio',Aquarius:'Acuario',Pisces:'Piscis'};
-      var signSym={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
+      // Signs can arrive in English (legacy client-side calc via signFromLongitude)
+      // OR Spanish (when sourced from calculate_natal_chart in the pipeline, which
+      // emits Spanish-localized strings). Both keys map to the same glyph/name.
+      var signES={
+        Aries:'Aries',Taurus:'Tauro',Gemini:'G\u00e9minis',Cancer:'C\u00e1ncer',Leo:'Leo',
+        Virgo:'Virgo',Libra:'Libra',Scorpio:'Escorpio',Sagittarius:'Sagitario',
+        Capricorn:'Capricornio',Aquarius:'Acuario',Pisces:'Piscis',
+        // Spanish pass-through
+        'Tauro':'Tauro','G\u00e9minis':'G\u00e9minis','C\u00e1ncer':'C\u00e1ncer',
+        'Escorpio':'Escorpio','Sagitario':'Sagitario','Capricornio':'Capricornio',
+        'Acuario':'Acuario','Piscis':'Piscis'
+      };
+      var signSym={
+        Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',
+        Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',
+        Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653',
+        // Spanish keys
+        'Tauro':'\u2649','G\u00e9minis':'\u264A','C\u00e1ncer':'\u264B',
+        'Escorpio':'\u264F','Sagitario':'\u2650','Capricornio':'\u2651',
+        'Acuario':'\u2652','Piscis':'\u2653'
+      };
       function setSlma(id,planet,fallbackName,muted){
         var el=document.getElementById(id);
         if(!el) return;

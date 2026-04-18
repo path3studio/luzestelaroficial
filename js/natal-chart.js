@@ -134,9 +134,18 @@
     var planetR = size * 0.26;
     var aspectR = size * 0.22;
 
-    // Only use ascendant offset if we have a verified ascendant (real time-of-birth calculation)
-    var hasVerifiedAsc = chartData.ascendant !== undefined && chartData.ascendantVerified === true;
-    var ascOffset = hasVerifiedAsc ? (180 - chartData.ascendant) : 0;
+    // Only use ascendant offset if we have a verified ascendant (real time-of-birth calculation).
+    // Accept both shapes: a bare number (legacy) OR an object { sign, degree, longitude }
+    // which is what calculate_natal_chart() in consultation_generator.py emits.
+    // Similarly for midheaven below.
+    var ascLongitude = (typeof chartData.ascendant === 'object' && chartData.ascendant !== null)
+      ? chartData.ascendant.longitude
+      : chartData.ascendant;
+    var mcLongitude = (typeof chartData.midheaven === 'object' && chartData.midheaven !== null)
+      ? chartData.midheaven.longitude
+      : chartData.midheaven;
+    var hasVerifiedAsc = typeof ascLongitude === 'number' && !isNaN(ascLongitude) && chartData.ascendantVerified === true;
+    var ascOffset = hasVerifiedAsc ? (180 - ascLongitude) : 0;
 
     ctx.clearRect(0, 0, size, size);
 
@@ -275,7 +284,7 @@
 
     // ── ASC / MC markers — only render if ascendant is verified (real time-of-birth) ──
     if (hasVerifiedAsc) {
-      var ascAngle = ((chartData.ascendant + ascOffset) * DEG) - Math.PI / 2;
+      var ascAngle = ((ascLongitude + ascOffset) * DEG) - Math.PI / 2;
       ctx.strokeStyle = '#d4a849';
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -290,8 +299,8 @@
       ctx.fillText('ASC', cx + Math.cos(ascAngle) * (outerR + 14), cy + Math.sin(ascAngle) * (outerR + 14));
     }
 
-    if (chartData.midheaven !== undefined && hasVerifiedAsc) {
-      var mcAngle = ((chartData.midheaven + ascOffset) * DEG) - Math.PI / 2;
+    if (typeof mcLongitude === 'number' && !isNaN(mcLongitude) && hasVerifiedAsc) {
+      var mcAngle = ((mcLongitude + ascOffset) * DEG) - Math.PI / 2;
       ctx.strokeStyle = 'rgba(212,168,73,0.5)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
