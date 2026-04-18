@@ -55,14 +55,55 @@
     }
   }
 
-  // Auto-bind on pointerdown for anything explicitly marked.
-  // We use pointerdown (not click) so the vibration fires
-  // simultaneously with the press — matches native UX.
+  // Auto-bind on pointerdown. Vibration fires simultaneously with
+  // the press (not click) so it matches native press UX.
+  //
+  // Coverage: every interactive element gets haptic feedback in PWA
+  // standalone, not only the ones explicitly tagged .tap-feedback.
+  // That was the old behaviour and it made haptic feel unreliable
+  // — "sometimes it vibrates, sometimes not, same button".
+  //
+  // Opt-out via [data-no-haptic] on an ancestor when a specific
+  // control genuinely should not buzz (swipe handles, hovers, etc.)
+  //
+  // Kind resolution order:
+  //   1. Nearest [data-haptic] → explicit preset
+  //   2. <button type=submit> or form submit → 'success'
+  //   3. Anything with [aria-selected] flipping → 'select'
+  //   4. default → 'tap'
+  var AUTO_TARGETS =
+    'button, [role="button"], a[href], input[type="submit"], ' +
+    'input[type="button"], .tap-feedback, [data-haptic]';
+
+  // Throttle: the same element firing within 40ms is almost always
+  // a touch→pointer→mouse cascade on mobile Safari. Second vibrate
+  // would just re-trigger the motor and waste battery without being
+  // perceived as extra feedback.
+  var lastTime = 0;
+  var THROTTLE_MS = 40;
+
   function onPointerDown(e) {
-    var el = e.target.closest('[data-haptic], .tap-feedback');
+    var now = performance.now();
+    if (now - lastTime < THROTTLE_MS) return;
+
+    // Nearest ancestor that either wants haptic or opts out.
+    var el = e.target.closest(AUTO_TARGETS);
     if (!el) return;
-    var kind = el.getAttribute('data-haptic') || 'tap';
-    haptic(kind);
+    if (el.closest('[data-no-haptic]')) return;
+    if (el.disabled || el.getAttribute('aria-disabled') === 'true') return;
+
+    // Resolve preset
+    var explicit = el.closest('[data-haptic]');
+    var kind = 'tap';
+    if (explicit) {
+      kind = explicit.getAttribute('data-haptic') || 'tap';
+    } else if (el.type === 'submit') {
+      kind = 'success';
+    } else if (el.hasAttribute('aria-selected') || el.hasAttribute('aria-current')) {
+      kind = 'select';
+    }
+
+    if (haptic(kind)) lastTime = now;
   }
 
   document.addEventListener('pointerdown', onPointerDown, { passive: true });

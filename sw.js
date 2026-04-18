@@ -5,11 +5,11 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v19 → v20 (Apr 18 phase 5): "alma nativa" polish —
-// new toast / sw-update / haptic modules, skeleton loading CSS,
-// and the SW itself now accepts SKIP_WAITING so the sw-update
-// toast can hand the user to the new version instantly.
-const CACHE_NAME = 'luzestelar-v20';
+// Bumped v20 → v21 (Apr 18 bugfix): haptic now binds to every
+// button/link in standalone (not only .tap-feedback, which was
+// why vibration felt random) + /api/auth/me finally returns
+// natal_chart so the Ascendente column actually renders.
+const CACHE_NAME = 'luzestelar-v21';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
