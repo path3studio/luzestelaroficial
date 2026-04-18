@@ -30,14 +30,14 @@
      CSS can differentiate PWA-specific patterns instantly. -->
 <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
 <style>
-:root{--gold:#d4a849;--gold-light:#f0d078;--gold-dim:rgba(212,168,73,0.15);--purple:#7c5cbf;--bg:#06061a;--bg-mid:#0c0c2a;--text:#e0dce8;--text-dim:#9890a8;--text-mute:#6b6478;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.08)}
+/* :root tokens moved to /css/design-tokens.css (Phase 3.5 cleanup) */
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-.state{display:none}.state.active{display:block}
+/* .state / .state.active moved to components.css */
 .spinner{width:30px;height:30px;border:3px solid var(--glass-b);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:45vh auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* @keyframes spin moved to components.css */
 
 /* Subtle starfield that sits behind every section without stealing focus */
 .stars{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:.55}

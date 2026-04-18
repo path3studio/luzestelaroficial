@@ -5,11 +5,11 @@
  * Cache-first for static assets (fonts, images, CSS).
  */
 
-// Bumped v16 → v17 (Apr 18 late): ascendant display fix (chartData
-// .ascendant was ignored), global starfield added to compat +
-// ajustes, and the hero "Abrir la App" CTA is now smart (install
-// prompt on Chromium, Share → Add to Home on iOS, navigate in PWA).
-const CACHE_NAME = 'luzestelar-v17';
+// Bumped v17 → v18 (Apr 18 late late): phase 3.5 cleanup — removed
+// duplicate :root, .state, @keyframes spin from the inline style
+// blocks of 8 pages (tokens.css + components.css own them now).
+// Also added --glass-bg and --text-main legacy aliases to tokens.
+const CACHE_NAME = 'luzestelar-v18';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

@@ -133,7 +133,9 @@
  */
 :root {
   --glass-border:     var(--glass-b);      /* dashboard.html et al. */
+  --glass-bg:         var(--glass);        /* mapa-estelar.html et al. */
   --accent-purple:    var(--purple);       /* dashboard.html */
+  --text-main:        var(--text);         /* mapa-estelar.html et al. */
   /* --bg → --bg-deep is already defined above */
 }
 
