@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Sky Map</title>
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link rel="stylesheet" href="/css/components.css">
+<style>
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100dvh;
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-5);
+}
+h1 {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: var(--fs-2xl);
+  text-align: center;
+}
+.wrap { max-width: 460px; width: 100%; }
+canvas { display: block; margin: 0 auto; }
+.controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-sm);
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+.controls label { color: var(--text-dim); }
+.controls input, .controls select {
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  padding: 6px 10px;
+  font: inherit;
+}
+.presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: var(--sp-3); }
+.presets button {
+  padding: 6px 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-pill);
+  color: var(--text-dim);
+  font: inherit;
+  cursor: pointer;
+  transition: all var(--dur-base) var(--ease-standard);
+}
+.presets button:hover { border-color: var(--gold-dim); color: var(--gold); }
+.info { color: var(--text-dim); font-size: var(--fs-xs); text-align: center; line-height: 1.5; margin-top: var(--sp-3); }
+</style>
+</head>
+<body>
+<h1>Mapa Estelar — Cielo real</h1>
+<div class="wrap">
+  <canvas id="sky" style="width:420px;height:420px"></canvas>
+  <div class="controls">
+    <label>Fecha (UTC)</label>
+    <input type="date" id="date" value="1993-09-09">
+    <label>Hora (UTC)</label>
+    <input type="time" id="time" value="20:33">
+    <label>Latitud</label>
+    <input type="number" id="lat" value="25.6866" step="0.0001">
+    <label>Longitud</label>
+    <input type="number" id="lng" value="-100.3161" step="0.0001">
+  </div>
+  <div class="presets">
+    <button data-p="ernesto">Ernesto · 1993</button>
+    <button data-p="now">Ahora · Monterrey</button>
+    <button data-p="london">Londres · medianoche</button>
+    <button data-p="sydney">Sydney · invierno</button>
+  </div>
+  <p class="info">
+    Proyección estereográfica desde el zenith, epoch J2000.<br>
+    114 estrellas, 22 constelaciones, 80 líneas.<br>
+    Los planetas son las posiciones eclípticas del natal chart de Ernesto convertidas a ecuatoriales.
+  </p>
+</div>
+
+<script src="/js/sky-map.js"></script>
+<script>
+// ── Load catalogs ──
+Promise.all([
+  fetch('/data/stars.json').then(r => r.json()),
+  fetch('/data/constellations.json').then(r => r.json()),
+]).then(([starsData, constData]) => {
+  const canvas = document.getElementById('sky');
+  const dateEl = document.getElementById('date');
+  const timeEl = document.getElementById('time');
+  const latEl = document.getElementById('lat');
+  const lngEl = document.getElementById('lng');
+
+  // Ernesto's natal chart — ecliptic longitudes (from D1)
+  const ernestoPlanets = [
+    { name: 'Sol',     symbol: '☉', longitude: 167.25, color: '#FFD700' },
+    { name: 'Luna',    symbol: '☾', longitude:  84.14, color: '#C0C8E0' },
+    { name: 'Mercurio', symbol: '☿', longitude: 177.32, color: '#B0B0B0' },
+    { name: 'Venus',    symbol: '♀', longitude: 135.87, color: '#F0C070' },
+    { name: 'Marte',    symbol: '♂', longitude: 198.61, color: '#FF6060' },
+    { name: 'Júpiter',  symbol: '♃', longitude: 196.97, color: '#E0B060' },
+    { name: 'Saturno',  symbol: '♄', longitude: 325.52, color: '#C0A080' },
+  ];
+
+  function draw() {
+    const d = dateEl.value.split('-').map(Number);
+    const t = timeEl.value.split(':').map(Number);
+    const utc = {
+      y: d[0], m: d[1], d: d[2],
+      h: t[0] || 0, min: t[1] || 0,
+    };
+    LuzEstelar.SkyMap.render(canvas, {
+      lat: parseFloat(latEl.value),
+      lng: parseFloat(lngEl.value),
+      utc: utc,
+      stars: starsData.stars,
+      constellations: constData.constellations,
+      planets: ernestoPlanets,
+      size: 420,
+      showLabels: true,
+    });
+  }
+
+  [dateEl, timeEl, latEl, lngEl].forEach(el => el.addEventListener('input', draw));
+
+  document.querySelectorAll('.presets button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.p;
+      if (p === 'ernesto') {
+        dateEl.value = '1993-09-09'; timeEl.value = '20:33';
+        latEl.value = '25.6866'; lngEl.value = '-100.3161';
+      } else if (p === 'now') {
+        const now = new Date();
+        dateEl.value = now.toISOString().slice(0, 10);
+        timeEl.value = now.toISOString().slice(11, 16);
+        latEl.value = '25.6866'; lngEl.value = '-100.3161';
+      } else if (p === 'london') {
+        dateEl.value = '2024-12-21'; timeEl.value = '00:00';
+        latEl.value = '51.5074'; lngEl.value = '-0.1278';
+      } else if (p === 'sydney') {
+        dateEl.value = '2024-06-21'; timeEl.value = '10:00';
+        latEl.value = '-33.8688'; lngEl.value = '151.2093';
+      }
+      draw();
+    });
+  });
+
+  draw();
+});
+</script>
+</body>
+</html>
