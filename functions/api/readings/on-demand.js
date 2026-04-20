@@ -45,12 +45,16 @@ const PRICING = {
   'gemini-2.5-pro': { in: 1.25 / 1e6, out: 5.0 / 1e6 },    // USD per token
   'gemini-2.5-flash': { in: 0.075 / 1e6, out: 0.30 / 1e6 },
 };
-// DEFAULT_MODEL is on Flash while the GCP project is on the free
-// tier — 2.5 Pro requires billing enabled. To flip to Pro after
-// linking a billing account, just change this single line:
-//   'gemini-2.5-flash' → 'gemini-2.5-pro'
-// No other code changes needed; pricing table already has both.
-const DEFAULT_MODEL = 'gemini-2.5-flash';
+// Gemini 2.5 Pro — active as of 2026-04-20 once GCP billing landed.
+// The prose quality jump over Flash is substantial: Flash was
+// truncating to ~70 output tokens during smoke testing; Pro handles
+// the 280-360 word target cleanly with sophisticated metaphor and
+// rhythm. Cost per call ~$0.01 vs ~$0.0005 for Flash, fully covered
+// by Plus revenue (see memory/llm_cost_analysis.md).
+// Revert to 'gemini-2.5-flash' is a single-line change + redeploy
+// if we ever need to save money; behaviour is identical, prose
+// collapses gracefully.
+const DEFAULT_MODEL = 'gemini-2.5-pro';
 const GEMINI_TIMEOUT_MS = 30000;
 
 // Ptolemaic aspects — same orbs the client's transits.js uses.
