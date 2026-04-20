@@ -27,6 +27,16 @@ export async function onRequestGet(context) {
       'SELECT id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, natal_chart, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, enneagram_type, enneagram_wing, is_primary FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC'
     ).bind(user.sub).all();
 
+    // Feature flags surfaced to the client so it can decide what to
+    // attempt without guessing. Keep the set small — we only expose
+    // booleans that meaningfully change UI behaviour.
+    const flags = {
+      // Arco 1: on-demand Gemini-Pro chart-level daily reading. When
+      // this is false, the client should NOT call /api/readings/on-demand
+      // at all (saves a round-trip per page load).
+      ondemandReadings: context.env.ENABLE_ONDEMAND_READINGS === '1',
+    };
+
     return Response.json({
       ok: true,
       user: {
@@ -39,6 +49,7 @@ export async function onRequestGet(context) {
         createdAt: row.created_at,
       },
       birthProfiles: profiles.results || [],
+      flags,
     });
   } catch (err) {
     return Response.json({ ok: false, error: 'Database error' }, { status: 500 });
