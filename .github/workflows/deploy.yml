@@ -1,0 +1,103 @@
+name: Deploy to Cloudflare Pages
+
+# Runs on every push to main. Replaces the native CF Pages Git
+# integration webhook, which silently stopped firing for this repo
+# around Apr 18 2026 (last successful auto-deploy was "phase 6.3").
+#
+# This workflow is intentionally simple: validate, then deploy. No
+# frameworks, no build step — this is a static site + Pages Functions
+# (pure JS ESM), so we just push the repo as-is and let wrangler
+# bundle the Functions.
+#
+# Secrets required (one-time setup in GitHub repo Settings → Secrets):
+#   CLOUDFLARE_API_TOKEN  — scoped to "Edit Cloudflare Workers"
+#                           (includes Pages deploy permission)
+#   CLOUDFLARE_ACCOUNT_ID — 846c3f7a917815a9616dc7bf64cd0ab4
+#                           (not secret, but kept here for hygiene)
+#
+# Manual trigger is supported via workflow_dispatch, so any future
+# "need to redeploy without a new commit" case can run the workflow
+# from the Actions tab without pushing a dummy commit.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel any in-flight deploy if a new push arrives — no point in
+# shipping stale code when a newer commit is ready. Pages Function
+# deploys are fast (~15s) so concurrency conflicts are rare in
+# practice, but this keeps the timeline clean.
+concurrency:
+  group: pages-deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: wrangler pages deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Needed for the deploy-comment on the commit (optional — the
+    # step only runs if the step exists; safe to have the permission).
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      # ─── 1. Checkout ──────────────────────────────────────────
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          # Shallow is fine — we're not running git blame or comparing
+          # to history. Fastest checkout possible.
+          fetch-depth: 1
+
+      # ─── 2. Node (for wrangler + syntax validation) ────────────
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # ─── 3. Syntax-check all Pages Functions ──────────────────
+      # Catches obvious mistakes (typos, broken imports) BEFORE
+      # wrangler uploads them. Wrangler would fail too, but this
+      # gives a clearer error message faster.
+      - name: Validate Functions syntax
+        run: |
+          set -e
+          for f in $(find functions -name "*.js" -not -path "*/migrations/*"); do
+            echo "  → $f"
+            node --check "$f"
+          done
+          echo "All Functions pass syntax check."
+
+      # ─── 4. Deploy to Cloudflare Pages ────────────────────────
+      # cloudflare/wrangler-action wraps `npx wrangler` with the
+      # secret auth already plumbed through env. `--branch=main`
+      # targets the production deployment (aliases luzestelaroficial.com
+      # and luzestelar.pages.dev flip to this build).
+      - name: Deploy via wrangler
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy . --project-name=luzestelar --branch=main --commit-dirty=true
+
+      # ─── 5. Smoke check ───────────────────────────────────────
+      # Verifies the live site reflects the new commit within ~30s.
+      # Doesn't fail the workflow if the check is flaky (CF propagation
+      # can take a moment) — just logs for visibility.
+      - name: Smoke check deploy
+        if: always() && steps.deploy.outcome == 'success'
+        run: |
+          echo "Waiting 20s for CF propagation..."
+          sleep 20
+          echo "=== sw.js version (expect latest CACHE_NAME) ==="
+          curl -sS "https://luzestelaroficial.com/sw.js" | grep "^const CACHE_NAME" || echo "  (could not read sw.js)"
+          echo "=== on-demand endpoint liveness (expect 401 without auth) ==="
+          curl -sS -o /dev/null -w "  HTTP %{http_code}\n" \
+            -X POST "https://luzestelaroficial.com/api/readings/on-demand" \
+            -H "Origin: https://luzestelaroficial.com" \
+            -H "Content-Type: application/json" -d '{}' || true
