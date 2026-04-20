@@ -154,6 +154,16 @@ function get(obj, key, fallback) {
   return fallback;
 }
 
+// Cache + report version. Module-scoped so both the route handler
+// (for cache_key) and buildReport (for the version field in the
+// returned payload) reference the SAME value. Previously declared
+// inside onRequestGet as a local const, which caused a
+// ReferenceError in buildReport and a 500 response on every call.
+// Bump this when the narrative structure changes to invalidate old
+// cached rows (they remain in D1 but with a different cache_key so
+// they're ignored; they age out after 7 days anyway).
+const VERSION = 'v2';
+
 // ─── Route ──────────────────────────────────────────────────────────
 
 export async function onRequestGet(context) {
@@ -189,8 +199,8 @@ export async function onRequestGet(context) {
     return Response.json({ ok: false, error: 'Birth profile not found' }, { status: 404 });
   }
 
-  // Cache (keyed also by report version so a prompt bump invalidates old rows)
-  const VERSION = 'v2';
+  // Cache (VERSION is module-scoped above — keyed so a prompt bump
+  // invalidates old rows via a different cache_key).
   const cacheKey = `unified_${VERSION}_${profile.id}_${lang}`;
   const cached = await DB.prepare(
     'SELECT report_json FROM cached_reports WHERE cache_key = ? AND created_at > datetime("now", "-7 days")'
