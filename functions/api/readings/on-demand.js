@@ -38,14 +38,19 @@
 
 import { computePositions, computeAscMc } from '../../_shared/ephemeris.js';
 
-// Gemini 2.5 Pro public pricing as of 2026-04. Keep in sync with
+// Gemini public pricing as of 2026-04. Keep in sync with
 // https://ai.google.dev/pricing. Pricing is recorded per-call at
 // write time so future repricing doesn't invalidate historical rows.
 const PRICING = {
-  'gemini-2.5-pro': { in: 1.25 / 1e6, out: 5.0 / 1e6 },   // USD per token
+  'gemini-2.5-pro': { in: 1.25 / 1e6, out: 5.0 / 1e6 },    // USD per token
   'gemini-2.5-flash': { in: 0.075 / 1e6, out: 0.30 / 1e6 },
 };
-const DEFAULT_MODEL = 'gemini-2.5-pro';
+// DEFAULT_MODEL is on Flash while the GCP project is on the free
+// tier — 2.5 Pro requires billing enabled. To flip to Pro after
+// linking a billing account, just change this single line:
+//   'gemini-2.5-flash' → 'gemini-2.5-pro'
+// No other code changes needed; pricing table already has both.
+const DEFAULT_MODEL = 'gemini-2.5-flash';
 const GEMINI_TIMEOUT_MS = 30000;
 
 // Ptolemaic aspects — same orbs the client's transits.js uses.
