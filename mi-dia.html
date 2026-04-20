@@ -1010,6 +1010,10 @@ async function init(){
     var d=await r.json();
     if(!d.ok){show('login');return;}
     currentUser=d.user;
+    // Feature flags — decides which extras the client should try.
+    // Arco 1: flags.ondemandReadings turns on chart-level Gemini Pro
+    // readings for Plus users (sign-level remains the baseline).
+    window._flags = d.flags || {};
     profilesList=d.birthProfiles||[];
     window._pfList=profilesList;
     if(!profilesList.length){show('setup');return;}
@@ -2118,6 +2122,22 @@ async function loadDaily(offset){
       rdgEl.textContent='Tu lectura de hoy se genera cada noche. La próxima llega en ~'+hrsLeft+'h. Mientras tanto puedes explorar tu carta natal arriba.';
     }
 
+    // ── Arco 1: on-demand chart-level reading (Plus + today only) ──
+    // Fire-and-forget: only TODAY, only Plus, only when the feature
+    // flag is on. Replaces the sign-level text with a Gemini-Pro
+    // reading tailored to the current profile's natal chart. Any
+    // failure silently leaves the sign-level text in place — zero
+    // regression vs the pre-Arco-1 behaviour.
+    try {
+      if (_dayOffset === 0
+          && window._flags && window._flags.ondemandReadings
+          && currentUser && currentUser.tier === 'premium'
+          && currentProfile && currentProfile.id
+          && navigator.onLine !== false) {
+        maybeLoadOnDemandReading(currentProfile.id, rdgEl);
+      }
+    } catch(e) { /* never block the main render */ }
+
     // Cosmic strip
     var cos=[];
     if(d.moon) cos.push('<span>🌙 '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
@@ -2150,6 +2170,74 @@ async function loadDaily(offset){
       if(insBtn) insBtn.addEventListener('click',openUpgrade);
     }
   }catch(e){}
+}
+
+// ── Arco 1: on-demand chart-level reading (Gemini 2.5 Pro) ──────────
+//
+// Runs AFTER loadDaily() has painted the sign-level text. Upgrades
+// that text to a chart-level personalised reading for Plus users, in
+// place. The sign-level stays visible throughout — first the user
+// sees real content, then within a few seconds the text fades to
+// a deeper, tailored version. If Gemini is slow/fails/rate-limited
+// we keep the sign-level and the user never sees an error.
+//
+// Client-side dedup: one attempt per (profile_id, dateKey) per page
+// load. Day-nav re-entry for the same today doesn't re-fire.
+var _ondemandAttempted = {};   // map "profile|date" → true
+var _ondemandInFlight  = {};   // same key → true while request is in flight
+
+async function maybeLoadOnDemandReading(profileId, rdgEl) {
+  var dateKey = new Date().toISOString().split('T')[0];
+  var key = profileId + '|' + dateKey;
+  if (_ondemandAttempted[key] || _ondemandInFlight[key]) return;
+  _ondemandInFlight[key] = true;
+
+  // Subtle indicator — not a skeleton, just a small italic line under
+  // the sign-level text. Gemini Pro typically takes 5-10s; we want
+  // the user to feel the work is happening without hiding content.
+  var hintEl = document.getElementById('rdg-ondemand-hint');
+  if (!hintEl) {
+    hintEl = document.createElement('div');
+    hintEl.id = 'rdg-ondemand-hint';
+    hintEl.style.cssText = 'font-size:.78rem;color:var(--text-dim);font-style:italic;margin-top:8px;opacity:.7';
+    hintEl.textContent = 'Escribiendo tu lectura personal…';
+    if (rdgEl && rdgEl.parentNode) rdgEl.parentNode.appendChild(hintEl);
+  }
+
+  try {
+    var r = await api('/api/readings/on-demand', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ profile_id: profileId, lang: LANG })
+    });
+    if (!r.ok) { /* 503 flag off, 403 not premium, 502 gemini error — all silent */ return; }
+    var j = await r.json();
+    if (!j || !j.ok || !j.reading || !j.reading.text) return;
+
+    // Replace the main reading text with the personalised version.
+    // Fade transition so the upgrade feels like a refinement, not
+    // a pop. Guard against the user navigating to another day in
+    // the meantime — only replace if we're still on today.
+    if (_dayOffset !== 0) return;
+    if (rdgEl) {
+      rdgEl.style.transition = 'opacity .35s ease';
+      rdgEl.style.opacity = '.2';
+      setTimeout(function(){
+        rdgEl.textContent = j.reading.text;
+        rdgEl.style.opacity = '1';
+      }, 320);
+    }
+  } catch (e) {
+    // Network failure, JSON parse, anything — silently keep the
+    // sign-level reading. The admin widget logs the server-side
+    // error if one happened; from the user's perspective nothing
+    // went wrong.
+  } finally {
+    _ondemandInFlight[key] = false;
+    _ondemandAttempted[key] = true;
+    var h = document.getElementById('rdg-ondemand-hint');
+    if (h && h.parentNode) h.parentNode.removeChild(h);
+  }
 }
 
 async function loadUnified(){

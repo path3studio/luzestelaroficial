@@ -307,7 +307,14 @@
 // planet names (Sun/Moon/Mercury/…) in both PNAME dicts, EN
 // UpgradeSheet, and lang=en on the /api/reports/compatibility call.
 // Closes Arco 4 (EN parity for the full app shell).
-const CACHE_NAME = 'luzestelar-v68';
+// v68 → v69 (Apr 20): Arco 1 client wiring. mi-dia.html + en/my-day.html
+// now attempt /api/readings/on-demand for today's reading when the
+// server's flags.ondemandReadings is true AND the user is premium.
+// Behaviour is additive: sign-level text paints first, then fades in
+// the chart-level Gemini-Pro version 5-10s later. Any failure silently
+// keeps the sign-level text — zero regression. The feature stays dark
+// until the ENABLE_ONDEMAND_READINGS secret is flipped to "1".
+const CACHE_NAME = 'luzestelar-v69';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
