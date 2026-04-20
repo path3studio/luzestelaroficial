@@ -358,20 +358,23 @@ export async function onRequestPost(context) {
   });
 
   if (!res.ok) {
-    // Record the failure so the admin dashboard sees it. Then ask the
-    // client to fall back to the sign-level flow — same UX the user
-    // had before the feature existed.
+    // Record the failure for the admin dashboard. Use INSERT OR IGNORE
+    // so we NEVER overwrite a previously-successful row for this
+    // (profile, date) — if another request already landed an 'ok' row,
+    // theirs wins and ours is silently dropped. This is the right
+    // asymmetry: a success is the canonical outcome, an error is a
+    // best-effort diagnostic.
     const status = res.error === 'timeout' ? 'timeout' : 'gemini_error';
     try {
       await DB.prepare(
-        `INSERT INTO ondemand_generations
+        `INSERT OR IGNORE INTO ondemand_generations
           (user_id, profile_id, reading_date, lang, model, reading_json, latency_ms, status, error_message)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).bind(
         user.sub, profileId, dateKey, lang, model, '{}',
         res.latency || null, status, String(res.error).slice(0, 500)
       ).run();
-    } catch { /* UNIQUE race — another request already recorded something */ }
+    } catch { /* persist is best-effort; never block the fallback response */ }
     return Response.json(
       { ok: false, error: status, fallback: 'sign_level' },
       { status: 502 }
@@ -379,6 +382,15 @@ export async function onRequestPost(context) {
   }
 
   // ── Persist + return ─────────────────────────────────────────────
+  // Use ON CONFLICT DO UPDATE so a successful call always wins over
+  // any previously-recorded error row for the same (profile, date).
+  // This is critical: before this fix, a single gemini_error row left
+  // behind by a transient failure (e.g. invalid API key, temporary
+  // Gemini 5xx, timeout) would PERMANENTLY block every future retry
+  // that same day because of the UNIQUE constraint. The success-upsert
+  // pattern recovers automatically — first working call lands the 'ok'
+  // row and also clears the diagnostic, so the dedup check at the top
+  // of the handler works normally on subsequent requests.
   const reading = {
     text: res.text,
     source: 'ondemand',
@@ -390,25 +402,31 @@ export async function onRequestPost(context) {
   try {
     await DB.prepare(
       `INSERT INTO ondemand_generations
-        (user_id, profile_id, reading_date, lang, model, reading_json, tokens_in, tokens_out, latency_ms, cost_usd, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ok')`
+        (user_id, profile_id, reading_date, lang, model, reading_json,
+         tokens_in, tokens_out, latency_ms, cost_usd, status, error_message)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ok', NULL)
+       ON CONFLICT(profile_id, reading_date) DO UPDATE SET
+         user_id       = excluded.user_id,
+         lang          = excluded.lang,
+         model         = excluded.model,
+         reading_json  = excluded.reading_json,
+         tokens_in     = excluded.tokens_in,
+         tokens_out    = excluded.tokens_out,
+         latency_ms    = excluded.latency_ms,
+         cost_usd      = excluded.cost_usd,
+         status        = 'ok',
+         error_message = NULL,
+         created_at    = datetime('now')`
     ).bind(
       user.sub, profileId, dateKey, lang, model,
       JSON.stringify(reading),
       res.tokensIn, res.tokensOut, res.latency, cost,
     ).run();
   } catch (e) {
-    // UNIQUE constraint hit — another request won the race. Read the
-    // winning row instead so both callers see the same reading.
-    const winner = await DB
-      .prepare('SELECT reading_json FROM ondemand_generations WHERE profile_id = ? AND reading_date = ? AND status = ?')
-      .bind(profileId, dateKey, 'ok')
-      .first();
-    if (winner) {
-      return Response.json({ ok: true, reading: JSON.parse(winner.reading_json), cached: true });
-    }
-    // If we got here the write failed for a reason other than UNIQUE —
-    // still return the reading we generated, just without persistence.
+    // The UPSERT handles the common race + error-overwrite cases, so
+    // hitting this catch means something rarer (D1 unreachable mid-
+    // request, schema drift, etc.). Still return the reading we
+    // generated — the user's experience shouldn't suffer.
     console.warn('[on-demand] persist failed:', e.message);
   }
 
