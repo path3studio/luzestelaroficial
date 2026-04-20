@@ -36,4 +36,4 @@ CREATE INDEX IF NOT EXISTS idx_sent_aspect_alerts_sent
 CREATE INDEX IF NOT EXISTS idx_sent_aspect_alerts_user
   ON sent_aspect_alerts(user_id);
 
-INSERT INTO _migrations (name, applied_at) VALUES ('0007_aspect_alerts', datetime('now'));
+INSERT OR IGNORE INTO _migrations (id, applied_at) VALUES ('0007_aspect_alerts', datetime('now'));
