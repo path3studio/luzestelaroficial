@@ -209,18 +209,21 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const started = Date.now();
 
-  // Gemini 2.5 models expose an internal "thinking" budget that
-  // consumes output tokens before emitting visible text. On Pro it's
-  // on by default and can easily eat our 1800-token cap, leaving
-  // no room for the actual reading — which is exactly what happened
-  // in the first Pro smoke test (status=gemini_error, "empty_response",
-  // 17s latency). We disable thinking here because astrology prose
-  // doesn't need chain-of-thought and we want the full budget spent
-  // on visible output. `thinkingConfig.thinkingBudget: 0` is the
-  // canonical way to force zero thinking tokens on Gemini 2.5.
-  // Flash ignores this field silently (it doesn't support thinking),
-  // so the same body works for both models.
+  // Gemini 2.5 Pro requires thinking mode (Google enforces it server-
+  // side; thinkingBudget: 0 returns 400 "Budget 0 is invalid"). Flash
+  // supports thinking optionally — we disable it there for speed.
+  // The trick is that maxOutputTokens in Gemini 2.5 covers BOTH
+  // thinking tokens AND visible-text tokens combined. So we need:
+  //   maxOutputTokens >= thinkingBudget + expected_visible_tokens
+  // For a 280-360 word reading (~500 visible tokens) + a small
+  // thinking budget, 4500 total is a comfortable ceiling.
+  // At Pro output pricing ($5/M) a full-ceiling call is ~$0.022;
+  // realistic calls land much lower because Gemini stops at the
+  // natural end of the reading.
   const isPro = /pro$/i.test(model);
+  const thinkingConfig = isPro
+    ? { thinkingBudget: 512 }   // minimum viable for Pro; won't starve output
+    : { thinkingBudget: 0 };     // Flash: no thinking at all
 
   try {
     const r = await fetch(url, {
@@ -231,11 +234,8 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
         generationConfig: {
           temperature: 0.9,
           topP: 0.95,
-          // Raised from 1800 → 3000 for Pro to leave headroom even
-          // if thinking sneaks through. Pro at 3000 output tokens
-          // costs ~$0.015/call — still trivial within margin.
-          maxOutputTokens: isPro ? 3000 : 1800,
-          thinkingConfig: { thinkingBudget: 0 },
+          maxOutputTokens: isPro ? 4500 : 1800,
+          thinkingConfig,
         },
         safetySettings: [
           { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
