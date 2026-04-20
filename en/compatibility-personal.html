@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Compatibilidad — Luz Estelar</title>
-<link rel="canonical" href="https://luzestelaroficial.com/compatibilidad-personal.html">
+<title>Compatibility — Luz Estelar</title>
+<link rel="canonical" href="https://luzestelaroficial.com/en/compatibility-personal.html">
 <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/compatibilidad-personal.html">
 <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/compatibility-personal.html">
 <link rel="manifest" href="/manifest.json">
-<link rel="icon" type="image/png" href="app_icon.png">
+<link rel="icon" type="image/png" href="/app_icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -360,63 +360,63 @@ body{
 <div data-stars-global aria-hidden="true"></div>
 
 <div class="page">
-  <h1 class="page-title">Compatibilidad</h1>
+  <h1 class="page-title">Compatibility</h1>
 
   <!-- Empty state: fewer than 2 profiles -->
   <div id="empty-profiles" class="glass empty-state hidden">
     <span class="empty-icon">💫</span>
-    <p><strong>Agrega a alguien con quien compararte</strong><br><span style="font-size:.85em;opacity:.75">pareja, familiar, amigo/a — cada perfil abre su propia carta natal</span></p>
-    <a href="/mi-dia.html#add-profile" class="btn-cta">Agregar otro perfil</a>
+    <p><strong>Add someone to compare yourself with</strong><br><span style="font-size:.85em;opacity:.75">partner, family, friend — each profile opens its own natal chart</span></p>
+    <a href="/en/my-day.html#add-profile" class="btn-cta">Add another profile</a>
   </div>
 
   <!-- Profile selectors -->
   <div id="selector-section" class="hidden">
     <div class="selector-row">
       <button class="profile-btn" id="btn-a" type="button" aria-haspopup="listbox">
-        <span class="btn-label">Perfil A</span>
-        <span class="btn-name" id="label-a">Seleccionar...</span>
+        <span class="btn-label">Profile A</span>
+        <span class="btn-name" id="label-a">Select...</span>
       </button>
       <span class="vs-badge">VS</span>
       <button class="profile-btn" id="btn-b" type="button" aria-haspopup="listbox">
-        <span class="btn-label">Perfil B</span>
-        <span class="btn-name" id="label-b">Seleccionar...</span>
+        <span class="btn-label">Profile B</span>
+        <span class="btn-name" id="label-b">Select...</span>
       </button>
     </div>
 
     <!-- Dropdown A -->
     <div style="position:relative;">
-      <div class="profile-dropdown" id="dd-a" role="listbox" aria-label="Seleccionar perfil A"></div>
+      <div class="profile-dropdown" id="dd-a" role="listbox" aria-label="Select profile A"></div>
     </div>
     <!-- Dropdown B -->
     <div style="position:relative;">
-      <div class="profile-dropdown" id="dd-b" role="listbox" aria-label="Seleccionar perfil B"></div>
+      <div class="profile-dropdown" id="dd-b" role="listbox" aria-label="Select profile B"></div>
     </div>
 
     <!-- Default hint -->
     <div id="hint-state" class="glass hint-state">
       <span class="hint-icon">🔮</span>
-      <p>Selecciona dos perfiles para ver tu analisis de compatibilidad</p>
+      <p>Select two profiles to see your compatibility analysis</p>
     </div>
 
     <!-- Loading -->
     <div id="loading-state" class="loading-state hidden">
       <div class="spinner"></div>
-      <p>Calculando compatibilidad...</p>
+      <p>Calculating compatibility...</p>
     </div>
 
     <!-- Upgrade gate -->
     <div id="upgrade-gate" class="glass upgrade-gate hidden">
       <span class="lock-icon">🔒</span>
-      <h3>Compatibilidad Cross-Cultural</h3>
-      <p style="margin-bottom:10px;">Análisis profundo entre dos perfiles en 7 sistemas ancestrales: panorama, fortalezas, tensiones, crecimiento y un ritual compartido personalizado.</p>
-      <p style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 días gratis</strong> · Después desde <strong style="color:#f0d078;">$2,50/mes</strong> (plan anual).</p>
-      <button type="button" class="btn-upgrade" id="btn-upgrade-open">Empezar 7 días gratis</button>
+      <h3>Cross-Cultural Compatibility</h3>
+      <p style="margin-bottom:10px;">Deep analysis between two profiles across 7 ancestral systems: overview, strengths, tensions, growth, and a personalized shared ritual.</p>
+      <p style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 days free</strong> · Then from <strong style="color:#f0d078;">$2.50/month</strong> (annual plan).</p>
+      <button type="button" class="btn-upgrade" id="btn-upgrade-open">Start 7-day free trial</button>
     </div>
 
     <!-- Error -->
     <div id="error-state" class="glass error-state hidden">
-      <p>Error al calcular. Intenta de nuevo.</p>
-      <button class="btn-retry" id="btn-retry" type="button">Reintentar</button>
+      <p>Error calculating. Try again.</p>
+      <button class="btn-retry" id="btn-retry" type="button">Retry</button>
     </div>
 
     <!-- Results -->
@@ -440,7 +440,7 @@ body{
       <section class="synastry-section">
         <h3 class="sy-heading">
           <span class="sy-h-ic">✦</span>
-          <span>Carta de Synastry</span>
+          <span>Synastry Chart</span>
         </h3>
         <p class="sy-caption" id="sy-caption">—</p>
         <div class="sy-chart-wrap">
@@ -448,14 +448,14 @@ body{
         </div>
         <div class="sy-info" id="sy-info" hidden aria-live="polite"></div>
         <div class="sy-aspects" id="sy-aspects">
-          <div class="sy-aspects-title">Aspectos clave entre los dos cielos</div>
+          <div class="sy-aspects-title">Key aspects between the two skies</div>
           <div class="sy-list" id="sy-list"></div>
         </div>
       </section>
 
       <!-- 7-system breakdown -->
       <div class="breakdown">
-        <div class="breakdown-title">Desglose por sistema</div>
+        <div class="breakdown-title">Breakdown by system</div>
         <div id="breakdown-list"></div>
       </div>
 
@@ -464,7 +464,7 @@ body{
 
       <!-- v1 synthesis fallback (hidden if v2 sections render) -->
       <div class="synthesis-card" id="synthesis-card" style="display:none;">
-        <div class="synth-title">Sintesis</div>
+        <div class="synth-title">Synthesis</div>
         <div class="synth-text" id="synthesis-text"></div>
       </div>
     </div>
@@ -493,7 +493,7 @@ body{
   }).then(function(r){
     if(r.status === 401){
       localStorage.removeItem('le_token');
-      window.location.href = '/login.html';
+      window.location.href = '/en/login.html';
       return null;
     }
     return r.json();
@@ -526,7 +526,7 @@ body{
   }
 
   function getDisplayName(profile){
-    return profile.label || profile.name || profile.displayName || 'Perfil';
+    return profile.label || profile.name || profile.displayName || 'Profile';
   }
 
   // State
@@ -558,12 +558,12 @@ body{
 
   // System display names
   var systemNames = {
-    western: 'Occidental',
-    chinese: 'Chino',
-    numerology: 'Numerologia',
-    celtic: 'Celta',
-    mayan: 'Maya',
-    vedic: 'Vedico',
+    western: 'Western',
+    chinese: 'Chinese',
+    numerology: 'Numerology',
+    celtic: 'Celtic',
+    mayan: 'Mayan',
+    vedic: 'Vedic',
     humanDesign: 'H. Design'
   };
   var systemOrder = ['western','chinese','numerology','celtic','mayan','vedic','humanDesign'];
@@ -598,14 +598,14 @@ body{
       elLabelA.textContent = getEmoji(selectedA) + ' ' + getDisplayName(selectedA);
       elBtnA.classList.add('active');
     } else {
-      elLabelA.textContent = 'Seleccionar...';
+      elLabelA.textContent = 'Select...';
       elBtnA.classList.remove('active');
     }
     if(selectedB){
       elLabelB.textContent = getEmoji(selectedB) + ' ' + getDisplayName(selectedB);
       elBtnB.classList.add('active');
     } else {
-      elLabelB.textContent = 'Seleccionar...';
+      elLabelB.textContent = 'Select...';
       elBtnB.classList.remove('active');
     }
   }
@@ -714,7 +714,7 @@ body{
     if(!selectedA || !selectedB || selectedA.id === selectedB.id) return;
     showState('loading');
     var url = API_BASE + '/api/reports/compatibility?profile_a=' + encodeURIComponent(selectedA.id)
-            + '&profile_b=' + encodeURIComponent(selectedB.id) + '&lang=es';
+            + '&profile_b=' + encodeURIComponent(selectedB.id) + '&lang=en';
     fetch(url, {
       credentials:'same-origin',
       headers:authHeaders()
@@ -783,7 +783,7 @@ body{
       if(report.dominantElement){
         var dom = document.createElement('div');
         dom.className = 'v2-dom';
-        dom.textContent = 'Elemento dominante · ' + report.dominantElement;
+        dom.textContent = 'Dominant element · ' + report.dominantElement;
         elV2.appendChild(dom);
       }
       function textSec(s, extraClass){
@@ -881,9 +881,9 @@ body{
         };
         if (p.hora_nacimiento && p.lat != null && p.lon != null && window.LuzEstelar.Transits.computeAscMc) {
           var am = window.LuzEstelar.Transits.computeAscMc(birthUTC, p.lat, p.lon);
-          var zEs = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo','Libra','Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
-          chart.ascendant = { sign: zEs[Math.floor(am.asc/30)%12], degree: am.asc % 30, longitude: am.asc };
-          chart.midheaven = { sign: zEs[Math.floor(am.mc/30)%12],  degree: am.mc  % 30, longitude: am.mc };
+          var zEn = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+          chart.ascendant = { sign: zEn[Math.floor(am.asc/30)%12], degree: am.asc % 30, longitude: am.asc };
+          chart.midheaven = { sign: zEn[Math.floor(am.mc/30)%12],  degree: am.mc  % 30, longitude: am.mc };
           chart.ascendantVerified = true;
         }
         return chart;
@@ -893,7 +893,7 @@ body{
     var chartB = parseOrCompute(profileB);
     if (!chartA || !chartB || !chartA.planets || !chartB.planets) {
       var capErr = document.getElementById('sy-caption');
-      if (capErr) capErr.textContent = 'Alguno de los perfiles no tiene datos de nacimiento suficientes para calcular la carta.';
+      if (capErr) capErr.textContent = 'One of the profiles is missing enough birth data to compute the chart.';
       return;
     }
 
@@ -918,8 +918,8 @@ body{
     // Caption: who is inside, who is outside.
     var cap = document.getElementById('sy-caption');
     if (cap) {
-      cap.textContent = (profileA.nombre || 'Perfil A') + ' (interior) · '
-                      + (profileB.nombre || 'Perfil B') + ' (exterior)';
+      cap.textContent = (profileA.nombre || 'Profile A') + ' (inner) · '
+                      + (profileB.nombre || 'Profile B') + ' (outer)';
     }
 
     // Populate the cross-aspects list (top 5).
@@ -941,9 +941,9 @@ body{
     }
     wrap.style.display = 'block';
     var PNAME = {
-      Sun:'Sol', Moon:'Luna', Mercury:'Mercurio', Venus:'Venus', Mars:'Marte',
-      Jupiter:'Júpiter', Saturn:'Saturno', Uranus:'Urano', Neptune:'Neptuno',
-      Pluto:'Plutón'
+      Sun:'Sun', Moon:'Moon', Mercury:'Mercury', Venus:'Venus', Mars:'Mars',
+      Jupiter:'Jupiter', Saturn:'Saturn', Uranus:'Uranus', Neptune:'Neptune',
+      Pluto:'Pluto'
     };
     var PGLYPH = {
       Sun:'\u2609', Moon:'\u263D', Mercury:'\u263F', Venus:'\u2640',
@@ -976,7 +976,7 @@ body{
     var info = document.getElementById('sy-info');
     if (!info) return;
     function hide(){ info.hidden = true; info.innerHTML = ''; }
-    var PNAME = { Sun:'Sol', Moon:'Luna', Mercury:'Mercurio', Venus:'Venus', Mars:'Marte', Jupiter:'Júpiter', Saturn:'Saturno', Uranus:'Urano', Neptune:'Neptuno', Pluto:'Plutón', NorthNode:'Nodo Norte', Chiron:'Quirón' };
+    var PNAME = { Sun:'Sun', Moon:'Moon', Mercury:'Mercury', Venus:'Venus', Mars:'Mars', Jupiter:'Jupiter', Saturn:'Saturn', Uranus:'Uranus', Neptune:'Neptune', Pluto:'Pluto', NorthNode:'North Node', Chiron:'Chiron' };
     var PGLYPH = { Sun:'\u2609', Moon:'\u263D', Mercury:'\u263F', Venus:'\u2640', Mars:'\u2642', Jupiter:'\u2643', Saturn:'\u2644', Uranus:'\u2645', Neptune:'\u2646', Pluto:'\u2647' };
     canvas.addEventListener('click', function(e){
       var rect = canvas.getBoundingClientRect();
@@ -985,20 +985,20 @@ body{
       var hit = window.LuzEstelar.NatalChart.hitTest(canvas, x, y);
       if (!hit) return hide();
       // type 'planet' = A's planet, 'transit' = B's planet (outer ring)
-      var owner = hit.type === 'transit' ? (profileB.nombre || 'Perfil B') : (profileA.nombre || 'Perfil A');
+      var owner = hit.type === 'transit' ? (profileB.nombre || 'Profile B') : (profileA.nombre || 'Profile A');
       var name = PNAME[hit.name] || hit.name;
       var glyph = (PGLYPH[hit.name] || '\u2726') + '\uFE0E';
       var sign = hit.sign || '';
       var deg = Math.floor(hit.degree || 0);
-      info.innerHTML = '<button class="ci-close" aria-label="Cerrar" type="button">&times;</button>' +
+      info.innerHTML = '<button class="ci-close" aria-label="Close" type="button">&times;</button>' +
         '<div class="ci-hd">' +
           '<span class="ci-gly">' + glyph + '</span>' +
-          '<span class="ci-nm">' + name + ' de ' + owner + '</span>' +
+          '<span class="ci-nm">' + name + ' · ' + owner + '</span>' +
           '<span class="ci-pos">' + sign + ' ' + deg + '°</span>' +
         '</div>' +
         '<p class="ci-desc">' + (hit.type === 'transit'
-          ? 'Posición natal de ' + owner + ' en este momento del tiempo.'
-          : 'Tu posición natal — la forma en que este planeta se expresa en tu carta.') +
+          ? owner + '\u2019s natal position in this moment of time.'
+          : 'Your natal position — the way this planet expresses itself in your chart.') +
         '</p>';
       info.hidden = false;
       info.querySelector('.ci-close').addEventListener('click', hide);
@@ -1022,9 +1022,9 @@ body{
   if (btnUpgrade) {
     btnUpgrade.addEventListener('click', function(){
       if (window.LuzEstelar && LuzEstelar.UpgradeSheet) {
-        LuzEstelar.UpgradeSheet.open({ lang: 'es' });
+        LuzEstelar.UpgradeSheet.open({ lang: 'en' });
       } else {
-        window.location.assign('/planes.html');
+        window.location.assign('/en/planes.html');
       }
     });
   }

@@ -17,7 +17,7 @@
 <!-- Design system (shared with mi-dia.html — tokens, PWA patterns, icons) -->
 <link rel="stylesheet" href="/css/design-tokens.css">
 <link rel="stylesheet" href="/css/pwa.css">
-<link rel="stylesheet" href="/css/stars.css">
+<link rel="stylesheet" href="/css/stars.css?v=2">
 <link rel="stylesheet" href="/css/icons.css">
 <link rel="stylesheet" href="/css/components.css">
 <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
@@ -439,6 +439,20 @@ main{
       <option value="22">22:00</option>
     </select>
   </div>
+  <!-- Opt-out for the aspect-alert layer that was bundled into the
+       daily push starting v66 (Apr 19 2026). When a transit is in
+       exact aspect (<0.5°) to a personal natal point, the daily push
+       swaps its title/body to "Tránsito exacto hoy" + describes the
+       hit. This toggle lets users disable that layer while keeping
+       the standard daily reading push. Hidden until notifications
+       are enabled. -->
+  <div class="pref-row" id="aspects-row" style="display:none">
+    <div style="flex:1;min-width:0">
+      <div class="pref-label">Avisos de tránsitos exactos</div>
+      <div class="pref-sub">Te avisamos cuando un planeta de hoy toca tu carta natal con orbe menor a medio grado.</div>
+    </div>
+    <div class="tgl on" id="aspects-tgl" role="switch" aria-checked="true" aria-label="Avisos de tránsitos exactos"></div>
+  </div>
   <div class="notif-status" id="notif-status" role="status" aria-live="polite"></div>
 </div>
 
@@ -729,7 +743,7 @@ document.getElementById('btn-delete-confirm').addEventListener('click', async fu
 });
 
 /* --- Push notifications --- */
-var pushState = { sub:null, vapid:null, supported:false, endpoint:null, sendHour:8 };
+var pushState = { sub:null, vapid:null, supported:false, endpoint:null, sendHour:8, notifyAspects:true };
 
 function b64UrlToUint8(b64){
   var pad = '='.repeat((4 - b64.length % 4) % 4);
@@ -749,6 +763,15 @@ function setToggle(on){
   t.classList.toggle('on', !!on);
   t.setAttribute('aria-checked', on ? 'true' : 'false');
   document.getElementById('hour-row').style.display = on ? 'flex' : 'none';
+  var aspectsRow = document.getElementById('aspects-row');
+  if(aspectsRow) aspectsRow.style.display = on ? 'flex' : 'none';
+}
+function setAspectsToggle(on){
+  var t = document.getElementById('aspects-tgl');
+  if(!t) return;
+  t.classList.toggle('on', !!on);
+  t.setAttribute('aria-checked', on ? 'true' : 'false');
+  pushState.notifyAspects = !!on;
 }
 
 async function initPush(){
@@ -780,6 +803,10 @@ async function initPush(){
       pushState.endpoint = current.endpoint;
       pushState.sendHour = data.subscriptions[0].sendHourLocal || 8;
       hourSel.value = String(pushState.sendHour);
+      // notifyAspects defaults to true for legacy rows; status endpoint
+      // converts null → 1 on read so we always get a boolean here.
+      pushState.notifyAspects = data.subscriptions[0].notifyAspects !== false;
+      setAspectsToggle(pushState.notifyAspects);
     }
 
     if(!pushState.vapid){
@@ -792,6 +819,49 @@ async function initPush(){
 
   tgl.addEventListener('click', onToggleClick);
   hourSel.addEventListener('change', onHourChange);
+  var aspectsTgl = document.getElementById('aspects-tgl');
+  if (aspectsTgl) aspectsTgl.addEventListener('click', onAspectsToggleClick);
+}
+
+// Flipping the aspects toggle: re-subscribes with the new flag so the
+// server updates push_subscriptions.notify_aspects for this endpoint.
+// Short visual feedback; if the server call fails we roll back.
+async function onAspectsToggleClick(){
+  var tgl = document.getElementById('aspects-tgl');
+  if(!tgl || tgl.classList.contains('loading')) return;
+  var wasOn = tgl.classList.contains('on');
+  tgl.classList.add('loading');
+  var newVal = !wasOn;
+  setAspectsToggle(newVal);
+  try{
+    // Re-subscribe with updated flag. The existing push subscription
+    // stays valid; we're just updating the server-side preference.
+    var reg = await navigator.serviceWorker.ready;
+    var sub = await reg.pushManager.getSubscription();
+    if(!sub){ throw new Error('no active subscription'); }
+    var tz; try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone; }catch(e){ tz = 'America/Mexico_City'; }
+    var res = await authFetch('/api/notifications/subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        subscription: sub.toJSON(),
+        lang:'es',
+        timezone: tz,
+        sendHourLocal: pushState.sendHour,
+        notifyAspects: newVal,
+      }),
+    });
+    var data = await res.json();
+    if(!data.ok) throw new Error(data.error || 'failed');
+    notifStatus(newVal
+      ? 'Avisaremos cuando un tránsito exacto toque tu carta.'
+      : 'Avisos de tránsitos exactos desactivados.');
+  }catch(e){
+    // Rollback visual state
+    setAspectsToggle(wasOn);
+    notifStatus('No se pudo actualizar la preferencia.');
+  }
+  tgl.classList.remove('loading');
 }
 
 async function onToggleClick(){
@@ -841,6 +911,7 @@ async function enablePush(){
       lang:'es',
       timezone: tz,
       sendHourLocal: hour,
+      notifyAspects: pushState.notifyAspects !== false,
     }),
   });
   var data = await res.json();
@@ -848,6 +919,7 @@ async function enablePush(){
   pushState.endpoint = sub.endpoint;
   pushState.sendHour = hour;
   setToggle(true);
+  setAspectsToggle(pushState.notifyAspects !== false);
   notifStatus('Listo. Te avisaremos cada dia a las ' + String(hour).padStart(2,'0')+':00.');
 }
 

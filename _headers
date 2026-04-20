@@ -1,7 +1,6 @@
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
@@ -18,6 +17,22 @@
 
 /aprende/*
   Cache-Control: public, max-age=86400
+
+# Static assets under /css, /js, /data — versioned via ?v= query
+# strings in the HTML, so we can safely cache aggressively at the edge
+# and in the browser. stale-while-revalidate lets returning visitors
+# use the cached copy instantly while a fresh fetch happens in the
+# background. The Service Worker already does its own stale-while-
+# revalidate for CSS/JS; these HTTP headers help first-load and
+# non-PWA visits.
+/css/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/js/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/data/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
 # Belt-and-suspenders: paths that used to leak source/config never get cached.
 # The Pages Functions at functions/wrangler.toml.js and functions/workers/[[path]].js

@@ -42,6 +42,9 @@ export async function onRequestPost(context) {
     : 'America/Mexico_City';
   let sendHour = parseInt(body.sendHourLocal, 10);
   if (!Number.isFinite(sendHour) || sendHour < 0 || sendHour > 23) sendHour = 8;
+  // notify_aspects is opt-OUT: undefined/true/1 → store 1, only explicit
+  // false/0 disables. Existing subscribers default to 1 via the schema.
+  const notifyAspects = (body.notifyAspects === false || body.notifyAspects === 0) ? 0 : 1;
 
   const ua = (context.request.headers.get('User-Agent') || '').slice(0, 200);
   const nowIso = new Date().toISOString();
@@ -50,8 +53,8 @@ export async function onRequestPost(context) {
     // Upsert on endpoint — one physical device per endpoint.
     await DB.prepare(
       `INSERT INTO push_subscriptions
-         (user_id, endpoint, p256dh, auth, lang, timezone, send_hour_local, user_agent, created_at, last_seen_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         (user_id, endpoint, p256dh, auth, lang, timezone, send_hour_local, notify_aspects, user_agent, created_at, last_seen_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(endpoint) DO UPDATE SET
          user_id         = excluded.user_id,
          p256dh          = excluded.p256dh,
@@ -59,6 +62,7 @@ export async function onRequestPost(context) {
          lang            = excluded.lang,
          timezone        = excluded.timezone,
          send_hour_local = excluded.send_hour_local,
+         notify_aspects  = excluded.notify_aspects,
          user_agent      = excluded.user_agent,
          last_seen_at    = excluded.last_seen_at`
     ).bind(
@@ -69,6 +73,7 @@ export async function onRequestPost(context) {
       lang,
       timezone,
       sendHour,
+      notifyAspects,
       ua,
       nowIso,
       nowIso

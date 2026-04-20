@@ -270,16 +270,16 @@
     }
 
     // ── Project every star, cache by id ──
-    var projected = {};              // id → { x, y, mag, name, con }
+    var projected = {};              // id → { x, y, mag, name, con, bayer }
     var stars = opts.stars || [];
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i];
-      var sid, sname, ra, dec, mag, con;
+      var sid, sname, ra, dec, mag, con, bayer;
       if (Array.isArray(s)) {
         // Compact array form: [id, name, ra, dec, mag, con, bayer]
-        sid = s[0]; sname = s[1]; ra = s[2]; dec = s[3]; mag = s[4]; con = s[5];
+        sid = s[0]; sname = s[1]; ra = s[2]; dec = s[3]; mag = s[4]; con = s[5]; bayer = s[6];
       } else {
-        sid = s.id; sname = s.name; ra = s.ra; dec = s.dec; mag = s.mag; con = s.con;
+        sid = s.id; sname = s.name; ra = s.ra; dec = s.dec; mag = s.mag; con = s.con; bayer = s.bayer;
       }
       var h = equatorialToHorizontal(ra, dec, lst, lat);
       if (h.alt < -0.01) continue;    // below horizon (with tiny slop)
@@ -291,6 +291,9 @@
         mag: mag,
         name: sname,
         con: con,
+        bayer: bayer,
+        alt: h.alt / DEG,             // altitude in degrees (for info card)
+        az:  h.az  / DEG,             // azimuth in degrees
       };
     }
 
@@ -338,17 +341,73 @@
     }
 
     // ── Named-star labels (top 8 brightest visible) ──
+    // Collision-avoidance: if a candidate label's bounding box would
+    // overlap one we've already placed, try simple alternative anchors
+    // (right → left → above → below). If none clear, skip the label
+    // entirely — a missed name is less jarring than two overlapping
+    // names on top of each other. Before this pass the Gemelos/Cástor/
+    // Pólux cluster near the zenith would stack its three names in a
+    // single illegible blob.
     if (opts.showLabels !== false) {
       var visible = ids.map(function (id) { return projected[id]; })
                        .sort(function (a, b) { return a.mag - b.mag; })
                        .slice(0, 8);
-      ctx.fillStyle = 'rgba(255,255,255,0.72)';
       ctx.font = Math.round(size * 0.028) + 'px Inter, sans-serif';
-      ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
+      // Padding bumped 0.010 → 0.018 so nearby labels keep visible
+      // breathing room (the old tightness let "Hadar" sit atop the
+      // "Rigil Kentaurus" label when the two stars were close on screen).
+      var pad  = size * 0.018;           // padding around the text box
+      var lineH = size * 0.028;
+      var gap  = size * 0.020;           // offset from the star dot
+      var placed = [];                   // [{x,y,w,h}] already-drawn boxes
+      var dots = [];                     // star dot positions we've already labelled
+      var dotR = size * 0.012;           // effective radius for "dot collides with box" check
+      function boxOverlaps(b) {
+        for (var pi = 0; pi < placed.length; pi++) {
+          var p = placed[pi];
+          if (b.x < p.x + p.w && b.x + b.w > p.x &&
+              b.y < p.y + p.h && b.y + b.h > p.y) return true;
+        }
+        // Also reject a candidate box that would sit on top of a
+        // previously-labelled star's dot — prevents labels covering
+        // the star they're NOT naming (e.g. Hadar's label blanketing
+        // the Rigil Kentaurus glyph).
+        for (var di = 0; di < dots.length; di++) {
+          var dx0 = dots[di];
+          if (dx0.x + dotR > b.x && dx0.x - dotR < b.x + b.w &&
+              dx0.y + dotR > b.y && dx0.y - dotR < b.y + b.h) return true;
+        }
+        return false;
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.82)';
       for (var vi = 0; vi < visible.length; vi++) {
         var v = visible[vi];
-        ctx.fillText(v.name, v.x + size * 0.016, v.y);
+        var textW = ctx.measureText(v.name).width;
+        // Candidate anchors, each with its own textAlign. We try them
+        // in priority order (right → left → above → below → above-right → above-left).
+        var candidates = [
+          { align: 'left',   x: v.x + gap,            y: v.y,              boxX: v.x + gap - pad,              boxY: v.y - lineH/2 - pad },
+          { align: 'right',  x: v.x - gap,            y: v.y,              boxX: v.x - gap - textW - pad,      boxY: v.y - lineH/2 - pad },
+          { align: 'center', x: v.x,                  y: v.y - gap * 1.3,  boxX: v.x - textW/2 - pad,          boxY: v.y - gap * 1.3 - lineH/2 - pad },
+          { align: 'center', x: v.x,                  y: v.y + gap * 1.3,  boxX: v.x - textW/2 - pad,          boxY: v.y + gap * 1.3 - lineH/2 - pad },
+          { align: 'left',   x: v.x + gap * 0.7,      y: v.y - gap * 1.0,  boxX: v.x + gap * 0.7 - pad,        boxY: v.y - gap * 1.0 - lineH/2 - pad },
+          { align: 'right',  x: v.x - gap * 0.7,      y: v.y - gap * 1.0,  boxX: v.x - gap * 0.7 - textW - pad, boxY: v.y - gap * 1.0 - lineH/2 - pad }
+        ];
+        var chosen = null;
+        for (var ci2 = 0; ci2 < candidates.length; ci2++) {
+          var c2 = candidates[ci2];
+          var box = { x: c2.boxX, y: c2.boxY, w: textW + pad * 2, h: lineH + pad * 2 };
+          if (!boxOverlaps(box)) {
+            chosen = { c: c2, box: box };
+            break;
+          }
+        }
+        if (!chosen) continue;                 // skip rather than collide
+        placed.push(chosen.box);
+        dots.push({ x: v.x, y: v.y });
+        ctx.textAlign = chosen.c.align;
+        ctx.fillText(v.name, chosen.c.x, chosen.c.y);
       }
     }
 
@@ -400,11 +459,95 @@
         ctx.fillText(pl.name, px + size * 0.015, py);
       }
     }
+
+    // ── Hit regions for tap-to-identify ──
+    // Saved on the canvas so click handlers outside this file can
+    // nearest-match against them. Two types:
+    //   type: 'star'         — single point, r scales with magnitude
+    //   type: 'constellation' — centroid of its visible stars + radius
+    //                           covering them (so taps anywhere within
+    //                           the drawn stick figure register)
+    var hitRegions = [];
+    var starIds = Object.keys(projected);
+    for (var si = 0; si < starIds.length; si++) {
+      var sp = projected[starIds[si]];
+      // Bigger hit target than the visible dot — finger-friendly.
+      var hitR = Math.max(starRadius(sp.mag, sizeFactor) * 2.2, size * 0.018);
+      hitRegions.push({
+        type: 'star',
+        id:   starIds[si],
+        name: sp.name,
+        con:  sp.con,
+        bayer: sp.bayer,
+        mag:  sp.mag,
+        alt:  sp.alt,
+        az:   sp.az,
+        x: sp.x, y: sp.y, r: hitR,
+      });
+    }
+    for (var cj = 0; cj < constellations.length; cj++) {
+      var cc = constellations[cj];
+      // Collect projected stars that belong to this constellation's lines.
+      var visPts = [];
+      for (var lj = 0; lj < (cc.lines || []).length; lj++) {
+        var aa = projected[cc.lines[lj][0]];
+        var bb = projected[cc.lines[lj][1]];
+        if (aa) visPts.push(aa);
+        if (bb) visPts.push(bb);
+      }
+      if (visPts.length < 2) continue;   // need at least a pair to have drawn any line
+      // Centroid + max-distance radius → bounding circle containing
+      // every drawn star of the constellation.
+      var mx = 0, my = 0;
+      for (var mi = 0; mi < visPts.length; mi++) { mx += visPts[mi].x; my += visPts[mi].y; }
+      mx /= visPts.length; my /= visPts.length;
+      var maxD = 0;
+      for (var di2 = 0; di2 < visPts.length; di2++) {
+        var ddx = visPts[di2].x - mx, ddy = visPts[di2].y - my;
+        var dd = Math.sqrt(ddx * ddx + ddy * ddy);
+        if (dd > maxD) maxD = dd;
+      }
+      hitRegions.push({
+        type: 'constellation',
+        id:   cc.id,
+        name_es: cc.name_es,
+        name_en: cc.name_en,
+        starCount: visPts.length / 2 | 0,  // rough "# visible stars in figure"
+        x: mx, y: my, r: maxD + size * 0.02,
+      });
+    }
+    canvas._hitRegions = hitRegions;
+  }
+
+  /**
+   * Hit-test: returns the best-matching region under (x,y), prioritising
+   * stars (small precise targets) over constellations (large background
+   * regions). A tap within a star's radius always wins; otherwise the
+   * closest-containing constellation wins.
+   */
+  function hitTest(canvas, x, y) {
+    var regions = canvas && canvas._hitRegions;
+    if (!regions || !regions.length) return null;
+    var bestStar = null, bestStarD = Infinity;
+    var bestCon  = null, bestConD  = Infinity;
+    for (var i = 0; i < regions.length; i++) {
+      var r = regions[i];
+      var dx = x - r.x, dy = y - r.y;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d > r.r) continue;
+      if (r.type === 'star') {
+        if (d < bestStarD) { bestStar = r; bestStarD = d; }
+      } else if (r.type === 'constellation') {
+        if (d < bestConD)  { bestCon  = r; bestConD  = d; }
+      }
+    }
+    return bestStar || bestCon || null;
   }
 
   // Expose everything useful
   ns.SkyMap = {
     render: render,
+    hitTest: hitTest,
     julianDate: julianDate,
     localSiderealTime: localSiderealTime,
     equatorialToHorizontal: equatorialToHorizontal,

@@ -1,7 +1,52 @@
 /**
  * POST /api/profile/birth-profiles — Create a birth profile
  * GET  /api/profile/birth-profiles — List user's birth profiles
+ *
+ * As of Apr 19 2026: the POST handler also computes and stores a
+ * complete natal_chart JSON (planets, aspects, Ascendant, MC, houses)
+ * at creation time via the shared ephemeris, so Mi Día renders the
+ * full wheel immediately — not after tomorrow's pipeline.
  */
+
+import { buildNatalChart } from '../../_shared/ephemeris.js';
+
+// Rough IANA timezone → UTC-offset (hours) lookup for the regions that
+// currently use Luz Estelar. Good enough for ephemeris computation where
+// ±1h of tz error at birth translates to ~15° of Ascendant error —
+// still better than skipping the angle entirely. A more accurate
+// solution (e.g. `Intl.DateTimeFormat` with resolvedOptions) can
+// replace this when the user base goes beyond these regions.
+function inferTzOffset(timezone) {
+  if (!timezone || typeof timezone !== 'string') return -6;
+  if (timezone.startsWith('UTC')) {
+    const m = timezone.match(/^UTC([+-]\d+)/);
+    if (m) return parseInt(m[1], 10);
+    return 0;
+  }
+  const map = {
+    'America/Mexico_City':    -6,
+    'America/Monterrey':      -6,
+    'America/Cancun':         -5,
+    'America/Tijuana':        -8,
+    'America/Hermosillo':     -7,
+    'America/New_York':       -5,
+    'America/Chicago':        -6,
+    'America/Denver':         -7,
+    'America/Los_Angeles':    -8,
+    'America/Bogota':         -5,
+    'America/Lima':           -5,
+    'America/Santiago':       -4,
+    'America/Argentina/Buenos_Aires': -3,
+    'America/Sao_Paulo':      -3,
+    'America/Caracas':        -4,
+    'Europe/Madrid':           1,
+    'Europe/London':           0,
+    'Europe/Paris':            1,
+    'Europe/Berlin':           1,
+  };
+  if (map[timezone] !== undefined) return map[timezone];
+  return -6; // Mexico default
+}
 
 // Deterministic calculations (mirroring cross-cultural.js)
 function getWesternSign(month, day) {
@@ -192,18 +237,41 @@ export async function onRequestPost(context) {
   const vedic = getVedicProfile(year, month, day);
   const hdGate = getHumanDesignGate(year, month, day);
 
+  // Natal chart (planets, aspects, Ascendant). If hora_nacimiento +
+  // lat + lon are present, the chart includes angles + houses. If not,
+  // planets + aspects only — still enough for the wheel to render.
+  let natalChartJson = null;
+  try {
+    const [hh, mm] = (horaNacimiento || '').split(':').map(Number);
+    const tzOffsetHours = inferTzOffset(timezone);
+    const chart = buildNatalChart({
+      year, month, day,
+      hour:   Number.isFinite(hh) ? hh : null,
+      minute: Number.isFinite(mm) ? mm : null,
+      lat:    typeof lat === 'number' ? lat : null,
+      lon:    typeof lon === 'number' ? lon : null,
+      tzOffsetHours,
+    });
+    natalChartJson = JSON.stringify(chart);
+  } catch (e) {
+    // Failure here is non-fatal — the nightly pipeline re-computes
+    // for every profile anyway, so worst case the user waits til 3AM.
+    console.warn('[birth-profiles] natal_chart compute failed:', e);
+  }
+
   const profileId = crypto.randomUUID();
   const isPrimary = countRes.cnt === 0 ? 1 : 0;
   const now = new Date().toISOString();
 
   await context.env.DB.prepare(
-    `INSERT INTO birth_profiles (id, user_id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, is_primary, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO birth_profiles (id, user_id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, natal_chart, is_primary, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     profileId, user.sub, label || 'Mi Perfil', nombre, fechaNacimiento,
     horaNacimiento || null, lugarNacimiento, lat || null, lon || null,
     timezone || null, westernSign, chineseAnimal, numerologyNumber, celticTree,
     mayan.kin, mayan.seal, mayan.tone, vedic.rashi, vedic.nakshatra, hdGate,
+    natalChartJson,
     isPrimary, now
   ).run();
 

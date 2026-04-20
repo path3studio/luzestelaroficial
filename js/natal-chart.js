@@ -19,6 +19,10 @@
   // instead of colored emoji rendering on mobile (iOS/Android default to emoji font otherwise).
   var SIGN_GLYPHS = ['\u2648\uFE0E','\u2649\uFE0E','\u264A\uFE0E','\u264B\uFE0E','\u264C\uFE0E','\u264D\uFE0E','\u264E\uFE0E','\u264F\uFE0E','\u2650\uFE0E','\u2651\uFE0E','\u2652\uFE0E','\u2653\uFE0E'];
   var SIGN_NAMES  = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  // Short labels used inside the zodiac band (3 chars so the tight band
+  // width works at any canvas size). Default = Spanish; override via
+  // opts.signLabels for other locales.
+  var SIGN_ABBR_ES = ['ARI','TAU','GÉM','CÁN','LEO','VIR','LIB','ESC','SAG','CAP','ACU','PIS'];
 
   // Vivid element-based colors for each sign
   var ELEMENT_COLORS_VIVID = {
@@ -144,13 +148,32 @@
     return PLANET_COLORS[name] || '#fff';
   }
 
+  // Aspect styles for the natal "spider web" drawn inside the planet
+  // ring. Each entry carries the colour, a visual weight (hard aspects
+  // of conjunction/square/opposition more prominent than soft
+  // trine/sextile), and the base alpha. The hard aspects define the
+  // chart's tension; the soft ones describe its ease. Visible
+  // hierarchy in the ink matches the interpretive weight.
+  // Aspect style keys include BOTH English (client-side transits
+  // calculator) and Spanish (pipeline calculate_natal_chart() emits
+  // localised strings: "Conjunción", "Oposición", "Cuadratura",
+  // "Trígono", "Sextil"). Without the Spanish keys natal aspects fall
+  // through ASPECT_STYLES[undefined] and never render — which was the
+  // silent bug that hid the natal spider web for the entire v48 series.
   var ASPECT_STYLES = {
-    conjunction: {color:'#FFD700', dash:[], angle:0},
-    sextile:     {color:'#00CED1', dash:[4,4], angle:60},
-    square:      {color:'#FF4500', dash:[], angle:90},
-    trine:       {color:'#2E8B57', dash:[], angle:120},
-    opposition:  {color:'#8B0000', dash:[8,4], angle:180}
+    conjunction: {color:'#f4c88a', dash:[],    angle:0,   weight: 1.25, alpha: 0x88},
+    opposition:  {color:'#ff5a5a', dash:[7,4], angle:180, weight: 1.25, alpha: 0x88},
+    square:      {color:'#ff8a4a', dash:[],    angle:90,  weight: 1.10, alpha: 0x77},
+    trine:       {color:'#5dd07a', dash:[],    angle:120, weight: 0.95, alpha: 0x55},
+    sextile:     {color:'#6fc4d4', dash:[3,3], angle:60,  weight: 0.75, alpha: 0x44},
+    // Spanish aliases (what comes from the PyEphem pipeline)
+    'Conjunción': {color:'#f4c88a', dash:[],    angle:0,   weight: 1.25, alpha: 0x88},
+    'Oposición':  {color:'#ff5a5a', dash:[7,4], angle:180, weight: 1.25, alpha: 0x88},
+    'Cuadratura': {color:'#ff8a4a', dash:[],    angle:90,  weight: 1.10, alpha: 0x77},
+    'Trígono':    {color:'#5dd07a', dash:[],    angle:120, weight: 0.95, alpha: 0x55},
+    'Sextil':     {color:'#6fc4d4', dash:[3,3], angle:60,  weight: 0.75, alpha: 0x44},
   };
+  function aspectAlphaHex(n){ n=Math.max(0,Math.min(255,n|0)); var s=n.toString(16); return s.length<2?'0'+s:s; }
 
   var TAU = Math.PI * 2;
   var DEG = Math.PI / 180;
@@ -202,8 +225,11 @@
    */
   function render(canvas, chartData, opts) {
     opts = opts || {};
-    var dpr = window.devicePixelRatio || 1;
-    var size = opts.size || Math.min(canvas.parentElement.offsetWidth, 560);
+    // DPR override — the share-card renderer passes dpr:1 so the offscreen
+    // chart canvas stays at exact pixel size (avoids wasting 4× memory on
+    // retina-DPR mobiles just to downscale right after).
+    var dpr = (typeof opts.dpr === 'number' ? opts.dpr : (window.devicePixelRatio || 1));
+    var size = opts.size || (canvas.parentElement ? Math.min(canvas.parentElement.offsetWidth, 560) : 320);
     canvas.width = size * dpr;
     canvas.height = size * dpr;
     canvas.style.width = size + 'px';
@@ -241,14 +267,18 @@
     ctx.clearRect(0, 0, size, size);
 
     // ── Background with radial gradient ──
-    var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerR + 12);
+    // Extended to outerR + size*0.075 so the new outside-the-ring
+    // sign-glyph discs sit inside the dark canvas background instead
+    // of floating on the page bg.
+    var bgOuter = outerR + size * 0.075;
+    var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, bgOuter);
     bgGrad.addColorStop(0, 'rgba(18,18,52,0.92)');
     bgGrad.addColorStop(0.5, 'rgba(12,12,42,0.96)');
     bgGrad.addColorStop(0.85, 'rgba(8,8,32,0.98)');
     bgGrad.addColorStop(1, 'rgba(4,4,20,1)');
     ctx.fillStyle = bgGrad;
     ctx.beginPath();
-    ctx.arc(cx, cy, outerR + 12, 0, TAU);
+    ctx.arc(cx, cy, bgOuter, 0, TAU);
     ctx.fill();
 
     // ── Subtle radial glow behind zodiac ring ──
@@ -261,20 +291,30 @@
     ctx.arc(cx, cy, outerR + 4, 0, TAU);
     ctx.fill();
 
-    // ── Zodiac ring — segments ──
+    // ── Zodiac ring — segments + outside glyphs + in-band labels ──
+    // Apr 18 redesign: zodiac glyphs now float OUTSIDE the decorative
+    // ring (on floating element-coloured discs). The space inside the
+    // band holds a 3-letter label so each slice is named, not only
+    // glyph'd. Gives more breathing room inside the wheel for planets
+    // and stars, and tells the user at a glance which sign is which
+    // even if they don't recognise the glyph.
+    var signLabels = opts.signLabels || SIGN_ABBR_ES;
+    var glyphR  = outerR + size * 0.042;      // disc centre OUTSIDE the ring
+    var nameR   = (outerR + signR) / 2;       // inside the band, where glyph used to sit
+    var discR   = Math.round(size * 0.024);   // slightly smaller disc since it's floating free
     for (var i = 0; i < 12; i++) {
       var startAngle = ((i * 30 + ascOffset) * DEG) - Math.PI / 2;
       var endAngle = (((i + 1) * 30 + ascOffset) * DEG) - Math.PI / 2;
       var elemColor = ELEMENT_COLORS_VIVID[ELEMENTS[i]];
 
-      // Subtle segment — almost transparent (no square background look)
+      // Subtle element wash across the band
       ctx.beginPath();
       ctx.arc(cx, cy, outerR, startAngle, endAngle);
       ctx.arc(cx, cy, signR, endAngle, startAngle, true);
       ctx.closePath();
-      ctx.fillStyle = elemColor + '08'; // very subtle fill
+      ctx.fillStyle = elemColor + '08';
       ctx.fill();
-      // Thin divider strokes only
+      // Thin divider stroke
       ctx.strokeStyle = 'rgba(212,168,73,0.12)';
       ctx.lineWidth = 0.5;
       ctx.beginPath();
@@ -282,36 +322,36 @@
       ctx.lineTo(cx + Math.cos(startAngle) * outerR, cy + Math.sin(startAngle) * outerR);
       ctx.stroke();
 
-      // ── Glyph position ──
       var midAngle = ((i * 30 + 15 + ascOffset) * DEG) - Math.PI / 2;
-      var glyphR = (outerR + signR) / 2;
-      var gx = cx + Math.cos(midAngle) * glyphR;
-      var gy = cy + Math.sin(midAngle) * glyphR;
-      var discR = Math.round(size * 0.028);
 
-      // Decorative halo disc behind glyph (radial gradient, element-colored)
-      var haloGrad = ctx.createRadialGradient(gx, gy, 0, gx, gy, discR);
-      haloGrad.addColorStop(0, elemColor + '55');
-      haloGrad.addColorStop(0.6, elemColor + '18');
-      haloGrad.addColorStop(1, elemColor + '00');
-      ctx.fillStyle = haloGrad;
-      ctx.beginPath();
-      ctx.arc(gx, gy, discR, 0, TAU);
-      ctx.fill();
-
-      // Thin gold ring around glyph
-      ctx.strokeStyle = 'rgba(212,168,73,0.38)';
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.arc(gx, gy, discR - 1, 0, TAU);
-      ctx.stroke();
-
-      // Sign glyph — white/gold with element color shadow
-      ctx.font = '600 ' + Math.round(size * 0.042) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
+      // Sign 3-letter label in-band — gold-muted, small caps
+      var nx = cx + Math.cos(midAngle) * nameR;
+      var ny = cy + Math.sin(midAngle) * nameR;
+      ctx.font = '600 ' + Math.round(size * 0.020) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(212,168,73,0.55)';
+      ctx.fillText(signLabels[i], nx, ny);
+
+      // Glyph disc OUTSIDE the ring — element-coloured halo + gold ring + glyph
+      var gx = cx + Math.cos(midAngle) * glyphR;
+      var gy = cy + Math.sin(midAngle) * glyphR;
+      var haloGrad = ctx.createRadialGradient(gx, gy, 0, gx, gy, discR);
+      haloGrad.addColorStop(0, elemColor + '66');
+      haloGrad.addColorStop(0.55, elemColor + '22');
+      haloGrad.addColorStop(1, elemColor + '00');
+      ctx.fillStyle = haloGrad;
+      ctx.beginPath(); ctx.arc(gx, gy, discR, 0, TAU); ctx.fill();
+
+      // Gold rim
+      ctx.strokeStyle = 'rgba(212,168,73,0.42)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.arc(gx, gy, discR - 1, 0, TAU); ctx.stroke();
+
+      // Glyph itself
+      ctx.font = '600 ' + Math.round(size * 0.036) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
       ctx.shadowColor = elemColor;
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 6;
       ctx.fillStyle = '#fff8e7';
       ctx.fillText(SIGN_GLYPHS[i], gx, gy);
       ctx.shadowColor = 'transparent';
@@ -472,6 +512,10 @@
       }
     }
 
+    // Hit-regions list — populated here for ASC/MC and later for planets
+    // so a single canvas._hitRegions covers everything tappable.
+    var hitRegions = [];
+
     // ── ASC / MC markers — only render if ascendant is verified (real time-of-birth) ──
     if (hasVerifiedAsc) {
       var ascAngle = ((ascLongitude + ascOffset) * DEG) - Math.PI / 2;
@@ -486,7 +530,14 @@
       ctx.font = 'bold ' + Math.round(size * 0.025) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('ASC', cx + Math.cos(ascAngle) * (outerR + 14), cy + Math.sin(ascAngle) * (outerR + 14));
+      var ascLabelX = cx + Math.cos(ascAngle) * (outerR + 14);
+      var ascLabelY = cy + Math.sin(ascAngle) * (outerR + 14);
+      ctx.fillText('ASC', ascLabelX, ascLabelY);
+      // Hit region — generous radius so tapping the label or the line works
+      hitRegions.push({
+        type: 'angle', name: 'ASC', longitude: ascLongitude,
+        x: ascLabelX, y: ascLabelY, r: size * 0.055,
+      });
     }
 
     if (typeof mcLongitude === 'number' && !isNaN(mcLongitude) && hasVerifiedAsc) {
@@ -501,7 +552,13 @@
       ctx.font = 'bold ' + Math.round(size * 0.022) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('MC', cx + Math.cos(mcAngle) * (outerR + 14), cy + Math.sin(mcAngle) * (outerR + 14));
+      var mcLabelX = cx + Math.cos(mcAngle) * (outerR + 14);
+      var mcLabelY = cy + Math.sin(mcAngle) * (outerR + 14);
+      ctx.fillText('MC', mcLabelX, mcLabelY);
+      hitRegions.push({
+        type: 'angle', name: 'MC', longitude: mcLongitude,
+        x: mcLabelX, y: mcLabelY, r: size * 0.055,
+      });
     }
 
     // ── Aspect lines ──
@@ -513,15 +570,27 @@
         });
       }
 
+      // Orb-based emphasis: tighter aspects (orb < 1°) render fully
+      // opaque and ~30% thicker; looser aspects (orb > 5°) fade to
+      // half-strength. If the pipeline didn't include `orb` per aspect
+      // we fall back to the per-type base alpha/weight.
       chartData.aspects.forEach(function(asp) {
-        var style = ASPECT_STYLES[asp.type];
+        // The pipeline stores the aspect name under `aspect` in
+        // Spanish; the client-side transits calc emits `type` in
+        // English. Accept both to cover every source.
+        var aspName = asp.aspect || asp.type;
+        var style = ASPECT_STYLES[aspName];
         if (!style) return;
         var a1 = planetAngles[asp.planet1];
         var a2 = planetAngles[asp.planet2];
         if (a1 === undefined || a2 === undefined) return;
 
-        ctx.strokeStyle = style.color + '55';
-        ctx.lineWidth = 0.8;
+        var orb = (typeof asp.orb === 'number') ? Math.abs(asp.orb) : 2;
+        // Map orb to [0.5, 1.3] multiplier around the style's base
+        var orbFactor = orb < 1 ? 1.3 : orb < 3 ? 1.0 : orb < 5 ? 0.8 : 0.55;
+        var alphaByte = Math.min(255, Math.round(style.alpha * orbFactor));
+        ctx.strokeStyle = style.color + aspectAlphaHex(alphaByte);
+        ctx.lineWidth = style.weight * orbFactor;
         ctx.setLineDash(style.dash);
         ctx.beginPath();
         ctx.moveTo(cx + Math.cos(a1) * aspectR, cy + Math.sin(a1) * aspectR);
@@ -550,14 +619,16 @@
         Uranus: 3,   Neptune: 3, Pluto: 3,                      // transpersonals
         NorthNode: 1, Chiron: 2
       };
-      var TIER_OFFSETS = [0, -0.020, -0.040, -0.060];   // × size
+      // Spread bumped 0.060 → 0.090 (Apr 18) so the four tiers don't
+      // touch when many planets cluster in the same sign. At size=292
+      // this gives ~26px of radial air between outermost (Sol/Luna)
+      // and innermost (Pluto/Uranus/Neptune), vs the previous ~17px
+      // where spheres overlapped visually.
+      var TIER_OFFSETS = [0, -0.030, -0.060, -0.090];   // × size
 
       // Spread overlapping planets
       var sorted = chartData.planets.slice().sort(function(a,b) { return a.longitude - b.longitude; });
       var positions = [];
-      // Captured hit-regions for tap-to-identify. Stored on the canvas
-      // element so click handlers outside the renderer can hit-test.
-      var hitRegions = [];
       sorted.forEach(function(p) {
         var angle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
         // Nudge if too close to previous (SAME tier only — different-tier
@@ -631,11 +702,118 @@
           x: px, y: py, r: sphereR * 1.6,
         });
       });
-      // Stash on the canvas so the UI can hit-test tap events.
-      canvas._hitRegions = hitRegions;
-    } else {
-      canvas._hitRegions = [];
     }
+
+    // ── Transits overlay ─────────────────────────────────────────
+    // Optional. If chartData.transits is provided we paint an outer
+    // ring of today's planet positions, drawn smaller and translucent
+    // so they read as "passing through" over the fixed natal chart.
+    // The caller can also pass chartData.transitAspects to draw dashed
+    // aspect lines between transit and natal positions.
+    if (chartData.transits && chartData.transits.length > 0) {
+      // Transit ring sits between the zodiac band and the inner deco.
+      // Slightly further out than natal outermost tier so there's an
+      // unmistakable visual separation (transits are NOT your chart —
+      // they're sky-of-today visiting your chart).
+      var transitR = size * 0.265;
+
+      // Aspect lines first (behind the transit glyphs). Use distinct
+      // colours per aspect type so the chart reads like a traditional
+      // transit biwheel.
+      var TRANSIT_ASPECT_STYLE = {
+        conjunction: { color: '#FFD700', dash: [2, 3] },
+        opposition:  { color: '#FF4040', dash: [6, 3] },
+        square:      { color: '#FF7A30', dash: [4, 3] },
+        trine:       { color: '#5DD07A', dash: [] },
+        sextile:     { color: '#6FC4D4', dash: [3, 3] },
+      };
+      if (chartData.transitAspects && chartData.transitAspects.length > 0) {
+        // Build a quick angle lookup for natal planets (already tiered).
+        var natalAngleByName = {};
+        if (chartData.planets) {
+          chartData.planets.forEach(function (p) {
+            natalAngleByName[p.name] = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
+          });
+        }
+        for (var ai = 0; ai < chartData.transitAspects.length; ai++) {
+          var tAsp = chartData.transitAspects[ai];
+          var style = TRANSIT_ASPECT_STYLE[tAsp.type];
+          if (!style) continue;
+          var tAngle = ((tAsp.transitLon + ascOffset) * DEG) - Math.PI / 2;
+          var nAngle = natalAngleByName[tAsp.natal];
+          if (nAngle === undefined) continue;
+          ctx.strokeStyle = style.color + (tAsp.exact ? 'AA' : '66');
+          ctx.lineWidth = tAsp.exact ? 1.1 : 0.7;
+          ctx.setLineDash(style.dash);
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(tAngle) * transitR, cy + Math.sin(tAngle) * transitR);
+          // Aim at the natal planet's tier'd radius — use base planetR
+          // as a good-enough endpoint since we don't have that planet's
+          // tier handy here.
+          ctx.lineTo(cx + Math.cos(nAngle) * (planetR - size * 0.02),
+                     cy + Math.sin(nAngle) * (planetR - size * 0.02));
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      // Transit planet glyphs (outer ring, slightly smaller than natal,
+      // with a faint silvery disc behind them so they read as a
+      // separate layer).
+      var transitPositions = [];
+      for (var ti = 0; ti < chartData.transits.length; ti++) {
+        var t = chartData.transits[ti];
+        if (typeof t.longitude !== 'number') continue;
+        var tAng = ((t.longitude + ascOffset) * DEG) - Math.PI / 2;
+        // Small nudge if overlapping
+        for (var tj = 0; tj < transitPositions.length; tj++) {
+          if (Math.abs(tAng - transitPositions[tj]) < 0.09) tAng += 0.095;
+        }
+        transitPositions.push(tAng);
+        var tx = cx + Math.cos(tAng) * transitR;
+        var ty = cy + Math.sin(tAng) * transitR;
+        var sphereR = size * 0.018;
+        drawPlanetSphere(ctx, tx, ty, sphereR, t.name);
+        // Faint silvery rim to signal "transit, not natal"
+        ctx.strokeStyle = 'rgba(220,220,240,0.55)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.arc(tx, ty, sphereR + 2.5, 0, TAU);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // Glyph on top
+        var tGlyph = PLANET_GLYPHS[t.name] || '?';
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowBlur = 3;
+        ctx.fillStyle = (t.name === 'Sun' || t.name === 'Moon' ||
+                         t.name === 'Venus' || t.name === 'Saturn' ||
+                         t.name === 'Uranus')
+          ? 'rgba(20,12,6,0.85)'
+          : 'rgba(255,248,230,0.92)';
+        ctx.font = 'bold ' + Math.round(size * 0.020) + 'px "Noto Sans Symbols 2", serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        if (t.name === 'Moon') ctx.fillText('\u263D', tx, ty);
+        else ctx.fillText(tGlyph, tx, ty);
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+
+        // Hit region for tap-identify
+        hitRegions.push({
+          type: 'transit',
+          name: t.name,
+          sign: t.sign,
+          degree: t.degree,
+          longitude: t.longitude,
+          x: tx, y: ty, r: sphereR * 1.8,
+        });
+      }
+    }
+
+    // Stash on the canvas so the UI can hit-test tap events.
+    // (Always set, even if no planets — ASC/MC hits still work.)
+    canvas._hitRegions = hitRegions;
 
     // ── Center decoration — decorative pattern ──
     // Outer glow

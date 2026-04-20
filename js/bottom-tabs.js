@@ -29,18 +29,19 @@
   // every tab to its English counterpart so the user stays in-language.
   var path = location.pathname;
   var isEn = path.indexOf('/en/') === 0;
-  // Note (Apr 16): /en/compatibility-personal.html and /en/settings.html are
-  // not yet ported, so EN users fall back to the Spanish pages for those two
-  // tabs. Home ('Inicio' / 'Home') is the only one fully bilingual today.
+  // Note (Apr 18): /en/compatibility-personal.html landed (full synastry
+  // biwheel port). /en/settings.html still deferred — EN users fall back
+  // to the Spanish ajustes.html for that one tab. Home and Compat. are
+  // fully bilingual as of Arco 4 close.
   // Icon names resolve to SVG via LuzEstelarIcons (see /js/icons.js).
   // icons.js is loaded before bottom-tabs.js in the page order, so the
   // registry is available by the time this runs. Fallback to the old
   // emoji character if the registry isn't present (defensive — e.g.
   // a page that includes bottom-tabs.js but skipped icons.js).
   var tabs = isEn ? [
-    { id:'inicio', label:'Home',     icon:'sparkles', fallback:'\u2728',       href:'/en/my-day.html',                paths:['/en/my-day.html','/en/dashboard.html'] },
-    { id:'compat', label:'Compat.',  icon:'heart',    fallback:'\uD83D\uDC96', href:'/compatibilidad-personal.html',  paths:['/compatibilidad-personal.html'] },
-    { id:'ajustes',label:'Settings', icon:'settings', fallback:'\u2699\uFE0F', href:'/ajustes.html',                  paths:['/ajustes.html'] }
+    { id:'inicio', label:'Home',     icon:'sparkles', fallback:'\u2728',       href:'/en/my-day.html',                   paths:['/en/my-day.html','/en/dashboard.html'] },
+    { id:'compat', label:'Compat.',  icon:'heart',    fallback:'\uD83D\uDC96', href:'/en/compatibility-personal.html',   paths:['/en/compatibility-personal.html'] },
+    { id:'ajustes',label:'Settings', icon:'settings', fallback:'\u2699\uFE0F', href:'/ajustes.html',                     paths:['/ajustes.html'] }
   ] : [
     { id:'inicio', label:'Inicio',  icon:'sparkles', fallback:'\u2728',       href:'/mi-dia.html',                   paths:['/mi-dia.html','/dashboard.html'] },
     { id:'compat', label:'Compat.', icon:'heart',    fallback:'\uD83D\uDC96', href:'/compatibilidad-personal.html',  paths:['/compatibilidad-personal.html'] },

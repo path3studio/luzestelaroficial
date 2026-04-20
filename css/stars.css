@@ -18,7 +18,10 @@
   z-index: var(--z-bg);
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.55;
+  /* Bumped 0.55 → 0.72 so the backdrop reads as stars, not just a
+     faint texture. Paired with the new "brilliant" dots in stars.js
+     the ambient field now has genuine pinpoints against deeper dust. */
+  opacity: 0.72;
 }
 
 /* Soft gold corona anchors brand identity above the starfield */
@@ -53,29 +56,79 @@
 }
 
 @keyframes star-twinkle {
-  0%, 100% { opacity: 0.15; }
-  50%      { opacity: 0.85; }
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
 }
 
 /* ── Shooting star (occasional accent) ──────────────────────────── */
+/* The trail sprite is a 1.4px-tall 90px-wide line with a soft
+   gradient. A shooting star visually looks like "bright head → fading
+   trail behind the motion direction". For that illusion, the line has
+   to be oriented ALONG the trajectory — both its angle AND the actual
+   descent must match.
+   History:
+   • v0: rotate(-18deg) with motion going down-right. Trail tilted
+     opposite to motion → "flying uphill".
+   • v1 (p6.5): rotate(+15deg). Correct direction, but on portrait
+     mobile 32vh covers more CSS pixels than 15% of 120vw would, so
+     the VISUAL motion angle was actually ~30° while the line was
+     still at 15° → "acostadas".
+   • v2 (p6.6, now): rotate(30deg) + steeper vh drop so both numbers
+     match closer to ~30–35° on typical portrait viewports. */
+/* Shooting star — two overlapping layers:
+   1. The streak itself (.star-shoot) — a long thin tail, fading
+      from transparent at the rear to near-invisible right before
+      the head. Height stays 1px so the cola reads as a trace.
+   2. The head (.star-shoot::after) — a tiny bright circle anchored
+      at the leading end of the line. This is what gives the meteor
+      a clear "tip" so you can see which way it's going at a glance.
+   Both live under the same rotate() and translate() so they move
+   as a unit. */
 [data-stars-global] > .star-shoot {
   position: absolute;
-  width: 80px;
+  width: 140px;
   height: 1px;
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(255, 255, 255, 0.9),
-    transparent
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 248, 220, 0.55) 78%,
+    rgba(255, 255, 255, 0.0)  100%
   );
+  /* head padding on the right so the ::after circle has room */
+  padding-right: 0;
   opacity: 0;
   animation: star-shoot 8s linear infinite;
+  transform-origin: 100% 50%;       /* rotate around the head */
 }
 
+/* The bright pinpoint head — sits at the leading tip of the streak. */
+[data-stars-global] > .star-shoot::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 250, 230, 1) 0%,
+    rgba(255, 240, 200, 0.9) 35%,
+    rgba(255, 200, 120, 0.0) 100%
+  );
+  transform: translateY(-50%);
+  filter: drop-shadow(0 0 3px rgba(255, 240, 200, 0.95));
+}
+
+/* Motion + line angle both at ~55°. transform-origin is now at the
+   HEAD (100% 50%) so when the line rotates, the bright head stays
+   at the actual leading point of the motion vector, and the long
+   tail sweeps BEHIND it. That's what makes the direction obvious. */
 @keyframes star-shoot {
-  0%   { transform: translate(-10vw, 0) rotate(-18deg); opacity: 0; }
-  5%   { opacity: 0.8; }
-  15%  { transform: translate(110vw, 32vh) rotate(-18deg); opacity: 0; }
+  0%   { transform: translate(-5vw, -15vh) rotate(55deg); opacity: 0; }
+  5%   { opacity: 0.95; }
+  15%  { transform: translate(110vw, 80vh) rotate(55deg); opacity: 0; }
   100% { opacity: 0; }
 }
 

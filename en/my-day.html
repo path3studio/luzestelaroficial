@@ -6,12 +6,24 @@
 <title>Home — Luz Estelar</title>
 <meta name="description" content="Your personal universe: cross-cultural report, daily reading and multi-system profile — Luz Estelar Oficial">
 <meta name="theme-color" content="#d4a849">
+<meta property="og:title" content="My Day — Luz Estelar">
+<meta property="og:description" content="Your personal astrological chart with cross-cultural report, daily reading, and today's transits.">
+<meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+<meta property="og:url" content="https://luzestelaroficial.com/en/my-day.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="es_MX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="My Day — Luz Estelar">
+<meta name="twitter:description" content="Your personal astrological chart with cross-cultural report and today's transits.">
+<meta name="twitter:image" content="https://luzestelaroficial.com/app_icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="/app_icon.png">
 <link rel="apple-touch-icon" href="/app_icon.png">
 <link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://luzestelaroficial.com/en/my-day.html">
 <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/my-day.html">
 <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mi-dia.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +32,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
 <!-- Design system (shared — tokens, PWA patterns, icons) -->
 <link rel="stylesheet" href="/css/design-tokens.css">
-<link rel="stylesheet" href="/css/stars.css">
+<link rel="stylesheet" href="/css/stars.css?v=2">
 <link rel="stylesheet" href="/css/pwa.css">
 <link rel="stylesheet" href="/css/icons.css">
 <link rel="stylesheet" href="/css/components.css">
@@ -87,7 +99,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ic-svg{width:14px;height:14px;display:inline-block;vertical-align:-2px;fill:currentColor}
 
 /* Section label */
-.slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:500;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
+.slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:600;color:rgba(212,168,73,.78);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
 .slbl .ic{font-size:.82rem;opacity:.85}
 .slbl .badge-new{margin-left:auto;font-size:.58rem;padding:1px 6px;border-radius:6px;background:rgba(124,92,191,.18);color:var(--purple);letter-spacing:.04em;font-weight:600}
 
@@ -104,7 +116,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .cc-chip{font-size:.66rem;padding:3px 9px;border-radius:999px;background:rgba(212,168,73,.1);border:1px solid rgba(212,168,73,.22);color:var(--gold-light);letter-spacing:.02em}
 .cc-sec{background:rgba(255,255,255,.025);border:1px solid var(--glass-b);border-radius:10px;padding:11px 13px;margin-top:8px}
 .cc-sec h4{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:.95rem;font-weight:700;margin-bottom:3px;letter-spacing:.02em}
-.cc-sec p{font-size:.84rem;line-height:1.6;color:var(--text)}
+.cc-sec p{font-size:.84rem;line-height:1.6;color:rgba(224,220,232,.78)}
 
 /* Locked CTA for free users */
 .cc-lock{text-align:center;padding:14px 12px}
@@ -129,7 +141,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .bar-v{min-width:12px;text-align:right;color:var(--text-dim);font-size:.68rem}
 
 /* Daily reading text */
-.rdg-text{font-size:.88rem;line-height:1.68;color:var(--text)}
+.rdg-text{font-size:.88rem;line-height:1.68;color:rgba(224,220,232,.78)}
 
 /* Per-system insights */
 .ins-grid{display:flex;flex-direction:column;gap:6px}
@@ -137,7 +149,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ins-hd{display:flex;align-items:center;gap:5px;margin-bottom:3px}
 .ins-sys{font-size:.66rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.03em}
 .ins-arch{font-size:.66rem;color:var(--text-mute)}
-.ins-txt{font-size:.82rem;line-height:1.55;color:var(--text)}
+.ins-txt{font-size:.82rem;line-height:1.55;color:rgba(224,220,232,.78)}
 .ins-lock{position:relative;overflow:hidden}
 .ins-lock .ins-txt{filter:blur(5px);user-select:none;color:var(--text-dim)}
 .ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
@@ -194,6 +206,53 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 
 /* Natal chart */
 .chart-wrap{display:flex;justify-content:center;padding:4px 0}
+#natal,#sky{max-width:100%;width:260px;height:260px}
+.chart-meta{text-align:center;font-size:.7rem;color:var(--text-mute);margin-top:4px}
+.chart-toggle{display:flex;justify-content:center;gap:4px;margin-top:14px;padding:4px;background:rgba(255,255,255,.03);border:1px solid var(--glass-b);border-radius:999px;max-width:320px;margin-left:auto;margin-right:auto}
+.chart-toggle .ch-tab{flex:1;padding:8px 10px;border:none;background:transparent;color:var(--text-dim);font-family:inherit;font-size:.74rem;font-weight:500;cursor:pointer;border-radius:999px;transition:color .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.chart-toggle .ch-tab.is-on{background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.12));color:var(--gold);font-weight:600;box-shadow:inset 0 1px 0 rgba(212,168,73,.15)}
+.chart-toggle .ch-tab:active{transform:scale(.97)}
+.chart-info{margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,168,73,.05),rgba(124,92,191,.03));border:1px solid var(--glass-b);border-radius:var(--r-lg);animation:fadeInUp .28s ease-out;position:relative}
+.chart-info .ci-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.chart-info .ci-glyph{font-family:'Noto Sans Symbols 2',serif;font-size:1.7rem;line-height:1;color:var(--gold);font-variant-emoji:text}
+.chart-info .ci-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text);font-weight:600}
+.chart-info .ci-pos{font-size:.75rem;color:var(--gold);letter-spacing:.04em;font-weight:500;margin-left:auto;padding:4px 10px;border-radius:999px;background:var(--gold-dim)}
+.chart-info .ci-desc{font-size:.82rem;color:var(--text-dim);line-height:1.55}
+.chart-info .ci-close{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text-mute);font-size:1rem;cursor:pointer;padding:4px 6px}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+/* Transit toggle pill — off by default, flips on to overlay today's
+   sky onto the natal wheel + expand the aspects panel. Ported from ES. */
+.btn-transit-toggle{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;border:1px solid rgba(124,92,191,.32);background:linear-gradient(135deg,rgba(124,92,191,.10),rgba(212,168,73,.04));color:rgba(206,188,230,.88);font-family:inherit;font-size:.72rem;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:transform .15s,border-color .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.btn-transit-toggle:hover{border-color:rgba(124,92,191,.58)}
+.btn-transit-toggle:active{transform:scale(.96)}
+.btn-transit-toggle .ic-svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.btn-transit-toggle[aria-pressed="true"]{background:linear-gradient(135deg,rgba(124,92,191,.28),rgba(212,168,73,.10));border-color:rgba(124,92,191,.75);color:#d8c8f0}
+.btn-transit-toggle[aria-pressed="true"] .btt-on::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#b8a5e8;margin-left:4px;vertical-align:middle}
+.btn-transit-toggle .btt-badge{display:none;align-items:center;justify-content:center;margin-left:6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:linear-gradient(135deg,#f4c88a,#d4a849);color:#06061a;font-size:.62rem;font-weight:700;letter-spacing:0;box-shadow:0 0 0 0 rgba(212,168,73,.6);animation:btt-pulse 2.2s ease-out infinite}
+.btn-transit-toggle.has-exact .btt-badge{display:inline-flex}
+.btn-transit-toggle.has-exact{border-color:rgba(212,168,73,.65)}
+@keyframes btt-pulse{0%{box-shadow:0 0 0 0 rgba(212,168,73,.55)}70%{box-shadow:0 0 0 10px rgba(212,168,73,0)}100%{box-shadow:0 0 0 0 rgba(212,168,73,0)}}
+/* Transits panel — lists today's top 5 aspects between transit and natal */
+.transits-panel{margin-top:16px;padding:14px 14px 10px;background:linear-gradient(135deg,rgba(124,92,191,.08),rgba(212,168,73,.04));border:1px solid var(--glass-b);border-radius:var(--r-lg);animation:fadeInUp .28s ease-out}
+.transits-panel .tp-title{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(212,168,73,.72);margin-bottom:10px}
+.transits-panel .tp-ic{color:var(--gold);font-size:.9rem}
+.tp-list{display:flex;flex-direction:column;gap:8px}
+.tp-row{display:grid;grid-template-columns:1.4rem auto 1.4rem auto 1fr auto;align-items:center;gap:6px;padding:6px 8px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid var(--tc,rgba(212,168,73,.3));font-size:.78rem;color:var(--text);font-feature-settings:"tnum"}
+.tp-row .tp-gly{font-family:'Noto Sans Symbols 2',serif;color:var(--gold);font-size:.95rem;text-align:center;font-variant-emoji:text}
+.tp-row .tp-nm{font-size:.74rem;color:var(--text-dim)}
+.tp-row .tp-asp{font-family:'Noto Sans Symbols 2','Segoe UI Symbol','Apple Symbols',serif;font-size:1rem;color:var(--tc,var(--gold));text-align:center;font-variant-emoji:text;line-height:1}
+.tp-row .tp-orb{font-size:.68rem;color:var(--text-mute);margin-left:auto;white-space:nowrap;padding-left:6px}
+.tp-row.exact{background:rgba(212,168,73,.06);border-left-width:3px}
+.tp-row.exact .tp-orb{color:var(--gold)}
+.chart-action-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn-share-chart,.btn-mapa-link{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(212,168,73,.35);background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(124,92,191,.08));color:var(--gold);font-family:inherit;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:transform .15s,border-color .2s;-webkit-tap-highlight-color:transparent;text-decoration:none;border-radius:999px}
+.btn-share-chart{padding:9px 18px;font-size:.78rem}
+.btn-mapa-link{padding:6px 13px;font-size:.68rem;gap:6px;border-color:rgba(212,168,73,.28);background:linear-gradient(135deg,rgba(212,168,73,.08),rgba(124,92,191,.04));color:rgba(212,168,73,.9)}
+.btn-share-chart:hover,.btn-mapa-link:hover{border-color:rgba(212,168,73,.6)}
+.btn-share-chart:active,.btn-mapa-link:active{transform:scale(.96)}
+.btn-share-chart .ic-svg{width:15px;height:15px;fill:currentColor}
+.btn-mapa-link .ic-svg{width:12px;height:12px;fill:currentColor}
+.btn-share-chart[disabled]{opacity:.55;cursor:wait}
 #natal{max-width:100%;width:260px;height:260px}
 .chart-meta{text-align:center;font-size:.7rem;color:var(--text-mute);margin-top:4px}
 
@@ -223,7 +282,10 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .mapa-gift-note b{color:var(--gold);font-weight:600}
 
 /* Profiles list */
-.pf-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--glass-b)}
+.pf-row{display:flex;align-items:center;gap:10px;padding:9px 8px;border-bottom:1px solid var(--glass-b);border-radius:8px;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.pf-row:hover{background:rgba(255,255,255,.02)}
+.pf-row:active{transform:scale(.98)}
+.pf-row.is-active{background:linear-gradient(135deg,rgba(212,168,73,.08),rgba(124,92,191,.04));border-bottom-color:transparent;box-shadow:inset 0 0 0 1px rgba(212,168,73,.22)}
 .pf-row:last-of-type{border-bottom:none}
 .pf-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.15));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--text-dim)}
 .pf-av .le-ic{width:18px;height:18px}
@@ -240,13 +302,16 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .btn-share:active{background:rgba(212,168,73,.14)}
 
 /* Social row */
-.soc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.soc-it{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 4px;border:1px solid var(--glass-b);border-radius:10px;background:rgba(255,255,255,.02);text-decoration:none;color:var(--text-dim);transition:border-color .2s,color .2s,background .2s}
-.soc-it:active{background:rgba(255,255,255,.04)}
-.soc-it:hover{border-color:var(--c);color:var(--text)}
-.soc-ic{width:20px;height:20px;color:var(--c);line-height:0;display:flex;align-items:center;justify-content:center}
+/* Social platform grid — matches the web landing's "platform-btn" style */
+.soc-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.soc-it{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,0));text-decoration:none;color:var(--text);font-weight:500;font-size:.82rem;letter-spacing:.01em;position:relative;overflow:hidden;transition:border-color .25s,transform .15s;-webkit-tap-highlight-color:transparent}
+.soc-it::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 14%,transparent),transparent);opacity:.55;pointer-events:none;transition:opacity .25s;z-index:0}
+.soc-it:hover{border-color:var(--c);transform:translateY(-2px)}
+.soc-it:hover::before{opacity:.75}
+.soc-it:active{transform:translateY(0) scale(.98)}
+.soc-ic{width:22px;height:22px;flex-shrink:0;color:var(--c);line-height:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
 .soc-ic svg{width:100%;height:100%;fill:currentColor}
-.soc-nm{font-size:.66rem;letter-spacing:.02em}
+.soc-nm{position:relative;z-index:1}
 
 /* Modal (add profile) */
 .mdl-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:80;opacity:0;pointer-events:none;transition:opacity .18s}
@@ -260,6 +325,11 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .mdl-body{padding:6px 18px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 /* Scroll lock for page body while the modal is open */
 body.modal-open{overflow:hidden;touch-action:none}
+/* Same z-index fix as ES: bottom-tabs at z 9999 were occluding the
+   modal's save button. Raise modal above + hide tabs while open. */
+.mdl-bg{z-index:9998 !important}
+.mdl-sheet{z-index:10000 !important}
+body.modal-open #le-tabs{display:none !important}
 .fl{font-size:.68rem;color:var(--text-mute);text-transform:uppercase;letter-spacing:.05em;margin-top:9px}
 .inp{width:100%;padding:11px 13px;background:var(--glass);border:1px solid var(--glass-b);border-radius:9px;color:var(--text);font-size:.88rem;font-family:inherit;outline:none;color-scheme:dark;transition:border-color .2s}
 .inp:focus{border-color:var(--gold)}
@@ -273,8 +343,9 @@ body.modal-open{overflow:hidden;touch-action:none}
 .meta{font-size:.72rem;color:var(--text-mute);margin:3px 0 0}
 .meta.ok{color:#7cb97c}
 .err-t{font-size:.78rem;color:#e07a7a;margin:9px 0 0}
-.sub-btn{margin-top:14px;width:100%;padding:12px}
+.sub-btn{margin-top:0;width:100%;padding:13px}
 .sub-btn:disabled{opacity:.45;cursor:not-allowed}
+.mdl-footer{flex-shrink:0;padding:14px 18px 12px;border-top:1px solid rgba(255,255,255,.05);background:var(--bg-mid)}
 
 /* Animations */
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -373,8 +444,61 @@ body.modal-open{overflow:hidden;touch-action:none}
       <div class="greet-sub" id="greet-sub" style="display:none"></div>
     </section>
 
-    <!-- 1. Daily reading -->
+    <!-- 1. Natal chart — EN parity with ES (Apr 18). Three-view toggle
+         (chart / sky at birth / sky now), tap-to-identify on planets,
+         stars, and constellations. -->
     <section class="fade d1">
+      <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Natal Chart</div>
+      <div class="card">
+        <div class="slma">
+          <div class="slma-item muted" id="slma-sun"><span class="slma-ic">&#9788;</span><span class="slma-lb">Sun</span><span class="slma-vl">—</span></div>
+          <div class="slma-item muted" id="slma-moon"><span class="slma-ic">&#9790;</span><span class="slma-lb">Moon</span><span class="slma-vl">—</span></div>
+          <div class="slma-item muted" id="slma-asc"><span class="slma-ic">&#8593;</span><span class="slma-lb">Asc</span><span class="slma-vl">—</span></div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="natal" style="cursor:pointer"></canvas>
+          <canvas id="sky" style="display:none;cursor:pointer"></canvas>
+        </div>
+        <p class="chart-meta" id="chart-meta"></p>
+        <div class="chart-info" id="chart-info" hidden aria-live="polite"></div>
+        <div class="chart-toggle" id="chart-toggle" role="tablist" aria-label="Chart view">
+          <button type="button" class="ch-tab is-on" data-view="natal" role="tab" aria-selected="true">Natal chart</button>
+          <button type="button" class="ch-tab" data-view="sky" data-sky-mode="birth" role="tab" aria-selected="false">Sky at birth</button>
+          <button type="button" class="ch-tab" data-view="sky" data-sky-mode="now" role="tab" aria-selected="false">Sky today</button>
+        </div>
+        <div class="chart-action-row" id="chart-action-row">
+          <!-- Transits toggle — off by default so the natal wheel reads
+               cleanly at first glance. Flip it on to overlay today's
+               planets + aspect lines and expand the aspects panel. -->
+          <button type="button" class="btn-transit-toggle" id="btn-transit-toggle"
+                  aria-pressed="false" aria-label="Show transits">
+            <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="12" cy="3" r="1.8" fill="currentColor"/>
+              <circle cx="21" cy="12" r="1.4" fill="currentColor"/>
+            </svg>
+            <span class="btt-on">View transits</span>
+            <span class="btt-badge" id="btt-badge" aria-label="exact aspects today">1</span>
+          </button>
+          <button type="button" class="btn-share-chart" id="btn-share-chart" aria-label="Share chart">
+            <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+            Share my chart
+          </button>
+        </div>
+        <!-- Transits-of-today panel — populated by JS from the ephemeris
+             + the user's natal chart. Hidden until the toggle is on. -->
+        <div class="transits-panel" id="transits-panel" hidden>
+          <div class="tp-title">
+            <span class="tp-ic">✧</span>
+            <span>Today's transits</span>
+          </div>
+          <div class="tp-list" id="tp-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Daily reading -->
+    <section class="fade d2">
       <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
         <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Your reading today</span></span>
         <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
@@ -441,20 +565,6 @@ body.modal-open{overflow:hidden;touch-action:none}
       <div class="card">
         <div class="synth-grid" id="synth-grid"></div>
         <div class="synth-insight" id="synth-text">—</div>
-      </div>
-    </section>
-
-    <!-- 6. Natal chart -->
-    <section class="fade d6">
-      <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Natal Chart</div>
-      <div class="card">
-        <div class="slma">
-          <div class="slma-item muted" id="slma-sun"><span class="slma-ic">&#9788;</span><span class="slma-lb">Sun</span><span class="slma-vl">—</span></div>
-          <div class="slma-item muted" id="slma-moon"><span class="slma-ic">&#9790;</span><span class="slma-lb">Moon</span><span class="slma-vl">—</span></div>
-          <div class="slma-item muted" id="slma-asc"><span class="slma-ic">&#8593;</span><span class="slma-lb">Asc</span><span class="slma-vl">—</span></div>
-        </div>
-        <div class="chart-wrap"><canvas id="natal"></canvas></div>
-        <p class="chart-meta" id="chart-meta"></p>
       </div>
     </section>
 
@@ -565,8 +675,12 @@ body.modal-open{overflow:hidden;touch-action:none}
       <p id="ap-meta" class="meta" style="display:none"></p>
     </div>
     <p id="ap-err" class="err-t" style="display:none"></p>
-    <button type="submit" class="btn-gold sub-btn" id="ap-submit" disabled>Save Profile</button>
   </form>
+  <!-- Submit button in a sticky footer so it stays visible above the
+       keyboard and above any bottom-tabs. -->
+  <div class="mdl-footer">
+    <button type="submit" form="ap-form" class="btn-gold sub-btn" id="ap-submit" disabled>Save Profile</button>
+  </div>
 </div>
 
 <!-- Onboarding tour (shown once after first profile) -->
@@ -589,7 +703,9 @@ body.modal-open{overflow:hidden;touch-action:none}
 </div>
 
 <script src="/js/cross-cultural.js"></script>
-<script src="/js/natal-chart.js?v=6"></script>
+<script src="/js/transits.js?v=3"></script>
+<script src="/js/natal-chart.js?v=12"></script>
+<script src="/js/share-card.js?v=10"></script>
 <script>
 (function(){
 'use strict';
@@ -785,7 +901,12 @@ function renderAll(){
   tier.textContent=lab;
 
   // Greeting
-  var firstName=(currentProfile.nombre||currentUser.name||'').split(' ')[0];
+  // Greeting reflects the account owner (primary profile), not the
+  // profile being viewed — same pattern as ES.
+  var ownerProfile = (profilesList || []).filter(function(p){ return p.is_primary; })[0]
+                   || (profilesList || [])[0]
+                   || currentProfile;
+  var firstName=((ownerProfile && ownerProfile.nombre) || currentUser.name || '').split(' ')[0];
   var hr=new Date().getHours();
   var greet=hr<12?'Good morning':hr<19?'Good afternoon':'Good evening';
   document.getElementById('greeting').textContent=firstName?(greet+', '+firstName):greet;
@@ -847,12 +968,87 @@ function renderAll(){
       var md=LuzEstelar.NatalChart.degreeInSign(ml);
       chartData.planets.push({name:'Moon',longitude:ml,sign:LuzEstelar.NatalChart.SIGN_NAMES[ms],degree:md});
     }
+    // Richer fallback — full 10-body chart + Ascendant client-side
+    // via the same Transits ephemeris (ES parity). Only kicks in when
+    // natal_chart is missing; the pipeline version wins when available.
+    if (!currentProfile.natal_chart && window.LuzEstelar && window.LuzEstelar.Transits) {
+      try {
+        var hT = (currentProfile.hora_nacimiento || '12:00').split(':').map(Number);
+        var tzOff = (typeof currentProfile.tz_offset === 'number') ? currentProfile.tz_offset : -6;
+        var utcHour = (hT[0] || 12) - tzOff;
+        var birthUTC = new Date(Date.UTC(parts[0], parts[1]-1, parts[2], utcHour, hT[1] || 0));
+        var bodies = window.LuzEstelar.Transits.computeTransits(birthUTC);
+        chartData.planets = bodies.map(function(p){
+          return { name: p.name, longitude: p.longitude, sign: p.sign, degree: p.degree };
+        });
+        chartData.aspects = [];
+        if (currentProfile.hora_nacimiento && currentProfile.lat != null && currentProfile.lon != null && window.LuzEstelar.Transits.computeAscMc) {
+          var am = window.LuzEstelar.Transits.computeAscMc(birthUTC, currentProfile.lat, currentProfile.lon);
+          var zEn = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+          chartData.ascendant = { sign: zEn[Math.floor(am.asc/30)%12], degree: am.asc - Math.floor(am.asc/30)*30, longitude: am.asc };
+          chartData.midheaven = { sign: zEn[Math.floor(am.mc/30)%12],  degree: am.mc  - Math.floor(am.mc/30)*30,  longitude: am.mc };
+          chartData.ascendantVerified = true;
+        }
+      } catch (e) { /* transits fallback best-effort */ }
+    }
     if(currentProfile.natal_chart){try{chartData=JSON.parse(currentProfile.natal_chart);}catch(e){}}
     var natalCanvas=document.getElementById('natal');
     // Compute size from available width; fallback to 280px if parent isn't laid out yet.
     var parentW=natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
     var size=parentW>0 ? Math.min(parentW, 320) : 280;
-    LuzEstelar.NatalChart.render(natalCanvas, chartData, {size:size});
+    // Stash for the toggle + tap-to-identify handlers below.
+    window.__currentChartData = chartData;
+    window.__currentProfile = currentProfile;
+    // Attach cached sky catalogs (if already loaded) so real zodiacal
+    // stars overlay the natal wheel on first paint.
+    if (window.__skyCatalogs) {
+      chartData.starCatalog = window.__skyCatalogs.stars;
+      chartData.constellationCatalog = window.__skyCatalogs.constellations;
+    }
+
+    // Today's transits (parity with ES). Computed eagerly so the panel
+    // is ready and the exact-aspect badge can light up, but NOT drawn
+    // over the wheel unless the user opts in via the toggle below.
+    try {
+      if (window.LuzEstelar && window.LuzEstelar.Transits) {
+        var transits = window.LuzEstelar.Transits.computeTransits(new Date());
+        var aspects  = window.LuzEstelar.Transits.findAspects(
+          chartData.planets || [], transits).slice(0, 5);
+        window.__currentTransits = transits;
+        window.__currentTransitAspects = aspects;
+        if (window.__transitsVisible) {
+          chartData.transits = transits;
+          chartData.transitAspects = aspects;
+        } else {
+          delete chartData.transits;
+          delete chartData.transitAspects;
+        }
+        // Badge for exact (< 0.8°) aspects to personal planets.
+        var PERSONAL = { Sun:1, Moon:1, Mercury:1, Venus:1, Mars:1, Ascendant:1, Midheaven:1 };
+        var exactCount = aspects.filter(function(a){
+          return a.orb < 0.8 && (PERSONAL[a.natal] || PERSONAL[a.transit]);
+        }).length;
+        var tBtn = document.getElementById('btn-transit-toggle');
+        var tBadge = document.getElementById('btt-badge');
+        if (tBtn && tBadge) {
+          if (exactCount > 0) {
+            tBtn.classList.add('has-exact');
+            tBadge.textContent = String(exactCount);
+          } else {
+            tBtn.classList.remove('has-exact');
+          }
+        }
+      }
+    } catch (e) { console.warn('[transits EN]', e); }
+
+    LuzEstelar.NatalChart.render(natalCanvas, chartData, {size:size, signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS']});
+    // Panel visibility mirrors the toggle
+    if (window.__transitsVisible && window.populateTransitsPanelEN) {
+      window.populateTransitsPanelEN(window.__currentTransitAspects);
+    } else {
+      var tp = document.getElementById('transits-panel');
+      if (tp) tp.hidden = true;
+    }
     document.getElementById('chart-meta').textContent=currentProfile.hora_nacimiento
       ? (currentProfile.nombre+' · '+currentProfile.fecha_nacimiento+' '+currentProfile.hora_nacimiento)
       : 'Sun and Moon approximate · add birth time for the full chart';
@@ -884,6 +1080,468 @@ function renderAll(){
   }catch(e){
     document.getElementById('chart-meta').textContent='Chart temporarily unavailable';
   }
+
+  // ── Sky catalogs (stars + constellations) lazy-load + natal re-render ──
+  if (!window.__skyCatalogs && !window.__skyLoading) {
+    window.__skyLoading = true;
+    Promise.all([
+      fetch('/data/stars.json').then(function(r){ return r.json(); }),
+      fetch('/data/constellations.json').then(function(r){ return r.json(); }),
+    ]).then(function(results){
+      window.__skyCatalogs = { stars: results[0], constellations: results[1] };
+      try {
+        if (window.__currentChartData) {
+          window.__currentChartData.starCatalog = results[0];
+          window.__currentChartData.constellationCatalog = results[1];
+          var canv = document.getElementById('natal');
+          if (canv) {
+            var w = canv.parentElement.offsetWidth;
+            LuzEstelar.NatalChart.render(canv, window.__currentChartData,
+              { size: w > 0 ? Math.min(w, 320) : 280, signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS'] });
+          }
+        }
+      } catch(e){ console.warn('[sky reload]', e); }
+    }).catch(function(e){ console.warn('[sky catalogs]', e); });
+  }
+
+  // ── Tap-to-identify on natal AND sky canvases (EN) ──
+  (function(){
+    var canv = document.getElementById('natal');
+    var info = document.getElementById('chart-info');
+    if (!canv || !info || canv.dataset.tapWired === '1') return;
+    canv.dataset.tapWired = '1';
+
+    var PLANET_GLYPH = {
+      Sun:'\u2609\uFE0E', Moon:'\u263D\uFE0E', Mercury:'\u263F\uFE0E',
+      Venus:'\u2640\uFE0E', Mars:'\u2642\uFE0E', Jupiter:'\u2643\uFE0E',
+      Saturn:'\u2644\uFE0E', Uranus:'\u2645\uFE0E', Neptune:'\u2646\uFE0E',
+      Pluto:'\u2647\uFE0E', NorthNode:'\u260A\uFE0E', Chiron:'\u26B7\uFE0E'
+    };
+    var PLANET_MEANING = {
+      Sun:     'Your essence — how you express yourself and where you shine.',
+      Moon:    'Your emotional world — what soothes and nourishes you.',
+      Mercury: 'How you think and communicate — your voice and curiosity.',
+      Venus:   'What draws you and how you love — aesthetics and bonds.',
+      Mars:    'Your drive and desire — how you act and fight for what\u2019s yours.',
+      Jupiter: 'Where you grow and believe — expansion and opportunity.',
+      Saturn:  'Your limits and discipline — where you mature through time.',
+      Uranus:  'What you break and reinvent — your originality.',
+      Neptune: 'What you dream and dissolve — imagination and surrender.',
+      Pluto:   'What you transform from the root — power and rebirth.',
+      NorthNode: 'Your evolutionary direction — where your soul is headed.',
+      Chiron:  'Your healing wound — where it hurts most and teaches most.'
+    };
+    var ANGLE_INFO = {
+      ASC: { glyph: 'ASC', name: 'Ascendant',
+             desc: 'Your outer mask: how you present yourself to the world, the first impression you project. The sign that was rising over the eastern horizon at your exact birth time.' },
+      MC:  { glyph: 'MC',  name: 'Midheaven',
+             desc: 'Your vocation and public summit: the top of the sky at birth. Represents your professional path, reputation, and image before society. From Latin Medium Coeli ("middle of the sky").' }
+    };
+    var STAR_LORE = {
+      'Sirius':     'The brightest star in the night sky. 8.6 light-years away — heart of Canis Major.',
+      'Canopus':    'Second brightest star, rudder of the Argo. Invisible from high northern latitudes.',
+      'Arcturus':   'The orange giant of Bo\u00f6tes. Speeding toward us at 120 km/s — in 50,000 years it will have passed.',
+      'Vega':       'Was the pole star 12,000 years ago and will be again in 13,700 (Earth\u2019s precession).',
+      'Capella':    'Bright golden star in Auriga — actually a system of four stars.',
+      'Rigel':      'Blue supergiant in Orion, 860 light-years away. If placed where the Sun is, it would engulf the solar system.',
+      'Procyon':    '"Before the dog" — it rises just before Sirius in Canis Minor.',
+      'Betelgeuse': 'Red supergiant on Orion\u2019s shoulder. Supernova candidate — could explode anytime astronomically (or in 100,000 years).',
+      'Altair':     'A close neighbor at 17 light-years. Spins so fast it\u2019s visibly flattened.',
+      'Aldebaran':  'The Bull\u2019s eye. Orange giant at 65 light-years.',
+      'Antares':    'Heart of the Scorpion, red supergiant 10,000\u00d7 more luminous than the Sun.',
+      'Spica':      'Virgo\u2019s spike. Hot binary orbiting every 4 days.',
+      'Pollux':     'The brighter twin — orange giant with at least one confirmed planet.',
+      'Regulus':    'The Lion\u2019s heart. Spins so fast it\u2019s 30% flattened.',
+      'Polaris':    'The current North Star. 433 light-years away, appears fixed because it\u2019s almost on Earth\u2019s rotation axis.',
+      'Deneb':      'The Swan\u2019s tail and one of the intrinsically brightest visible stars — 2,600 light-years away.'
+    };
+    var CON_LORE = {
+      'Ori': 'The hunter. His belt (three aligned stars) is one of the most recognizable asterisms.',
+      'UMa': 'The Great Bear. Its "Dipper" points toward the North Star — celestial compass since antiquity.',
+      'UMi': 'The Little Bear contains Polaris, the celestial north.',
+      'Cas': 'The Ethiopian queen — her W shape is unmistakable in northern winter nights.',
+      'Leo': 'The lion — his head forms a backward "sickle", Regulus at the heart.',
+      'Sco': 'The scorpion, pinned on the ecliptic. Antares glows as its red heart.',
+      'Sgr': 'The archer aiming at Scorpio. Its teapot shape marks the center of our galaxy.',
+      'Gem': 'The twins Castor and Pollux — brothers in myth, real double stars.',
+      'Tau': 'The bull charging Orion. Aldebaran is its red eye.',
+      'CMa': 'The Great Dog — Orion\u2019s hunting companion, Sirius on its chest.',
+      'CMi': 'The Little Dog, Orion\u2019s other companion with Procyon.',
+      'Cyg': 'The swan crossing the Milky Way. Forms a giant cross (Northern Cross).',
+      'Lyr': 'Orpheus\u2019 lyre, Vega crowning it — summer triangle.',
+      'Aql': 'Zeus\u2019 eagle, Altair its eye.',
+      'Peg': 'The winged horse. Its square defines autumn in the northern hemisphere.',
+      'And': 'The chained princess. Contains our neighbor galaxy Andromeda (M31).',
+      'Per': 'The hero who rescued Andromeda, holding Medusa\u2019s head (Algol, the "demon star").',
+      'Cru': 'The Southern Cross — southern compass, points to the celestial south pole.',
+      'Cen': 'The centaur, with Alpha Centauri, the closest stellar system to the Sun (4.3 light-years).',
+      'Vir': 'The maiden with the wheat spike (Spica). Second largest constellation in the sky.',
+      'Aur': 'The charioteer with Capella on his shoulder. Associated with nurture and goats in Greek myth.',
+      'Cap': 'The sea-goat, associated with the winter solstice in Western tradition.',
+      'Ari': 'The ram of the Golden Fleece. The spring equinox occurred here 2,000 years ago.',
+      'Cnc': 'The crab that pinched Heracles. Contains the Beehive cluster (M44).',
+      'Lib': 'The scales — originally the scorpion\u2019s claws, now symbolize equinox balance.',
+      'Aqr': 'The water-bearer pouring across the sky. Represents Ganymede in myth.',
+      'Psc': 'The fish joined by a cord. Their star Alrisha marks the knot.'
+    };
+    function bearingWord(azDeg) {
+      var dirs = [
+        {min:337.5,max:360,name:'north'}, {min:0,max:22.5,name:'north'},
+        {min:22.5, max:67.5, name:'northeast'},
+        {min:67.5, max:112.5, name:'east'},
+        {min:112.5, max:157.5, name:'southeast'},
+        {min:157.5, max:202.5, name:'south'},
+        {min:202.5, max:247.5, name:'southwest'},
+        {min:247.5, max:292.5, name:'west'},
+        {min:292.5, max:337.5, name:'northwest'}
+      ];
+      for (var i = 0; i < dirs.length; i++) {
+        if (azDeg >= dirs[i].min && azDeg < dirs[i].max) return dirs[i].name;
+      }
+      return 'horizon';
+    }
+    function renderInfo(hit) {
+      if (!hit) return hide();
+      var body = '';
+      if (hit.type === 'planet') {
+        var glyph = PLANET_GLYPH[hit.name] || '\u2726';
+        var deg   = Math.floor(hit.degree || 0);
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">' + glyph + '</span>' +
+            '<span class="ci-name">' + hit.name + '</span>' +
+            '<span class="ci-pos">' + (hit.sign || '') + ' ' + deg + '\u00B0</span>' +
+          '</div>' +
+          '<p class="ci-desc">' + (PLANET_MEANING[hit.name] || '') + '</p>';
+      } else if (hit.type === 'angle') {
+        var a = ANGLE_INFO[hit.name];
+        if (!a) return hide();
+        var posTxt = '';
+        if (typeof hit.longitude === 'number' && window.LuzEstelar && window.LuzEstelar.NatalChart) {
+          var idx = window.LuzEstelar.NatalChart.signFromLongitude(hit.longitude);
+          var names = window.LuzEstelar.NatalChart.SIGN_NAMES || [];
+          var dg = Math.floor(window.LuzEstelar.NatalChart.degreeInSign(hit.longitude));
+          posTxt = (names[idx] || '') + ' ' + dg + '\u00B0';
+        }
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph" style="font-family:Inter,sans-serif;font-size:1rem;letter-spacing:.06em">' + a.glyph + '</span>' +
+            '<span class="ci-name">' + a.name + '</span>' +
+            (posTxt ? '<span class="ci-pos">' + posTxt + '</span>' : '') +
+          '</div>' +
+          '<p class="ci-desc">' + a.desc + '</p>';
+      } else if (hit.type === 'star') {
+        var magTxt = (hit.mag <= 1.5) ? 'bright star' :
+                     (hit.mag <= 2.5) ? 'notable star' :
+                     (hit.mag <= 3.5) ? 'visible star' : 'faint star';
+        var dir = typeof hit.az === 'number' ? bearingWord(hit.az) : '';
+        var altTxt = typeof hit.alt === 'number' ? (Math.round(hit.alt) + '\u00B0 above horizon') : '';
+        var pieces = [magTxt + ' (magnitude ' + hit.mag.toFixed(2) + ')'];
+        if (hit.bayer && hit.con) pieces.push(hit.bayer + ' ' + hit.con);
+        else if (hit.con) pieces.push('in ' + hit.con);
+        if (dir) pieces.push('to the ' + dir);
+        if (altTxt) pieces.push(altTxt);
+        var lore = STAR_LORE[hit.name];
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">\u2605</span>' +
+            '<span class="ci-name">' + hit.name + '</span>' +
+            (hit.bayer ? '<span class="ci-pos">' + hit.bayer + '</span>' : '') +
+          '</div>' +
+          '<p class="ci-desc">' + pieces.join(' · ') + (lore ? '<br><br>' + lore : '') + '</p>';
+      } else if (hit.type === 'constellation') {
+        var cLore = CON_LORE[hit.id] || ('Constellation ' + (hit.name_en || hit.name_es || hit.id) + '.');
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">\u2728</span>' +
+            '<span class="ci-name">' + (hit.name_en || hit.name_es || hit.id) + '</span>' +
+          '</div>' +
+          '<p class="ci-desc">' + cLore + '</p>';
+      } else return hide();
+      info.innerHTML = '<button class="ci-close" aria-label="Close" type="button">&times;</button>' + body;
+      info.hidden = false;
+      info.querySelector('.ci-close').addEventListener('click', hide);
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('select');
+    }
+    function hide() { info.hidden = true; info.innerHTML = ''; }
+    function bindCanvasTap(target, moduleKey) {
+      target.addEventListener('click', function(e){
+        var rect = target.getBoundingClientRect();
+        var x = (e.clientX - rect.left) * (target.width / rect.width) / (window.devicePixelRatio || 1);
+        var y = (e.clientY - rect.top)  * (target.height / rect.height) / (window.devicePixelRatio || 1);
+        var mod = window.LuzEstelar && window.LuzEstelar[moduleKey];
+        if (!mod || !mod.hitTest) return;
+        var hit = mod.hitTest(target, x, y);
+        if (hit) renderInfo(hit); else hide();
+      });
+    }
+    bindCanvasTap(canv, 'NatalChart');
+    var skyC = document.getElementById('sky');
+    if (skyC) bindCanvasTap(skyC, 'SkyMap');
+  })();
+
+  // ── Transits panel populator (EN) ──
+  // Mirrors the ES populateTransitsPanel — renders the top aspects
+  // as compact rows with transit glyph · planet name · aspect symbol
+  // · natal glyph · natal name · orb.
+  window.populateTransitsPanelEN = function populateTransitsPanelEN(aspects) {
+    var panel = document.getElementById('transits-panel');
+    var list  = document.getElementById('tp-list');
+    if (!panel || !list) return;
+    if (!aspects || !aspects.length) { panel.hidden = true; list.innerHTML = ''; return; }
+    var PNAME = {
+      Sun:'Sun', Moon:'Moon', Mercury:'Mercury', Venus:'Venus', Mars:'Mars',
+      Jupiter:'Jupiter', Saturn:'Saturn', Uranus:'Uranus', Neptune:'Neptune',
+      Pluto:'Pluto', NorthNode:'Node', Chiron:'Chiron', Ascendant:'Asc', Midheaven:'MC'
+    };
+    var PGLYPH = {
+      Sun:'\u2609', Moon:'\u263D', Mercury:'\u263F', Venus:'\u2640',
+      Mars:'\u2642', Jupiter:'\u2643', Saturn:'\u2644', Uranus:'\u2645',
+      Neptune:'\u2646', Pluto:'\u2647'
+    };
+    var VS15 = '\uFE0E';
+    var ASP_SYM  = {
+      conjunction: '\u260C'+VS15, opposition: '\u260D'+VS15,
+      square:      '\u25A1'+VS15, trine:      '\u25B3'+VS15,
+      sextile:     '\u26B9'+VS15,
+    };
+    var ASP_NAME = { conjunction:'conjunction', opposition:'opposition', square:'square', trine:'trine', sextile:'sextile' };
+    var ASP_COLOR = { conjunction:'#f4c88a', opposition:'#ff8080', square:'#ffa870', trine:'#8edca0', sextile:'#9acbe0' };
+    var top = aspects.slice(0, 5);
+    list.innerHTML = top.map(function(a){
+      var tG = (PGLYPH[a.transit] || '\u2726') + VS15;
+      var nG = (PGLYPH[a.natal]   || '\u2726') + VS15;
+      var tN = PNAME[a.transit] || a.transit;
+      var nN = PNAME[a.natal]   || a.natal;
+      var aspSym = ASP_SYM[a.type] || '·';
+      var aspName = ASP_NAME[a.type] || a.type;
+      var col = ASP_COLOR[a.type] || '#d4a849';
+      return '<div class="tp-row' + (a.exact ? ' exact' : '') + '" style="--tc:' + col + '">' +
+        '<span class="tp-gly">' + tG + '</span>' +
+        '<span class="tp-nm">' + tN + '</span>' +
+        '<span class="tp-asp" title="' + aspName + '">' + aspSym + '</span>' +
+        '<span class="tp-gly">' + nG + '</span>' +
+        '<span class="tp-nm">' + nN + '</span>' +
+        '<span class="tp-orb">' + a.orb.toFixed(1) + '°</span>' +
+      '</div>';
+    }).join('');
+    panel.hidden = false;
+  };
+
+  // ── Transits overlay toggle (EN) ──
+  // Off by default. Flipping it on re-renders the natal canvas with
+  // today's planets + aspect lines, and expands the transits panel.
+  (function(){
+    var btn = document.getElementById('btn-transit-toggle');
+    if (!btn || btn.dataset.wired === '1') return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', function(){
+      window.__transitsVisible = !window.__transitsVisible;
+      btn.setAttribute('aria-pressed', window.__transitsVisible ? 'true' : 'false');
+      btn.querySelector('.btt-on').textContent = window.__transitsVisible
+        ? 'Hide transits' : 'View transits';
+
+      var data = window.__currentChartData;
+      var canv = document.getElementById('natal');
+      if (!data || !canv) return;
+      if (window.__transitsVisible && window.__currentTransits) {
+        data.transits = window.__currentTransits;
+        data.transitAspects = window.__currentTransitAspects;
+      } else {
+        delete data.transits;
+        delete data.transitAspects;
+      }
+      try {
+        var w = canv.parentElement.offsetWidth;
+        LuzEstelar.NatalChart.render(canv, data, { size: w > 0 ? Math.min(w, 320) : 280,
+          signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS'] });
+      } catch(e) { console.warn('[transit-toggle EN]', e); }
+      if (window.__transitsVisible && window.populateTransitsPanelEN) {
+        window.populateTransitsPanelEN(window.__currentTransitAspects);
+      } else {
+        var tp = document.getElementById('transits-panel');
+        if (tp) tp.hidden = true;
+      }
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+    });
+  })();
+
+  // ── Share chart button (EN) ──
+  (function(){
+    var btn = document.getElementById('btn-share-chart');
+    if (!btn || btn.dataset.wired === '1') return;
+    btn.dataset.wired = '1';
+    var origHTML = btn.innerHTML;
+
+    function flash(msg, ms) {
+      btn.textContent = msg;
+      btn.disabled = true;
+      setTimeout(function(){ btn.innerHTML = origHTML; btn.disabled = false; }, ms || 2500);
+    }
+
+    btn.addEventListener('click', function(){
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+
+      if (!window.LuzEstelar || !window.LuzEstelar.ShareCard) {
+        console.warn('[share-chart] ShareCard module not loaded');
+        return flash('Module not loaded — reload app', 3500);
+      }
+      if (!window.__currentChartData || !window.__currentProfile) {
+        return flash('Chart still loading', 2500);
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Generating…';
+
+      try {
+        window.LuzEstelar.ShareCard.buildAndShare({
+          profile:   window.__currentProfile,
+          chartData: window.__currentChartData,
+          lang:      'en',
+          progress:  function(stage){ btn.textContent = stage + '…'; },
+        }).then(function(sharedNatively){
+          btn.innerHTML = origHTML;
+          btn.disabled = false;
+          if (sharedNatively === false && typeof window.LuzEstelar.toast === 'function') {
+            try { window.LuzEstelar.toast('Image downloaded', { kind:'success', duration: 3000 }); } catch (e) {}
+          }
+        }).catch(function(e){
+          console.error('[share-chart] failed:', e);
+          var msg = (e && e.message) ? e.message : 'unknown';
+          if (msg.length > 55) msg = msg.slice(0, 52) + '…';
+          flash('Error: ' + msg, 6000);
+        });
+      } catch (syncErr) {
+        console.error('[share-chart] sync throw:', syncErr);
+        var m = (syncErr && syncErr.message) ? syncErr.message : 'sync error';
+        if (m.length > 55) m = m.slice(0, 52) + '…';
+        flash('Error: ' + m, 6000);
+      }
+    });
+  })();
+
+  // ── Chart toggle (3 views) — EN ──
+  (function(){
+    var tg = document.getElementById('chart-toggle');
+    if (!tg || tg.dataset.wired === '1') return;
+    tg.dataset.wired = '1';
+    var natalCanv = document.getElementById('natal');
+    var skyCanv   = document.getElementById('sky');
+
+    function ensureSkyMap(cb){
+      if (window.LuzEstelar && window.LuzEstelar.SkyMap) return cb();
+      var s = document.createElement('script');
+      s.src = '/js/sky-map.js';
+      s.onload = cb;
+      s.onerror = function(){ console.warn('[sky-map] load failed'); };
+      document.head.appendChild(s);
+    }
+
+    function drawSky(mode){
+      mode = mode || 'birth';
+      if (!window.__currentProfile || !window.__skyCatalogs) return;
+      var p = window.__currentProfile;
+      var cmEl = document.getElementById('chart-meta');
+      if (p.lat == null || p.lon == null) {
+        if (cmEl) cmEl.textContent = mode === 'now'
+          ? 'Live sky requires a geocoded place — edit your profile'
+          : 'Sky view requires exact time + place';
+        return;
+      }
+      var d, metaLabel;
+      if (mode === 'now') {
+        d = new Date();
+        var nowStr = d.toLocaleString('en-US', { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' });
+        metaLabel = 'Live sky · ' + (p.lugar_nacimiento || 'your location') + ' · ' + nowStr;
+      } else {
+        if (!p.hora_nacimiento) { if (cmEl) cmEl.textContent = 'Sky at birth requires exact time'; return; }
+        var dateParts = (p.fecha_nacimiento || '').split('-').map(Number);
+        var timeParts = (p.hora_nacimiento || '00:00').split(':').map(Number);
+        var tzHours = typeof p.tz_offset === 'number' ? p.tz_offset : -6;
+        var utcHour = timeParts[0] - tzHours;
+        d = new Date(Date.UTC(dateParts[0], dateParts[1]-1, dateParts[2], utcHour, timeParts[1] || 0));
+        metaLabel = 'Sky over ' + (p.lugar_nacimiento || 'your location') + ' · ' + (p.fecha_nacimiento || '') + ' ' + (p.hora_nacimiento || '');
+      }
+      var planetOverlays = [];
+      if (mode === 'birth') {
+        var natal = window.__currentChartData;
+        if (natal && natal.planets) {
+          var nameMap = {
+            Sun:{name:'Sun',symbol:'\u2609',color:'#FFD700'},
+            Moon:{name:'Moon',symbol:'\u263E',color:'#C0C8E0'},
+            Mercury:{name:'Mercury',symbol:'\u263F',color:'#B0B0B0'},
+            Venus:{name:'Venus',symbol:'\u2640',color:'#F0C070'},
+            Mars:{name:'Mars',symbol:'\u2642',color:'#FF6060'},
+            Jupiter:{name:'Jupiter',symbol:'\u2643',color:'#E0B060'},
+            Saturn:{name:'Saturn',symbol:'\u2644',color:'#C0A080'}
+          };
+          natal.planets.forEach(function(pl){
+            var meta = nameMap[pl.name]; if (!meta) return;
+            planetOverlays.push({name:meta.name,symbol:meta.symbol,color:meta.color,longitude:pl.longitude});
+          });
+        }
+      }
+      ensureSkyMap(function(){
+        var w = skyCanv.parentElement.offsetWidth;
+        window.LuzEstelar.SkyMap.render(skyCanv, {
+          lat:p.lat, lng:p.lon, utc:d,
+          stars: window.__skyCatalogs.stars.stars,
+          constellations: window.__skyCatalogs.constellations.constellations,
+          planets: planetOverlays,
+          size: w > 0 ? Math.min(w, 320) : 280,
+          showLabels: true
+        });
+        if (cmEl) cmEl.textContent = metaLabel;
+      });
+    }
+
+    function updateActionRow(view) {
+      var shareBtn = document.getElementById('btn-share-chart');
+      if (!shareBtn) return;
+      shareBtn.hidden = (view !== 'natal');
+    }
+
+    function startNowTicker() {
+      if (window.__skyNowTicker) return;
+      window.__skyNowTicker = setInterval(function(){
+        if (skyCanv.dataset.mode === 'now' && skyCanv.style.display !== 'none') drawSky('now');
+      }, 60000);
+    }
+    function stopNowTicker() {
+      if (window.__skyNowTicker) { clearInterval(window.__skyNowTicker); window.__skyNowTicker = null; }
+    }
+
+    tg.addEventListener('click', function(e){
+      var btn = e.target.closest('.ch-tab');
+      if (!btn) return;
+      var view = btn.getAttribute('data-view');
+      var skyMode = btn.getAttribute('data-sky-mode') || 'birth';
+      Array.prototype.forEach.call(tg.querySelectorAll('.ch-tab'), function(b){
+        var on = (b === btn);
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      if (view === 'sky') {
+        natalCanv.style.display = 'none';
+        skyCanv.style.display = 'block';
+        skyCanv.dataset.mode = skyMode;
+        drawSky(skyMode);
+        if (skyMode === 'now') startNowTicker(); else stopNowTicker();
+      } else {
+        skyCanv.style.display = 'none';
+        natalCanv.style.display = 'block';
+        stopNowTicker();
+        var cm = document.getElementById('chart-meta');
+        if (cm && window.__currentProfile) {
+          var p = window.__currentProfile;
+          cm.textContent = p.hora_nacimiento
+            ? (p.nombre + ' · ' + p.fecha_nacimiento + ' ' + p.hora_nacimiento)
+            : 'Sun and Moon approximate · add birth time for the full chart';
+        }
+      }
+      updateActionRow(view);
+    });
+  })();
 
   // Star Map — personalized preview
   try{
@@ -952,16 +1610,34 @@ function renderProfiles(){
   var h='';
   profilesList.forEach(function(p){
     var pri=p.is_primary;
-    // Avatar icon: gold star for primary, neutral user for the rest.
+    var active = (currentProfile && currentProfile.id === p.id);
     var avIcon = pri ? 'star' : 'user';
     var avFallback = pri ? '⭐' : '👤';
-    h+='<div class="pf-row"><span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
+    h+='<div class="pf-row'+(active?' is-active':'')+'" data-profile-id="'+p.id+'" role="button" tabindex="0">';
+    h+='<span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
     h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
-    if(pri) h+='<span class="pf-star">Primary</span>';
+    if(active) h+='<span class="pf-star" style="background:rgba(93,208,122,.18);color:#8edca0">Viewing</span>';
+    else if(pri) h+='<span class="pf-star">Primary</span>';
     h+='</div>';
   });
   box.innerHTML=h;
   if (window.LuzEstelarIcons) window.LuzEstelarIcons.hydrate(box);
+  // Click any profile row to switch which profile the dashboard shows.
+  // Greeting stays on the primary (account owner).
+  box.querySelectorAll('.pf-row').forEach(function(row){
+    row.addEventListener('click', function(){
+      var id = row.getAttribute('data-profile-id');
+      if (!id) return;
+      var picked = profilesList.filter(function(p){ return p.id === id; })[0];
+      if (!picked || (currentProfile && currentProfile.id === id)) return;
+      currentProfile = picked;
+      window.__currentProfile = picked;
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+      try { renderAll(); } catch (e) { console.warn('[switch]', e); }
+      var chartCard = document.querySelector('.chart-wrap');
+      if (chartCard) chartCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
   var isPlus=currentUser.tier==='premium';
   var lim=isPlus?5:1;
   document.getElementById('pf-count').textContent=profilesList.length+' of '+lim+' profile'+(lim===1?'':'s');
@@ -1399,12 +2075,22 @@ document.getElementById('ap-form').addEventListener('submit',async function(e){
     var r=await api('/api/profile/birth-profiles',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var d=await r.json();
     if(!r.ok||!d.ok){throw new Error(d.error||'Could not create profile');}
-    // Refresh list
     var m=await api('/api/auth/me');var md=await m.json();
     profilesList=md.birthProfiles||profilesList;window._pfList=profilesList;
+    // Switch view to the newly-created profile so the dashboard
+    // actually reflects it (ES parity).
+    var newId = d.profile && d.profile.id;
+    var freshProfile = newId
+      ? profilesList.filter(function(p){ return p.id === newId; })[0]
+      : profilesList[profilesList.length - 1];
+    if (freshProfile) {
+      currentProfile = freshProfile;
+      window.__currentProfile = currentProfile;
+    }
     renderProfiles();
     closeModal();
     btn.textContent='Save Profile';
+    try { renderAll(); } catch (e) { console.warn('[renderAll]', e); }
   }catch(err){
     var e1=document.getElementById('ap-err');
     e1.textContent=err.message||'Save failed';e1.style.display='block';

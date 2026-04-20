@@ -6,12 +6,28 @@
 <title>Inicio — Luz Estelar</title>
 <meta name="description" content="Tu universo personal: reporte cross-cultural, lectura del día y perfil multisistema — Luz Estelar Oficial">
 <meta name="theme-color" content="#d4a849">
+<!-- Open Graph + Twitter Card — previews when users share their
+     Mi Día link in WhatsApp, Telegram, Twitter, etc. Even though the
+     page is noindex (protected dashboard), the OG tags still drive
+     rich previews in messaging apps. -->
+<meta property="og:title" content="Mi Día — Luz Estelar">
+<meta property="og:description" content="Tu carta natal astrológica con reporte cross-cultural, lectura diaria y tránsitos del día.">
+<meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+<meta property="og:url" content="https://luzestelaroficial.com/mi-dia.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mi Día — Luz Estelar">
+<meta name="twitter:description" content="Tu carta natal astrológica con reporte cross-cultural y tránsitos del día.">
+<meta name="twitter:image" content="https://luzestelaroficial.com/app_icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="app_icon.png">
 <link rel="apple-touch-icon" href="app_icon.png">
 <link rel="manifest" href="manifest.json">
+<link rel="canonical" href="https://luzestelaroficial.com/mi-dia.html">
 <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/my-day.html">
 <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/mi-dia.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +36,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
 <!-- Design system (source of truth → tokens, stars, PWA patterns, icons) -->
 <link rel="stylesheet" href="/css/design-tokens.css">
-<link rel="stylesheet" href="/css/stars.css">
+<link rel="stylesheet" href="/css/stars.css?v=2">
 <link rel="stylesheet" href="/css/pwa.css">
 <link rel="stylesheet" href="/css/icons.css">
 <link rel="stylesheet" href="/css/components.css">
@@ -33,6 +49,8 @@
 /* :root tokens moved to /css/design-tokens.css (Phase 3.5 cleanup) */
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
+/* Screen-reader-only helper: visually hidden but announced by AT. */
+.sr-only{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
 /* .state / .state.active moved to components.css */
@@ -125,7 +143,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .mapa-gift-note b{color:var(--gold);font-weight:600}
 
 /* Section label */
-.slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:500;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
+.slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:600;color:rgba(212,168,73,.78);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
 .slbl .ic{font-size:.82rem;opacity:.85}
 .slbl .badge-new{margin-left:auto;font-size:.58rem;padding:1px 6px;border-radius:6px;background:rgba(124,92,191,.18);color:var(--purple);letter-spacing:.04em;font-weight:600}
 
@@ -142,7 +160,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .cc-chip{font-size:.66rem;padding:3px 9px;border-radius:999px;background:rgba(212,168,73,.1);border:1px solid rgba(212,168,73,.22);color:var(--gold-light);letter-spacing:.02em}
 .cc-sec{background:rgba(255,255,255,.025);border:1px solid var(--glass-b);border-radius:10px;padding:11px 13px;margin-top:8px}
 .cc-sec h4{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:.95rem;font-weight:700;margin-bottom:3px;letter-spacing:.02em}
-.cc-sec p{font-size:.84rem;line-height:1.6;color:var(--text)}
+.cc-sec p{font-size:.84rem;line-height:1.6;color:rgba(224,220,232,.78)}
 
 /* Locked CTA for free users */
 .cc-lock{text-align:center;padding:14px 12px}
@@ -167,7 +185,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .bar-v{min-width:12px;text-align:right;color:var(--text-dim);font-size:.68rem}
 
 /* Daily reading text */
-.rdg-text{font-size:.88rem;line-height:1.68;color:var(--text)}
+.rdg-text{font-size:.88rem;line-height:1.68;color:rgba(224,220,232,.78)}
 
 /* Per-system insights */
 .ins-grid{display:flex;flex-direction:column;gap:6px}
@@ -175,7 +193,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ins-hd{display:flex;align-items:center;gap:5px;margin-bottom:3px}
 .ins-sys{font-size:.66rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.03em}
 .ins-arch{font-size:.66rem;color:var(--text-mute)}
-.ins-txt{font-size:.82rem;line-height:1.55;color:var(--text)}
+.ins-txt{font-size:.82rem;line-height:1.55;color:rgba(224,220,232,.78)}
 .ins-lock{position:relative;overflow:hidden}
 .ins-lock .ins-txt{filter:blur(5px);user-select:none;color:var(--text-dim)}
 .ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
@@ -211,7 +229,11 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .tour-skip{margin-top:10px;font-size:.7rem;color:var(--text-mute);cursor:pointer;background:none;border:none;font-family:inherit;padding:4px}
 
 /* Day navigation arrows (yesterday / today / tomorrow) */
-.day-nav-btn{background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.2);color:var(--gold);width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.88rem;line-height:1;cursor:pointer;font-family:inherit;padding:0;transition:background .15s,opacity .15s;-webkit-tap-highlight-color:transparent}
+/* Visual size stays compact (24px) but a transparent ::before expands
+   the tap target to 44×44 to meet the WCAG 2.1 AA minimum without
+   inflating the visible UI. */
+.day-nav-btn{position:relative;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.2);color:var(--gold);width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.88rem;line-height:1;cursor:pointer;font-family:inherit;padding:0;transition:background .15s,opacity .15s;-webkit-tap-highlight-color:transparent}
+.day-nav-btn::before{content:"";position:absolute;inset:-10px;border-radius:50%}
 .day-nav-btn:active{background:rgba(212,168,73,.16)}
 .day-nav-btn:disabled{opacity:.25;cursor:default}
 #rdg-card{transition:opacity .18s}
@@ -271,6 +293,49 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .chart-info{position:relative}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
+/* Action row: transit toggle + share button side by side */
+.chart-action-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn-transit-toggle{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;border:1px solid rgba(124,92,191,.32);background:linear-gradient(135deg,rgba(124,92,191,.10),rgba(212,168,73,.04));color:rgba(206,188,230,.88);font-family:inherit;font-size:.72rem;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:transform .15s,border-color .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.btn-transit-toggle:hover{border-color:rgba(124,92,191,.58)}
+.btn-transit-toggle:active{transform:scale(.96)}
+.btn-transit-toggle .ic-svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.btn-transit-toggle[aria-pressed="true"]{background:linear-gradient(135deg,rgba(124,92,191,.28),rgba(212,168,73,.10));border-color:rgba(124,92,191,.75);color:#d8c8f0}
+.btn-transit-toggle[aria-pressed="true"] .btt-on::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#b8a5e8;margin-left:4px;vertical-align:middle}
+/* Exact-aspect badge — pulsating gold dot on the transit toggle when
+   today has at least one <0.5° orb aspect to a personal planet. Draws
+   attention to the rare/important moments without being a loud pop-up. */
+.btn-transit-toggle .btt-badge{display:none;align-items:center;justify-content:center;margin-left:6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:linear-gradient(135deg,#f4c88a,#d4a849);color:#06061a;font-size:.62rem;font-weight:700;letter-spacing:0;box-shadow:0 0 0 0 rgba(212,168,73,.6);animation:btt-pulse 2.2s ease-out infinite}
+.btn-transit-toggle.has-exact .btt-badge{display:inline-flex}
+.btn-transit-toggle.has-exact{border-color:rgba(212,168,73,.65)}
+@keyframes btt-pulse{0%{box-shadow:0 0 0 0 rgba(212,168,73,.55)}70%{box-shadow:0 0 0 10px rgba(212,168,73,0)}100%{box-shadow:0 0 0 0 rgba(212,168,73,0)}}
+
+.btn-share-chart,.btn-mapa-link{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(212,168,73,.35);background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(124,92,191,.08));color:var(--gold);font-family:inherit;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:transform .15s,border-color .2s;-webkit-tap-highlight-color:transparent;text-decoration:none;border-radius:999px}
+.btn-share-chart{padding:9px 18px;font-size:.78rem}
+/* Mapa link is smaller — it's a secondary action nudging to the
+   premium product, not the primary CTA the share button is. */
+.btn-mapa-link{padding:6px 13px;font-size:.68rem;gap:6px;border-color:rgba(212,168,73,.28);background:linear-gradient(135deg,rgba(212,168,73,.08),rgba(124,92,191,.04));color:rgba(212,168,73,.9)}
+.btn-share-chart:hover,.btn-mapa-link:hover{border-color:rgba(212,168,73,.6)}
+.btn-share-chart:active,.btn-mapa-link:active{transform:scale(.96)}
+.btn-share-chart .ic-svg{width:15px;height:15px;fill:currentColor}
+.btn-mapa-link .ic-svg{width:12px;height:12px;fill:currentColor}
+.btn-share-chart[disabled]{opacity:.55;cursor:wait}
+
+/* Transits panel — sits below the toggle + share button. Shows the
+   top 4–5 aspects of the moment between today's sky and the natal
+   chart. Each row is a compact sentence so the panel doesn't feel
+   like a data dump. */
+.transits-panel{margin-top:16px;padding:14px 14px 10px;background:linear-gradient(135deg,rgba(124,92,191,.08),rgba(212,168,73,.04));border:1px solid var(--glass-b);border-radius:var(--r-lg);animation:fadeInUp .28s ease-out}
+.transits-panel .tp-title{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(212,168,73,.72);margin-bottom:10px}
+.transits-panel .tp-ic{color:var(--gold);font-size:.9rem}
+.tp-list{display:flex;flex-direction:column;gap:8px}
+.tp-row{display:grid;grid-template-columns:1.4rem auto 1.4rem auto 1fr auto;align-items:center;gap:6px;padding:6px 8px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid var(--tc,rgba(212,168,73,.3));font-size:.78rem;color:var(--text);font-feature-settings:"tnum"}
+.tp-row .tp-gly{font-family:'Noto Sans Symbols 2',serif;color:var(--gold);font-size:.95rem;text-align:center;font-variant-emoji:text}
+.tp-row .tp-nm{font-size:.74rem;color:var(--text-dim)}
+.tp-row .tp-asp{font-family:'Noto Sans Symbols 2','Segoe UI Symbol','Apple Symbols',serif;font-size:1rem;color:var(--tc,var(--gold));text-align:center;font-variant-emoji:text;line-height:1}
+.tp-row .tp-orb{font-size:.68rem;color:var(--text-mute);margin-left:auto;white-space:nowrap;padding-left:6px}
+.tp-row.exact{background:rgba(212,168,73,.06);border-left-width:3px}
+.tp-row.exact .tp-orb{color:var(--gold)}
+
 /* Sol + Luna + Ascendente badges above natal chart */
 .slma{display:flex;justify-content:space-around;gap:8px;margin:0 0 14px;padding:10px 4px;border-bottom:1px solid rgba(212,168,73,.08)}
 .slma-item{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:0}
@@ -293,7 +358,10 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .empty .empty-cta:active{background:rgba(212,168,73,.18)}
 
 /* Profiles list */
-.pf-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--glass-b)}
+.pf-row{display:flex;align-items:center;gap:10px;padding:9px 8px;border-bottom:1px solid var(--glass-b);border-radius:8px;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.pf-row:hover{background:rgba(255,255,255,.02)}
+.pf-row:active{transform:scale(.98)}
+.pf-row.is-active{background:linear-gradient(135deg,rgba(212,168,73,.08),rgba(124,92,191,.04));border-bottom-color:transparent;box-shadow:inset 0 0 0 1px rgba(212,168,73,.22)}
 .pf-row:last-of-type{border-bottom:none}
 .pf-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.15));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--text-dim)}
 .pf-av .le-ic{width:18px;height:18px}
@@ -310,13 +378,21 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .btn-share:active{background:rgba(212,168,73,.14)}
 
 /* Social row */
-.soc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.soc-it{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 4px;border:1px solid var(--glass-b);border-radius:10px;background:rgba(255,255,255,.02);text-decoration:none;color:var(--text-dim);transition:border-color .2s,color .2s,background .2s}
-.soc-it:active{background:rgba(255,255,255,.04)}
-.soc-it:hover{border-color:var(--c);color:var(--text)}
-.soc-ic{width:20px;height:20px;color:var(--c);line-height:0;display:flex;align-items:center;justify-content:center}
+/* Social platform grid — matches the web landing's "platform-btn" style.
+   Brand-colored icon always visible (not just on hover). Subtle
+   gradient tint in the brand colour gives each card its identity
+   without being loud. Horizontal flex: icon on the left, name on the
+   right, just like the desktop site. 2-column grid on mobile so six
+   platforms fit compactly without making the cards too narrow. */
+.soc-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.soc-it{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,0));text-decoration:none;color:var(--text);font-weight:500;font-size:.82rem;letter-spacing:.01em;position:relative;overflow:hidden;transition:border-color .25s,transform .15s;-webkit-tap-highlight-color:transparent}
+.soc-it::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 14%,transparent),transparent);opacity:.55;pointer-events:none;transition:opacity .25s;z-index:0}
+.soc-it:hover{border-color:var(--c);transform:translateY(-2px)}
+.soc-it:hover::before{opacity:.75}
+.soc-it:active{transform:translateY(0) scale(.98)}
+.soc-ic{width:22px;height:22px;flex-shrink:0;color:var(--c);line-height:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
 .soc-ic svg{width:100%;height:100%;fill:currentColor}
-.soc-nm{font-size:.66rem;letter-spacing:.02em}
+.soc-nm{position:relative;z-index:1}
 
 /* Modal (add profile) */
 .mdl-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:80;opacity:0;pointer-events:none;transition:opacity .18s}
@@ -330,6 +406,40 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .mdl-body{padding:6px 18px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 /* Scroll lock for page body while the modal is open */
 body.modal-open{overflow:hidden;touch-action:none}
+/* Bottom-tabs sit at z-index 9999 (fixed bottom). When the Add Profile
+   modal opens, its footer (with the Guardar button) was being OCCLUDED
+   by those tabs because the modal's z-index was only 81. The button
+   existed but users couldn't see or tap it. Two-part fix: raise the
+   modal above the tabs (10000+), AND hide the tabs entirely while the
+   modal is open so nothing competes for the bottom edge of the viewport. */
+.mdl-bg{z-index:9998 !important}
+.mdl-sheet{z-index:10000 !important}
+body.modal-open #le-tabs{display:none !important}
+
+/* ── Onboarding welcome overlay ─────────────────────────────────
+   Full-screen takeover shown the FIRST time a user lands on mi-dia
+   without any profiles. Sets expectations ("aquí calculamos tu
+   carta basada en tu fecha de nacimiento"), collapses the choice to
+   a single primary action, and auto-dismisses once the first profile
+   is created. If the user prefers to poke around empty-handed, a
+   small "Explorar primero" link bypasses. */
+.ob-overlay{position:fixed;inset:0;z-index:2500;background:linear-gradient(180deg,#05051a 0%,#0a0a2a 35%,#0c0c3a 70%,#05051a 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0));padding-bottom:calc(24px + env(safe-area-inset-bottom,0));animation:obFadeIn .4s ease-out}
+.ob-overlay.is-open{display:flex}
+.ob-starfield{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.6}
+.ob-content{position:relative;z-index:1;max-width:360px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
+.ob-logo{font-family:'Cormorant Garamond',serif;font-size:1.95rem;color:var(--gold);font-weight:600;letter-spacing:.05em;margin:0;line-height:1.1}
+.ob-logo::after{content:"✦";display:block;color:rgba(212,168,73,.5);font-size:.7em;margin-top:4px}
+.ob-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:#f0dca8;font-weight:500;line-height:1.25;margin:0;max-width:300px}
+.ob-sub{font-size:.88rem;color:rgba(224,220,232,.78);line-height:1.55;margin:0 0 4px;max-width:320px}
+.ob-bullets{display:flex;flex-direction:column;gap:12px;margin:6px 0 4px;width:100%;max-width:300px}
+.ob-bul{display:flex;align-items:center;gap:12px;text-align:left;font-size:.82rem;color:var(--text);line-height:1.4;padding:10px 12px;background:linear-gradient(135deg,rgba(212,168,73,.06),rgba(124,92,191,.04));border:1px solid var(--glass-b);border-radius:12px}
+.ob-bul-ic{width:32px;height:32px;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.28),rgba(212,168,73,.04) 70%);border:1px solid rgba(212,168,73,.3);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.05rem;font-family:'Noto Sans Symbols 2',serif;font-variant-emoji:text}
+.ob-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 32px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);font-family:inherit;font-size:.92rem;font-weight:700;letter-spacing:.02em;cursor:pointer;box-shadow:0 6px 22px rgba(212,168,73,.3);transition:transform .15s,box-shadow .2s;-webkit-tap-highlight-color:transparent;margin-top:4px}
+.ob-cta:hover{box-shadow:0 8px 28px rgba(212,168,73,.45)}
+.ob-cta:active{transform:scale(.97)}
+.ob-skip{background:none;border:none;color:var(--text-mute);font-family:inherit;font-size:.76rem;cursor:pointer;padding:8px 12px;text-decoration:underline;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
+.ob-skip:hover{color:var(--text-dim)}
+@keyframes obFadeIn{from{opacity:0}to{opacity:1}}
 .fl{font-size:.68rem;color:var(--text-mute);text-transform:uppercase;letter-spacing:.05em;margin-top:9px}
 .inp{width:100%;padding:11px 13px;background:var(--glass);border:1px solid var(--glass-b);border-radius:9px;color:var(--text);font-size:.88rem;font-family:inherit;outline:none;color-scheme:dark;transition:border-color .2s}
 .inp:focus{border-color:var(--gold)}
@@ -343,8 +453,12 @@ body.modal-open{overflow:hidden;touch-action:none}
 .meta{font-size:.72rem;color:var(--text-mute);margin:3px 0 0}
 .meta.ok{color:#7cb97c}
 .err-t{font-size:.78rem;color:#e07a7a;margin:9px 0 0}
-.sub-btn{margin-top:14px;width:100%;padding:12px}
+.sub-btn{margin-top:0;width:100%;padding:13px}
 .sub-btn:disabled{opacity:.45;cursor:not-allowed}
+/* Sticky footer inside .mdl-sheet — flex-shrink:0 + subtle top border
+   so the submit button is always visible above the keyboard even on
+   viewports where the form overflows. */
+.mdl-footer{flex-shrink:0;padding:14px 18px 12px;border-top:1px solid rgba(255,255,255,.05);background:var(--bg-mid)}
 
 /* Animations */
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -401,8 +515,84 @@ body.modal-open{overflow:hidden;touch-action:none}
       <div class="greet-sub" id="greet-sub" style="display:none"></div>
     </section>
 
-    <!-- 1. Lectura del día (hábito diario — lo que te trae cada día) -->
+    <!-- 1. Carta Natal (movida arriba Apr 18 — es la pieza ancla del PWA,
+         lo que define la identidad astrológica del usuario. Toggle entre
+         carta tradicional, cielo real al nacer y cielo AHORA sobre su
+         ubicación — eso último le da razón a abrir la app sin motivo
+         específico porque cambia cada minuto. -->
     <section class="fade d1">
+      <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Carta Natal</div>
+      <div class="card">
+        <div class="slma" id="slma-row">
+          <div class="slma-item" id="slma-sun">
+            <span class="slma-ic">&#9737;</span>
+            <span class="slma-lbl">Sol</span>
+            <span class="slma-nom">—</span>
+          </div>
+          <div class="slma-item" id="slma-moon">
+            <span class="slma-ic">&#9790;</span>
+            <span class="slma-lbl">Luna</span>
+            <span class="slma-nom">—</span>
+          </div>
+          <div class="slma-item muted" id="slma-asc">
+            <span class="slma-ic">&#8593;</span>
+            <span class="slma-lbl">Ascendente</span>
+            <span class="slma-nom">A&ntilde;ade hora</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="natal" style="cursor:pointer"></canvas>
+          <canvas id="sky" style="display:none;cursor:pointer"></canvas>
+        </div>
+        <p class="chart-meta" id="chart-meta"></p>
+        <!-- Contextual info card: becomes visible when the user taps
+             a planet / star / constellation on the canvas. Populated by
+             the click handler below. -->
+        <div class="chart-info" id="chart-info" hidden aria-live="polite"></div>
+        <!-- Three views share the same canvas container; we flip which
+             canvas (natal vs sky) is visible, and for sky we keep the
+             last "mode" (birth vs now) so we can re-render on profile
+             change without asking the user again. -->
+        <div class="chart-toggle" id="chart-toggle" role="tablist" aria-label="Vista de la carta">
+          <button type="button" class="ch-tab is-on" data-view="natal" role="tab" aria-selected="true">Carta natal</button>
+          <button type="button" class="ch-tab" data-view="sky" data-sky-mode="birth" role="tab" aria-selected="false">Cielo al nacer</button>
+          <button type="button" class="ch-tab" data-view="sky" data-sky-mode="now" role="tab" aria-selected="false">Cielo hoy</button>
+        </div>
+        <!-- Action row — only "Compartir mi carta" on the natal view.
+             Sky views show no CTA (exploration-only tabs). -->
+        <div class="chart-action-row" id="chart-action-row">
+          <!-- Transits toggle — off by default so the natal wheel reads
+               cleanly at first glance. On tap it overlays today's sky
+               + aspect lines + expands the aspects panel below. -->
+          <button type="button" class="btn-transit-toggle" id="btn-transit-toggle"
+                  aria-pressed="false" aria-label="Mostrar tr\u00e1nsitos">
+            <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="12" cy="3" r="1.8" fill="currentColor"/>
+              <circle cx="21" cy="12" r="1.4" fill="currentColor"/>
+            </svg>
+            <span class="btt-on">Ver tr&aacute;nsitos</span>
+            <span class="btt-badge" id="btt-badge" aria-label="aspectos exactos hoy">1</span>
+          </button>
+          <button type="button" class="btn-share-chart" id="btn-share-chart" aria-label="Compartir carta">
+            <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+            Compartir mi carta
+          </button>
+        </div>
+        <!-- Transits-of-today panel — populated by JS from the
+             current-moment ephemeris + aspects to the natal chart. -->
+        <div class="transits-panel" id="transits-panel" hidden>
+          <div class="tp-title">
+            <span class="tp-ic">✧</span>
+            <span>Tránsitos de hoy</span>
+          </div>
+          <div class="tp-list" id="tp-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Lectura del día (hábito diario — lo que te trae cada día) -->
+    <section class="fade d2">
       <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
         <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Tu lectura de hoy</span></span>
         <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
@@ -472,47 +662,6 @@ body.modal-open{overflow:hidden;touch-action:none}
       </div>
     </section>
 
-    <!-- 6. Carta natal -->
-    <section class="fade d6">
-      <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Carta Natal</div>
-      <div class="card">
-        <div class="slma" id="slma-row">
-          <div class="slma-item" id="slma-sun">
-            <span class="slma-ic">&#9737;</span>
-            <span class="slma-lbl">Sol</span>
-            <span class="slma-nom">—</span>
-          </div>
-          <div class="slma-item" id="slma-moon">
-            <span class="slma-ic">&#9790;</span>
-            <span class="slma-lbl">Luna</span>
-            <span class="slma-nom">—</span>
-          </div>
-          <div class="slma-item muted" id="slma-asc">
-            <span class="slma-ic">&#8593;</span>
-            <span class="slma-lbl">Ascendente</span>
-            <span class="slma-nom">A&ntilde;ade hora</span>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="natal" style="cursor:pointer"></canvas>
-          <canvas id="sky" style="display:none;cursor:pointer"></canvas>
-        </div>
-        <p class="chart-meta" id="chart-meta"></p>
-        <!-- Contextual info card: becomes visible when the user taps
-             a planet or star on the canvas. Populated by the click
-             handler below, hydrated by the planet lookup table. -->
-        <div class="chart-info" id="chart-info" hidden aria-live="polite"></div>
-        <!-- Toggle between the symbolic natal chart (geocentric,
-             Earth + zodiac + planets + real zodiacal stars overlaid)
-             and the observational horizon view (what you actually saw
-             in the sky at your birth moment over your birth location). -->
-        <div class="chart-toggle" id="chart-toggle" role="tablist" aria-label="Vista de la carta">
-          <button type="button" class="ch-tab is-on" data-view="natal" role="tab" aria-selected="true">Carta natal</button>
-          <button type="button" class="ch-tab" data-view="sky" role="tab" aria-selected="false">Cielo real</button>
-        </div>
-      </div>
-    </section>
-
     <!-- 7. Mis perfiles -->
     <section class="fade d6">
       <div class="slbl"><span class="ic le-ic" data-icon="users"></span> Mis Perfiles</div>
@@ -561,6 +710,7 @@ body.modal-open{overflow:hidden;touch-action:none}
         </div>
         <p class="news-sub">Recibe los movimientos clave del cosmos y una lectura personal en tu correo. Sin spam, cancelas cuando quieras.</p>
         <form id="news-form" class="news-form" autocomplete="on">
+          <label for="news-email" class="sr-only">Correo electr&oacute;nico para suscribirse al newsletter</label>
           <input type="email" id="news-email" class="news-inp" placeholder="Tu correo" required autocomplete="email">
           <button type="submit" class="news-btn">Suscribir</button>
         </form>
@@ -598,6 +748,32 @@ body.modal-open{overflow:hidden;touch-action:none}
 </div>
 </div>
 
+<!-- Onboarding welcome overlay (first-time users with zero profiles) -->
+<div class="ob-overlay" id="ob-overlay" role="dialog" aria-modal="true" aria-labelledby="ob-title" hidden>
+  <div class="ob-starfield" data-stars="dense" aria-hidden="true"></div>
+  <div class="ob-content">
+    <p class="ob-logo">Luz Estelar</p>
+    <h2 class="ob-title" id="ob-title">El cielo, leído desde donde naciste</h2>
+    <p class="ob-sub">Calculamos tu carta natal real con tu fecha, hora y lugar de nacimiento.</p>
+    <div class="ob-bullets">
+      <div class="ob-bul">
+        <span class="ob-bul-ic">✦</span>
+        <span>Lecturas diarias basadas en <b>tu carta exacta</b>, no un horóscopo genérico</span>
+      </div>
+      <div class="ob-bul">
+        <span class="ob-bul-ic">☽</span>
+        <span>8 sistemas ancestrales: occidental, vedic, maya, chino y más</span>
+      </div>
+      <div class="ob-bul">
+        <span class="ob-bul-ic">✧</span>
+        <span>Gratis para siempre — sin tarjeta, sin letra chica</span>
+      </div>
+    </div>
+    <button type="button" class="ob-cta" id="ob-cta">Crear mi carta</button>
+    <button type="button" class="ob-skip" id="ob-skip">Explorar primero</button>
+  </div>
+</div>
+
 <!-- Add Profile Modal -->
 <div class="mdl-bg" id="mdl-bg"></div>
 <div class="mdl-sheet" id="mdl-sheet" role="dialog" aria-modal="true" aria-labelledby="mdl-t">
@@ -622,8 +798,15 @@ body.modal-open{overflow:hidden;touch-action:none}
       <p id="ap-meta" class="meta" style="display:none"></p>
     </div>
     <p id="ap-err" class="err-t" style="display:none"></p>
-    <button type="submit" class="btn-gold sub-btn" id="ap-submit" disabled>Guardar Perfil</button>
   </form>
+  <!-- Submit button lives OUTSIDE the scrollable .mdl-body so it stays
+       pinned to the bottom of the sheet even on phones where the form
+       overflows — previously the button could be invisible below the
+       last visible input and users couldn't reach it to save. The
+       `form` attribute keeps the button tied to #ap-form for submit. -->
+  <div class="mdl-footer">
+    <button type="submit" form="ap-form" class="btn-gold sub-btn" id="ap-submit" disabled>Guardar Perfil</button>
+  </div>
 </div>
 
 <!-- Onboarding tour (shown once after first profile) -->
@@ -649,7 +832,9 @@ body.modal-open{overflow:hidden;touch-action:none}
 <!-- v6 query-string busts browser HTTP cache (max-age 4h) so the
      phase 6.2 geocentric renderer lands immediately on the user's
      device instead of waiting for the cache window to expire. -->
-<script src="/js/natal-chart.js?v=7"></script>
+<script src="/js/transits.js?v=3"></script>
+<script src="/js/natal-chart.js?v=12"></script>
+<script src="/js/share-card.js?v=10"></script>
 <script>
 (function(){
 'use strict';
@@ -857,7 +1042,16 @@ function renderAll(){
   tier.textContent=lab;
 
   // Greeting
-  var firstName=(currentProfile.nombre||currentUser.name||'').split(' ')[0];
+  // Greeting should reflect the ACCOUNT OWNER (the person logged in),
+  // not whichever profile is currently being viewed. The primary
+  // profile (is_primary=1) represents the owner; fall back to the
+  // first loaded profile, then the currentProfile, then the user's
+  // account name. This lets the user navigate to their partner's or
+  // family's chart without the greeting flipping between identities.
+  var ownerProfile = (profilesList || []).filter(function(p){ return p.is_primary; })[0]
+                   || (profilesList || [])[0]
+                   || currentProfile;
+  var firstName=((ownerProfile && ownerProfile.nombre) || currentUser.name || '').split(' ')[0];
   var hr=new Date().getHours();
   var saludo=hr<12?'Buenos días':hr<19?'Buenas tardes':'Buenas noches';
   document.getElementById('greeting').textContent=firstName?(saludo+', '+firstName):saludo;
@@ -919,6 +1113,9 @@ function renderAll(){
   // the three pieces of data that drive the rest of the page.
   var chartData = null;
   try {
+    // Minimal fallback — Sun + Moon only, based on date-only math.
+    // Kept as a last resort in case the richer Transits-based fallback
+    // below fails (e.g. transits.js not loaded yet).
     var sunLong = (parts[1] - 1) * 30 + parts[2];
     chartData = { planets: [{ name: 'Sun', longitude: sunLong, sign: cc.western.name_en, degree: parts[2] }], aspects: [] };
     if (LuzEstelar.NatalChart.calcMoonLongitude) {
@@ -927,10 +1124,39 @@ function renderAll(){
       var md = LuzEstelar.NatalChart.degreeInSign(ml);
       chartData.planets.push({ name: 'Moon', longitude: ml, sign: LuzEstelar.NatalChart.SIGN_NAMES[ms], degree: md });
     }
+
+    // Richer fallback — compute the full 10-body chart client-side via
+    // the same Transits ephemeris used elsewhere. Kicks in when the
+    // profile has NO natal_chart in D1 yet (new profiles before the
+    // daily pipeline runs). If hora_nacimiento + lat + lon are present
+    // we also compute Ascendant + Midheaven so the wheel feels complete.
+    if (!currentProfile.natal_chart && window.LuzEstelar && window.LuzEstelar.Transits) {
+      try {
+        var hT = (currentProfile.hora_nacimiento || '12:00').split(':').map(Number);
+        var tzOff = (typeof currentProfile.tz_offset === 'number') ? currentProfile.tz_offset : -6;
+        var utcHour = (hT[0] || 12) - tzOff;
+        var birthUTC = new Date(Date.UTC(parts[0], parts[1]-1, parts[2], utcHour, hT[1] || 0));
+        var bodies = window.LuzEstelar.Transits.computeTransits(birthUTC);
+        chartData.planets = bodies.map(function(p){
+          return { name: p.name, longitude: p.longitude, sign: p.sign, degree: p.degree };
+        });
+        chartData.aspects = [];  // aspects require matching field shape; skip client-side for now
+        // Ascendant / MC only meaningful with exact time + location.
+        if (currentProfile.hora_nacimiento && currentProfile.lat != null && currentProfile.lon != null) {
+          var am = window.LuzEstelar.Transits.computeAscMc(birthUTC, currentProfile.lat, currentProfile.lon);
+          var ascSignIdx = Math.floor(am.asc / 30) % 12;
+          var mcSignIdx  = Math.floor(am.mc  / 30) % 12;
+          var zEs = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo','Libra','Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
+          chartData.ascendant = { sign: zEs[ascSignIdx], degree: am.asc - ascSignIdx*30, longitude: am.asc };
+          chartData.midheaven = { sign: zEs[mcSignIdx],  degree: am.mc  - mcSignIdx*30,  longitude: am.mc };
+          chartData.ascendantVerified = true;
+        }
+      } catch (e) { /* transits fallback best-effort */ }
+    }
+
     if (currentProfile.natal_chart) {
       var raw = currentProfile.natal_chart;
       try {
-        // D1 TEXT columns come back as strings; defensive: accept pre-parsed objects too.
         chartData = (typeof raw === 'string') ? JSON.parse(raw) : raw;
       } catch (e) { /* keep the client-side fallback */ }
     }
@@ -971,6 +1197,59 @@ function renderAll(){
         'Escorpio':'\u264F'+VS,'Sagitario':'\u2650'+VS,'Capricornio':'\u2651'+VS,
         'Acuario':'\u2652'+VS,'Piscis':'\u2653'+VS
       };
+      // Populate the "Tránsitos de hoy" panel with the top aspects
+       // between today's sky and the natal chart. Runs any time the
+       // chart re-renders (initial, profile switch, sky-catalog arrival).
+       // Exposed on window so the transit-overlay toggle — which lives
+       // in a separate IIFE — can call it when the user flips it on.
+      window.populateTransitsPanel = function populateTransitsPanel(aspects) {
+        var panel = document.getElementById('transits-panel');
+        var list  = document.getElementById('tp-list');
+        if (!panel || !list) return;
+        if (!aspects || !aspects.length) { panel.hidden = true; list.innerHTML = ''; return; }
+        var PNAME = {
+          Sun:'Sol', Moon:'Luna', Mercury:'Mercurio', Venus:'Venus', Mars:'Marte',
+          Jupiter:'Júpiter', Saturn:'Saturno', Uranus:'Urano', Neptune:'Neptuno',
+          Pluto:'Plutón', NorthNode:'Nodo', Chiron:'Quirón', Ascendant:'ASC', Midheaven:'MC'
+        };
+        var PGLYPH = {
+          Sun:'\u2609', Moon:'\u263D', Mercury:'\u263F', Venus:'\u2640', Mars:'\u2642',
+          Jupiter:'\u2643', Saturn:'\u2644', Uranus:'\u2645', Neptune:'\u2646', Pluto:'\u2647'
+        };
+        // Aspect glyphs + VS15 so Android/iOS render them as text style
+        // with the Noto Sans Symbols 2 fallback in the CSS stack. Without
+        // VS15 the conjunction (☌) and opposition (☍) got mapped to
+        // emoji-style fallback glyphs ("*" and "°P" respectively on
+        // Samsung Internet) making the panel unreadable.
+        var VS15 = '\uFE0E';
+        var ASP_SYM  = {
+          conjunction: '\u260C' + VS15, opposition: '\u260D' + VS15,
+          square:      '\u25A1' + VS15, trine:      '\u25B3' + VS15,
+          sextile:     '\u26B9' + VS15,
+        };
+        var ASP_NAME = { conjunction:'conjunción', opposition:'oposición', square:'cuadratura', trine:'trígono', sextile:'sextil' };
+        var ASP_COLOR = { conjunction:'#f4c88a', opposition:'#ff8080', square:'#ffa870', trine:'#8edca0', sextile:'#9acbe0' };
+        var top = aspects.slice(0, 5);
+        list.innerHTML = top.map(function(a){
+          var tG = (PGLYPH[a.transit] || '\u2726') + '\uFE0E';
+          var nG = (PGLYPH[a.natal]   || '\u2726') + '\uFE0E';
+          var tN = PNAME[a.transit] || a.transit;
+          var nN = PNAME[a.natal]   || a.natal;
+          var aspSym = ASP_SYM[a.type] || '·';
+          var aspName = ASP_NAME[a.type] || a.type;
+          var col = ASP_COLOR[a.type] || '#d4a849';
+          return '<div class="tp-row' + (a.exact ? ' exact' : '') + '" style="--tc:' + col + '">' +
+            '<span class="tp-gly">' + tG + '</span>' +
+            '<span class="tp-nm">' + tN + '</span>' +
+            '<span class="tp-asp" title="' + aspName + '">' + aspSym + '</span>' +
+            '<span class="tp-gly">' + nG + '</span>' +
+            '<span class="tp-nm">' + nN + '</span>' +
+            '<span class="tp-orb">' + a.orb.toFixed(1) + '°</span>' +
+          '</div>';
+        }).join('');
+        panel.hidden = false;
+      };
+
       function setSlma(id,planet,fallbackName,muted){
         var el=document.getElementById(id);
         if(!el) return;
@@ -1006,7 +1285,57 @@ function renderAll(){
         chartData.starCatalog = window.__skyCatalogs.stars;
         chartData.constellationCatalog = window.__skyCatalogs.constellations;
       }
+      // Transits: computed eagerly so the panel is ready, but NOT
+      // overlaid on the wheel unless the user opts in via the toggle.
+      // The default Carta natal view stays clean and readable; users
+      // who want the biwheel density can flip it on.
+      try {
+        if (window.LuzEstelar && window.LuzEstelar.Transits) {
+          var transits = window.LuzEstelar.Transits.computeTransits(new Date());
+          var aspects  = window.LuzEstelar.Transits.findAspects(
+            chartData.planets || [], transits).slice(0, 5);
+          window.__currentTransits = transits;
+          window.__currentTransitAspects = aspects;
+
+          // Badge on the transit toggle — lights up when there's at
+          // least one near-exact aspect (orb < 0.8°) to a personal
+          // planet (Sol / Luna / Mercurio / Venus / Marte / ASC / MC).
+          // Outer planets' transits to each other are generational,
+          // irrelevant to the user's week; we skip them here.
+          var PERSONAL = { Sun:1, Moon:1, Mercury:1, Venus:1, Mars:1, Ascendant:1, Midheaven:1 };
+          var exactCount = aspects.filter(function(a){
+            return a.orb < 0.8 && (PERSONAL[a.natal] || PERSONAL[a.transit]);
+          }).length;
+          var tBtn = document.getElementById('btn-transit-toggle');
+          var tBadge = document.getElementById('btt-badge');
+          if (tBtn && tBadge) {
+            if (exactCount > 0) {
+              tBtn.classList.add('has-exact');
+              tBadge.textContent = String(exactCount);
+            } else {
+              tBtn.classList.remove('has-exact');
+            }
+          }
+          // Only attach to chartData if the overlay is currently ON,
+          // so a fresh render doesn't force it on.
+          if (window.__transitsVisible) {
+            chartData.transits = transits;
+            chartData.transitAspects = aspects;
+          } else {
+            delete chartData.transits;
+            delete chartData.transitAspects;
+          }
+        }
+      } catch (e) { console.warn('[transits]', e); }
+
       LuzEstelar.NatalChart.render(natalCanvas, chartData, { size: size });
+      // Panel visibility mirrors the toggle.
+      if (window.__transitsVisible && window.populateTransitsPanel) {
+        window.populateTransitsPanel(window.__currentTransitAspects);
+      } else {
+        var tp = document.getElementById('transits-panel');
+        if (tp) tp.hidden = true;
+      }
       document.getElementById('chart-meta').textContent = currentProfile.hora_nacimiento
         ? (currentProfile.nombre + ' · ' + currentProfile.fecha_nacimiento + ' ' + currentProfile.hora_nacimiento)
         : 'Sol y Luna aproximados · añade hora de nacimiento para carta completa';
@@ -1111,21 +1440,193 @@ function renderAll(){
       'Sagitario':'Sagitario','Capricornio':'Capricornio','Acuario':'Acuario','Piscis':'Piscis'
     };
 
+    // ASC/MC meaning table — astrological "angles", not planets.
+    // Shown when the user taps the gold ASC/MC labels on the wheel.
+    var ANGLE_INFO = {
+      ASC: {
+        glyph: 'ASC',
+        name:  'Ascendente',
+        desc:  'Tu máscara exterior: cómo te presentas al mundo y la primera impresión que proyectas. Es el signo que subía por el horizonte oriental en tu hora exacta de nacimiento.'
+      },
+      MC: {
+        glyph: 'MC',
+        name:  'Medio Cielo',
+        desc:  'Tu vocación y cima pública: la cumbre del cielo al nacer. Representa tu camino profesional, reputación e imagen ante la sociedad. Del latín Medium Coeli ("medio del cielo").'
+      }
+    };
+
+    // Astronomical context shown when a user taps a star or a
+    // constellation in the Cielo Real / Cielo Ahora view. Kept as a
+    // tiny lookup — the general case falls back to the generated
+    // description (magnitude + location bearings).
+    var STAR_LORE = {
+      'Sirius':     'La estrella más brillante del cielo nocturno. A 8.6 años luz, corazón del Can Mayor.',
+      'Canopus':    'Segunda más brillante, timón argonáutico en Carina. Invisible desde latitudes muy al norte.',
+      'Arcturus':   'La gigante naranja del Boyero. Se acerca a nosotros a 120 km/s — dentro de 50.000 años habrá cruzado.',
+      'Vega':       'Fue la estrella polar hace 12.000 años y volverá a serlo en 13.700 años (precesión).',
+      'Capella':    'Brillante dorada en Auriga, en realidad un sistema de cuatro estrellas.',
+      'Rigel':      'Supergigante azul en Orión, 860 años luz. Si estuviera en lugar del Sol, el sistema solar entero estaría dentro de ella.',
+      'Procyon':    'La "perrita" que precede a Sirio — procyon = "antes del perro" en griego.',
+      'Betelgeuse': 'Supergigante roja en el hombro de Orión. Candidata a supernova — podría estallar en cualquier momento astronómico (o dentro de 100.000 años).',
+      'Altair':     'Una de las vecinas: 17 años luz. Rota tan rápido que su forma es de elipsoide aplanado.',
+      'Aldebaran':  'El ojo del Toro. Gigante naranja a 65 años luz.',
+      'Antares':    'Corazón del Escorpión, supergigante roja 10.000× más luminosa que el Sol.',
+      'Spica':      'La espiga de Virgo. Binaria caliente que gira cada 4 días sobre su pareja.',
+      'Pollux':     'El más brillante de los Gemelos — gigante naranja con al menos un planeta confirmado.',
+      'Regulus':    'El corazón del León. Rota tan rápido que está aplanado un 30%.',
+      'Polaris':    'La polar actual. A 433 años luz, parece inmóvil porque casi coincide con el eje de rotación terrestre.',
+      'Deneb':      'La cola del Cisne y una de las estrellas intrínsecamente más luminosas visibles — a 2.600 años luz.'
+    };
+    var CON_LORE = {
+      'Ori': 'El cazador. El cinturón (tres estrellas en línea) es uno de los asterismos más reconocibles del cielo.',
+      'UMa': 'La Osa Mayor. Su "Carro" apunta hacia la estrella polar — brújula celeste desde la antigüedad.',
+      'UMi': 'La Osa Menor contiene a Polaris, el norte celeste.',
+      'Cas': 'La reina etíope — su W es inconfundible en las noches de invierno del hemisferio norte.',
+      'Leo': 'El león — su cabeza forma una "hoz" invertida, Regulus en el corazón.',
+      'Sco': 'El escorpión, clavado en la eclíptica. Antares brilla como su corazón rojo.',
+      'Sgr': 'El arquero que apunta a Scorpio. Su forma de tetera marca el centro de nuestra galaxia.',
+      'Gem': 'Los gemelos Cástor y Pólux — hermanos en la mitología, estrellas dobles reales.',
+      'Tau': 'El toro embiste a Orión. Aldebaran es su ojo rojo.',
+      'CMa': 'El can mayor — perro de caza de Orión, con Sirio brillando en su pecho.',
+      'CMi': 'El can menor, compañero de caza de Orión con Procyon.',
+      'Cyg': 'El cisne cruzando la Vía Láctea. Forma una cruz gigante (Cruz del Norte).',
+      'Lyr': 'La lira de Orfeo con Vega coronándola — triángulo de verano.',
+      'Aql': 'El águila de Zeus con Altair como su ojo.',
+      'Peg': 'El caballo alado. Su cuadrado define otoño en el hemisferio norte.',
+      'And': 'La princesa encadenada. Contiene la galaxia vecina de Andrómeda (M31).',
+      'Per': 'El héroe que rescató a Andrómeda, sosteniendo la cabeza de Medusa (Algol, la "estrella demonio").',
+      'Cru': 'La Cruz del Sur — brújula austral, apunta al polo sur celeste.',
+      'Cen': 'El centauro, con Alfa Centauri, el sistema estelar más cercano al Sol (4.3 años luz).',
+      'Vir': 'La doncella con la espiga (Spica). La segunda constelación más grande del cielo.',
+      'Aur': 'El cochero con Capella en su hombro. Asociado a crianza y cabras en el mito griego.',
+      'Cap': 'El cabra-marino, asociado al solsticio de invierno en la tradición occidental.',
+      'Ari': 'El carnero del vellocino de oro. Los equinoccios de primavera ocurrieron aquí hace 2000 años.',
+      'Cnc': 'El cangrejo que picó a Heracles. Contiene el cúmulo estelar del Pesebre (M44).',
+      'Lib': 'La balanza — originalmente las pinzas del escorpión, ahora simbolizan el equilibrio del equinoccio.',
+      'Aqr': 'El aguador que vierte sobre el cielo. Representa a Ganímedes en el mito.',
+      'Psc': 'Los peces unidos por un cordón. Su estrella Alrisha marca el nudo.'
+    };
+
+    function bearingWord(azDeg) {
+      // Compass rose → plain-Spanish cardinal name for info card
+      var dirs = [
+        {min:337.5,max:360,name:'norte'}, {min:0,max:22.5,name:'norte'},
+        {min:22.5, max:67.5, name:'noreste'},
+        {min:67.5, max:112.5, name:'este'},
+        {min:112.5, max:157.5, name:'sureste'},
+        {min:157.5, max:202.5, name:'sur'},
+        {min:202.5, max:247.5, name:'suroeste'},
+        {min:247.5, max:292.5, name:'oeste'},
+        {min:292.5, max:337.5, name:'noroeste'}
+      ];
+      for (var i = 0; i < dirs.length; i++) {
+        if (azDeg >= dirs[i].min && azDeg < dirs[i].max) return dirs[i].name;
+      }
+      return 'horizonte';
+    }
+
     function renderInfo(hit) {
-      if (!hit || hit.type !== 'planet') return hide();
-      var name = PLANET_NAME_ES[hit.name] || hit.name;
-      var glyph = PLANET_GLYPH[hit.name] || '\u2726';
-      var sign  = SIGN_ES[hit.sign] || hit.sign || '';
-      var deg   = Math.floor(hit.degree || 0);
-      var desc  = PLANET_MEANING[hit.name] || '';
+      if (!hit) return hide();
+      var body = '';
+      if (hit.type === 'planet') {
+        var name = PLANET_NAME_ES[hit.name] || hit.name;
+        var glyph = PLANET_GLYPH[hit.name] || '\u2726';
+        var sign  = SIGN_ES[hit.sign] || hit.sign || '';
+        var deg   = Math.floor(hit.degree || 0);
+        var desc  = PLANET_MEANING[hit.name] || '';
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">' + glyph + '</span>' +
+            '<span class="ci-name">' + name + '</span>' +
+            '<span class="ci-pos">' + sign + ' ' + deg + '\u00B0</span>' +
+          '</div>' +
+          '<p class="ci-desc">' + desc + '</p>';
+      } else if (hit.type === 'angle') {
+        var a = ANGLE_INFO[hit.name];
+        if (!a) return hide();
+        // Derive sign/degree for context if longitude is present
+        var posTxt = '';
+        if (typeof hit.longitude === 'number' && window.LuzEstelar && window.LuzEstelar.NatalChart) {
+          var idx = window.LuzEstelar.NatalChart.signFromLongitude(hit.longitude);
+          var names = window.LuzEstelar.NatalChart.SIGN_NAMES || [];
+          var signEs = SIGN_ES[names[idx]] || names[idx] || '';
+          var dg = Math.floor(window.LuzEstelar.NatalChart.degreeInSign(hit.longitude));
+          posTxt = signEs + ' ' + dg + '\u00B0';
+        }
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph" style="font-family:Inter,sans-serif;font-size:1rem;letter-spacing:.06em">' + a.glyph + '</span>' +
+            '<span class="ci-name">' + a.name + '</span>' +
+            (posTxt ? '<span class="ci-pos">' + posTxt + '</span>' : '') +
+          '</div>' +
+          '<p class="ci-desc">' + a.desc + '</p>';
+      } else if (hit.type === 'star') {
+        // Star info card — shown when user taps a dot in the Cielo view.
+        // Compose an astronomical description combining magnitude +
+        // direction + constellation + any curated lore we have.
+        var magTxt = (hit.mag <= 1.5) ? 'estrella brillante' :
+                     (hit.mag <= 2.5) ? 'estrella notable'   :
+                     (hit.mag <= 3.5) ? 'estrella visible a simple vista' :
+                                        'estrella tenue';
+        var dir = typeof hit.az === 'number' ? bearingWord(hit.az) : '';
+        var altTxt = typeof hit.alt === 'number' ? (Math.round(hit.alt) + '\u00B0 sobre el horizonte') : '';
+        var pieces = [];
+        pieces.push(magTxt + ' (magnitud ' + hit.mag.toFixed(2) + ')');
+        if (hit.bayer && hit.con) pieces.push(hit.bayer + ' ' + hit.con);
+        else if (hit.con) pieces.push('en ' + hit.con);
+        if (dir) pieces.push('al ' + dir);
+        if (altTxt) pieces.push(altTxt);
+        var lore = STAR_LORE[hit.name];
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">\u2605</span>' +
+            '<span class="ci-name">' + hit.name + '</span>' +
+            (hit.bayer ? '<span class="ci-pos">' + hit.bayer + '</span>' : '') +
+          '</div>' +
+          '<p class="ci-desc">' + pieces.join(' · ') + (lore ? '<br><br>' + lore : '') + '</p>';
+      } else if (hit.type === 'transit') {
+        // Transit planet info — which natal contacts it's making today.
+        var tName = PLANET_NAME_ES[hit.name] || hit.name;
+        var tGlyph = PLANET_GLYPH[hit.name] || '\u2726';
+        var tSign = SIGN_ES[hit.sign] || hit.sign || '';
+        var tDeg  = Math.floor(hit.degree || 0);
+        var aspects = window.__currentTransitAspects || [];
+        // Top 3 aspects for THIS transit planet
+        var mine = aspects.filter(function(a){ return a.transit === hit.name; }).slice(0, 3);
+        var asp_es = { conjunction:'conjunción', opposition:'oposición', square:'cuadratura', trine:'trígono', sextile:'sextil' };
+        var desc = 'Tránsito actual: ' + tName + ' en ' + tSign + ' ' + tDeg + '°.';
+        if (mine.length) {
+          desc += '<br><br>Contactos con tu carta natal:';
+          mine.forEach(function(a){
+            var natalName = PLANET_NAME_ES[a.natal] || a.natal;
+            desc += '<br>• ' + (asp_es[a.type] || a.type) + ' a tu <b>' + natalName
+                 +  '</b> natal (orbe ' + a.orb.toFixed(1) + '°)';
+          });
+        } else {
+          desc += '<br><br>Sin aspectos apretados a tu carta hoy.';
+        }
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">' + tGlyph + '</span>' +
+            '<span class="ci-name">' + tName + ' hoy</span>' +
+            '<span class="ci-pos">' + tSign + ' ' + tDeg + '°</span>' +
+          '</div>' +
+          '<p class="ci-desc">' + desc + '</p>';
+      } else if (hit.type === 'constellation') {
+        var cLore = CON_LORE[hit.id] || ('Constelación ' + (hit.name_es || hit.name_en || hit.id) + '.');
+        body =
+          '<div class="ci-hd">' +
+            '<span class="ci-glyph">\u2728</span>' +
+            '<span class="ci-name">' + (hit.name_es || hit.name_en || hit.id) + '</span>' +
+            (hit.name_en && hit.name_en !== hit.name_es ? '<span class="ci-pos">' + hit.name_en + '</span>' : '') +
+          '</div>' +
+          '<p class="ci-desc">' + cLore + '</p>';
+      } else {
+        return hide();
+      }
       info.innerHTML =
         '<button class="ci-close" aria-label="Cerrar" type="button">&times;</button>' +
-        '<div class="ci-hd">' +
-          '<span class="ci-glyph">' + glyph + '</span>' +
-          '<span class="ci-name">' + name + '</span>' +
-          '<span class="ci-pos">' + sign + ' ' + deg + '\u00B0</span>' +
-        '</div>' +
-        '<p class="ci-desc">' + desc + '</p>';
+        body;
       info.hidden = false;
       info.querySelector('.ci-close').addEventListener('click', hide);
       // Haptic nudge — confirms the tap was registered
@@ -1135,13 +1636,146 @@ function renderAll(){
     }
     function hide() { info.hidden = true; info.innerHTML = ''; }
 
-    canv.addEventListener('click', function(e){
-      var rect = canv.getBoundingClientRect();
-      var x = (e.clientX - rect.left) * (canv.width / rect.width) / (window.devicePixelRatio || 1);
-      var y = (e.clientY - rect.top)  * (canv.height / rect.height) / (window.devicePixelRatio || 1);
-      if (!window.LuzEstelar || !window.LuzEstelar.NatalChart) return;
-      var hit = window.LuzEstelar.NatalChart.hitTest(canv, x, y);
-      if (hit) renderInfo(hit); else hide();
+    // Listener shared between the natal canvas (planets + angles) and
+    // the sky canvas (stars + constellations). Dispatches to whichever
+    // module owns the hit-regions for that canvas.
+    function bindCanvasTap(target, moduleKey) {
+      target.addEventListener('click', function(e){
+        var rect = target.getBoundingClientRect();
+        var x = (e.clientX - rect.left) * (target.width / rect.width) / (window.devicePixelRatio || 1);
+        var y = (e.clientY - rect.top)  * (target.height / rect.height) / (window.devicePixelRatio || 1);
+        var mod = window.LuzEstelar && window.LuzEstelar[moduleKey];
+        if (!mod || !mod.hitTest) return;
+        var hit = mod.hitTest(target, x, y);
+        if (hit) renderInfo(hit); else hide();
+      });
+    }
+    bindCanvasTap(canv, 'NatalChart');
+    var skyC = document.getElementById('sky');
+    if (skyC) {
+      // SkyMap may not be loaded yet at wire-time; that's OK — hitTest
+      // gets resolved at click-time.
+      bindCanvasTap(skyC, 'SkyMap');
+    }
+  })();
+
+  // ── Transits overlay toggle ──
+  // Off by default. When on, the natal canvas re-renders with today's
+  // planet positions + aspect lines overlaid, and the aspects panel
+  // expands below. Tap again to collapse. State is stored on window
+  // so profile switching preserves the user's preference.
+  (function(){
+    var btn = document.getElementById('btn-transit-toggle');
+    if (!btn || btn.dataset.wired === '1') return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', function(){
+      window.__transitsVisible = !window.__transitsVisible;
+      btn.setAttribute('aria-pressed', window.__transitsVisible ? 'true' : 'false');
+      btn.querySelector('.btt-on').textContent = window.__transitsVisible
+        ? 'Ocultar tránsitos' : 'Ver tránsitos';
+
+      // Apply / remove the overlay on the natal canvas.
+      var data = window.__currentChartData;
+      var canv = document.getElementById('natal');
+      if (!data || !canv) return;
+      if (window.__transitsVisible && window.__currentTransits) {
+        data.transits = window.__currentTransits;
+        data.transitAspects = window.__currentTransitAspects;
+      } else {
+        delete data.transits;
+        delete data.transitAspects;
+      }
+      try {
+        var w = canv.parentElement.offsetWidth;
+        LuzEstelar.NatalChart.render(canv, data, { size: w > 0 ? Math.min(w, 320) : 280 });
+      } catch(e) { console.warn('[transit-toggle]', e); }
+      if (window.__transitsVisible && window.populateTransitsPanel) {
+        window.populateTransitsPanel(window.__currentTransitAspects);
+      } else {
+        var tp = document.getElementById('transits-panel');
+        if (tp) tp.hidden = true;
+      }
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+    });
+  })();
+
+  // ── Share chart button (ES) ──
+  // Generates a 1080×1920 PNG with the natal chart + name + date +
+  // Sol/Luna/Asc + branding, then pipes it through the Web Share API
+  // (native share sheet). Falls back to download on desktop browsers.
+  //
+  // Design note: the button is VISIBLY responsive at every step
+  // (label changes: "Generando…" → "Compartiendo…" / error text) so
+  // the user never wonders whether their tap registered. Any silent
+  // failure along the chain gets surfaced in the button text itself,
+  // not just console.
+  (function(){
+    var btn = document.getElementById('btn-share-chart');
+    if (!btn || btn.dataset.wired === '1') return;
+    btn.dataset.wired = '1';
+    var origHTML = btn.innerHTML;
+
+    function flash(msg, ms) {
+      btn.textContent = msg;
+      btn.disabled = true;
+      setTimeout(function(){
+        btn.innerHTML = origHTML;
+        btn.disabled = false;
+      }, ms || 2500);
+    }
+
+    btn.addEventListener('click', function(){
+      // Step 0: immediate tactile feedback
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+
+      // Step 1: make sure share-card.js actually loaded
+      if (!window.LuzEstelar || !window.LuzEstelar.ShareCard) {
+        console.warn('[share-chart] ShareCard module not loaded');
+        return flash('Módulo no cargado — recarga la app', 3500);
+      }
+
+      // Step 2: make sure we have chart data
+      if (!window.__currentChartData || !window.__currentProfile) {
+        return flash('La carta aún se está cargando', 2500);
+      }
+
+      // Step 3: visible in-progress state. The progress callback
+      // updates the button label as the card passes through each
+      // phase ("Fondo", "Texto", "Carta", "Detalles", "Codificando").
+      // If the button freezes on any of those labels we know exactly
+      // which phase is hanging on the user's device.
+      btn.disabled = true;
+      btn.textContent = 'Generando…';
+
+      // Wrapped in try/catch so ANY sync throw from inside buildAndShare
+      // (e.g. a misuse of an optional helper like toast) still surfaces
+      // as a visible button error instead of leaving the user staring
+      // at "Generando…" forever.
+      try {
+        window.LuzEstelar.ShareCard.buildAndShare({
+          profile:   window.__currentProfile,
+          chartData: window.__currentChartData,
+          lang:      'es',
+          progress:  function(stage){ btn.textContent = stage + '…'; },
+        }).then(function(sharedNatively){
+          btn.innerHTML = origHTML;
+          btn.disabled = false;
+          // toast is a FUNCTION (toast(msg, opts)), not toast.show().
+          if (sharedNatively === false && typeof window.LuzEstelar.toast === 'function') {
+            try { window.LuzEstelar.toast('Imagen descargada', { kind:'success', duration: 3000 }); } catch (e) {}
+          }
+        }).catch(function(e){
+          console.error('[share-chart] failed:', e);
+          var msg = (e && e.message) ? e.message : 'desconocido';
+          if (msg.length > 55) msg = msg.slice(0, 52) + '…';
+          flash('Error: ' + msg, 6000);
+        });
+      } catch (syncErr) {
+        console.error('[share-chart] sync throw:', syncErr);
+        var m = (syncErr && syncErr.message) ? syncErr.message : 'error síncrono';
+        if (m.length > 55) m = m.slice(0, 52) + '…';
+        flash('Error: ' + m, 6000);
+      }
     });
   })();
 
@@ -1166,52 +1800,73 @@ function renderAll(){
       document.head.appendChild(s);
     }
 
-    function drawSky(){
+    // drawSky now accepts a mode: "birth" (cielo al nacer) or "now"
+    // (cielo en vivo sobre tu ubicación). Same projection code, just
+    // different UTC and context. Default to "birth" for backward-compat.
+    function drawSky(mode){
+      mode = mode || 'birth';
       if (!window.__currentProfile || !window.__skyCatalogs) return;
       var p = window.__currentProfile;
-      // == null matches both null and undefined (the API may omit
-      // the field entirely if the DB row has NULL coordinates).
-      if (!p.hora_nacimiento || p.lat == null || p.lon == null) {
-        var cm = document.getElementById('chart-meta');
-        if (cm) cm.textContent = 'Cielo real requiere hora + lugar exactos';
-        if (window.console) console.warn('[sky view] missing:',
-          { hora: p.hora_nacimiento, lat: p.lat, lon: p.lon });
+      var cmEl = document.getElementById('chart-meta');
+
+      // Observer coords. In "now" mode we still default to profile lat/lon
+      // because asking for geolocation every open is intrusive; if the
+      // profile has no coords we skip rather than pop a permission dialog.
+      if (p.lat == null || p.lon == null) {
+        if (cmEl) cmEl.textContent = mode === 'now'
+          ? 'Cielo en vivo requiere lugar geocodificado — edita tu perfil'
+          : 'Cielo real requiere hora + lugar exactos';
         return;
       }
-      var dateParts = (p.fecha_nacimiento || '').split('-').map(Number);
-      var timeParts = (p.hora_nacimiento || '00:00').split(':').map(Number);
-      // Convert local birth time to UTC. Profile stores local; tz offset
-      // defaults to Mexico City (-6) when unknown. A more accurate
-      // tz lookup would query lat/lng → tz, but that needs a roundtrip.
-      var tzHours = typeof p.tz_offset === 'number' ? p.tz_offset : -6;
-      var utcHour = timeParts[0] - tzHours;   // subtract because tz is "hours east of UTC"; negative means "hours behind UTC"
-      // Normalize the date if the UTC hour rolled over:
-      var d = new Date(Date.UTC(dateParts[0], dateParts[1]-1, dateParts[2],
-                                utcHour, timeParts[1] || 0));
 
-      // Planets from natal_chart (ecliptic longitudes) overlaid on real sky
-      var natal = window.__currentChartData;
-      var planetOverlays = [];
-      if (natal && natal.planets) {
-        var nameMap = {
-          Sun:  { name: 'Sol',      symbol: '☉', color: '#FFD700' },
-          Moon: { name: 'Luna',     symbol: '☾', color: '#C0C8E0' },
-          Mercury: { name: 'Mercurio', symbol: '☿', color: '#B0B0B0' },
-          Venus: { name: 'Venus',   symbol: '♀', color: '#F0C070' },
-          Mars: { name: 'Marte',    symbol: '♂', color: '#FF6060' },
-          Jupiter: { name: 'Júpiter', symbol: '♃', color: '#E0B060' },
-          Saturn: { name: 'Saturno', symbol: '♄', color: '#C0A080' },
-        };
-        natal.planets.forEach(function(pl){
-          var meta = nameMap[pl.name];
-          if (!meta) return;
-          planetOverlays.push({
-            name: meta.name,
-            symbol: meta.symbol,
-            color: meta.color,
-            longitude: pl.longitude,
-          });
+      var d, metaLabel;
+      if (mode === 'now') {
+        // Current UTC moment → the sky right over profile location now.
+        d = new Date();
+        var nowStr = d.toLocaleString('es-MX', {
+          hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'
         });
+        metaLabel = 'Cielo en vivo · ' + (p.lugar_nacimiento || 'tu ubicación') + ' · ' + nowStr;
+      } else {
+        // Birth-time horizon view — needs exact hora_nacimiento.
+        if (!p.hora_nacimiento) {
+          if (cmEl) cmEl.textContent = 'Cielo al nacer requiere hora exacta';
+          return;
+        }
+        var dateParts = (p.fecha_nacimiento || '').split('-').map(Number);
+        var timeParts = (p.hora_nacimiento || '00:00').split(':').map(Number);
+        var tzHours = typeof p.tz_offset === 'number' ? p.tz_offset : -6;
+        var utcHour = timeParts[0] - tzHours;
+        d = new Date(Date.UTC(dateParts[0], dateParts[1]-1, dateParts[2],
+                              utcHour, timeParts[1] || 0));
+        metaLabel = 'Cielo sobre ' + (p.lugar_nacimiento || 'tu ubicación') + ' · ' + (p.fecha_nacimiento || '') + ' ' + (p.hora_nacimiento || '');
+      }
+
+      // Planet overlays only for birth mode — we don't have today's
+      // ecliptic longitudes pre-computed client-side. (Adding a cheap
+      // JS ephemeris for the "now" mode is a follow-up in B: tránsitos.)
+      var planetOverlays = [];
+      if (mode === 'birth') {
+        var natal = window.__currentChartData;
+        if (natal && natal.planets) {
+          var nameMap = {
+            Sun:  { name: 'Sol',      symbol: '☉', color: '#FFD700' },
+            Moon: { name: 'Luna',     symbol: '☾', color: '#C0C8E0' },
+            Mercury: { name: 'Mercurio', symbol: '☿', color: '#B0B0B0' },
+            Venus: { name: 'Venus',   symbol: '♀', color: '#F0C070' },
+            Mars: { name: 'Marte',    symbol: '♂', color: '#FF6060' },
+            Jupiter: { name: 'Júpiter', symbol: '♃', color: '#E0B060' },
+            Saturn: { name: 'Saturno', symbol: '♄', color: '#C0A080' },
+          };
+          natal.planets.forEach(function(pl){
+            var meta = nameMap[pl.name];
+            if (!meta) return;
+            planetOverlays.push({
+              name: meta.name, symbol: meta.symbol,
+              color: meta.color, longitude: pl.longitude,
+            });
+          });
+        }
       }
 
       ensureSkyMap(function(){
@@ -1226,15 +1881,37 @@ function renderAll(){
           size: w > 0 ? Math.min(w, 320) : 280,
           showLabels: true,
         });
-        var cm = document.getElementById('chart-meta');
-        if (cm) cm.textContent = 'Cielo sobre ' + (p.lugar_nacimiento || 'tu ubicación') + ' · ' + (p.fecha_nacimiento || '') + ' ' + (p.hora_nacimiento || '');
+        if (cmEl) cmEl.textContent = metaLabel;
       });
+    }
+
+    // Action row: share button only on the symbolic natal view.
+    // Sky views (al nacer / hoy) are exploration-only, no CTA.
+    function updateActionRow(view) {
+      var shareBtn = document.getElementById('btn-share-chart');
+      if (!shareBtn) return;
+      shareBtn.hidden = (view !== 'natal');
+    }
+
+    // Cielo hoy refreshes itself every minute so the stars actually
+    // creep across the sky while the tab stays open.
+    function startNowTicker() {
+      if (window.__skyNowTicker) return;
+      window.__skyNowTicker = setInterval(function(){
+        if (skyCanv.dataset.mode === 'now' && skyCanv.style.display !== 'none') {
+          drawSky('now');
+        }
+      }, 60000);
+    }
+    function stopNowTicker() {
+      if (window.__skyNowTicker) { clearInterval(window.__skyNowTicker); window.__skyNowTicker = null; }
     }
 
     tg.addEventListener('click', function(e){
       var btn = e.target.closest('.ch-tab');
       if (!btn) return;
       var view = btn.getAttribute('data-view');
+      var skyMode = btn.getAttribute('data-sky-mode') || 'birth';
       Array.prototype.forEach.call(tg.querySelectorAll('.ch-tab'), function(b){
         var on = (b === btn);
         b.classList.toggle('is-on', on);
@@ -1243,10 +1920,13 @@ function renderAll(){
       if (view === 'sky') {
         natalCanv.style.display = 'none';
         skyCanv.style.display = 'block';
-        drawSky();
+        skyCanv.dataset.mode = skyMode;
+        drawSky(skyMode);
+        if (skyMode === 'now') startNowTicker(); else stopNowTicker();
       } else {
         skyCanv.style.display = 'none';
         natalCanv.style.display = 'block';
+        stopNowTicker();
         var cm = document.getElementById('chart-meta');
         if (cm && window.__currentProfile) {
           var p = window.__currentProfile;
@@ -1255,6 +1935,7 @@ function renderAll(){
             : 'Sol y Luna aproximados · añade hora de nacimiento para carta completa';
         }
       }
+      updateActionRow(view);
     });
   })();
 }
@@ -1291,22 +1972,67 @@ function buildSynth(cc){
 
 function renderProfiles(){
   var box=document.getElementById('pf-list');
-  if(!profilesList.length){box.innerHTML='<p style="color:var(--text-dim);font-size:.82rem;text-align:center;padding:6px 0">Aún no tienes perfiles.</p>';return;}
+  // First-time experience: zero profiles → show the onboarding overlay
+  // unless the user has explicitly dismissed it ("Explorar primero").
+  // Dismissal is remembered per-device via localStorage so they don't
+  // keep getting the overlay after poking around once.
+  if(!profilesList.length){
+    var ob=document.getElementById('ob-overlay');
+    var dismissed=false;
+    try { dismissed = localStorage.getItem('ob-dismissed') === '1'; } catch(e){}
+    if(ob && !dismissed){
+      ob.hidden=false;
+      ob.classList.add('is-open');
+      if(window.LuzEstelarStars) window.LuzEstelarStars.populate(ob.querySelector('.ob-starfield'), 'dense');
+    }
+    box.innerHTML='<p style="color:var(--text-dim);font-size:.82rem;text-align:center;padding:6px 0">Aún no tienes perfiles.</p>';
+    return;
+  }
+  // Profile exists → onboarding must close (handles the case where
+  // a new user creates their first profile via the modal — we
+  // re-render here, detect the non-empty list, and drop the overlay).
+  var obClose=document.getElementById('ob-overlay');
+  if(obClose){obClose.classList.remove('is-open');obClose.hidden=true;}
   var h='';
   profilesList.forEach(function(p){
     var pri=p.is_primary;
+    var active = (currentProfile && currentProfile.id === p.id);
     // Avatar icon: gold star for primary, neutral user for the rest.
     // Emoji fallback preserved via trailing textContent — LuzEstelarIcons
     // replaces it with SVG on hydrate, but if the registry never loads
     // the emoji stays visible instead of a blank box.
     var avIcon = pri ? 'star' : 'user';
     var avFallback = pri ? '⭐' : '👤';
-    h+='<div class="pf-row"><span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
+    // Rows are tappable to switch which profile's DATA renders in the
+    // dashboard (chart, insights, synthesis). The ACCOUNT OWNER's name
+    // in the greeting stays the same — the user is navigating between
+    // THEIR people's charts without losing their identity.
+    h+='<div class="pf-row'+(active?' is-active':'')+'" data-profile-id="'+p.id+'" role="button" tabindex="0">';
+    h+='<span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
     h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
-    if(pri) h+='<span class="pf-star">Principal</span>';
+    if(active) h+='<span class="pf-star" style="background:rgba(93,208,122,.18);color:#8edca0">Viendo</span>';
+    else if(pri) h+='<span class="pf-star">Principal</span>';
     h+='</div>';
   });
   box.innerHTML=h;
+  // Wire row clicks to profile-switching. Rows switch currentProfile
+  // and re-render the dashboard; greeting stays on the account owner.
+  box.querySelectorAll('.pf-row').forEach(function(row){
+    row.addEventListener('click', function(){
+      var id = row.getAttribute('data-profile-id');
+      if (!id) return;
+      var picked = profilesList.filter(function(p){ return p.id === id; })[0];
+      if (!picked) return;
+      if (currentProfile && currentProfile.id === id) return; // already viewing
+      currentProfile = picked;
+      window.__currentProfile = picked;
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+      try { renderAll(); } catch (e) { console.warn('[switch]', e); }
+      // Smooth-scroll back to the chart area so the user sees the update.
+      var chartCard = document.querySelector('.chart-wrap');
+      if (chartCard) chartCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
   // Hydrate freshly-rendered avatar icons (star / user) into SVG.
   // renderProfiles() runs AFTER the initial DOMContentLoaded hydrate,
   // so we must poke the registry ourselves for late-rendered nodes.
@@ -1374,17 +2100,22 @@ async function loadDaily(offset){
       document.getElementById('bars').innerHTML=bh;
     }
 
-    // Reading text — different fallback depending on whether we're on today,
-    // in the past (archived / never-existed) or in the future (not generated yet).
+    // Reading text — copy tuned to set expectations instead of sounding
+    // like an error. "No hay lectura" → "Se genera cada amanecer" gives
+    // new users a clear mental model and keeps returning users
+    // oriented if they browse past/future days.
     var rdgEl=document.getElementById('rdg-text');
     if(d.reading){
       rdgEl.textContent=d.reading;
     }else if(_dayOffset>0){
-      rdgEl.textContent='La lectura de ma\u00f1ana a\u00fan no est\u00e1 lista. Vu\u00e9lvele al amanecer.';
+      rdgEl.textContent='Las lecturas se generan cada noche. La de mañana estará lista al amanecer.';
     }else if(_dayOffset<0){
-      rdgEl.textContent='No hemos archivado la lectura de este d\u00eda.';
+      rdgEl.textContent='Esta lectura no quedó archivada. Las lecturas se conservan desde que comenzaste a usar la app.';
     }else{
-      rdgEl.textContent='Tu lectura estar\u00e1 disponible pronto.';
+      // Today with no reading — likely a brand-new profile before the
+      // nightly pipeline has run for it. Set expectation + hours ETA.
+      var hrsLeft = (function(){ var n=new Date(); var nx=new Date(n); nx.setHours(3,0,0,0); if(nx<=n) nx.setDate(nx.getDate()+1); return Math.max(1, Math.round((nx-n)/3600000)); })();
+      rdgEl.textContent='Tu lectura de hoy se genera cada noche. La próxima llega en ~'+hrsLeft+'h. Mientras tanto puedes explorar tu carta natal arriba.';
     }
 
     // Cosmic strip
@@ -1446,17 +2177,60 @@ async function loadUnified(){
   try{
     var r=await api('/api/reports/unified?lang='+LANG);
     var d=await r.json();
-    if(!d.ok||!d.report||!d.report.synthesis){body.innerHTML='<p style="font-size:.8rem;color:var(--text-dim)">Tu reporte estará listo en breve.</p>';return;}
+    if(!d.ok||!d.report||!d.report.synthesis){body.innerHTML=ccWaitingState();return;}
     var s=d.report.synthesis;
     var labels={coreIdentity:'Identidad Central',elementalBalance:'Balance Elemental',soulPath:'Camino del Alma',innerMechanics:'Mecánica Interna',strengths:'Foco de esta Temporada'};
     var h='';
     ['coreIdentity','elementalBalance','soulPath','innerMechanics','strengths'].forEach(function(k){
       if(s[k]) h+='<div class="cc-sec"><h4>'+labels[k]+'</h4><p>'+s[k]+'</p></div>';
     });
-    body.innerHTML=h||'<p style="font-size:.8rem;color:var(--text-dim)">Tu reporte estará listo en breve.</p>';
+    body.innerHTML=h||ccWaitingState();
   }catch(e){
-    body.innerHTML='<p style="font-size:.8rem;color:var(--text-dim)">No pudimos cargar el reporte ahora.</p>';
+    body.innerHTML='<p style="font-size:.8rem;color:var(--text-dim);padding:10px 0;text-align:center">No pudimos conectar con el servidor. Revisa tu conexión e intenta recargar.</p>';
   }
+}
+
+// Friendly waiting state for when the cross-cultural report hasn't
+// been generated yet (new profile, pipeline hasn't run). Shows a
+// countdown to the next pipeline run (3 AM local) + a useful preview
+// drawn from the natal chart data that IS already available, so the
+// card has real content instead of "Tu reporte estará listo en breve".
+function ccWaitingState() {
+  var hoursUntil3AM = (function(){
+    var now = new Date();
+    var next = new Date(now);
+    next.setHours(3, 0, 0, 0);
+    if (next <= now) next.setDate(next.getDate() + 1);
+    return Math.max(1, Math.round((next - now) / (1000 * 60 * 60)));
+  })();
+  var preview = '';
+  try {
+    var cd = window.__currentChartData;
+    if (cd && cd.aspects && cd.aspects.length) {
+      // Tightest natal aspect — a surprising stat that feels personal.
+      var tightest = cd.aspects.slice().sort(function(a,b){
+        var oA = (a.orb != null) ? a.orb : 9;
+        var oB = (b.orb != null) ? b.orb : 9;
+        return oA - oB;
+      })[0];
+      if (tightest) {
+        var PLN = { Sun:'Sol',Moon:'Luna',Mercury:'Mercurio',Venus:'Venus',Mars:'Marte',Jupiter:'Júpiter',Saturn:'Saturno',Uranus:'Urano',Neptune:'Neptuno',Pluto:'Plutón' };
+        var aspName = tightest.aspect || tightest.type || 'aspecto';
+        var p1 = PLN[tightest.planet1] || tightest.planet1;
+        var p2 = PLN[tightest.planet2] || tightest.planet2;
+        var orbTxt = (tightest.orb != null) ? ' (orbe ' + tightest.orb + '°)' : '';
+        preview = '<p style="font-size:.82rem;color:rgba(224,220,232,.72);margin-top:8px;line-height:1.5">' +
+                  '<b style="color:var(--gold)">Mientras tanto, lo más apretado de tu carta:</b><br>' +
+                  aspName + ' entre <b>' + p1 + '</b> y <b>' + p2 + '</b>' + orbTxt + '.' +
+                  '</p>';
+      }
+    }
+  } catch(e){ /* preview is bonus, ignore failures */ }
+  return '<div style="padding:14px 6px;text-align:center">' +
+         '<p style="font-size:.82rem;color:var(--text);font-weight:500;margin-bottom:6px">✧ Tu reporte Cross-Cultural se genera cada noche</p>' +
+         '<p style="font-size:.74rem;color:var(--text-mute);line-height:1.5">Lo tendrás listo al amanecer (en ~' + hoursUntil3AM + 'h).<br>El análisis profundo de tus 8 sistemas requiere procesamiento.</p>' +
+         preview +
+         '</div>';
 }
 
 // ── Share card generator (Canvas → PNG → navigator.share files) ──
@@ -1716,10 +2490,45 @@ function apSearchPlace(q){
 }
 function openModal(){
   buildLabelChips();
+  // Default the new-profile label to "Mi Perfil" when the user is
+  // creating their very first profile (from onboarding). Otherwise
+  // they'd have to uncheck "Pareja" (the default) first.
+  if(!profilesList.length){ apLabel='Mi Perfil'; buildLabelChips(); }
   document.getElementById('mdl-bg').classList.add('active');
   document.getElementById('mdl-sheet').classList.add('active');
   document.body.classList.add('modal-open');
+  // Auto-focus the name input on open so the keyboard pops up ready.
+  setTimeout(function(){
+    var nm=document.getElementById('ap-name');
+    if(nm) try{ nm.focus(); }catch(e){}
+  }, 200);
 }
+
+// ── Onboarding overlay wiring ──
+(function(){
+  var ob = document.getElementById('ob-overlay');
+  if (!ob) return;
+  var cta = document.getElementById('ob-cta');
+  var skip = document.getElementById('ob-skip');
+  if (cta && !cta.dataset.wired) {
+    cta.dataset.wired = '1';
+    cta.addEventListener('click', function(){
+      // Collapse overlay, open the Add Profile modal.
+      ob.classList.remove('is-open');
+      ob.hidden = true;
+      try { openModal(); } catch(e){ console.warn('[ob]', e); }
+      if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+    });
+  }
+  if (skip && !skip.dataset.wired) {
+    skip.dataset.wired = '1';
+    skip.addEventListener('click', function(){
+      ob.classList.remove('is-open');
+      ob.hidden = true;
+      try { localStorage.setItem('ob-dismissed', '1'); } catch(e){}
+    });
+  }
+})();
 function closeModal(){
   document.getElementById('mdl-bg').classList.remove('active');
   document.getElementById('mdl-sheet').classList.remove('active');
@@ -1732,6 +2541,19 @@ function closeModal(){
   apUpdateSubmit();
 }
 document.getElementById('btn-add-profile').addEventListener('click',openModal);
+
+// Deep link: if the page is opened with #add-profile in the URL (e.g.
+// from the Compat empty-state CTA), auto-open the Add Profile sheet so
+// the user doesn't have to scroll down to the "Mis Perfiles" section
+// to find the + button. Waits a tick so the rest of the dashboard has
+// hydrated first.
+if (window.location.hash === '#add-profile') {
+  setTimeout(function(){
+    try { openModal(); } catch (e) { /* modal may not be ready yet */ }
+    // Clean the hash so reload doesn't re-trigger
+    try { history.replaceState(null, '', window.location.pathname); } catch(e){}
+  }, 400);
+}
 
 // Drag-to-dismiss: /js/sheet-modal.js fires 'sheet:dismiss' on the
 // .mdl-sheet when the user swipes down past the threshold. We also
@@ -1808,9 +2630,24 @@ document.getElementById('ap-form').addEventListener('submit',async function(e){
     // Refresh list
     var m=await api('/api/auth/me');var md=await m.json();
     profilesList=md.birthProfiles||profilesList;window._pfList=profilesList;
+    // Switch the dashboard to the newly-created profile and re-render
+    // everything (natal chart, badges, insights). Without this the UI
+    // kept showing the original primary profile's data even after a
+    // successful create — the user added "Dany" but still saw
+    // "F.path9" because currentProfile never moved.
+    var newId = d.profile && d.profile.id;
+    var freshProfile = newId
+      ? profilesList.filter(function(p){ return p.id === newId; })[0]
+      : profilesList[profilesList.length - 1];
+    if (freshProfile) {
+      currentProfile = freshProfile;
+      window.__currentProfile = currentProfile;
+    }
     renderProfiles();
     closeModal();
     btn.textContent='Guardar Perfil';
+    // Full re-render with the new current profile
+    try { renderAll(); } catch (e) { console.warn('[renderAll]', e); }
   }catch(err){
     var e1=document.getElementById('ap-err');
     e1.textContent=err.message||'Error al guardar';e1.style.display='block';

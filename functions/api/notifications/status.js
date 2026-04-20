@@ -22,7 +22,7 @@ export async function onRequestGet(context) {
   if (DB) {
     try {
       const res = await DB.prepare(
-        `SELECT id, endpoint, send_hour_local, timezone, lang, last_seen_at
+        `SELECT id, endpoint, send_hour_local, timezone, lang, notify_aspects, last_seen_at
            FROM push_subscriptions
           WHERE user_id = ?
           ORDER BY id DESC`
@@ -33,6 +33,7 @@ export async function onRequestGet(context) {
         sendHourLocal: r.send_hour_local,
         timezone: r.timezone,
         lang: r.lang,
+        notifyAspects: r.notify_aspects == null ? 1 : !!r.notify_aspects,
         lastSeenAt: r.last_seen_at,
       }));
     } catch (e) {

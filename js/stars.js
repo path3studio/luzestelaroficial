@@ -28,12 +28,23 @@
   function createDot(w, h) {
     var dot = document.createElement('span');
     dot.className = 'star-dot';
-    var size = (Math.random() * 1.4 + 0.4).toFixed(2);
+    // ~1 in 10 stars gets a "brilliant" bump so the field isn't just a
+    // uniform dust — some pinpoints read as hero stars, the rest as
+    // background dust. Matches the visual texture of a real sky.
+    var isBright = Math.random() < 0.12;
+    var size = isBright
+      ? (Math.random() * 1.4 + 1.6).toFixed(2)   // 1.6 – 3.0 px
+      : (Math.random() * 1.4 + 0.5).toFixed(2);  // 0.5 – 1.9 px
     var x    = (Math.random() * 100).toFixed(2);
     var y    = (Math.random() * 100).toFixed(2);
     var dur  = (2.5 + Math.random() * 3.5).toFixed(2);
     var del  = (Math.random() * 4).toFixed(2);
-    var op   = (Math.random() * 0.6 + 0.3).toFixed(2);
+    // Opacity lifted 0.3–0.9 → 0.45–1.0 (bright stars near the top,
+    // baseline dust still readable) so the global backdrop "cala"
+    // without us having to multiply the dot count.
+    var op   = isBright
+      ? (Math.random() * 0.2 + 0.8).toFixed(2)
+      : (Math.random() * 0.5 + 0.45).toFixed(2);
     dot.style.cssText =
       'width:'     + size + 'px;' +
       'height:'    + size + 'px;' +
