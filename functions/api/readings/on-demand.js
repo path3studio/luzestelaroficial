@@ -208,6 +208,20 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const started = Date.now();
+
+  // Gemini 2.5 models expose an internal "thinking" budget that
+  // consumes output tokens before emitting visible text. On Pro it's
+  // on by default and can easily eat our 1800-token cap, leaving
+  // no room for the actual reading — which is exactly what happened
+  // in the first Pro smoke test (status=gemini_error, "empty_response",
+  // 17s latency). We disable thinking here because astrology prose
+  // doesn't need chain-of-thought and we want the full budget spent
+  // on visible output. `thinkingConfig.thinkingBudget: 0` is the
+  // canonical way to force zero thinking tokens on Gemini 2.5.
+  // Flash ignores this field silently (it doesn't support thinking),
+  // so the same body works for both models.
+  const isPro = /pro$/i.test(model);
+
   try {
     const r = await fetch(url, {
       method: 'POST',
@@ -217,7 +231,11 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
         generationConfig: {
           temperature: 0.9,
           topP: 0.95,
-          maxOutputTokens: 1800,
+          // Raised from 1800 → 3000 for Pro to leave headroom even
+          // if thinking sneaks through. Pro at 3000 output tokens
+          // costs ~$0.015/call — still trivial within margin.
+          maxOutputTokens: isPro ? 3000 : 1800,
+          thinkingConfig: { thinkingBudget: 0 },
         },
         safetySettings: [
           { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
@@ -235,9 +253,26 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
       return { ok: false, status: r.status, error: body.slice(0, 500), latency };
     }
     const json = await r.json();
-    const text = json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    // Defensive parse: Gemini 2.5 can return multiple parts, some
+    // marked as `thought` (internal reasoning). We want only the
+    // final visible text. Parts with `thought: true` are skipped;
+    // remaining text parts are concatenated in order. If thinking
+    // was disabled successfully via thinkingConfig, parts[] is just
+    // one { text } object and this reduces to the old behaviour.
+    const parts = json?.candidates?.[0]?.content?.parts || [];
+    const text = parts
+      .filter(p => p && !p.thought && typeof p.text === 'string')
+      .map(p => p.text)
+      .join('')
+      .trim();
     const usage = json?.usageMetadata || {};
-    if (!text) return { ok: false, error: 'empty_response', latency };
+    if (!text) {
+      // Surface the finishReason so D1 error logs are diagnostic —
+      // "MAX_TOKENS" vs "SAFETY" vs "OTHER" tells us what actually
+      // went wrong instead of the generic "empty_response".
+      const reason = json?.candidates?.[0]?.finishReason || 'unknown';
+      return { ok: false, error: `empty_response (finish=${reason})`, latency };
+    }
     return {
       ok: true,
       text,
