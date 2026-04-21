@@ -1,0 +1,15 @@
+# Luz Estelar — Security contact
+# https://luzestelaroficial.com
+#
+# If you discover a security vulnerability, please report it responsibly
+# by emailing the address below. We appreciate coordinated disclosure and
+# will acknowledge receipt within 72 hours.
+#
+# Si descubres una vulnerabilidad de seguridad, por favor repórtala de
+# forma responsable al correo de abajo. Apreciamos la divulgación
+# coordinada y confirmaremos la recepción en un plazo de 72 horas.
+
+Contact: mailto:security@luzestelaroficial.com
+Expires: 2027-04-21T23:59:59.000Z
+Preferred-Languages: es, en
+Canonical: https://luzestelaroficial.com/.well-known/security.txt
