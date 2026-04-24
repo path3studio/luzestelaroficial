@@ -1,0 +1,35 @@
+# ────────────────────────────────────────────────────────────────────────
+# Cloudflare Pages — redirect rules
+# ────────────────────────────────────────────────────────────────────────
+# Reglas de tipo `/source /destination 301` (Permanent) o `302` (Temporary).
+# Cloudflare procesa estas reglas ANTES de servir el archivo estático,
+# así que una regla aquí gana sobre cualquier 404 del routing normal.
+#
+# Mantener este archivo plano y simple — cada entrada resuelve un patrón
+# específico que Google Search Console ha reportado como 404/5xx y que no
+# tiene sentido dejar morir como "página no existe".
+
+# ─── 1. Slugs con ñ / tildes (legacy fix-accents bug) ───────────────────
+# Un pass viejo de fix-accents.js metió tildes y ñ en URLs internas que
+# luego se corrigieron (scripts/fix-url-slugs.js), pero Google Search
+# Console sigue descubriendo links antiguos en backlinks externos y los
+# reporta como 404. Estos 301 cierran la herida.
+/diseño-humano/*           /diseno-humano/:splat        301
+/astrología-védica/*       /astrologia-vedica/:splat    301
+/astrología-maya/*         /astrologia-maya/:splat      301
+/horóscopo-chino/*         /horoscopo-chino/:splat      301
+/numerología/*             /numerologia/:splat          301
+
+# ─── 2. Links truncados descubiertos por Googlebot ──────────────────────
+# URLs generadas dinámicamente en mi-dia.html / dashboard.html que quedaron
+# sin número cuando Googlebot las rastreó sin perfil cargado. Las páginas
+# ahora tienen noindex + auth gate, pero las URLs rotas ya están en GSC.
+# Redirigir al padre las saca de "404" y las manda a algo útil.
+/signos/                   /                             301
+/diseno-humano/gate-       /diseno-humano/gate-1.html    301
+/en/human-design/gate-     /en/human-design/gate-1.html  301
+
+# ─── 3. Index redirects legacy (si alguien cae en .html con nombre) ────
+# Ya los resuelve Cloudflare Pages nativo, se deja comentado para referencia.
+# /index.html              /                             301
+# /en/index.html           /en/                          301

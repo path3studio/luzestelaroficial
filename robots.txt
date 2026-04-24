@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Endpoints de API (auth, webhooks, etc.) — no son páginas indexables.
+# Devuelven 401/404 a visitantes anónimos; bloquearlos evita que aparezcan
+# como errores en Google Search Console.
+Disallow: /api/
+
 Sitemap: https://luzestelaroficial.com/sitemap.xml
