@@ -14,11 +14,16 @@
 # luego se corrigieron (scripts/fix-url-slugs.js), pero Google Search
 # Console sigue descubriendo links antiguos en backlinks externos y los
 # reporta como 404. Estos 301 cierran la herida.
-/diseño-humano/*           /diseno-humano/:splat        301
-/astrología-védica/*       /astrologia-vedica/:splat    301
-/astrología-maya/*         /astrologia-maya/:splat      301
-/horóscopo-chino/*         /horoscopo-chino/:splat      301
-/numerología/*             /numerologia/:splat          301
+#
+# Importante: Cloudflare Pages _redirects NO matchea caracteres Unicode
+# directamente — hay que escribir la versión URL-encoded (percent-encoded
+# UTF-8) para que el match funcione cuando el navegador envía la petición.
+# Tabla rápida: ñ = %C3%B1 | ó = %C3%B3 | í = %C3%AD | é = %C3%A9 | á = %C3%A1
+/dise%C3%B1o-humano/*                    /diseno-humano/:splat        301
+/astrolog%C3%ADa-v%C3%A9dica/*           /astrologia-vedica/:splat    301
+/astrolog%C3%ADa-maya/*                  /astrologia-maya/:splat      301
+/hor%C3%B3scopo-chino/*                  /horoscopo-chino/:splat      301
+/numerolog%C3%ADa/*                      /numerologia/:splat          301
 
 # ─── 2. Links truncados descubiertos por Googlebot ──────────────────────
 # URLs generadas dinámicamente en mi-dia.html / dashboard.html que quedaron
