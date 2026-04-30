@@ -24,6 +24,11 @@
 /astrolog%C3%ADa-maya/*                  /astrologia-maya/:splat      301
 /hor%C3%B3scopo-chino/*                  /horoscopo-chino/:splat      301
 /numerolog%C3%ADa/*                      /numerologia/:splat          301
+# Variante mixed: solo `é` con tilde (sin tilde en `a`). Era el bug en
+# index.html:1638 + meta og:url de cada nakshatra/rashi. Ya corregido en
+# código por scripts/fix-url-slugs.js, pero mantenemos el 301 para cazar
+# backlinks externos que aún apunten a la URL vieja.
+/astrologia-v%C3%A9dica/*                /astrologia-vedica/:splat    301
 
 # ─── 2. Links truncados descubiertos por Googlebot ──────────────────────
 # URLs generadas dinámicamente en mi-dia.html / dashboard.html que quedaron
@@ -33,6 +38,12 @@
 /signos/                   /                             301
 /diseno-humano/gate-       /diseno-humano/gate-1.html    301
 /en/human-design/gate-     /en/human-design/gate-1.html  301
+
+# ─── 3. URLs misteriosas reportadas por GSC ─────────────────────────────
+# `/p` apareció en GSC el 27/4 sin que existiera en código ni sitemap.
+# Posiblemente un backlink externo truncado (alguien copió "https://luz…/p"
+# y lo cortó al pegarlo). Redirigir a la home para que no muera como 404.
+/p                         /                             301
 
 # ─── 3. Index redirects legacy (si alguien cae en .html con nombre) ────
 # Ya los resuelve Cloudflare Pages nativo, se deja comentado para referencia.

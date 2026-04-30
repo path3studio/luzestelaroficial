@@ -40,11 +40,18 @@ const BASE = path.resolve(__dirname, '..');
 // that should never appear inside a real URL on this site; the RIGHT side
 // is the actual directory name on disk.
 const SLUG_FIXES = [
-  { accented: 'horóscopo-chino', plain: 'horoscopo-chino' },
+  { accented: 'horóscopo-chino',  plain: 'horoscopo-chino' },
   { accented: 'numerología',      plain: 'numerologia'      },
   { accented: 'diseño-humano',    plain: 'diseno-humano'    },
   { accented: 'astrología-védica',plain: 'astrologia-vedica'},
   { accented: 'astrología-maya',  plain: 'astrologia-maya'  },
+  // 2026-04-23: mixed-accent variant — first sweep missed `astrologia-védica`
+  // (only the `é` accented). This is what `index.html:1638` produces and
+  // what every nakshatra/rashi page self-references in its <meta og:url>
+  // and JSON-LD `mainEntityOfPage`. Result: Googlebot follows the meta
+  // and 404s on URLs like /astrologia-vedica/hasta.html. Adding the
+  // variant catches every occurrence on the next pass.
+  { accented: 'astrologia-védica',plain: 'astrologia-vedica'},
   { accented: 'astrología',       plain: 'astrologia'       }, // catch stragglers
   { accented: 'védica',           plain: 'vedica'           }, // catch stragglers inside paths
 ];
