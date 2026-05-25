@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sun, 24 May 2026 04:47:00 -0600</lastBuildDate>
+    <lastBuildDate>Mon, 25 May 2026 04:49:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 24 de mayo de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 24 de mayo de 2026
+      <title>Horóscopo del 25 de mayo de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 25 de mayo de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (7.8/10)
-Tauro: ★★★☆☆ (7.2/10)
-Géminis: ★★★★☆ (8.5/10)
-Cáncer: ★★★☆☆ (7.8/10)
-Leo: ★★★☆☆ (7.5/10)
-Virgo: ★★★☆☆ (7.0/10)
-Libra: ★★★☆☆ (7.8/10)
-Escorpio: ★★★☆☆ (6.5/10)
-Sagitario: ★★★★☆ (8.5/10)
-Capricornio: ★★★☆☆ (7.2/10)
+Aries: ★★★☆☆ (6.0/10)
+Tauro: ★★★★☆ (8.5/10)
+Géminis: ★★★☆☆ (6.8/10)
+Cáncer: ★★★★☆ (8.2/10)
+Leo: ★★★☆☆ (7.8/10)
+Virgo: ★★★★☆ (8.5/10)
+Libra: ★★★☆☆ (6.2/10)
+Escorpio: ★★★★☆ (8.0/10)
+Sagitario: ★★★☆☆ (7.2/10)
+Capricornio: ★★★☆☆ (7.8/10)
 Acuario: ★★★☆☆ (7.8/10)
-Piscis: ★★★☆☆ (6.8/10)
+Piscis: ★★★☆☆ (7.8/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-05-25.mp3" length="21404204" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-05-25.mp3</guid>
+      <pubDate>Mon, 25 May 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-05-25.jpg"/>
+      <itunes:duration>00:14:51</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 24 de mayo de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 24 de mayo de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-05-24.mp3" length="21351212" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-05-24.mp3</guid>
       <pubDate>Sun, 24 May 2026 07:00:00 -0600</pubDate>
@@ -175,16 +186,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-05-12.mp3</guid>
       <pubDate>Tue, 12 May 2026 07:00:00 -0600</pubDate>
       <itunes:duration>00:15:26</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 11 de mayo de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 11 de mayo de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-05-11.mp3" length="21386924" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-05-11.mp3</guid>
-      <pubDate>Mon, 11 May 2026 07:00:00 -0600</pubDate>
-      <itunes:duration>00:14:51</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
