@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service — Luz Estelar Oficial</title>
+    <title>Luz Estelar Oficial — Terms of Service</title>
+    <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="apple-touch-icon" href="/app_icon.png">
     <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/terms-of-service.html">
     <link rel="alternate" hreflang="en" href="https://luzestelaroficial.com/en/terms-of-service.html">
     <link rel="alternate" hreflang="x-default" href="https://luzestelaroficial.com/terms-of-service.html">
@@ -15,6 +17,18 @@
             color: #e8e0f0; min-height: 100vh;
         }
         .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .app-header {
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 14px; margin-bottom: 28px;
+        }
+        .app-header img {
+            width: 84px; height: 84px; border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(255,215,0,0.28);
+        }
+        .app-header .brand-name {
+            font-size: 1.05em; letter-spacing: 0.6px;
+            color: #ffd700; font-weight: 600; text-transform: uppercase;
+        }
         h1 {
             font-size: 2em; text-align: center; margin-bottom: 10px;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
@@ -78,8 +92,12 @@
   </head>
 <body>
     <div class="container">
+        <header class="app-header">
+            <img src="/app_icon.png" alt="Luz Estelar Oficial — app icon">
+            <span class="brand-name">Luz Estelar Oficial</span>
+        </header>
         <div class="lang-switch"><a href="../terms-of-service.html">ES</a> | <a href="#" class="active">EN</a></div>
-        <h1>Terms of Service</h1>
+        <h1>Luz Estelar Oficial — Terms of Service</h1>
         <p class="date">Last updated: April 3, 2026</p>
 
         <!-- ── Disclaimer ────────────────────── -->
