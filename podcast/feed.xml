@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sun, 07 Jun 2026 13:54:00 -0600</lastBuildDate>
+    <lastBuildDate>Mon, 08 Jun 2026 05:01:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 7 de junio de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 7 de junio de 2026
+      <title>Horóscopo del 8 de junio de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 8 de junio de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (7.0/10)
-Tauro: ★★★★☆ (9.0/10)
-Géminis: ★★★☆☆ (7.0/10)
-Cáncer: ★★★☆☆ (7.2/10)
-Leo: ★★★☆☆ (6.5/10)
+Aries: ★★★★☆ (8.5/10)
+Tauro: ★★★☆☆ (7.0/10)
+Géminis: ★★★☆☆ (7.2/10)
+Cáncer: ★★★★☆ (8.5/10)
+Leo: ★★★☆☆ (7.2/10)
 Virgo: ★★★☆☆ (7.5/10)
-Libra: ★★★☆☆ (6.8/10)
-Escorpio: ★★★☆☆ (7.8/10)
-Sagitario: ★★★★☆ (8.2/10)
-Capricornio: ★★★☆☆ (7.8/10)
-Acuario: ★★★☆☆ (7.0/10)
-Piscis: ★★★☆☆ (7.2/10)
+Libra: ★★★☆☆ (7.2/10)
+Escorpio: ★★★☆☆ (6.8/10)
+Sagitario: ★★★☆☆ (7.8/10)
+Capricornio: ★★★★☆ (8.2/10)
+Acuario: ★★★☆☆ (7.8/10)
+Piscis: ★★★★☆ (8.0/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-06-08.mp3" length="20037356" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-06-08.mp3</guid>
+      <pubDate>Mon, 08 Jun 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-06-08.jpg"/>
+      <itunes:duration>00:13:54</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 7 de junio de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 7 de junio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-06-07.mp3" length="21002156" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-06-07.mp3</guid>
       <pubDate>Sun, 07 Jun 2026 07:00:00 -0600</pubDate>
@@ -183,16 +194,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-05-20.mp3</guid>
       <pubDate>Wed, 20 May 2026 07:00:00 -0600</pubDate>
       <itunes:duration>00:15:21</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 19 de mayo de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 19 de mayo de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-05-19.mp3" length="22636268" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-05-19.mp3</guid>
-      <pubDate>Tue, 19 May 2026 07:00:00 -0600</pubDate>
-      <itunes:duration>00:15:43</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
