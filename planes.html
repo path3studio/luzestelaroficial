@@ -421,14 +421,14 @@
                     <h3 class="plan-name">Plus</h3>
                     <p class="plan-tagline">La experiencia cósmica completa</p>
 
-                    <div class="plan-price" data-cad-view="annual">
+                    <div class="plan-price" data-cad-view="annual" data-usd="2.50">
                         <span class="currency">$</span>2<span class="period">.50/mes USD</span>
                     </div>
-                    <div class="plan-price" data-cad-view="monthly" style="display:none;">
+                    <div class="plan-price" data-cad-view="monthly" style="display:none;" data-usd="3.99">
                         <span class="currency">$</span>3<span class="period">.99/mes USD</span>
                     </div>
 
-                    <p class="plan-subprice" data-cad-view="annual">$29.99 al año &middot; 12 meses por el precio de 7</p>
+                    <p class="plan-subprice" data-cad-view="annual" data-usd-year="29.99">$29.99 al año &middot; 12 meses por el precio de 7</p>
                     <p class="plan-subprice" data-cad-view="monthly" style="display:none;">Facturación mensual &middot; Sin compromiso</p>
 
                     <ul class="plan-features">
@@ -636,5 +636,45 @@
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
 <script src="/js/cookie-consent.js" defer></script>
+<!-- Precio local aproximado para el Plan Plus (Stripe Adaptive Pricing cobra el exacto al confirmar) -->
+<script src="/js/local-price.js" defer></script>
+<script>
+(function () {
+  function decorate() {
+    if (!window.LocalPrice || !LocalPrice.isLocal()) return;
+    var card = document.querySelector('.plan-card.featured');
+    if (!card) return;
+
+    // Precio /mes (anual y mensual): el estimado va DENTRO del bloque para
+    // ocultarse/mostrarse junto con su vista en el toggle anual/mensual.
+    card.querySelectorAll('.plan-price[data-usd]').forEach(function (el) {
+      var suffix = LocalPrice.suffix(el.getAttribute('data-usd'));
+      if (!suffix) return;
+      var local = el.querySelector('.price-local');
+      if (!local) {
+        local = document.createElement('span');
+        local.className = 'price-local';
+        local.style.cssText = 'display:block;font-size:1rem;font-weight:600;color:var(--gold-light,#e8c87a);margin-top:0.15em;';
+        el.appendChild(local);
+      }
+      local.textContent = suffix + '/mes';
+    });
+
+    // Total anual
+    var yr = card.querySelector('[data-usd-year]');
+    if (yr && !yr.querySelector('.price-local-year')) {
+      var suffixYr = LocalPrice.suffix(yr.getAttribute('data-usd-year'));
+      if (suffixYr) {
+        var s = document.createElement('span');
+        s.className = 'price-local-year';
+        s.style.cssText = 'display:block;font-size:0.82rem;color:var(--text-dim,#9a93a8);margin-top:0.15em;';
+        s.textContent = suffixYr + ' al año · pagas en tu moneda al confirmar';
+        yr.appendChild(s);
+      }
+    }
+  }
+  document.addEventListener('localprice:ready', decorate);
+})();
+</script>
 </body>
 </html>
