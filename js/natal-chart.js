@@ -47,6 +47,36 @@
     Jupiter:'#9400D3', Saturn:'#708090', Uranus:'#00CED1', Neptune:'#1E90FF', Pluto:'#8B0000',
     NorthNode:'#888', Chiron:'#A0522D'
   };
+  // 2026-04-29: Spanish 3-letter abbreviations for planet labels.
+  // Used in geocentric mode (daily chart) below each planet sphere so the
+  // viewer can identify "Mar 12°" without a legend. Tight enough to fit
+  // even when planets cluster in same sign.
+  var PLANET_ABBR_ES = {
+    Sun: 'Sol',  Moon: 'Lun', Mercury: 'Mer', Venus: 'Ven', Mars: 'Mar',
+    Jupiter: 'Jup', Saturn: 'Sat', Uranus: 'Ura', Neptune: 'Nep', Pluto: 'Plu',
+    NorthNode: 'NN', Chiron: 'Chi'
+  };
+  // 2026-04-29 sign-focus mode: per-sign daily charts. Maps the sign
+  // name (Spanish OR English — both forms supported) to its primary
+  // ruling planet. Used when `opts.signFocus = "Aries"` to:
+  //   1. Brighten the sign's segment of the zodiac band
+  //   2. Apply a halo glow on its ruling planet
+  //   3. Dim other planets/aspects slightly so attention stays on focus
+  var SIGN_RULERS = {
+    Aries: 'Mars', Taurus: 'Venus', Tauro: 'Venus', Gemini: 'Mercury',
+    'Géminis': 'Mercury', Geminis: 'Mercury', Cancer: 'Moon', 'Cáncer': 'Moon',
+    Leo: 'Sun', Virgo: 'Mercury', Libra: 'Venus', Scorpio: 'Pluto',
+    Escorpio: 'Pluto', Sagittarius: 'Jupiter', Sagitario: 'Jupiter',
+    Capricorn: 'Saturn', Capricornio: 'Saturn', Aquarius: 'Uranus',
+    Acuario: 'Uranus', Pisces: 'Neptune', Piscis: 'Neptune',
+  };
+  // Map Spanish sign name → English (canonical) for index lookup
+  var SIGN_NAME_ES_TO_EN = {
+    Aries: 'Aries', Tauro: 'Taurus', 'Géminis': 'Gemini', Geminis: 'Gemini',
+    'Cáncer': 'Cancer', Cancer: 'Cancer', Leo: 'Leo', Virgo: 'Virgo',
+    Libra: 'Libra', Escorpio: 'Scorpio', Sagitario: 'Sagittarius',
+    Capricornio: 'Capricorn', Acuario: 'Aquarius', Piscis: 'Pisces',
+  };
 
   // Realistic painted spheres — radial gradients with a top-left light
   // source. Ported from infographic_generator.py so both the still-image
@@ -270,16 +300,22 @@
     // Extended to outerR + size*0.075 so the new outside-the-ring
     // sign-glyph discs sit inside the dark canvas background instead
     // of floating on the page bg.
+    // 2026-04-29: opts.transparent=true skips this entirely — for daily
+    // chart export que se layerea sobre cosmic bg del short.
+    var TRANSPARENT_MODE = opts.transparent === true;
+    var SKIP_LABELS = opts.skipLabels === true;
     var bgOuter = outerR + size * 0.075;
-    var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, bgOuter);
-    bgGrad.addColorStop(0, 'rgba(18,18,52,0.92)');
-    bgGrad.addColorStop(0.5, 'rgba(12,12,42,0.96)');
-    bgGrad.addColorStop(0.85, 'rgba(8,8,32,0.98)');
-    bgGrad.addColorStop(1, 'rgba(4,4,20,1)');
-    ctx.fillStyle = bgGrad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, bgOuter, 0, TAU);
-    ctx.fill();
+    if (!TRANSPARENT_MODE) {
+      var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, bgOuter);
+      bgGrad.addColorStop(0, 'rgba(18,18,52,0.92)');
+      bgGrad.addColorStop(0.5, 'rgba(12,12,42,0.96)');
+      bgGrad.addColorStop(0.85, 'rgba(8,8,32,0.98)');
+      bgGrad.addColorStop(1, 'rgba(4,4,20,1)');
+      ctx.fillStyle = bgGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, bgOuter, 0, TAU);
+      ctx.fill();
+    }
 
     // ── Subtle radial glow behind zodiac ring ──
     var ringGlow = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR + 4);
@@ -302,6 +338,17 @@
     var glyphR  = outerR + size * 0.042;      // disc centre OUTSIDE the ring
     var nameR   = (outerR + signR) / 2;       // inside the band, where glyph used to sit
     var discR   = Math.round(size * 0.024);   // slightly smaller disc since it's floating free
+
+    // 2026-04-29 sign-focus mode: when opts.signFocus is set (e.g. "Aries"
+    // or "Géminis"), highlight that sign's segment + glow its ruler planet.
+    var focusSignName = opts.signFocus || null;
+    var focusIdx = -1;
+    var focusRulerName = null;
+    if (focusSignName) {
+      var canonName = SIGN_NAME_ES_TO_EN[focusSignName] || focusSignName;
+      focusIdx = SIGN_NAMES.indexOf(canonName);
+      focusRulerName = SIGN_RULERS[focusSignName] || SIGN_RULERS[canonName] || null;
+    }
     for (var i = 0; i < 12; i++) {
       var startAngle = ((i * 30 + ascOffset) * DEG) - Math.PI / 2;
       var endAngle = (((i + 1) * 30 + ascOffset) * DEG) - Math.PI / 2;
@@ -312,8 +359,30 @@
       ctx.arc(cx, cy, outerR, startAngle, endAngle);
       ctx.arc(cx, cy, signR, endAngle, startAngle, true);
       ctx.closePath();
-      ctx.fillStyle = elemColor + '08';
+      // 2026-04-29: focus mode brightens the focused sign's segment a lot,
+      // dims others slightly so attention is drawn naturally.
+      var washOpacity;
+      if (focusIdx === i) {
+        washOpacity = '50';   // ~31% — strong wash
+      } else if (focusIdx >= 0) {
+        washOpacity = '04';   // ~1.5% — much dimmer than default 0x08
+      } else {
+        washOpacity = '08';   // default — original behavior
+      }
+      ctx.fillStyle = elemColor + washOpacity;
       ctx.fill();
+      // Extra outer halo on the focused segment to pop it
+      if (focusIdx === i) {
+        ctx.save();
+        ctx.shadowColor = elemColor;
+        ctx.shadowBlur = size * 0.025;
+        ctx.lineWidth = 1.6;
+        ctx.strokeStyle = elemColor + 'C8';
+        ctx.beginPath();
+        ctx.arc(cx, cy, (outerR + signR) / 2, startAngle, endAngle);
+        ctx.stroke();
+        ctx.restore();
+      }
       // Thin divider stroke
       ctx.strokeStyle = 'rgba(212,168,73,0.12)';
       ctx.lineWidth = 0.5;
@@ -327,11 +396,13 @@
       // Sign 3-letter label in-band — gold-muted, small caps
       var nx = cx + Math.cos(midAngle) * nameR;
       var ny = cy + Math.sin(midAngle) * nameR;
-      ctx.font = '600 ' + Math.round(size * 0.020) + 'px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(212,168,73,0.55)';
-      ctx.fillText(signLabels[i], nx, ny);
+      if (!SKIP_LABELS) {
+        ctx.font = '600 ' + Math.round(size * 0.020) + 'px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(212,168,73,0.55)';
+        ctx.fillText(signLabels[i], nx, ny);
+      }
 
       // Glyph disc OUTSIDE the ring — element-coloured halo + gold ring + glyph
       var gx = cx + Math.cos(midAngle) * glyphR;
@@ -349,13 +420,15 @@
       ctx.beginPath(); ctx.arc(gx, gy, discR - 1, 0, TAU); ctx.stroke();
 
       // Glyph itself
-      ctx.font = '600 ' + Math.round(size * 0.036) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
-      ctx.shadowColor = elemColor;
-      ctx.shadowBlur = 6;
-      ctx.fillStyle = '#fff8e7';
-      ctx.fillText(SIGN_GLYPHS[i], gx, gy);
-      ctx.shadowColor = 'transparent';
-      ctx.shadowBlur = 0;
+      if (!SKIP_LABELS) {
+        ctx.font = '600 ' + Math.round(size * 0.036) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
+        ctx.shadowColor = elemColor;
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = '#fff8e7';
+        ctx.fillText(SIGN_GLYPHS[i], gx, gy);
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
     }
 
     // ── Tick marks every 5 degrees on the outer ring ──
@@ -473,9 +546,14 @@
       // Constellation stick figures (only pairs where BOTH stars made it in)
       var consts = (chartData.constellationCatalog && chartData.constellationCatalog.constellations) || [];
       ctx.save();
-      ctx.strokeStyle = 'rgba(255,245,220,0.28)';
-      ctx.lineWidth = 0.7 * (size / 320);
+      // 2026-04-29: bumped opacity 0.28 → 0.45 + soft glow shadow so
+      // constellation stick figures (Orion etc.) feel more present in
+      // the daily chart. Still subtle — they're context, not subject.
+      ctx.strokeStyle = 'rgba(255,245,220,0.45)';
+      ctx.lineWidth = 0.9 * (size / 320);
       ctx.lineCap = 'round';
+      ctx.shadowColor = 'rgba(255,235,180,0.35)';
+      ctx.shadowBlur = 2 * (size / 320);
       for (var ci = 0; ci < consts.length; ci++) {
         var lines = consts[ci].lines || [];
         for (var li = 0; li < lines.length; li++) {
@@ -626,6 +704,71 @@
       // where spheres overlapped visually.
       var TIER_OFFSETS = [0, -0.030, -0.060, -0.090];   // × size
 
+      // 2026-04-29: opt-in `geocentricOrbits` mode for the daily chart
+      // export. Each planet gets its own concentric ring (Ptolemaic order
+      // outward from Earth). Earth marker drawn at center. Used by
+      // chart_renderer.py for shorts; the PWA still uses tier mode by
+      // default unless the page passes opts.geocentricOrbits = true.
+      var GEOCENTRIC = opts.geocentricOrbits === true;
+      // Order: Moon (closest), Mercury, Venus, Sun, Mars, Jupiter, Saturn,
+      // Uranus, Neptune, Pluto (farthest). Multipliers × size.
+      var PLANET_ORBIT_R = {
+        Moon:    0.115,
+        Mercury: 0.140,
+        Venus:   0.165,
+        Sun:     0.190,
+        Mars:    0.215,
+        Jupiter: 0.240,
+        Saturn:  0.265,
+        Uranus:  0.290,
+        Neptune: 0.310,
+        Pluto:   0.330,
+      };
+
+      // Draw faint orbit rings + Earth marker BEFORE planets if in
+      // geocentric mode. Drawn here (inside the planet block) so the
+      // ascendant offset applied above is honored.
+      if (GEOCENTRIC) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(180,200,255,0.18)';
+        ctx.lineWidth = 0.5 * (size / 320);
+        ctx.setLineDash([2 * (size/320), 4 * (size/320)]);
+        Object.keys(PLANET_ORBIT_R).forEach(function(pName) {
+          var r = PLANET_ORBIT_R[pName] * size;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, TAU);
+          ctx.stroke();
+        });
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        // Earth at center — small blue-green disc + "TIERRA" label
+        var earthR = size * 0.018;
+        var earthGrad = ctx.createRadialGradient(cx - earthR*0.3, cy - earthR*0.3, 0, cx, cy, earthR);
+        earthGrad.addColorStop(0, '#7FB3D5');
+        earthGrad.addColorStop(0.6, '#3B7CA8');
+        earthGrad.addColorStop(1, '#1A3D5C');
+        ctx.fillStyle = earthGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, earthR, 0, TAU);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(127,179,213,0.5)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        // Earth glyph (⊕ — Earth symbol)
+        if (!SKIP_LABELS) {
+          ctx.fillStyle = 'rgba(255,255,255,0.85)';
+          ctx.font = 'bold ' + Math.round(size * 0.022) + 'px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('⊕', cx, cy);
+          // Label below
+          ctx.fillStyle = 'rgba(180,200,255,0.6)';
+          ctx.font = Math.round(size * 0.014) + 'px Inter, sans-serif';
+          ctx.fillText('TIERRA', cx, cy + earthR * 2.2);
+        }
+      }
+
       // Spread overlapping planets
       var sorted = chartData.planets.slice().sort(function(a,b) { return a.longitude - b.longitude; });
       var positions = [];
@@ -641,7 +784,15 @@
         }
         positions.push({ angle: angle, tier: tier });
 
-        var myR = planetR + (TIER_OFFSETS[tier] || 0) * size;
+        // 2026-04-29: in geocentric mode, each planet uses its own orbit
+        // ring instead of the tier offset. Falls back to tier offset when
+        // not in geocentric mode (preserves existing PWA behavior).
+        var myR;
+        if (GEOCENTRIC && PLANET_ORBIT_R[p.name] !== undefined) {
+          myR = PLANET_ORBIT_R[p.name] * size;
+        } else {
+          myR = planetR + (TIER_OFFSETS[tier] || 0) * size;
+        }
         var px = cx + Math.cos(angle) * myR;
         var py = cy + Math.sin(angle) * myR;
         var glyph = PLANET_GLYPHS[p.name] || '?';
@@ -652,33 +803,66 @@
         var sphereR = size * (p.name === 'Sun' ? 0.024
                             : p.name === 'Moon' ? 0.022
                             : 0.019);
+
+        // 2026-04-29 sign-focus: ruler planet of the focused sign gets a
+        // bright outer halo ring before the sphere is drawn — viewer's
+        // eye lands here first.
+        if (focusRulerName === p.name) {
+          ctx.save();
+          var ringElem = focusIdx >= 0 ? ELEMENT_COLORS_VIVID[ELEMENTS[focusIdx]] : '#FFD700';
+          var glow = ctx.createRadialGradient(px, py, sphereR * 0.8, px, py, sphereR * 3.2);
+          glow.addColorStop(0, ringElem + 'AA');
+          glow.addColorStop(0.5, ringElem + '55');
+          glow.addColorStop(1, ringElem + '00');
+          ctx.fillStyle = glow;
+          ctx.beginPath(); ctx.arc(px, py, sphereR * 3.2, 0, TAU); ctx.fill();
+          // Halo ring
+          ctx.strokeStyle = ringElem + 'CC';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.arc(px, py, sphereR * 1.9, 0, TAU); ctx.stroke();
+          ctx.restore();
+        }
+
         drawPlanetSphere(ctx, px, py, sphereR, p.name);
 
         // Planet glyph (drawn on top of the sphere with a subtle
         // shadow so it stays legible against the gradient).
-        ctx.shadowColor = 'rgba(0,0,0,0.6)';
-        ctx.shadowBlur = 3;
-        ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
-                         p.name === 'Venus' || p.name === 'Saturn' ||
-                         p.name === 'Uranus')
-          ? 'rgba(20,12,6,0.85)'    // dark glyph on light planets
-          : 'rgba(255,248,230,0.92)'; // light glyph on dark planets
-        ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (p.name === 'Moon') {
-          ctx.fillText('\u263D', px, py);
-        } else {
-          ctx.fillText(glyph, px, py);
+        if (!SKIP_LABELS) {
+          ctx.shadowColor = 'rgba(0,0,0,0.6)';
+          ctx.shadowBlur = 3;
+          ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
+                           p.name === 'Venus' || p.name === 'Saturn' ||
+                           p.name === 'Uranus')
+            ? 'rgba(20,12,6,0.85)'
+            : 'rgba(255,248,230,0.92)';
+          ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          if (p.name === 'Moon') {
+            ctx.fillText('\u263D', px, py);
+          } else {
+            ctx.fillText(glyph, px, py);
+          }
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
         }
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
 
-        // Degree label
+        // Degree label — in geocentric mode, prepend planet abbreviation
+        // ("Mar 12°") so each planet is identifiable without a legend.
+        // Slight shadow keeps it readable when planets cluster.
         var degStr = Math.floor(p.degree) + '\u00B0';
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.font = Math.round(size * 0.018) + 'px Inter, sans-serif';
-        ctx.fillText(degStr, px, py + size * 0.035);
+        if (GEOCENTRIC && PLANET_ABBR_ES[p.name]) {
+          degStr = PLANET_ABBR_ES[p.name] + ' ' + degStr;
+        }
+        if (!SKIP_LABELS) {
+          ctx.save();
+          ctx.shadowColor = 'rgba(0,0,0,0.85)';
+          ctx.shadowBlur = 3;
+          ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)';
+          ctx.font = (GEOCENTRIC ? '600 ' : '') + Math.round(size * (GEOCENTRIC ? 0.0155 : 0.018)) + 'px Inter, sans-serif';
+          ctx.fillText(degStr, px, py + size * 0.038);
+          ctx.restore();
+        }
 
         // Tick line from planet to zodiac ring (starts at the *actual*
         // rendered planet radius, not the base, so the family-tiered

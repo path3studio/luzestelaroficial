@@ -119,7 +119,7 @@ function signAt(lon, lang) {
   return arr[Math.floor(lon / 30) % 12];
 }
 
-function buildPrompt({ profile, natalPlanets, natalAsc, transitPositions, keyAspects, date, lang }) {
+function buildPrompt({ profile, natalPlanets, natalAsc, transitPositions, keyAspects, date, lang, recentTexts = [] }) {
   const P = lang === 'en' ? PLANET_EN : PLANET_ES;
   const firstName = (profile.nombre || '').split(/\s+/)[0] || '';
 
@@ -142,6 +142,20 @@ function buildPrompt({ profile, natalPlanets, natalAsc, transitPositions, keyAsp
     ? keyAspects.map(a => `- ${P[a.transit]} (${lang === 'en' ? 'transit' : 'tránsito'}) ${a.type} ${P[a.natal]} (${lang === 'en' ? 'natal' : 'natal'}) — orb ${a.orb.toFixed(1)}°`).join('\n')
     : (lang === 'en' ? '- No exact aspects to personal points today (a quieter sky).' : '- Sin aspectos exactos a puntos personales hoy (un cielo más tranquilo).');
 
+  // Cross-day memory: feed back the last few readings so the model doesn't
+  // echo the same opening image, metaphor, or closing invitation day after
+  // day — a Plus subscriber reads this daily and repetition kills retention.
+  // (2026-06-16)
+  const recentList = (recentTexts || []).filter(Boolean).slice(0, 3);
+  const recentMemoryEn = recentList.length
+    ? `\nRECENT READINGS FOR ${firstName || 'them'} (do NOT reuse their opening images, metaphors, or closing invitation — this person reads daily; give them something genuinely new):\n`
+      + recentList.map(t => `- ${String(t).replace(/\s+/g, ' ').slice(0, 320)}…`).join('\n') + '\n'
+    : '';
+  const recentMemoryEs = recentList.length
+    ? `\nLECTURAS RECIENTES DE ${firstName || 'esta persona'} (NO reutilices sus imágenes de apertura, metáforas ni la invitación de cierre — esta persona lee a diario; dale algo genuinamente nuevo):\n`
+      + recentList.map(t => `- ${String(t).replace(/\s+/g, ' ').slice(0, 320)}…`).join('\n') + '\n'
+    : '';
+
   if (lang === 'en') {
     return `You are the lead astrologer of "Luz Estelar Oficial". Write ${firstName}'s personalized daily reading for ${date}. This is a premium chart-level reading, not a generic sign horoscope — it must feel like you wrote it for them after looking at their chart this morning.
 
@@ -154,7 +168,7 @@ ${transitsLines}
 
 TODAY'S KEY ASPECTS TO THEIR CHART (tightest first):
 ${aspectsLines}
-
+${recentMemoryEn}
 STYLE:
 - Warm, literary, grounded. Contemplative tone, not predictive or alarmist.
 - Vary sentence length. Short phrases with breath between them. Let the cadence carry the meaning.
@@ -184,7 +198,7 @@ ${transitsLines}
 
 ASPECTOS CLAVE DE HOY A SU CARTA (más exactos primero):
 ${aspectsLines}
-
+${recentMemoryEs}
 ESTILO:
 - Cálido, literario, aterrizado. Tono contemplativo, no predictivo ni alarmista.
 - Varía longitud de oración. Frases cortas con respiración entre ellas. Deja que la cadencia cargue el sentido.
@@ -381,11 +395,30 @@ export async function onRequestPost(context) {
   const transitPositions = computePositions(transitDate);
   const keyAspects = findKeyAspects(natalPlanets, transitPositions);
 
+  // ── Cross-day memory: the last few readings, so we don't echo them ──
+  // The rows already live in D1 (cached per profile/date). Non-fatal:
+  // if this fails we just generate without memory.
+  let recentTexts = [];
+  try {
+    const recentRows = await DB
+      .prepare("SELECT reading_json FROM ondemand_generations WHERE profile_id = ? AND reading_date < ? AND status = 'ok' AND lang = ? ORDER BY reading_date DESC LIMIT 3")
+      .bind(profileId, dateKey, lang)
+      .all();
+    for (const row of (recentRows?.results || [])) {
+      try {
+        const rj = JSON.parse(row.reading_json);
+        if (rj?.text) recentTexts.push(String(rj.text));
+      } catch { /* skip malformed row */ }
+    }
+  } catch (e) {
+    console.warn('[on-demand] recent readings fetch failed (non-fatal):', e.message);
+  }
+
   // ── Build prompt + call Gemini 2.5 Pro ───────────────────────────
   const prompt = buildPrompt({
     profile, natalPlanets, natalAsc,
     transitPositions, keyAspects,
-    date: dateKey, lang,
+    date: dateKey, lang, recentTexts,
   });
 
   const model = DEFAULT_MODEL;

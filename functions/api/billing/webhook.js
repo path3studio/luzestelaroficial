@@ -165,8 +165,8 @@ export async function onRequestPost(context) {
         }
 
         // ── Notifications (non-fatal) ──
-        // Telegram alert
-        await notifyTelegram(context.env, plan, amountCents, customerEmail).catch(() => {});
+        // Telegram alert (pass isSubscription so a $0 trial isn't called a "sale")
+        await notifyTelegram(context.env, plan, amountCents, customerEmail, isSubscription).catch(() => {});
 
         // Write to KV for admin panel instant visibility
         if (AUTH_KV) {
@@ -224,6 +224,42 @@ export async function onRequestPost(context) {
         console.warn('Payment failed for customer:', event.data.object.customer);
         break;
       }
+
+      case 'invoice.paid': {
+        // Real money arrived: a trial converted to paid, or a renewal charged.
+        // The $0 trial-start invoice already pinged as a TRIAL via
+        // checkout.session.completed, so skip zero-amount invoices here to
+        // avoid a duplicate "sale" alert with no money behind it. (2026-06-16)
+        const invoice = event.data.object;
+        const amountCents = invoice.amount_paid || 0;
+        if (amountCents > 0) {
+          const email = invoice.customer_email || '';
+          let plan = 'premium';
+          try {
+            if (invoice.subscription) {
+              const subRow = await DB.prepare(
+                'SELECT plan FROM subscriptions WHERE stripe_subscription_id = ?'
+              ).bind(invoice.subscription).first();
+              if (subRow?.plan) plan = subRow.plan;
+            }
+          } catch (e) { /* non-fatal — fall back to 'premium' */ }
+
+          await notifyTelegram(context.env, plan, amountCents, email, true, 'payment').catch(() => {});
+
+          if (AUTH_KV) {
+            await AUTH_KV.put('sale_notification:last', JSON.stringify({
+              plan, amount_cents: amountCents, email,
+              invoice_id: invoice.id, billing_reason: invoice.billing_reason,
+              timestamp: now, kind: 'payment',
+            }), { expirationTtl: 7 * 86400 }).catch(() => {});
+          }
+          console.log(JSON.stringify({
+            event: 'invoice_paid', plan, amount_cents: amountCents,
+            billing_reason: invoice.billing_reason,
+          }));
+        }
+        break;
+      }
     }
 
     // Mark as processed AFTER successful handling, so Stripe retries
@@ -261,7 +297,7 @@ const PRODUCT_NAMES = {
   premium: 'Suscripción Premium',
 };
 
-async function notifyTelegram(env, plan, amountCents, email) {
+async function notifyTelegram(env, plan, amountCents, email, isSubscription = false, kind = null) {
   const token = env.TELEGRAM_BOT_TOKEN;
   const chatId = env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return; // Telegram not configured — skip silently
@@ -269,13 +305,38 @@ async function notifyTelegram(env, plan, amountCents, email) {
   const productName = PRODUCT_NAMES[plan] || plan;
   const amount = (amountCents / 100).toFixed(2);
   const escapedEmail = (email || 'anónimo').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const when = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
 
-  const text = [
-    `💰 <b>¡Nueva venta!</b>`,
-    `${productName} — $${amount} USD`,
-    `<i>${escapedEmail}</i>`,
-    `<i>${new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}</i>`,
-  ].join('\n');
+  // A subscription that charges $0 right now is a FREE-TRIAL start, not a sale.
+  // Don't cry "¡Nueva venta!" until money actually moves. (2026-06-16)
+  // kind='payment' = a real invoice was paid (invoice.paid) — trial converted
+  // or a renewal; real money arrived.
+  const isTrial = kind !== 'payment' && isSubscription && amountCents === 0;
+
+  let text;
+  if (isTrial) {
+    text = [
+      `🎁 <b>Nueva prueba de Premium</b>`,
+      `${productName} — gratis (prueba de 7 días)`,
+      `<i>${escapedEmail}</i>`,
+      `<i>${when}</i>`,
+      `Se vuelve venta cuando termine la prueba, si no cancela.`,
+    ].join('\n');
+  } else if (kind === 'payment') {
+    text = [
+      `💰 <b>Pago de suscripción recibido</b>`,
+      `${productName} — $${amount} USD`,
+      `<i>${escapedEmail}</i>`,
+      `<i>${when}</i>`,
+    ].join('\n');
+  } else {
+    text = [
+      `💰 <b>¡Nueva venta!</b>`,
+      `${productName} — $${amount} USD`,
+      `<i>${escapedEmail}</i>`,
+      `<i>${when}</i>`,
+    ].join('\n');
+  }
 
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',

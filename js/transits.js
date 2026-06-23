@@ -404,20 +404,15 @@
     var mcR = Math.atan2(Math.sin(lstR), Math.cos(lstR) * Math.cos(OBLIQUITY));
     var mc = ((mcR / DEG) % 360 + 360) % 360;
 
-    // Ascendant: tangent equation yields two solutions 180° apart.
-    // Select the one in the rising semicircle (CCW: MC+90° → MC+270°).
-    // This matches the chart convention Asc-at-9, MC-at-12 with zodiac
-    // advancing CCW — the Ascendant is the ecliptic point where the
-    // local meridian has already passed by a quarter of the day.
-    var ascR = Math.atan2(-Math.cos(lstR),
-                          Math.sin(lstR) * Math.cos(OBLIQUITY) + Math.tan(latR) * Math.sin(OBLIQUITY));
+    // Ascendant (Meeus): atan2( cos(RAMC), -(sin(RAMC)·cosε + tanφ·sinε) )
+    // returns the rising point in the correct quadrant directly.
+    // The previous version computed the Descendant (atan2(-cos, +…), 180°
+    // off) and relied on an (MC+90°, MC+270°) range flip to recover the
+    // Asc; that flip mis-selected whenever Asc fell near MC+90° (e.g. it
+    // returned Tauro where the true rising sign was Escorpio). Fixed 2026-06-22.
+    var ascR = Math.atan2(Math.cos(lstR),
+                          -(Math.sin(lstR) * Math.cos(OBLIQUITY) + Math.tan(latR) * Math.sin(OBLIQUITY)));
     var asc = ((ascR / DEG) % 360 + 360) % 360;
-    var lo = (mc + 90) % 360;
-    var hi = (mc + 270) % 360;
-    var inRange = (lo < hi)
-      ? (asc > lo && asc < hi)
-      : (asc > lo || asc < hi);   // wraps 360→0
-    if (!inRange) asc = (asc + 180) % 360;
     return { asc: asc, mc: mc, lst: lst };
   }
   var OBLIQUITY = 23.4392911 * DEG;

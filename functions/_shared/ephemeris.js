@@ -131,25 +131,19 @@ export function computeAscMc(date, latDeg, lonDeg) {
   const mcR  = Math.atan2(Math.sin(lstR), Math.cos(lstR) * Math.cos(OBLIQUITY));
   const mc   = ((mcR / DEG) % 360 + 360) % 360;
 
-  // Ascendant: longitude of the ecliptic point rising on the east
-  // horizon. atan2 gives one of two solutions 180° apart (the other
-  // is the Descendant). The CORRECT Asc is in the "rising semicircle"
-  // of the ecliptic — specifically, going CCW in ecliptic longitude,
-  // Asc lies in the arc from (MC + 90°) to (MC + 270°). This derives
-  // from the classical chart drawing convention: Asc at 9 o'clock,
-  // MC at 12, zodiac advances CCW, so 90° CCW past MC lands at IC and
-  // the ecliptic from IC to Dsc to Asc is where the rising point falls.
-  const ascR = Math.atan2(-Math.cos(lstR),
-                          Math.sin(lstR) * Math.cos(OBLIQUITY) + Math.tan(latR) * Math.sin(OBLIQUITY));
-  let asc = ((ascR / DEG) % 360 + 360) % 360;
-  const lo = (mc + 90) % 360;
-  const hi = (mc + 270) % 360;
-  const inRange = (lo < hi)
-    ? (asc > lo && asc < hi)
-    : (asc > lo || asc < hi);   // range wraps across 360→0
-  if (!inRange) {
-    asc = (asc + 180) % 360;
-  }
+  // Ascendant (Meeus): longitude of the ecliptic point rising on the
+  // east horizon. The closed-form atan2( cos(RAMC), -(sin(RAMC)·cosε +
+  // tanφ·sinε) ) returns the correct quadrant directly — no range
+  // correction needed.
+  //
+  // The previous version used atan2(-cos, +…) (which is the Descendant,
+  // i.e. 180° off) plus an (MC+90°, MC+270°) range flip to recover the
+  // Asc. That flip mis-selected whenever Asc fell near MC+90° (a common
+  // case at mid latitudes): e.g. for 1990-07-15 14:30 CDMX it returned
+  // Tauro where the true rising sign is Escorpio. Fixed 2026-06-22.
+  const ascR = Math.atan2(Math.cos(lstR),
+                          -(Math.sin(lstR) * Math.cos(OBLIQUITY) + Math.tan(latR) * Math.sin(OBLIQUITY)));
+  const asc  = ((ascR / DEG) % 360 + 360) % 360;
   return { asc, mc };
 }
 

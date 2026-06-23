@@ -314,7 +314,7 @@
 // the chart-level Gemini-Pro version 5-10s later. Any failure silently
 // keeps the sign-level text — zero regression. The feature stays dark
 // until the ENABLE_ONDEMAND_READINGS secret is flipped to "1".
-const CACHE_NAME = 'luzestelar-v69';
+const CACHE_NAME = 'luzestelar-v70';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -395,11 +395,29 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests and cross-origin (fonts loaded via CDN will cache naturally)
   if (request.method !== 'GET') return;
 
-  // For navigation requests (HTML pages): network-first
+  // For navigation requests (HTML pages): network-first.
   if (request.mode === 'navigate') {
+    // Never intercept navigations to API endpoints. The /api/auth/* OAuth
+    // and magic-verify flows return 3xx redirects (and Set-Cookie); the
+    // browser must handle those natively. Letting them through here keeps
+    // login working exactly as if no service worker were installed.
+    const path = new URL(request.url).pathname;
+    if (path.startsWith('/api/')) return;
+
     event.respondWith(
-      fetch(request)
+      // redirect:'manual' is critical. With the default redirect:'follow',
+      // fetch() resolves clean-URL redirects (e.g. /mi-dia.html → /mi-dia,
+      // the PWA start_url) into a `redirected` response. Returning a
+      // redirected response to respondWith() for a navigation makes the
+      // browser throw "The service worker navigation response was a
+      // redirect" and the page fails to load (this broke the PWA and any
+      // .html entry point). 'manual' yields an opaqueredirect we pass
+      // straight through, and the browser performs the redirect itself.
+      fetch(request, { redirect: 'manual' })
         .then((response) => {
+          if (response.type === 'opaqueredirect' || response.redirected) {
+            return response; // browser follows the redirect natively
+          }
           // Cache successful page loads
           if (response.ok) {
             const clone = response.clone();
