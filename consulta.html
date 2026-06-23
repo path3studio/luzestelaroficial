@@ -890,6 +890,42 @@
 <script>(function(){var form=document.getElementById('newsletter-form');if(!form)return;var msg=document.getElementById('newsletter-msg');var btn=form.querySelector('button');var isEn=window.location.pathname.indexOf('/en/')!==-1;form.addEventListener('submit',function(e){e.preventDefault();var email=document.getElementById('newsletter-email').value.trim();if(!email)return;btn.disabled=true;btn.textContent=isEn?'Sending...':'Enviando...';msg.textContent='';msg.style.color='var(--text-dim)';fetch('https://luzestelar-consulta-api.path3studio.workers.dev/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:isEn?'en':'es',source:'website_footer'})}).then(function(r){return r.json()}).then(function(d){if(d.ok){msg.style.color='var(--gold)';msg.textContent=d.message;form.reset();}else{msg.style.color='#e74c3c';msg.textContent=d.error||(isEn?'Error, try again.':'Error, intenta de nuevo.');}}).catch(function(){msg.style.color='#e74c3c';msg.textContent=isEn?'Connection error. Try again.':'Error de conexión. Intenta de nuevo.';}).finally(function(){btn.disabled=false;btn.textContent=isEn?'Subscribe':'Suscribirme';});});})();</script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(function(){});}</script>
 <script src="/js/cookie-consent.js" defer></script>
+<!-- Precio local aproximado (Stripe Adaptive Pricing cobra el monto exacto al confirmar) -->
+<script src="/js/local-price.js" defer></script>
+<script>
+(function () {
+  function decorate() {
+    if (!window.LocalPrice || !LocalPrice.isLocal()) return;
+    var priceEl = document.querySelector('.price-card .price');
+    if (!priceEl) return;
+    var m = priceEl.textContent.match(/([0-9]+(?:\.[0-9]+)?)/);
+    if (!m) return;
+    var suffix = LocalPrice.suffix(m[1]);
+    if (!suffix) return;
+
+    var local = priceEl.parentNode.querySelector('.price-local');
+    if (!local) {
+      local = document.createElement('div');
+      local.className = 'price-local';
+      local.style.cssText = 'font-size:1.15rem;font-weight:600;color:var(--gold-light,#e8c87a);margin-top:-0.3em;margin-bottom:0.25em;';
+      priceEl.insertAdjacentElement('afterend', local);
+
+      var note = document.createElement('div');
+      note.className = 'price-local-note';
+      note.style.cssText = 'font-size:0.78rem;color:var(--text-dim,#9a93a8);margin-bottom:0.6em;';
+      note.textContent = 'Pagas el monto exacto en tu moneda al confirmar.';
+      local.insertAdjacentElement('afterend', note);
+    }
+    local.textContent = suffix;
+  }
+  // switchPlan reescribe el precio USD en cada cambio de plan → re-decoramos.
+  if (typeof window.switchPlan === 'function') {
+    var _orig = window.switchPlan;
+    window.switchPlan = function () { var r = _orig.apply(this, arguments); decorate(); return r; };
+  }
+  document.addEventListener('localprice:ready', decorate);
+})();
+</script>
 
 <!-- ══ Exit-intent popup ══ -->
 <style>

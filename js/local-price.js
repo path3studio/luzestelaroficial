@@ -25,9 +25,9 @@
     var amt = localAmount(usd);
     if (amt == null) return '';
     try {
-      // Currencies like CLP/COP/PYG have no minor unit; let Intl decide, but
-      // drop decimals once we're in the hundreds to keep it clean.
-      var maxFrac = amt >= 1000 ? 0 : 2;
+      // Drop decimals once we're at/above 100 in the local currency — cents
+      // look odd on a ~MX$500 price and Stripe rounds anyway.
+      var maxFrac = amt >= 100 ? 0 : 2;
       return new Intl.NumberFormat('es', {
         style: 'currency',
         currency: state.currency,
@@ -57,7 +57,15 @@
     try { document.dispatchEvent(new Event('localprice:ready')); } catch (e) {}
   }
 
-  fetch('/api/local-price', { headers: { accept: 'application/json' } })
+  // Optional ?country=XX override (handy for testing the localized display
+  // from anywhere; checkout still charges by real geo via Stripe).
+  var qp = '';
+  try {
+    var c = new URLSearchParams(location.search).get('country');
+    if (c && /^[A-Za-z]{2}$/.test(c)) qp = '?country=' + c.toUpperCase();
+  } catch (e) {}
+
+  fetch('/api/local-price' + qp, { headers: { accept: 'application/json' } })
     .then(function (r) { return r.json(); })
     .then(function (d) {
       if (d && d.ok) {
