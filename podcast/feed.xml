@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Tue, 23 Jun 2026 02:46:00 -0600</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 03:29:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 23 de junio de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 23 de junio de 2026
+      <title>Horóscopo del 24 de junio de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 24 de junio de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (7.8/10)
+Aries: ★★★★☆ (9.0/10)
 Tauro: ★★★☆☆ (7.2/10)
-Géminis: ★★★☆☆ (6.0/10)
-Cáncer: ★★★★☆ (9.2/10)
+Géminis: ★★★☆☆ (7.0/10)
+Cáncer: ★★★☆☆ (7.0/10)
 Leo: ★★★☆☆ (7.0/10)
-Virgo: ★★★☆☆ (7.5/10)
-Libra: ★★★★☆ (8.2/10)
-Escorpio: ★★★★☆ (8.5/10)
-Sagitario: ★★☆☆☆ (5.8/10)
+Virgo: ★★★☆☆ (7.0/10)
+Libra: ★★★☆☆ (7.5/10)
+Escorpio: ★★★☆☆ (7.5/10)
+Sagitario: ★★★☆☆ (7.0/10)
 Capricornio: ★★★☆☆ (6.5/10)
-Acuario: ★★★★☆ (9.5/10)
-Piscis: ★★★☆☆ (7.8/10)
+Acuario: ★★★☆☆ (7.2/10)
+Piscis: ★★★★☆ (8.8/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-06-24.mp3" length="21598316" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-06-24.mp3</guid>
+      <pubDate>Wed, 24 Jun 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-06-24.jpg"/>
+      <itunes:duration>00:14:59</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 23 de junio de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 23 de junio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-06-23.mp3" length="20799404" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-06-23.mp3</guid>
       <pubDate>Tue, 23 Jun 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Thu, 11 Jun 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-06-11.jpg"/>
       <itunes:duration>00:15:29</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 10 de junio de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 10 de junio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-06-10.mp3" length="20788460" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-06-10.mp3</guid>
-      <pubDate>Wed, 10 Jun 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-06-10.jpg"/>
-      <itunes:duration>00:14:26</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
