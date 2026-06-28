@@ -851,7 +851,9 @@
         // ("Mar 12°") so each planet is identifiable without a legend.
         // Slight shadow keeps it readable when planets cluster.
         var degStr = Math.floor(p.degree) + '\u00B0';
-        if (GEOCENTRIC && PLANET_ABBR_ES[p.name]) {
+        // 2026-06-28: name shown on natal charts too (was geocentric-only) —
+        // user feedback that the shared natal card had bare degrees, no names.
+        if (PLANET_ABBR_ES[p.name]) {
           degStr = PLANET_ABBR_ES[p.name] + ' ' + degStr;
         }
         if (!SKIP_LABELS) {

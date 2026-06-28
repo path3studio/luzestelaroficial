@@ -464,9 +464,10 @@
     ctx.textBaseline = 'top';
     ctx.fillText(label, x, y);
 
-    // Glyph disc
+    // Glyph disc — 2026-06-28: dropped from y+40 → y+58 so the SOL/LUNA/ASC
+    // label above it no longer grazes the sign glyph (user feedback).
     var discR = 46;
-    var discY = y + 40;
+    var discY = y + 58;
     var g = ctx.createRadialGradient(x, discY, 0, x, discY, discR);
     g.addColorStop(0, 'rgba(212,168,73,0.24)');
     g.addColorStop(1, 'rgba(212,168,73,0.02)');
