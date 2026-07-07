@@ -103,6 +103,24 @@ export async function onRequestPost(context) {
       }
     }
 
+    // 1.5 Telemetría de churn ANTES de borrar (2026-07-07). El borrado de
+    // cuenta eliminaba toda huella de la baja (así perdimos el rastro del
+    // único suscriptor activo, semana del 30/jun). churn_log NO guarda PII.
+    try {
+      const u = await DB.prepare('SELECT created_at FROM users WHERE id = ?')
+        .bind(userId).first();
+      const days = u?.created_at
+        ? Math.round((Date.now() - Date.parse(u.created_at)) / 86400000)
+        : null;
+      const hadSub = (subs.results || []).some(s =>
+        ['active', 'trialing'].includes(s.status));
+      await DB.prepare(
+        'INSERT INTO churn_log (kind, plan, had_active_sub, days_since_signup) VALUES (?, ?, ?, ?)'
+      ).bind('account_delete', hadSub ? 'premium' : null, hadSub ? 1 : 0, days).run();
+    } catch (e) {
+      console.log('churn_log insert failed (non-fatal): ' + String(e).slice(0, 120));
+    }
+
     // 2. Delete D1 rows in FK-safe order
     // (D1 doesn't enforce FKs by default, but we still delete children first
     //  so a partial failure leaves no orphans behind.)

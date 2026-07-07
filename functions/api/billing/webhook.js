@@ -210,9 +210,20 @@ export async function onRequestPost(context) {
 
       case 'customer.subscription.deleted': {
         const sub = event.data.object;
+        // 2026-07-07: canceled_at + churn_log. Antes solo se marcaba status
+        // sin fecha, y si el usuario luego borraba su cuenta (GDPR) se perdía
+        // TODO rastro de la baja (así perdimos el del único suscriptor,
+        // semana del 30/jun). churn_log sobrevive ambos caminos, sin PII.
         await DB.prepare(
-          'UPDATE subscriptions SET status = ? WHERE stripe_subscription_id = ?'
+          "UPDATE subscriptions SET status = ?, canceled_at = datetime('now') WHERE stripe_subscription_id = ?"
         ).bind('canceled', sub.id).run();
+        try {
+          await DB.prepare(
+            'INSERT INTO churn_log (kind, plan, had_active_sub) VALUES (?, ?, 1)'
+          ).bind('stripe_cancel', 'premium').run();
+        } catch (e) {
+          console.log('churn_log insert failed (non-fatal)');
+        }
 
         await DB.prepare(
           'UPDATE users SET tier = ?, updated_at = ? WHERE stripe_customer_id = ?'
