@@ -469,18 +469,15 @@ export async function onRequestPost(context) {
     date: dateKey, lang, recentTexts,
   });
 
+  // 2026-07-08: DeepSeek-Reasoner PRIMARIO (decisión del usuario tras el
+  // duelo ciego: Reasoner 9.0 vs Flash 8.0, y el quota-outage de Gemini del
+  // 7/jul). API pagada = fiable, ~5× más barato que Gemini Pro billed
+  // ($0.002 vs $0.01/lectura), 11-15s de latencia. Gemini Pro queda como
+  // RESPALDO. `model` registra en la fila qué proveedor sirvió (telemetría).
+  // Rollback: quitar DEEPSEEK_API_KEY del env de Pages → vuelve a Gemini.
   let model = DEFAULT_MODEL;
-  let res = await callGemini({
-    apiKey: GEMINI_API_KEY,
-    model,
-    prompt,
-    timeoutMs: GEMINI_TIMEOUT_MS,
-  });
-
-  // 2026-07-07: si Gemini falla (quota del free tier, timeout, 5xx), intenta
-  // DeepSeek-Reasoner antes de degradar al texto genérico. `model` queda
-  // registrado en la fila → telemetría de qué proveedor sirvió cada lectura.
-  if (!res.ok && context.env.DEEPSEEK_API_KEY) {
+  let res = null;
+  if (context.env.DEEPSEEK_API_KEY) {
     const dsModel = context.env.DEEPSEEK_FALLBACK_MODEL || 'deepseek-reasoner';
     const ds = await callDeepSeek({
       apiKey: context.env.DEEPSEEK_API_KEY,
@@ -492,6 +489,15 @@ export async function onRequestPost(context) {
       res = ds;
       model = dsModel;
     }
+  }
+  if (!res || !res.ok) {
+    model = DEFAULT_MODEL;
+    res = await callGemini({
+      apiKey: GEMINI_API_KEY,
+      model,
+      prompt,
+      timeoutMs: GEMINI_TIMEOUT_MS,
+    });
   }
 
   if (!res.ok) {
