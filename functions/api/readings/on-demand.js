@@ -44,6 +44,9 @@ import { computePositions, computeAscMc } from '../../_shared/ephemeris.js';
 const PRICING = {
   'gemini-2.5-pro': { in: 1.25 / 1e6, out: 5.0 / 1e6 },    // USD per token
   'gemini-2.5-flash': { in: 0.075 / 1e6, out: 0.30 / 1e6 },
+  // DeepSeek (fallback 2026-07-07) — api.deepseek.com pricing
+  'deepseek-reasoner': { in: 0.55 / 1e6, out: 2.19 / 1e6 },
+  'deepseek-chat': { in: 0.27 / 1e6, out: 1.10 / 1e6 },
 };
 // Gemini 2.5 Pro — active as of 2026-04-20 once GCP billing landed.
 // The prose quality jump over Flash is substantial: Flash was
@@ -302,6 +305,51 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
   }
 }
 
+// ── DeepSeek fallback (2026-07-07) ───────────────────────────────────────
+// El free tier de Gemini Pro se agota (hoy: las 4 llaves con quota exceeded a
+// mediodía — el pipeline matutino consume la misma cuota) y el suscriptor
+// premium caía al texto genérico de su signo. DeepSeek es API PAGADA (fiable,
+// con tope de gasto) — probado en la tarea real: 15s, 321 palabras, aspectos
+// correctos. Cadena: Gemini Pro (gratis) → DeepSeek-Reasoner → sign_level.
+async function callDeepSeek({ apiKey, model, prompt, timeoutMs }) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const started = Date.now();
+  try {
+    const r = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 2000,
+      }),
+    });
+    const latency = Date.now() - started;
+    if (!r.ok) {
+      const body = await r.text().catch(() => '');
+      return { ok: false, status: r.status, error: body.slice(0, 500), latency };
+    }
+    const j = await r.json();
+    const text = j.choices?.[0]?.message?.content?.trim();
+    if (!text) return { ok: false, error: 'empty_deepseek_response', latency };
+    return {
+      ok: true, text, latency,
+      tokensIn: j.usage?.prompt_tokens, tokensOut: j.usage?.completion_tokens,
+    };
+  } catch (e) {
+    const latency = Date.now() - started;
+    if (e.name === 'AbortError') return { ok: false, error: 'timeout', latency };
+    return { ok: false, error: String(e).slice(0, 300), latency };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 function computeCost(model, tokensIn, tokensOut) {
   const p = PRICING[model];
   if (!p) return null;
@@ -421,13 +469,30 @@ export async function onRequestPost(context) {
     date: dateKey, lang, recentTexts,
   });
 
-  const model = DEFAULT_MODEL;
-  const res = await callGemini({
+  let model = DEFAULT_MODEL;
+  let res = await callGemini({
     apiKey: GEMINI_API_KEY,
     model,
     prompt,
     timeoutMs: GEMINI_TIMEOUT_MS,
   });
+
+  // 2026-07-07: si Gemini falla (quota del free tier, timeout, 5xx), intenta
+  // DeepSeek-Reasoner antes de degradar al texto genérico. `model` queda
+  // registrado en la fila → telemetría de qué proveedor sirvió cada lectura.
+  if (!res.ok && context.env.DEEPSEEK_API_KEY) {
+    const dsModel = context.env.DEEPSEEK_FALLBACK_MODEL || 'deepseek-reasoner';
+    const ds = await callDeepSeek({
+      apiKey: context.env.DEEPSEEK_API_KEY,
+      model: dsModel,
+      prompt,
+      timeoutMs: 90000,
+    });
+    if (ds.ok) {
+      res = ds;
+      model = dsModel;
+    }
+  }
 
   if (!res.ok) {
     // Record the failure for the admin dashboard. Use INSERT OR IGNORE
