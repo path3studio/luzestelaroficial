@@ -162,7 +162,113 @@ function get(obj, key, fallback) {
 // Bump this when the narrative structure changes to invalidate old
 // cached rows (they remain in D1 but with a different cache_key so
 // they're ignored; they age out after 7 days anyway).
-const VERSION = 'v2';
+const VERSION = 'v3'; // v3 (2026-07-08): + weeklyFocus — sección semanal dinámica
+
+// ── "Esta semana para ti" (2026-07-08) ──────────────────────────────────────
+// El reporte era 100% determinista de la carta → idéntico PARA SIEMPRE (fuga
+// #2 del audit del trial: el suscriptor lo abría el día 1 y el día 30 y era
+// el mismo texto). Esta sección cruza los eventos REALES de la semana
+// (ingresos de signo + lunaciones, computados con la efemeris de la casa)
+// con el signo solar del perfil (casas solares) → se renueva sola cada
+// semana. El cacheKey lleva el sello de semana para refrescar.
+import { computePositions } from '../../_shared/ephemeris.js';
+
+const SIGNS_EN_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+  'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const SIGNS_ES_ORDER = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo',
+  'Libra','Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
+const PLANET_NAME = {
+  es: { Sun: 'el Sol', Mercury: 'Mercurio', Venus: 'Venus', Mars: 'Marte',
+        Jupiter: 'Júpiter', Saturn: 'Saturno' },
+  en: { Sun: 'the Sun', Mercury: 'Mercury', Venus: 'Venus', Mars: 'Mars',
+        Jupiter: 'Jupiter', Saturn: 'Saturn' },
+};
+const DAY_NAME = {
+  es: ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],
+  en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+};
+const HOUSE_THEME = {
+  es: ['tu identidad y tu cuerpo','tus recursos y lo que vales',
+       'tu palabra y tus vínculos cercanos','tu hogar y tus raíces',
+       'tu creatividad y tu gozo','tus rutinas y tu salud',
+       'tus relaciones de a dos','lo compartido y lo profundo',
+       'tus horizontes y aprendizajes','tu vocación y lo visible',
+       'tus redes y amistades','tu descanso y tu mundo interior'],
+  en: ['your identity and body','your resources and worth',
+       'your voice and close bonds','your home and roots',
+       'your creativity and joy','your routines and health',
+       'your one-to-one relationships','the shared and the deep',
+       'your horizons and learning','your vocation and visibility',
+       'your networks and friendships','your rest and inner world'],
+};
+
+function upcomingWeekEvents(now) {
+  const DAY = 86400000;
+  const events = [];
+  let prev = computePositions(new Date(now.getTime() + DAY));
+  for (let i = 2; i <= 8; i++) {
+    const t = new Date(now.getTime() + i * DAY);
+    const cur = computePositions(t);
+    for (const p of ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn']) {
+      if (Math.floor(cur[p] / 30) !== Math.floor(prev[p] / 30)) {
+        events.push({ t, kind: 'ingress', planet: p, signIdx: Math.floor(cur[p] / 30) });
+      }
+    }
+    const e0 = (prev.Moon - prev.Sun + 360) % 360;
+    const e1 = (cur.Moon - cur.Sun + 360) % 360;
+    if (e0 > 340 && e1 < 20) events.push({ t, kind: 'newmoon', signIdx: Math.floor(cur.Moon / 30) });
+    if (e0 < 180 && e1 >= 180) events.push({ t, kind: 'fullmoon', signIdx: Math.floor(cur.Moon / 30) });
+    prev = cur;
+  }
+  // prioridad: lunaciones primero, luego ingresos por planeta personal
+  const rank = { fullmoon: 0, newmoon: 1, ingress: 2 };
+  events.sort((a, b) => (rank[a.kind] - rank[b.kind]) || (a.t - b.t));
+  return events;
+}
+
+function buildWeeklyFocus(westernSignEn, lang) {
+  const isES = lang === 'es';
+  const sunIdx = SIGNS_EN_ORDER.indexOf(westernSignEn);
+  if (sunIdx < 0) return null;
+  const SIGN = isES ? SIGNS_ES_ORDER : SIGNS_EN_ORDER;
+  const events = upcomingWeekEvents(new Date());
+  if (!events.length) {
+    return isES
+      ? 'Semana de cielo tranquilo, sin eventos mayores: buen momento para consolidar lo que ya está en marcha y escuchar tu propio ritmo.'
+      : 'A quiet sky this week, with no major events: a good moment to consolidate what is already moving and listen to your own rhythm.';
+  }
+  const fmt = (ev) => {
+    const dia = `${DAY_NAME[lang][ev.t.getUTCDay()]} ${ev.t.getUTCDate()}`;
+    const house = ((ev.signIdx - sunIdx + 12) % 12);
+    const theme = HOUSE_THEME[lang][house];
+    if (ev.kind === 'fullmoon') {
+      return isES
+        ? `La Luna llena del ${dia} en ${SIGN[ev.signIdx]} ilumina ${theme}: algo que venías gestando pide su culminación`
+        : `The full moon on ${dia} in ${SIGN[ev.signIdx]} lights up ${theme}: something you have been growing asks for its culmination`;
+    }
+    if (ev.kind === 'newmoon') {
+      return isES
+        ? `La Luna nueva del ${dia} en ${SIGN[ev.signIdx]} abre un ciclo en ${theme}: siembra ahí una intención pequeña y concreta`
+        : `The new moon on ${dia} in ${SIGN[ev.signIdx]} opens a cycle in ${theme}: plant one small, concrete intention there`;
+    }
+    return isES
+      ? `${PLANET_NAME.es[ev.planet].charAt(0).toUpperCase() + PLANET_NAME.es[ev.planet].slice(1)} entra en ${SIGN[ev.signIdx]} el ${dia} y toca ${theme}`
+      : `${PLANET_NAME.en[ev.planet].charAt(0).toUpperCase() + PLANET_NAME.en[ev.planet].slice(1)} enters ${SIGN[ev.signIdx]} on ${dia}, touching ${theme}`;
+  };
+  const main = fmt(events[0]);
+  const second = events[1] ? fmt(events[1]) : null;
+  const cierre = isES
+    ? 'Vuelve a esta sección cada semana: cambia con el cielo.'
+    : 'Come back to this section each week: it changes with the sky.';
+  return second ? `${main}. ${second}. ${cierre}` : `${main}. ${cierre}`;
+}
+
+function _weekStamp() {
+  const now = new Date();
+  const start = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+  const week = Math.floor((now - start) / (7 * 86400000));
+  return `${now.getUTCFullYear()}w${week}`;
+}
 
 // ─── Route ──────────────────────────────────────────────────────────
 
@@ -201,7 +307,10 @@ export async function onRequestGet(context) {
 
   // Cache (VERSION is module-scoped above — keyed so a prompt bump
   // invalidates old rows via a different cache_key).
-  const cacheKey = `unified_${VERSION}_${profile.id}_${lang}`;
+  // 2026-07-08: sello de semana en la key → la sección semanal se refresca
+  // sola cada semana (antes el cache de 7 días + reporte determinista =
+  // texto idéntico para siempre).
+  const cacheKey = `unified_${VERSION}_${_weekStamp()}_${profile.id}_${lang}`;
   const cached = await DB.prepare(
     'SELECT report_json FROM cached_reports WHERE cache_key = ? AND created_at > datetime("now", "-7 days")'
   ).bind(cacheKey).first();
@@ -377,6 +486,9 @@ function buildReport(profile, lang) {
     },
     elementalBalance: { dominant: dominantElem, missing: missingElem, counts: elemCount },
     synthesis: {
+      // weeklyFocus primero: es la sección VIVA (cambia cada semana con el
+      // cielo real) — el gancho para que el suscriptor regrese al reporte.
+      weeklyFocus: buildWeeklyFocus(profile.western_sign, lang),
       coreIdentity,
       elementalBalance,
       soulPath,

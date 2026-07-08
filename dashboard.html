@@ -664,6 +664,7 @@
         var L = (lang === 'en') ? {
             loading: 'Generating your unified report…',
             empty: 'Your unified report will be ready soon.',
+            weeklyFocus: 'This Week For You',
             elementalBalance: 'Elemental Balance',
             coreIdentity: 'Core Identity',
             soulPath: 'Soul Path',
@@ -672,6 +673,7 @@
         } : {
             loading: 'Generando tu reporte unificado…',
             empty: 'Tu reporte unificado estará listo en breve.',
+            weeklyFocus: 'Esta Semana Para Ti',
             elementalBalance: 'Balance Elemental',
             coreIdentity: 'Identidad Central',
             soulPath: 'Camino del Alma',
@@ -699,6 +701,7 @@
             if (sys.enneagram)   chipHTML += '<span class="unif-chip">E-' + sys.enneagram.type + '</span>';
             var html = '<div class="unif-meta">' + chipHTML + '</div>';
             html += '<div class="unif-report">';
+            if (s.weeklyFocus)       html += '<div class="unif-sec"><h4>' + L.weeklyFocus       + '</h4><p>' + s.weeklyFocus       + '</p></div>';
             if (s.coreIdentity)      html += '<div class="unif-sec"><h4>' + L.coreIdentity      + '</h4><p>' + s.coreIdentity      + '</p></div>';
             if (s.elementalBalance)  html += '<div class="unif-sec"><h4>' + L.elementalBalance  + '</h4><p>' + s.elementalBalance  + '</p></div>';
             if (s.soulPath)          html += '<div class="unif-sec"><h4>' + L.soulPath          + '</h4><p>' + s.soulPath          + '</p></div>';
