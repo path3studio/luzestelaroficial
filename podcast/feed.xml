@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Thu, 09 Jul 2026 02:54:00 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jul 2026 02:53:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 9 de julio de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 9 de julio de 2026
+      <title>Horóscopo del 10 de julio de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 10 de julio de 2026
 
 Biorritmo Astral:
-Aries: ★★★★☆ (9.5/10)
-Tauro: ★★★★☆ (9.8/10)
-Géminis: ★★★★☆ (8.5/10)
-Cáncer: ★★★☆☆ (7.0/10)
-Leo: ★★★☆☆ (7.5/10)
-Virgo: ★★★★☆ (8.0/10)
-Libra: ★★★☆☆ (7.5/10)
-Escorpio: ★★★☆☆ (6.2/10)
-Sagitario: ★★★★☆ (8.5/10)
-Capricornio: ★★★☆☆ (7.5/10)
-Acuario: ★★★☆☆ (6.5/10)
-Piscis: ★★★☆☆ (7.2/10)
+Aries: ★★★☆☆ (7.8/10)
+Tauro: ★★☆☆☆ (5.8/10)
+Géminis: ★★★★☆ (9.8/10)
+Cáncer: ★★★★☆ (8.8/10)
+Leo: ★★★★☆ (9.5/10)
+Virgo: ★★★☆☆ (6.0/10)
+Libra: ★★★☆☆ (6.8/10)
+Escorpio: ★★★☆☆ (6.0/10)
+Sagitario: ★★★☆☆ (7.0/10)
+Capricornio: ★★★☆☆ (7.0/10)
+Acuario: ★★★☆☆ (7.5/10)
+Piscis: ★★★☆☆ (7.8/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-07-10.mp3" length="21106988" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-07-10.mp3</guid>
+      <pubDate>Fri, 10 Jul 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-07-10.jpg"/>
+      <itunes:duration>00:14:39</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 9 de julio de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 9 de julio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-07-09.mp3" length="20199212" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-07-09.mp3</guid>
       <pubDate>Thu, 09 Jul 2026 07:00:00 -0600</pubDate>
@@ -185,17 +196,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Sat, 27 Jun 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-06-27.jpg"/>
       <itunes:duration>00:14:31</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 26 de junio de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 26 de junio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-06-26.mp3" length="20947436" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-06-26.mp3</guid>
-      <pubDate>Fri, 26 Jun 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-06-26.jpg"/>
-      <itunes:duration>00:14:32</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
