@@ -218,6 +218,9 @@
                     </div>
                     <p class="result-desc" id="resDesc"></p>
                     <p class="result-element" id="resElement"></p>
+                    <div style="text-align:center;margin-top:22px;">
+                        <a id="resLink" href="#" style="display:inline-block;padding:12px 28px;border:1px solid var(--gold);border-radius:26px;color:var(--gold);text-decoration:none;font-weight:600;font-size:0.9em;letter-spacing:0.04em;">Leer el an&aacute;lisis completo &rarr;</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -525,6 +528,11 @@
 
                 document.getElementById('resDesc').textContent=data.desc;
                 document.getElementById('resElement').textContent=data.element;
+
+                // Enlace al análisis SEO profundo de la pareja (66 páginas).
+                var slugs=['aries','tauro','geminis','cancer','leo','virgo','libra','escorpio','sagitario','capricornio','acuario','piscis'];
+                var lo=Math.min(sel1,sel2), hi=Math.max(sel1,sel2);
+                document.getElementById('resLink').href='../compatibilidad/'+slugs[lo]+'-'+slugs[hi]+'.html';
 
                 card.classList.remove('visible');
                 void card.offsetWidth;
