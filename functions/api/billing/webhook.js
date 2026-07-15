@@ -192,14 +192,20 @@ export async function onRequestPost(context) {
         const tier = (status === 'active' || status === 'trialing') ? 'premium' : 'free';
 
         // Update subscription record
+        // 2026-07-14: current_period_* pueden venir null/ausentes (versiones
+        // nuevas del API de Stripe los mueven a subscription.items) —
+        // new Date(undefined).toISOString() lanza "Invalid time value" y el
+        // catch exterior devolvía 500 (11 reintentos desde el 12/jul).
+        const _ps = sub.current_period_start
+          ? new Date(sub.current_period_start * 1000).toISOString() : null;
+        const _pe = sub.current_period_end
+          ? new Date(sub.current_period_end * 1000).toISOString() : null;
         await DB.prepare(
-          'UPDATE subscriptions SET status = ?, current_period_start = ?, current_period_end = ? WHERE stripe_subscription_id = ?'
-        ).bind(
-          status,
-          new Date(sub.current_period_start * 1000).toISOString(),
-          new Date(sub.current_period_end * 1000).toISOString(),
-          sub.id
-        ).run();
+          'UPDATE subscriptions SET status = ?, ' +
+          'current_period_start = COALESCE(?, current_period_start), ' +
+          'current_period_end = COALESCE(?, current_period_end) ' +
+          'WHERE stripe_subscription_id = ?'
+        ).bind(status, _ps, _pe, sub.id).run();
 
         // Update user tier
         await DB.prepare(
@@ -293,6 +299,16 @@ export async function onRequestPost(context) {
     return new Response('ok', { status: 200 });
   } catch (err) {
     console.error('Webhook processing error:', err);
+    // 2026-07-14: dejar el último error LEGIBLE (los logs de Pages Functions
+    // no se retienen; Stripe solo dice "HTTP 500"). Se consulta con:
+    //   wrangler kv key get webhook_error:last --binding AUTH_KV
+    if (AUTH_KV) {
+      await AUTH_KV.put('webhook_error:last', JSON.stringify({
+        at: new Date().toISOString(),
+        type: (typeof event !== 'undefined' && event?.type) || 'unknown',
+        error: String(err && err.message || err).slice(0, 300),
+      }), { expirationTtl: 30 * 86400 }).catch(() => {});
+    }
     return new Response('Internal error', { status: 500 });
   }
 }
