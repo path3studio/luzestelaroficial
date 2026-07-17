@@ -511,6 +511,18 @@
             <!-- Privacy & Data (GDPR / LFPDPPP) — collapsed by default so the
                  dashboard UI stays focused on insights. GDPR endpoints
                  (export / delete) remain one click away via <details>. -->
+            <!-- 2026-07-17: gestión de suscripción vía Stripe Customer Portal
+                 (actualizar tarjeta, cambiar plan, cancelar). El email de
+                 rescate del pago fallido enlaza aquí con ?billing=1. -->
+            <div id="billing-block" class="dash-full" style="display:none;margin:20px 0 8px;padding:12px 18px;background:rgba(124,92,191,0.08);border:1px solid rgba(124,92,191,0.25);border-radius:10px;">
+                <p id="billing-alert" style="display:none;font-size:0.85em;color:#ffb37a;margin-bottom:10px;">&#9888;&#65039; Tu último pago no se procesó. Actualiza tu m&eacute;todo de pago para no perder tu Plus.</p>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+                    <span style="font-size:0.85em;color:var(--text-dim);">&#128179; Suscripci&oacute;n: actualiza tu tarjeta, cambia de plan o gest&iacute;onala.</span>
+                    <button class="btn-share" onclick="openBillingPortal()" id="btn-billing" style="font-size:0.8em;padding:7px 16px;border-color:var(--accent-purple);color:var(--accent-purple);">Gestionar mi suscripci&oacute;n</button>
+                </div>
+                <p id="billing-msg" style="font-size:0.78em;color:var(--text-dim);margin-top:8px;display:none;"></p>
+            </div>
+
             <details class="dash-full" style="margin:20px 0 8px;padding:10px 18px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
                 <summary style="font-size:0.82em;color:var(--text-dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;"><span>&#128274;</span> Privacidad y Datos</summary>
                 <div style="padding-top:14px;">
@@ -570,6 +582,7 @@
 
             currentUser = data.user;
             showUserInfo(data.user);
+            initBilling();
 
             // Store full list globally for compatibility card selector
             window._birthProfilesList = data.birthProfiles || [];
@@ -1294,6 +1307,43 @@
         el.textContent = text;
         el.style.display = 'block';
         el.style.color = isError ? '#ff8080' : 'var(--text-dim)';
+    }
+
+    // 2026-07-17: portal de facturación de Stripe. El bloque se muestra a quien
+    // tuvo suscripción; ?billing=1 (email de rescate) lo abre automáticamente.
+    async function openBillingPortal() {
+        var btn = document.getElementById('btn-billing');
+        var msg = document.getElementById('billing-msg');
+        btn.disabled = true; var orig = btn.innerHTML;
+        btn.innerHTML = '&#9203; Abriendo...';
+        try {
+            var res = await fetch('/api/billing/portal', {
+                method: 'POST', credentials: 'same-origin',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({lang: 'es'})
+            });
+            var data = await res.json();
+            if (data.ok && data.url) { window.location.href = data.url; return; }
+            throw new Error(data.error || ('HTTP ' + res.status));
+        } catch (e) {
+            msg.style.display = 'block';
+            msg.textContent = 'No pudimos abrir el portal ahora. Escríbenos a contacto@luzestelaroficial.com y lo resolvemos.';
+            btn.disabled = false; btn.innerHTML = orig;
+        }
+    }
+    function initBilling() {
+        // Mostrar el bloque a quien tenga (o haya tenido) suscripción de pago.
+        if (currentUser && currentUser.tier !== 'free') {
+            document.getElementById('billing-block').style.display = 'block';
+        }
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('billing') === '1') {
+            var b = document.getElementById('billing-block');
+            b.style.display = 'block';
+            document.getElementById('billing-alert').style.display = 'block';
+            b.scrollIntoView({behavior: 'smooth', block: 'center'});
+            openBillingPortal();  // auto-abre el portal (viene del email de rescate)
+        }
     }
 
     async function exportMyData() {
