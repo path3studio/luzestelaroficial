@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Wed, 22 Jul 2026 02:53:00 -0600</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 03:19:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 22 de julio de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 22 de julio de 2026
+      <title>Horóscopo del 23 de julio de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 23 de julio de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (6.5/10)
+Aries: ★★★☆☆ (6.8/10)
 Tauro: ★★★☆☆ (7.2/10)
-Géminis: ★★★★☆ (8.8/10)
-Cáncer: ★★★★☆ (9.0/10)
-Leo: ★★★☆☆ (6.8/10)
-Virgo: ★★★★☆ (8.0/10)
-Libra: ★★★☆☆ (6.8/10)
-Escorpio: ★★★☆☆ (6.0/10)
-Sagitario: ★★★★☆ (8.0/10)
-Capricornio: ★★★★☆ (8.0/10)
-Acuario: ★★★★☆ (8.0/10)
-Piscis: ★★★★☆ (8.2/10)
+Géminis: ★★★★☆ (9.0/10)
+Cáncer: ★★★☆☆ (7.2/10)
+Leo: ★★★★☆ (9.2/10)
+Virgo: ★★★☆☆ (7.8/10)
+Libra: ★★★☆☆ (7.8/10)
+Escorpio: ★★★☆☆ (6.8/10)
+Sagitario: ★★★☆☆ (6.8/10)
+Capricornio: ★★★★☆ (8.5/10)
+Acuario: ★★★☆☆ (7.8/10)
+Piscis: ★★★☆☆ (6.8/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-07-23.mp3" length="21110444" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-07-23.mp3</guid>
+      <pubDate>Thu, 23 Jul 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-07-23.jpg"/>
+      <itunes:duration>00:14:39</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 22 de julio de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 22 de julio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-07-22.mp3" length="21045932" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-07-22.mp3</guid>
       <pubDate>Wed, 22 Jul 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Fri, 10 Jul 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-07-10.jpg"/>
       <itunes:duration>00:14:39</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 9 de julio de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 9 de julio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-07-09.mp3" length="20199212" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-07-09.mp3</guid>
-      <pubDate>Thu, 09 Jul 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-07-09.jpg"/>
-      <itunes:duration>00:14:01</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
