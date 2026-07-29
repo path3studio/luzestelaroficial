@@ -2204,15 +2204,45 @@ async function maybeLoadOnDemandReading(profileId, rdgEl) {
     if (rdgEl && rdgEl.parentNode) rdgEl.parentNode.appendChild(hintEl);
   }
 
+  // 2026-07-29 — Honestidad cuando la lectura personal no sale.
+  //
+  // ANTES esto callaba: si el endpoint fallaba, se dejaba el texto por signo
+  // (el mismo que ve cualquiera, gratis) y el comentario del código decía
+  // literalmente "from the user's perspective nothing went wrong". Sonaba
+  // elegante y fue lo peor que pudimos hacer: la lectura personal llevaba 14
+  // de 14 intentos fallando por una clave que faltaba en el entorno, y NADIE
+  // se enteró — ni nosotros ni el suscriptor, que canceló porque "la calidad
+  // no era la esperada". No podía decírnoslo mejor: pagaba por un
+  // diferenciador que nunca recibió y que la interfaz disimulaba.
+  //
+  // Ahora, si no sale, se dice. El texto por signo se queda (mejor eso que
+  // una página en blanco) pero ETIQUETADO como lo que es. Un aviso honesto
+  // cuesta un día incómodo; hacer pasar el genérico por personal cuesta un
+  // cliente que se va sin explicar por qué.
+  function avisarNoDisponible() {
+    var h = document.getElementById('rdg-ondemand-hint');
+    if (!h) return;
+    h.style.fontStyle = 'normal';
+    h.style.opacity = '1';
+    h.textContent = 'Esta es la lectura general de tu signo. Tu lectura personal '
+                  + 'no se pudo generar ahora mismo — inténtalo de nuevo en un rato.';
+    h.dataset.keep = '1';   // que el finally no lo borre
+  }
+
   try {
     var r = await api('/api/readings/on-demand', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profile_id: profileId, lang: LANG })
     });
-    if (!r.ok) { /* 503 flag off, 403 not premium, 502 gemini error — all silent */ return; }
+    // 403 = no es Plus y 503 = función apagada: ahí no hay nada que prometer,
+    // se calla. Cualquier otro fallo SÍ es una promesa incumplida → se avisa.
+    if (!r.ok) {
+      if (r.status !== 403 && r.status !== 503) avisarNoDisponible();
+      return;
+    }
     var j = await r.json();
-    if (!j || !j.ok || !j.reading || !j.reading.text) return;
+    if (!j || !j.ok || !j.reading || !j.reading.text) { avisarNoDisponible(); return; }
 
     // Replace the main reading text with the personalised version.
     // Fade transition so the upgrade feels like a refinement, not
@@ -2228,15 +2258,15 @@ async function maybeLoadOnDemandReading(profileId, rdgEl) {
       }, 320);
     }
   } catch (e) {
-    // Network failure, JSON parse, anything — silently keep the
-    // sign-level reading. The admin widget logs the server-side
-    // error if one happened; from the user's perspective nothing
-    // went wrong.
+    // Fallo de red, JSON ilegible, lo que sea: la lectura personal no salió,
+    // así que se dice. Ver la nota de arriba — el silencio nos costó un cliente.
+    avisarNoDisponible();
   } finally {
     _ondemandInFlight[key] = false;
     _ondemandAttempted[key] = true;
     var h = document.getElementById('rdg-ondemand-hint');
-    if (h && h.parentNode) h.parentNode.removeChild(h);
+    // El aviso de "no se pudo generar" se queda; solo se borra el "escribiendo…"
+    if (h && h.parentNode && h.dataset.keep !== '1') h.parentNode.removeChild(h);
   }
 }
 
