@@ -311,36 +311,75 @@ async function callGemini({ apiKey, model, prompt, timeoutMs }) {
 // premium caía al texto genérico de su signo. DeepSeek es API PAGADA (fiable,
 // con tope de gasto) — probado en la tarea real: 15s, 321 palabras, aspectos
 // correctos. Cadena: Gemini Pro (gratis) → DeepSeek-Reasoner → sign_level.
+// 2026-08-03 — RESCATE DE TOKENS. deepseek-reasoner escribe un borrador
+// OCULTO antes de responder, y ese borrador consume el MISMO presupuesto que
+// `max_tokens`. Con el tope anterior de 2000, el razonamiento se lo comía
+// entero, la API devolvía finish_reason="length" con contenido VACÍO, y la
+// lectura caía a Gemini — que lleva meses en 429. Resultado real: de 12
+// lecturas Plus generadas, **1 sola** funcionó. Por eso canceló la única
+// suscriptora que hemos tenido.
+//
+// Medido el 3/ago con un prompt de este tamaño: 2 de cada 3 intentos a 2000
+// devolvían vacío (razonamiento 2000/2000). El gasto de razonamiento es muy
+// variable entre llamadas idénticas, así que no basta con "subirlo un poco":
+// hace falta techo amplio + reintento cuando aun así se agota.
+//
+// `max_tokens` es un TECHO, no un cargo: solo se paga lo generado. Este es el
+// mismo arreglo que llevaba el pipeline en Python (llm_client.py) desde el
+// 28/jul; esta Function tiene su propia copia de la llamada y se quedó fuera.
+const DS_TOKENS_INICIAL = 8000;
+const DS_TOKENS_TECHO = 16000;
+
 async function callDeepSeek({ apiKey, model, prompt, timeoutMs }) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const started = Date.now();
   try {
-    const r = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 2000,
-      }),
-    });
-    const latency = Date.now() - started;
-    if (!r.ok) {
-      const body = await r.text().catch(() => '');
-      return { ok: false, status: r.status, error: body.slice(0, 500), latency };
+    let cur = DS_TOKENS_INICIAL;
+    let subido = false;
+    for (;;) {
+      const r = await fetch('https://api.deepseek.com/chat/completions', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: cur,
+        }),
+      });
+      const latency = Date.now() - started;
+      if (!r.ok) {
+        const body = await r.text().catch(() => '');
+        return { ok: false, status: r.status, error: body.slice(0, 500), latency };
+      }
+      const j = await r.json();
+      const choice = j.choices?.[0];
+      const text = choice?.message?.content?.trim();
+
+      // Se agotó el presupuesto razonando y no quedó nada que entregar:
+      // se reintenta UNA vez con el doble antes de darlo por perdido.
+      if (!text && choice?.finish_reason === 'length' && !subido) {
+        subido = true;
+        cur = Math.min(cur * 2, DS_TOKENS_TECHO);
+        continue;
+      }
+      if (!text) {
+        return {
+          ok: false,
+          error: `empty_deepseek_response(finish=${choice?.finish_reason || '?'},`
+               + `reasoning=${j.usage?.completion_tokens_details?.reasoning_tokens ?? '?'})`,
+          latency,
+        };
+      }
+      return {
+        ok: true, text, latency,
+        tokensIn: j.usage?.prompt_tokens, tokensOut: j.usage?.completion_tokens,
+      };
     }
-    const j = await r.json();
-    const text = j.choices?.[0]?.message?.content?.trim();
-    if (!text) return { ok: false, error: 'empty_deepseek_response', latency };
-    return {
-      ok: true, text, latency,
-      tokensIn: j.usage?.prompt_tokens, tokensOut: j.usage?.completion_tokens,
-    };
   } catch (e) {
     const latency = Date.now() - started;
     if (e.name === 'AbortError') return { ok: false, error: 'timeout', latency };
