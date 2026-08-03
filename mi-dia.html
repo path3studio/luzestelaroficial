@@ -464,6 +464,33 @@ body.modal-open #le-tabs{display:none !important}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .fade{animation:fadeUp .35s ease-out both}
 .d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}.d6{animation-delay:.24s}
+
+/* ── Tus áreas de vida (casas) — 2026-08-03 ─────────────────────────── */
+.houses-panel{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}
+.hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.hp-hint{margin-left:auto;text-transform:none;letter-spacing:0;font-size:.62rem;opacity:.6}
+.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.hp-item{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:11px;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
+  cursor:pointer;text-align:left;font-family:inherit;color:inherit;
+  transition:background .18s ease,border-color .18s ease,transform .12s ease}
+.hp-item:hover{background:rgba(255,255,255,.06);border-color:rgba(212,175,55,.3)}
+.hp-item:active{transform:scale(.985)}
+.hp-item.is-on{background:rgba(212,175,55,.1);border-color:rgba(212,175,55,.45)}
+.hp-em{font-size:1.15rem;line-height:1;flex:none}
+.hp-tx{display:flex;flex-direction:column;gap:1px;min-width:0}
+.hp-area{font-size:.76rem;font-weight:600;line-height:1.25}
+.hp-sign{font-size:.66rem;color:var(--text-mute);line-height:1.3}
+.hp-item.hp-active .hp-sign{color:var(--gold,#D4AF37)}
+.hp-dot{width:6px;height:6px;border-radius:50%;background:var(--gold,#D4AF37);flex:none;
+  margin-left:auto;box-shadow:0 0 7px var(--gold,#D4AF37)}
+.hp-detail{margin-top:11px;padding:13px 14px;border-radius:12px;
+  background:rgba(212,175,55,.055);border:1px solid rgba(212,175,55,.18);
+  font-size:.82rem;line-height:1.62;animation:hpIn .22s ease}
+.hp-detail b{color:var(--gold,#D4AF37);font-weight:600}
+@keyframes hpIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:400px){.hp-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -587,6 +614,22 @@ body.modal-open #le-tabs{display:none !important}
             <span>Tránsitos de hoy</span>
           </div>
           <div class="tp-list" id="tp-list"></div>
+        </div>
+
+        <!-- Tus áreas de vida (2026-08-03) — las CASAS de su carta, en
+             lenguaje humano. Va DENTRO de la sección de la carta a propósito:
+             el usuario pidió no abrir apartados nuevos ("que la gente pueda
+             ubicar todo en un mismo lugar"). La rueda ya estaba en pantalla
+             pero era ilegible; esto la traduce. Las casas YA vienen guardadas
+             en natal_chart.houses — no se calcula nada nuevo. -->
+        <div class="houses-panel" id="houses-panel" hidden>
+          <div class="hp-title">
+            <span class="tp-ic">⌂</span>
+            <span>Tus áreas de vida</span>
+            <span class="hp-hint">toca una para entenderla</span>
+          </div>
+          <div class="hp-grid" id="hp-grid"></div>
+          <div class="hp-detail" id="hp-detail" hidden></div>
         </div>
       </div>
     </section>
@@ -1333,6 +1376,10 @@ function renderAll(){
       } catch (e) { console.warn('[transits]', e); }
 
       LuzEstelar.NatalChart.render(natalCanvas, chartData, { size: size });
+      // Traduce la rueda a áreas de vida. Se llama DESPUÉS de pintar y
+      // después del bloque de tránsitos, para que pueda resaltar las casas
+      // que el cielo toca hoy. Si algo falta, se oculta sola.
+      if (typeof renderHouses === 'function') renderHouses(chartData);
       // Panel visibility mirrors the toggle.
       if (window.__transitsVisible && window.populateTransitsPanel) {
         window.populateTransitsPanel(window.__currentTransitAspects);
@@ -2864,6 +2911,90 @@ init();
 <script src="/js/sheet-modal.js" defer></script>
 <script src="/js/install-prompt.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
-<script src="/js/bottom-tabs.js" defer></script>
+<script src="/js/bottom-tabs.js" defer>
+// ── Tus áreas de vida: las CASAS de su carta, en lenguaje humano ──────
+// 2026-08-03. Todo lo que hace falta YA está guardado en
+// natal_chart.houses (lo escribe el mismo cálculo que usa la consulta de
+// pago). Aquí solo se traduce: cada casa a un área de vida con su signo,
+// y al tocarla, qué significa tener ESE signo ahí. Cero llamadas nuevas.
+var HOUSE_AREAS = {
+  1:  {em:'🌱', area:'Tu esencia',     q:'cómo te presentas y arrancas las cosas'},
+  2:  {em:'💰', area:'Dinero',         q:'cómo ganas, gastas y qué te da seguridad'},
+  3:  {em:'💬', area:'Comunicación',   q:'cómo hablas, aprendes y tratas a los cercanos'},
+  4:  {em:'🏠', area:'Hogar y raíces', q:'tu familia, tu casa, de dónde vienes'},
+  5:  {em:'✨', area:'Creatividad',    q:'lo que disfrutas, tus hijos, cómo juegas'},
+  6:  {em:'🌿', area:'Salud y rutina', q:'tu cuerpo, tu día a día, cómo trabajas'},
+  7:  {em:'❤️', area:'Amor',           q:'tus vínculos, tu pareja, cómo te asocias'},
+  8:  {em:'🌊', area:'Transformación', q:'lo compartido, las crisis que te cambian'},
+  9:  {em:'🧭', area:'Sentido',        q:'tus creencias, viajes y búsqueda de verdad'},
+  10: {em:'💼', area:'Trabajo',        q:'tu carrera, tu lugar en el mundo'},
+  11: {em:'🤝', area:'Comunidad',      q:'tus amistades, grupos y sueños a futuro'},
+  12: {em:'🌙', area:'Mundo interno',  q:'lo que no se ve, el descanso, tu intuición'}
+};
+var SIGN_FLAVOR = {
+  'Aries':'con impulso y sin rodeos','Tauro':'con calma y buscando estabilidad',
+  'Géminis':'con curiosidad y muchas ideas a la vez','Cáncer':'desde la emoción y el cuidado',
+  'Leo':'con brillo y ganas de que se note','Virgo':'con detalle y afán de mejorar',
+  'Libra':'buscando equilibrio y acuerdo','Escorpio':'con intensidad y a fondo',
+  'Sagitario':'con libertad y ganas de más','Capricornio':'con estructura y paciencia',
+  'Acuario':'a tu manera, distinta a la de todos','Piscis':'con sensibilidad e intuición'
+};
+
+function renderHouses(chart){
+  try{
+    var panel = document.getElementById('houses-panel');
+    var grid  = document.getElementById('hp-grid');
+    if(!panel || !grid) return;
+    var houses = chart && chart.houses;
+    if(!houses || !houses.length){ panel.hidden = true; return; }
+
+    // ¿Qué casas toca el cielo HOY? Se resalta con un punto dorado; si no
+    // hay datos de tránsitos, simplemente no se resalta nada (fail-open).
+    var activas = {};
+    try{
+      var tp = document.getElementById('tp-list');
+      if(tp && tp.textContent){
+        // Con indexOf, 'casa 1' hacía match dentro de 'casa 10' y pintaba el
+        // punto en la casa equivocada. Frontera de palabra obligatoria.
+        houses.forEach(function(h){
+          var re = new RegExp('casa\\s*' + h.house + '(?!\\d)');
+          if(re.test(tp.textContent)) activas[h.house] = true;
+        });
+      }
+    }catch(e){}
+
+    grid.innerHTML = houses.map(function(h){
+      var a = HOUSE_AREAS[h.house]; if(!a) return '';
+      return '<button type="button" class="hp-item' + (activas[h.house]?' hp-active':'') +
+        '" data-house="' + h.house + '">' +
+        '<span class="hp-em">' + a.em + '</span>' +
+        '<span class="hp-tx"><span class="hp-area">' + a.area + '</span>' +
+        '<span class="hp-sign">casa ' + h.house + ' en ' + h.sign + '</span></span>' +
+        (activas[h.house] ? '<span class="hp-dot" title="el cielo la toca hoy"></span>' : '') +
+        '</button>';
+    }).join('');
+
+    var det = document.getElementById('hp-detail');
+    grid.querySelectorAll('.hp-item').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var n = parseInt(btn.dataset.house, 10);
+        var h = houses.filter(function(x){ return x.house === n; })[0];
+        var a = HOUSE_AREAS[n]; if(!h || !a || !det) return;
+        var yaAbierta = btn.classList.contains('is-on');
+        grid.querySelectorAll('.hp-item').forEach(function(b){ b.classList.remove('is-on'); });
+        if(yaAbierta){ det.hidden = true; return; }
+        btn.classList.add('is-on');
+        det.innerHTML = '<b>' + a.em + ' ' + a.area + '</b> — tu casa ' + n +
+          ' está en <b>' + h.sign + '</b>.<br>' +
+          'Es el área de ' + a.q + ', y la vives <b>' +
+          (SIGN_FLAVOR[h.sign] || 'a tu manera') + '</b>.' +
+          (activas[n] ? '<br><br>✦ <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.' : '');
+        det.hidden = false;
+      });
+    });
+    panel.hidden = false;
+  }catch(e){ /* nunca romper la página por esto */ }
+}
+</script>
 </body>
 </html>
