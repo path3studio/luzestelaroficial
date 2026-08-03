@@ -489,6 +489,7 @@ body.modal-open #le-tabs{display:none !important}
   background:rgba(212,175,55,.055);border:1px solid rgba(212,175,55,.18);
   font-size:.82rem;line-height:1.62;animation:hpIn .22s ease}
 .hp-detail b{color:var(--gold,#D4AF37);font-weight:600}
+.hp-q{color:var(--text-mute);font-style:italic}
 @keyframes hpIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (max-width:400px){.hp-grid{grid-template-columns:1fr 1fr}}
 </style>
@@ -2918,27 +2919,78 @@ init();
 // pago). Aquí solo se traduce: cada casa a un área de vida con su signo,
 // y al tocarla, qué significa tener ESE signo ahí. Cero llamadas nuevas.
 var HOUSE_AREAS = {
-  1:  {em:'🌱', area:'Tu esencia',     q:'cómo te presentas y arrancas las cosas'},
-  2:  {em:'💰', area:'Dinero',         q:'cómo ganas, gastas y qué te da seguridad'},
-  3:  {em:'💬', area:'Comunicación',   q:'cómo hablas, aprendes y tratas a los cercanos'},
-  4:  {em:'🏠', area:'Hogar y raíces', q:'tu familia, tu casa, de dónde vienes'},
-  5:  {em:'✨', area:'Creatividad',    q:'lo que disfrutas, tus hijos, cómo juegas'},
-  6:  {em:'🌿', area:'Salud y rutina', q:'tu cuerpo, tu día a día, cómo trabajas'},
-  7:  {em:'❤️', area:'Amor',           q:'tus vínculos, tu pareja, cómo te asocias'},
-  8:  {em:'🌊', area:'Transformación', q:'lo compartido, las crisis que te cambian'},
-  9:  {em:'🧭', area:'Sentido',        q:'tus creencias, viajes y búsqueda de verdad'},
-  10: {em:'💼', area:'Trabajo',        q:'tu carrera, tu lugar en el mundo'},
-  11: {em:'🤝', area:'Comunidad',      q:'tus amistades, grupos y sueños a futuro'},
-  12: {em:'🌙', area:'Mundo interno',  q:'lo que no se ve, el descanso, tu intuición'}
+  1:  {em:'🌱', area:'Tu esencia',     q:'cómo te presentas ante el mundo y cómo arrancas todo lo nuevo. Es la primera impresión que dejas, antes de que digas nada'},
+  2:  {em:'💰', area:'Dinero',         q:'tu relación con lo material: cómo ganas, en qué gastas y qué necesitas tener para sentirte a salvo'},
+  3:  {em:'💬', area:'Comunicación',   q:'cómo piensas y te explicas, qué aprendes con facilidad, y el trato con hermanos y gente cercana'},
+  4:  {em:'🏠', area:'Hogar y raíces', q:'tu familia, la casa donde creciste y la que construyes. De dónde vienes y qué te sostiene por dentro'},
+  5:  {em:'✨', area:'Creatividad',    q:'lo que haces por puro gusto: crear, jugar, enamorarte, los hijos. Donde te sale el brillo sin esfuerzo'},
+  6:  {em:'🌿', area:'Salud y rutina', q:'tu cuerpo y tu día a día: cómo trabajas, qué hábitos te sostienen y dónde se te nota el desgaste'},
+  7:  {em:'❤️', area:'Amor',           q:'cómo te vinculas de tú a tú: la pareja, los socios, y qué buscas en el otro que no ves en ti'},
+  8:  {em:'🌊', area:'Transformación', q:'lo que compartes con otros — dinero, intimidad, secretos — y las crisis que te obligan a cambiar de piel'},
+  9:  {em:'🧭', area:'Sentido',        q:'en qué crees, qué te expande: los viajes, los estudios largos, la búsqueda de una verdad propia'},
+  10: {em:'💼', area:'Trabajo',        q:'tu carrera y tu reputación: qué quieres construir y por qué te gustaría que te recordaran'},
+  11: {em:'🤝', area:'Comunidad',      q:'tus amistades, los grupos donde encajas y los sueños que persigues a largo plazo'},
+  12: {em:'🌙', area:'Mundo interno',  q:'lo que no se ve: tu descanso, tu intuición, los miedos silenciosos y lo que sueltas a solas'}
 };
+// Cómo OPERA cada signo cuando rige un área. Escrito para que se entienda sin
+// saber astrología: conducta observable, no jerga.
 var SIGN_FLAVOR = {
-  'Aries':'con impulso y sin rodeos','Tauro':'con calma y buscando estabilidad',
-  'Géminis':'con curiosidad y muchas ideas a la vez','Cáncer':'desde la emoción y el cuidado',
-  'Leo':'con brillo y ganas de que se note','Virgo':'con detalle y afán de mejorar',
-  'Libra':'buscando equilibrio y acuerdo','Escorpio':'con intensidad y a fondo',
-  'Sagitario':'con libertad y ganas de más','Capricornio':'con estructura y paciencia',
-  'Acuario':'a tu manera, distinta a la de todos','Piscis':'con sensibilidad e intuición'
+  'Aries':      'avanzas por impulso: arrancas rápido, te aburre pedir permiso y funcionas mejor cuando algo es tuyo desde el principio',
+  'Tauro':      'vas con calma y construyes para que dure: te cuesta empezar, pero cuando arrancas ya no sueltas',
+  'Géminis':    'lo llevas con curiosidad y muchas ideas a la vez: aprendes rápido, aunque te cueste quedarte en una sola',
+  'Cáncer':     'lo vives desde la emoción: proteges, cuidas y te repliegas cuando algo te toca de más',
+  'Leo':        'necesitas que se note y que sea tuyo: pones el corazón entero, y te duele que no lo reconozcan',
+  'Virgo':      'lo trabajas con detalle y afán de mejorar: ves lo que falta antes que nadie, a veces también en ti',
+  'Libra':      'buscas equilibrio y acuerdo: te importa que las cosas sean justas, aunque te cueste decidir sola',
+  'Escorpio':   'lo vives a fondo o no lo vives: intensidad, poca superficie y una lealtad que no se explica',
+  'Sagitario':  'necesitas libertad y horizonte: te cuesta lo que te ata y te crece lo que te enseña algo nuevo',
+  'Capricornio':'lo llevas con estructura y paciencia: te tomas el tiempo que haga falta y respondes por lo que dices',
+  'Acuario':    'lo haces a tu manera, distinta a la de todos: te incomoda el molde y ahí está tu aporte',
+  'Piscis':     'lo vives con sensibilidad e intuición: captas lo que nadie dijo, y necesitas cuidar que no te inunde'
 };
+// Regente de cada signo — permite decir DÓNDE está el planeta que gobierna
+// esa área en su carta, que es la capa que lo vuelve suyo y no de manual.
+var SIGN_RULER = {
+  'Aries':'Marte','Tauro':'Venus','Géminis':'Mercurio','Cáncer':'Luna',
+  'Leo':'Sol','Virgo':'Mercurio','Libra':'Venus','Escorpio':'Plutón',
+  'Sagitario':'Júpiter','Capricornio':'Saturno','Acuario':'Urano','Piscis':'Neptuno'
+};
+var PLANET_MEAN = {
+  'Sol':'tu identidad','Luna':'tus emociones','Mercurio':'tu mente','Venus':'tu forma de querer',
+  'Marte':'tu empuje','Júpiter':'tu expansión','Saturno':'tu disciplina',
+  'Urano':'tus cambios','Neptuno':'tu imaginación','Plutón':'tu poder'
+};
+
+// ¿Qué planetas SUYOS caen en cada casa? Se calcula con las cúspides
+// guardadas: un planeta pertenece a la casa cuya cúspide acaba de pasar.
+function planetasEnCasa(chart, houses, n){
+  try{
+    var cusps = houses.slice().sort(function(a,b){ return a.house - b.house; })
+                      .map(function(h){ return h.cusp_degree; });
+    return (chart.planets || []).filter(function(p){
+      var lon = ((p.longitude % 360) + 360) % 360;
+      var ini = cusps[n-1], fin = cusps[n % 12];
+      return (ini <= fin) ? (lon >= ini && lon < fin)
+                          : (lon >= ini || lon < fin);   // cruza los 0°
+    }).map(function(p){ return { nombre: p.name_es || p.name, sign: p.sign }; });
+  }catch(e){ return []; }
+}
+
+function posicionPlaneta(chart, nombreEs){
+  try{
+    var p = (chart.planets || []).filter(function(x){
+      return (x.name_es || x.name) === nombreEs; })[0];
+    if(!p) return null;
+    var cusps = (chart.houses||[]).slice().sort(function(a,b){ return a.house-b.house; })
+                  .map(function(h){ return h.cusp_degree; });
+    var lon = ((p.longitude % 360) + 360) % 360, casa = 1;
+    for(var i=0;i<12;i++){
+      var ini=cusps[i], fin=cusps[(i+1)%12];
+      if((ini<=fin) ? (lon>=ini && lon<fin) : (lon>=ini || lon<fin)){ casa=i+1; break; }
+    }
+    return { sign: p.sign, casa: casa };
+  }catch(e){ return null; }
+}
 
 function renderHouses(chart){
   try{
@@ -2984,11 +3036,44 @@ function renderHouses(chart){
         grid.querySelectorAll('.hp-item').forEach(function(b){ b.classList.remove('is-on'); });
         if(yaAbierta){ det.hidden = true; return; }
         btn.classList.add('is-on');
-        det.innerHTML = '<b>' + a.em + ' ' + a.area + '</b> — tu casa ' + n +
-          ' está en <b>' + h.sign + '</b>.<br>' +
-          'Es el área de ' + a.q + ', y la vives <b>' +
-          (SIGN_FLAVOR[h.sign] || 'a tu manera') + '</b>.' +
-          (activas[n] ? '<br><br>✦ <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.' : '');
+        // Explicación en 4 capas: qué es el área · cómo la vives · qué
+        // planetas TUYOS caen ahí · dónde está su regente. Las dos últimas
+        // son las que lo vuelven suyo y no un texto de manual.
+        var partes = [];
+        partes.push('<b>' + a.em + ' ' + a.area + '</b> — tu casa ' + n +
+                    ' está en <b>' + h.sign + '</b>.');
+        partes.push('<span class="hp-q">Es el área de ' + a.q + '.</span>');
+        partes.push('Con <b>' + h.sign + '</b> aquí, ' +
+                    (SIGN_FLAVOR[h.sign] || 'lo vives a tu manera') + '.');
+
+        var dentro = planetasEnCasa(chart, houses, n);
+        if(dentro.length){
+          var lista = dentro.map(function(p){
+            return '<b>' + p.nombre + '</b>' +
+                   (PLANET_MEAN[p.nombre] ? ' (' + PLANET_MEAN[p.nombre] + ')' : '');
+          });
+          var txt = lista.length === 1 ? lista[0]
+                  : lista.slice(0,-1).join(', ') + ' y ' + lista[lista.length-1];
+          partes.push('🪐 Y aquí tienes ' + txt + '. Es una zona cargada de tu ' +
+                      'carta: le vas a dar más vueltas que la mayoría.');
+        } else {
+          partes.push('🪐 No tienes planetas aquí, y eso <b>no es malo</b> — ' +
+                      'solo significa que no es un campo de batalla constante. ' +
+                      'Se activa cuando el cielo pasa por encima, como hoy.');
+        }
+
+        var reg = SIGN_RULER[h.sign];
+        var dondeReg = reg ? posicionPlaneta(chart, reg) : null;
+        if(reg && dondeReg){
+          partes.push('Quien gobierna esta área es <b>' + reg + '</b>, y en tu ' +
+                      'carta está en <b>' + dondeReg.sign + '</b> (casa ' +
+                      dondeReg.casa + ') — ahí es donde se resuelve de verdad ' +
+                      'lo de esta zona.');
+        }
+        if(activas[n]){
+          partes.push('✦ <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
+        }
+        det.innerHTML = partes.join('<br><br>');
         det.hidden = false;
       });
     });
