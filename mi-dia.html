@@ -478,7 +478,7 @@ body.modal-open #le-tabs{display:none !important}
 .hp-item:hover{background:rgba(255,255,255,.06);border-color:rgba(212,175,55,.3)}
 .hp-item:active{transform:scale(.985)}
 .hp-item.is-on{background:rgba(212,175,55,.1);border-color:rgba(212,175,55,.45)}
-.hp-em{font-size:1.15rem;line-height:1;flex:none}
+.hp-gly{font-family:'Noto Sans Symbols 2','Apple Symbols',serif;color:var(--gold);font-variant-emoji:text;margin-right:.2em}.hp-em{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:.9rem;font-weight:600;letter-spacing:.02em;color:var(--gold);line-height:1;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}.hp-item.is-on .hp-em,.hp-item.hp-active .hp-em{background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.4),rgba(212,168,73,.08) 70%);border-color:rgba(212,168,73,.55)}
 .hp-tx{display:flex;flex-direction:column;gap:1px;min-width:0}
 .hp-area{font-size:.76rem;font-weight:600;line-height:1.25}
 .hp-sign{font-size:.66rem;color:var(--text-mute);line-height:1.3}
@@ -2912,7 +2912,13 @@ init();
 <script src="/js/sheet-modal.js" defer></script>
 <script src="/js/install-prompt.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
-<script src="/js/bottom-tabs.js" defer>
+<script src="/js/bottom-tabs.js" defer></script>
+<!-- 2026-08-03: este bloque vivía dentro de la etiqueta de bottom-tabs.js,
+     que lleva atributo src. Una etiqueta de script con src IGNORA su
+     contenido en línea, así que todo el panel de casas era código muerto:
+     nunca se ejecutó en el navegador. Estaba en el HTML —se veía con
+     curl— pero no corría. Comprobar presencia NO es comprobar ejecución. -->
+<script>
 // ── Tus áreas de vida: las CASAS de su carta, en lenguaje humano ──────
 // 2026-08-03. Todo lo que hace falta YA está guardado en
 // natal_chart.houses (lo escribe el mismo cálculo que usa la consulta de
@@ -2992,7 +2998,31 @@ function posicionPlaneta(chart, nombreEs){
   }catch(e){ return null; }
 }
 
+// Los 144 textos signo×casa, escritos uno por uno con el mejor modelo y
+// guardados para siempre (generar_casas_signos.py). Antes esta ficha usaba UN
+// texto por signo para las 12 casas, y eso es falso: "Aries en tu casa 10"
+// (carrera) y "Aries en tu casa 4" (hogar) son conductas distintas.
+// Se piden una vez, sin bloquear el render: si aún no llegaron, se muestra el
+// texto genérico y la ficha sigue funcionando igual.
+// Identidad: las 12 casas se numeran en ROMANOS sobre disco dorado, el mismo
+// tratamiento que ya usan .slma-ic y .ob-bul-ic. Antes eran emoji (🌱💰💬…),
+// que se ven distintos en cada sistema operativo, rompen la paleta y le dan al
+// panel un aire de app genérica. El romano es inequívoco —no se confunde con
+// el signo de la cúspide, que se muestra al lado— y es el lenguaje de la marca.
+var ROMANOS = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+var CASAS_SIGNOS = null;
+function cargarCasasSignos(){
+  if (CASAS_SIGNOS !== null) return;
+  CASAS_SIGNOS = {};
+  fetch('/data/casas_signos.json')
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ if (j) CASAS_SIGNOS = j; })
+    .catch(function(){ /* se queda el texto genérico */ });
+}
+
 function renderHouses(chart){
+  cargarCasasSignos();
   try{
     var panel = document.getElementById('houses-panel');
     var grid  = document.getElementById('hp-grid');
@@ -3019,7 +3049,7 @@ function renderHouses(chart){
       var a = HOUSE_AREAS[h.house]; if(!a) return '';
       return '<button type="button" class="hp-item' + (activas[h.house]?' hp-active':'') +
         '" data-house="' + h.house + '">' +
-        '<span class="hp-em">' + a.em + '</span>' +
+        '<span class="hp-em" aria-hidden="true">' + ROMANOS[h.house] + '</span>' +
         '<span class="hp-tx"><span class="hp-area">' + a.area + '</span>' +
         '<span class="hp-sign">casa ' + h.house + ' en ' + h.sign + '</span></span>' +
         (activas[h.house] ? '<span class="hp-dot" title="el cielo la toca hoy"></span>' : '') +
@@ -3040,11 +3070,16 @@ function renderHouses(chart){
         // planetas TUYOS caen ahí · dónde está su regente. Las dos últimas
         // son las que lo vuelven suyo y no un texto de manual.
         var partes = [];
-        partes.push('<b>' + a.em + ' ' + a.area + '</b> — tu casa ' + n +
+        partes.push('<b>' + a.area + '</b> — tu casa ' + n +
                     ' está en <b>' + h.sign + '</b>.');
         partes.push('<span class="hp-q">Es el área de ' + a.q + '.</span>');
-        partes.push('Con <b>' + h.sign + '</b> aquí, ' +
-                    (SIGN_FLAVOR[h.sign] || 'lo vives a tu manera') + '.');
+        var propio = CASAS_SIGNOS && CASAS_SIGNOS[h.sign + '|' + n];
+        if (propio) {
+          partes.push(propio);
+        } else {
+          partes.push('Con <b>' + h.sign + '</b> aquí, ' +
+                      (SIGN_FLAVOR[h.sign] || 'lo vives a tu manera') + '.');
+        }
 
         var dentro = planetasEnCasa(chart, houses, n);
         if(dentro.length){
@@ -3054,10 +3089,10 @@ function renderHouses(chart){
           });
           var txt = lista.length === 1 ? lista[0]
                   : lista.slice(0,-1).join(', ') + ' y ' + lista[lista.length-1];
-          partes.push('🪐 Y aquí tienes ' + txt + '. Es una zona cargada de tu ' +
+          partes.push('<span class="hp-gly">\u2641</span> Y aquí tienes ' + txt + '. Es una zona cargada de tu ' +
                       'carta: le vas a dar más vueltas que la mayoría.');
         } else {
-          partes.push('🪐 No tienes planetas aquí, y eso <b>no es malo</b> — ' +
+          partes.push('<span class="hp-gly">\u2641</span> No tienes planetas aquí, y eso <b>no es malo</b> — ' +
                       'solo significa que no es un campo de batalla constante. ' +
                       'Se activa cuando el cielo pasa por encima, como hoy.');
         }
@@ -3071,7 +3106,7 @@ function renderHouses(chart){
                       'lo de esta zona.');
         }
         if(activas[n]){
-          partes.push('✦ <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
+          partes.push('<span class="hp-gly">\u2726</span> <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
         }
         det.innerHTML = partes.join('<br><br>');
         det.hidden = false;
