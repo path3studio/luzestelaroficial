@@ -403,11 +403,27 @@
                 <div class="card" style="text-align:center;">
                     <h2 style="margin-bottom:6px;">As&iacute; se ve tu mapa</h2>
                     <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:20px;">Un mapa real generado por nuestro sistema. El tuyo llevar&aacute; tu mensaje, tu fecha y tu lugar exactos.</p>
-                    <img src="/assets/mapa-ejemplos/mapa-real.webp" alt="Mapa estelar real de ejemplo: Nuestra Boda — Ana y Pedro, Canc&uacute;n, 21 de junio de 2026" loading="lazy" width="1200" height="1800" style="width:100%;max-width:520px;height:auto;border-radius:14px;border:1px solid rgba(212,168,73,0.3);box-shadow:0 12px 40px rgba(0,0,0,0.45);">
+                    <img id="mapa-destacado" src="/assets/mapa-ejemplos/mapa-real.webp" alt="Mapa estelar real de ejemplo: Nuestra Boda — Ana y Pedro, Canc&uacute;n, 21 de junio de 2026" loading="lazy" width="1200" height="1800" style="width:100%;max-width:520px;height:auto;border-radius:14px;border:1px solid rgba(212,168,73,0.3);box-shadow:0 12px 40px rgba(0,0,0,0.45);">
                     <p style="font-size:0.8em;color:var(--text-dim);margin-top:14px;max-width:520px;margin-left:auto;margin-right:auto;">Calculado con el cat&aacute;logo <strong>Hipparcos</strong>: m&aacute;s de <strong>9.000 estrellas</strong> reales, constelaciones y coordenadas exactas de tu momento. Entregado en alta resoluci&oacute;n, listo para imprimir.</p>
                 </div>
             </div>
         </section>
+        <script>
+        // Rota el mapa destacado por día (boda / nacimiento / aniversario).
+        // Sin JS se queda el de boda, que es el src por defecto.
+        (function(){
+            var maps=[
+                null,
+                {src:'/assets/mapa-ejemplos/mapa-real-2.webp',alt:'Mapa estelar real de ejemplo: Bienvenida al mundo, Valentina — Monterrey, 12 de enero de 2026'},
+                {src:'/assets/mapa-ejemplos/mapa-real-3.webp',alt:'Mapa estelar real de ejemplo: 10 años juntos — Luis y Carmen, Ciudad de México'}
+            ];
+            var d=new Date();
+            var day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+            var pick=maps[day%3];
+            var img=document.getElementById('mapa-destacado');
+            if(img&&pick){img.src=pick.src;img.alt=pick.alt;}
+        })();
+        </script>
 
         <!-- Ejemplos reales -->
         <section style="padding-top:0;">

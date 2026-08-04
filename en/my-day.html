@@ -581,7 +581,7 @@ body.modal-open #le-tabs{display:none !important}
           <p class="mapa-hd">A sky worth remembering</p>
           <p class="mapa-desc">The real sky of your exact date and place, with over 9,000 stars from the Hipparcos catalog. High resolution, ready to print or gift.</p>
           <div class="mapa-carrusel" aria-label="Star Map examples">
-            <img src="/assets/mapa-ejemplos/mapa-real.webp" alt="Real star map example: Our Wedding — Ana y Pedro" loading="lazy" width="1200" height="1800" class="contain">
+            <img id="mapa-destacado" src="/assets/mapa-ejemplos/mapa-real.webp" alt="Real star map example: Our Wedding — Ana y Pedro" loading="lazy" width="1200" height="1800" class="contain">
             <img src="/assets/mapa-ejemplos/ejemplo-4.webp" alt="Framed star map and phone wallpaper" loading="lazy" width="900" height="1125">
             <img src="/assets/mapa-ejemplos/ejemplo-5.webp" alt="Star map printed in different sizes" loading="lazy" width="900" height="1125">
             <img src="/assets/mapa-ejemplos/ejemplo-1.webp" alt="Personalized birthday star map" loading="lazy" width="900" height="1125">
@@ -596,6 +596,21 @@ body.modal-open #le-tabs{display:none !important}
         </div>
       </div>
     </section>
+    <script>
+    // Rotates the first carousel slide daily (wedding / birth / anniversary).
+    (function(){
+      var maps=[
+        null,
+        {src:'/assets/mapa-ejemplos/mapa-real-2.webp',alt:'Real star map example: Welcome to the world, Valentina'},
+        {src:'/assets/mapa-ejemplos/mapa-real-3.webp',alt:'Real star map example: 10 years together — Luis y Carmen'}
+      ];
+      var d=new Date();
+      var day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+      var pick=maps[day%3];
+      var img=document.getElementById('mapa-destacado');
+      if(img&&pick){img.src=pick.src;img.alt=pick.alt;}
+    })();
+    </script>
 
     <!-- 7.5 Newsletter -->
     <section class="fade d6" style="margin-top:6px">

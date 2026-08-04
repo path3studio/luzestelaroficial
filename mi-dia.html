@@ -747,7 +747,7 @@ body.modal-open #le-tabs{display:none !important}
           <p class="mapa-hd">Un cielo para recordar</p>
           <p class="mapa-desc">El cielo real de tu fecha y lugar exactos, con m&aacute;s de 9.000 estrellas del cat&aacute;logo Hipparcos. En alta resoluci&oacute;n, listo para imprimir o regalar.</p>
           <div class="mapa-carrusel" aria-label="Ejemplos del Mapa Estelar">
-            <img src="/assets/mapa-ejemplos/mapa-real.webp" alt="Mapa estelar real de ejemplo: Nuestra Boda — Ana y Pedro" loading="lazy" width="1200" height="1800" class="contain">
+            <img id="mapa-destacado" src="/assets/mapa-ejemplos/mapa-real.webp" alt="Mapa estelar real de ejemplo: Nuestra Boda — Ana y Pedro" loading="lazy" width="1200" height="1800" class="contain">
             <img src="/assets/mapa-ejemplos/ejemplo-4.webp" alt="Mapa estelar enmarcado y como fondo de celular" loading="lazy" width="900" height="1125">
             <img src="/assets/mapa-ejemplos/ejemplo-5.webp" alt="Mapa estelar impreso en distintos tama&ntilde;os" loading="lazy" width="900" height="1125">
             <img src="/assets/mapa-ejemplos/ejemplo-1.webp" alt="Mapa estelar de cumplea&ntilde;os personalizado" loading="lazy" width="900" height="1125">
@@ -762,6 +762,21 @@ body.modal-open #le-tabs{display:none !important}
         </div>
       </div>
     </section>
+    <script>
+    // Rota el primer slide del carrusel por día (boda / nacimiento / aniversario).
+    (function(){
+      var maps=[
+        null,
+        {src:'/assets/mapa-ejemplos/mapa-real-2.webp',alt:'Mapa estelar real de ejemplo: Bienvenida al mundo, Valentina'},
+        {src:'/assets/mapa-ejemplos/mapa-real-3.webp',alt:'Mapa estelar real de ejemplo: 10 años juntos — Luis y Carmen'}
+      ];
+      var d=new Date();
+      var day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+      var pick=maps[day%3];
+      var img=document.getElementById('mapa-destacado');
+      if(img&&pick){img.src=pick.src;img.alt=pick.alt;}
+    })();
+    </script>
 
     <!-- 7.5 Newsletter -->
     <section class="fade d6" style="margin-top:6px">
