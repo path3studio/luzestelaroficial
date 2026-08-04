@@ -18,13 +18,15 @@ Compite contra A/B/C en la rotación de 5. Medible vía thumb_variant_log.jsonl
   :root{--gold:#d4a849;--gold-light:#f0d078;--navy:#12102a;--navy2:#1c1838}
   *{margin:0;padding:0;box-sizing:border-box}
   body{width:1280px;height:720px;overflow:hidden;position:relative;
-       background:radial-gradient(ellipse at 70% 30%,var(--navy2) 0%,var(--navy) 62%,#0b0a1e 100%);
+       background:#12102a url("{{COSMIC_BG}}") center/cover no-repeat;
        font-family:'Inter',sans-serif;color:#fff}
+  /* velo: la galaxia acompaña, el texto manda */
+  .velo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,10,30,.88) 0%,rgba(18,16,42,.72) 46%,rgba(18,16,42,.38) 100%)}
   .glifo-fondo{position:absolute;right:-60px;top:50%;transform:translateY(-50%);
        font-family:'Noto Sans Symbols 2',serif;font-size:640px;line-height:1;
        color:rgba(212,168,73,.10);font-variant-emoji:text}
   .marco{position:absolute;inset:22px;border:2px solid rgba(212,168,73,.5);border-radius:18px}
-  .contenido{position:absolute;left:64px;top:0;bottom:0;width:820px;
+  .contenido{position:absolute;left:96px;top:0;bottom:0;width:820px;
        display:flex;flex-direction:column;justify-content:center;gap:8px}
   .hoy{font-size:34px;font-weight:700;letter-spacing:.34em;color:var(--gold);
        text-transform:uppercase}
@@ -40,11 +42,14 @@ Compite contra A/B/C en la rotación de 5. Medible vía thumb_variant_log.jsonl
   .sello .fecha{font-size:26px;font-weight:700;color:var(--gold);
        border:2px solid rgba(212,168,73,.65);border-radius:999px;padding:10px 26px;
        letter-spacing:.08em;background:rgba(18,16,42,.6)}
-  .brand{position:absolute;left:64px;bottom:46px;font-family:'Cormorant Garamond',serif;
-       font-size:26px;letter-spacing:.3em;color:rgba(240,208,120,.85);text-transform:uppercase}
+  .brand{position:absolute;left:96px;bottom:40px;display:flex;align-items:center;gap:14px}
+  .brand img{height:52px;width:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,.6))}
+  .brand span{font-family:'Cormorant Garamond',serif;font-size:26px;letter-spacing:.3em;
+       color:rgba(240,208,120,.9);text-transform:uppercase}
 </style>
 </head>
 <body>
+  <div class="velo"></div>
   <div class="glifo-fondo">{{SIGN_GLYPH}}&#xFE0E;</div>
   <div class="marco"></div>
   <div class="contenido">
@@ -52,7 +57,7 @@ Compite contra A/B/C en la rotación de 5. Medible vía thumb_variant_log.jsonl
     <div class="signo">{{SIGN_NAME}}</div>
     <div class="gancho">{{TRANSIT_LINE}}</div>
   </div>
-  <div class="brand">✦ Luz Estelar</div>
+  <div class="brand"><img src="{{LOGO}}" alt=""><span>Luz Estelar</span></div>
   <div class="sello"><div class="fecha">{{DATE_TEXT}} · {{YEAR}}</div></div>
 </body>
 </html>
