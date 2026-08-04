@@ -470,7 +470,7 @@ body.modal-open #le-tabs{display:none !important}
 .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
   text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
 .hp-hint{margin-left:auto;text-transform:none;letter-spacing:0;font-size:.62rem;opacity:.6}
-.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
 .hp-item{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:11px;
   background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
   cursor:pointer;text-align:left;font-family:inherit;color:inherit;
@@ -629,6 +629,12 @@ body.modal-open #le-tabs{display:none !important}
             <span>Tus áreas de vida</span>
             <span class="hp-hint">toca una para entenderla</span>
           </div>
+          <!-- Para quien no sabe astrología: UNA frase que explica qué está
+               viendo, antes de los 12 botones. Sin jerga: ni "cúspide" ni
+               "regente" — eso vive dentro de cada ficha, ya traducido. -->
+          <p class="hp-intro">Tu carta divide tu vida en 12 áreas — el amor, el
+          dinero, el trabajo… — y el cielo del día no las toca todas por igual.
+          El signo que llevas en cada una describe <em>cómo la vives tú</em>.</p>
           <div class="hp-grid" id="hp-grid"></div>
           <div class="hp-detail" id="hp-detail" hidden></div>
         </div>
@@ -1381,6 +1387,18 @@ function renderAll(){
       // después del bloque de tránsitos, para que pueda resaltar las casas
       // que el cielo toca hoy. Si algo falta, se oculta sola.
       if (typeof renderHouses === 'function') renderHouses(chartData);
+      // Bienvenida post-pago (2026-08-03). Stripe devolvía al usuario a
+      // /dashboard, que ni siquiera leía el parámetro: pagabas y nadie te
+      // decía nada. Ahora el checkout regresa AQUÍ y se confirma en persona.
+      try{
+        var _sp = new URLSearchParams(window.location.search);
+        if(_sp.get('subscription') === 'success' && window.LuzEstelar && LuzEstelar.toast){
+          LuzEstelar.toast('✨ Bienvenida a Plus — tu lectura diaria personalizada ya está activa', {duration: 9000});
+          _sp.delete('subscription'); _sp.delete('cadence');
+          var _q = _sp.toString();
+          history.replaceState(null, '', window.location.pathname + (_q ? '?' + _q : ''));
+        }
+      }catch(e){}
       // Panel visibility mirrors the toggle.
       if (window.__transitsVisible && window.populateTransitsPanel) {
         window.populateTransitsPanel(window.__currentTransitAspects);

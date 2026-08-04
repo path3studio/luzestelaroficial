@@ -37,9 +37,12 @@ export async function onRequestPost(context) {
     return Response.json({ ok: false, error: 'Pricing not configured' }, { status: 500 });
   }
 
+  // 2026-08-03: el retorno post-pago va a /mi-dia (la casa de la app: ahí
+  // abre la PWA y ahí apuntan las pestañas), no a /dashboard, que ni leía el
+  // parámetro. mi-dia muestra la bienvenida y la lectura ya desbloqueada.
   const successUrl = lang === 'en'
-    ? `${origin}/en/dashboard.html?subscription=success&cadence=${cadence}`
-    : `${origin}/dashboard.html?subscription=success&cadence=${cadence}`;
+    ? `${origin}/en/my-day.html?subscription=success&cadence=${cadence}`
+    : `${origin}/mi-dia.html?subscription=success&cadence=${cadence}`;
   const cancelUrl = lang === 'en'
     ? `${origin}/en/planes.html`
     : `${origin}/planes.html`;
