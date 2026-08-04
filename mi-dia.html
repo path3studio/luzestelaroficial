@@ -3010,6 +3010,10 @@ function posicionPlaneta(chart, nombreEs){
 // panel un aire de app genérica. El romano es inequívoco —no se confunde con
 // el signo de la cúspide, que se muestra al lado— y es el lenguaje de la marca.
 var ROMANOS = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+// El Sol y la Luna llevan artículo ("tienes la Luna", "gobierna el Sol");
+// los planetas no ("tienes Venus"). Vienen sin él desde la carta guardada.
+var ART_ASTRO = { 'Sol': 'el Sol', 'Luna': 'la Luna' };
+function conArticulo(n){ return ART_ASTRO[n] || n; }
 
 var CASAS_SIGNOS = null;
 function cargarCasasSignos(){
@@ -3044,6 +3048,10 @@ function renderHouses(chart){
         houses.push({ house: hi + 1, sign: zodEs[Math.floor(hlon / 30)],
                       cusp_degree: hlon });
       }
+      // CRÍTICO: guardarlas en el chart, no solo en la variable local.
+      // posicionPlaneta() lee chart.houses; si se queda vacío, el cálculo
+      // del regente devuelve "casa 1" para todo (bug real del 3/ago).
+      chart.houses = houses;
     }
     if(!houses || !houses.length){ panel.hidden = true; return; }
 
@@ -3101,7 +3109,7 @@ function renderHouses(chart){
         var dentro = planetasEnCasa(chart, houses, n);
         if(dentro.length){
           var lista = dentro.map(function(p){
-            return '<b>' + p.nombre + '</b>' +
+            return '<b>' + conArticulo(p.nombre) + '</b>' +
                    (PLANET_MEAN[p.nombre] ? ' (' + PLANET_MEAN[p.nombre] + ')' : '');
           });
           var txt = lista.length === 1 ? lista[0]
@@ -3117,10 +3125,12 @@ function renderHouses(chart){
         var reg = SIGN_RULER[h.sign];
         var dondeReg = reg ? posicionPlaneta(chart, reg) : null;
         if(reg && dondeReg){
-          partes.push('Quien gobierna esta área es <b>' + reg + '</b>, y en tu ' +
-                      'carta está en <b>' + dondeReg.sign + '</b> (casa ' +
-                      dondeReg.casa + ') — ahí es donde se resuelve de verdad ' +
-                      'lo de esta zona.');
+          var areaReg = HOUSE_AREAS[dondeReg.casa];
+          partes.push('La llave de esta área la tiene <b>' + conArticulo(reg) +
+                      '</b>, que en tu carta vive en <b>' + dondeReg.sign +
+                      '</b> — tu casa ' + dondeReg.casa +
+                      (areaReg ? ' (' + areaReg.area.toLowerCase() + ')' : '') +
+                      '. Cuando esta zona se atora, por ahí se destraba.');
         }
         if(activas[n]){
           partes.push('<span class="hp-gly">\u2726</span> <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
