@@ -49,3 +49,14 @@
 # Ya los resuelve Cloudflare Pages nativo, se deja comentado para referencia.
 # /index.html              /                             301
 # /en/index.html           /en/                          301
+
+# 2026-08-04 — /mi-dia es la casa única de la app (decisión del usuario:
+# "nos quedamos con la mejor y limpiamos caminos"). dashboard.html no tenía
+# nada único: facturación y privacidad viven también en ajustes.html, y todo
+# lo demás ya estaba en mi-dia. El 301 preserva el query string, así que los
+# correos de rescate (dashboard.html?billing=1) siguen funcionando: mi-dia
+# entiende billing=1 y abre el portal de facturación.
+/dashboard.html        /mi-dia.html      301
+/dashboard             /mi-dia.html      301
+/en/dashboard.html     /en/my-day.html   301
+/en/dashboard          /en/my-day.html   301

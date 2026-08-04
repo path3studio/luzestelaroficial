@@ -509,7 +509,10 @@ body.modal-open #le-tabs{display:none !important}
     <div style="font-size:3rem;color:var(--gold);margin-bottom:10px;opacity:.85">&#10024;</div>
     <h1>Tu universo te espera</h1>
     <p>Agrega tu fecha de nacimiento para que calculemos tus 8 sistemas: signo occidental, animal chino, n&uacute;mero de vida, &aacute;rbol celta, kin maya, n&aacute;kshatra v&eacute;dico, Human Design y tu eneagrama.</p>
-    <a href="/dashboard.html" class="btn-gold">Crear mi primer perfil</a>
+    <!-- Antes iba a dashboard.html; con la redirección habría hecho un
+         rebote raro. mi-dia tiene su propio alta de perfil: el hash
+         #add-profile abre el modal al cargar. -->
+    <a href="/mi-dia.html#add-profile" class="btn-gold">Crear mi primer perfil</a>
     <p style="margin-top:14px;font-size:.75rem;color:var(--text-mute)">Solo toma un minuto. Puedes agregar m&aacute;s perfiles despu&eacute;s (pareja, hijos, amigos).</p>
   </div>
 </div>
@@ -1392,6 +1395,21 @@ function renderAll(){
       // decía nada. Ahora el checkout regresa AQUÍ y se confirma en persona.
       try{
         var _sp = new URLSearchParams(window.location.search);
+        // billing=1 llega desde los correos de rescate de cobros, que
+        // enlazaban dashboard.html?billing=1 (auto-abría el portal). El 301
+        // conserva el parámetro y aquí se replica el comportamiento: directo
+        // al portal de Stripe; si falla, a Ajustes, donde también está.
+        if(_sp.get('billing') === '1'){
+          fetch('/api/billing/portal', {method:'POST', credentials:'same-origin',
+                 headers:{'Content-Type':'application/json'},
+                 body: JSON.stringify({lang:'es'})})
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+              if(d && d.ok && d.url){ window.location.href = d.url; }
+              else { window.location.href = '/ajustes.html'; }
+            })
+            .catch(function(){ window.location.href = '/ajustes.html'; });
+        }
         if(_sp.get('subscription') === 'success' && window.LuzEstelar && LuzEstelar.toast){
           LuzEstelar.toast('✨ Bienvenida a Plus — tu lectura diaria personalizada ya está activa', {duration: 9000});
           _sp.delete('subscription'); _sp.delete('cadence');

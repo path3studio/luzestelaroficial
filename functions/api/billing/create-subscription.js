@@ -28,9 +28,22 @@ export async function onRequestPost(context) {
   const cadence = body.cadence === 'annual' ? 'annual' : 'monthly';
 
   // Pick price by cadence (fall back to monthly if annual env not set yet)
+  // 2026-08-04 — PRECIO POR PAÍS. La lección más cara del proyecto: cobramos
+  // en USD y las tarjetas mexicanas no admiten cargos de suscripción en esa
+  // moneda ("Divisa no aceptada", 11 rechazos seguidos de la única clienta).
+  // Adaptive Pricing NO cubre las facturas recurrentes post-prueba: la
+  // suscripción factura en la moneda del PRECIO, así que hace falta un precio
+  // MXN de verdad y elegirlo aquí.
+  // Fail-open deliberado: sin secreto *_MXN configurado, todo sigue en USD
+  // exactamente como antes — desplegar este código sin los secretos no cambia
+  // nada.
+  const pais = (context.request.headers.get('CF-IPCountry') || '').toUpperCase();
+  const esMx = pais === 'MX';
   const priceId = cadence === 'annual'
-    ? (STRIPE_PRICE_PREMIUM_ANNUAL || STRIPE_PRICE_PREMIUM)
-    : STRIPE_PRICE_PREMIUM;
+    ? (esMx && context.env.STRIPE_PRICE_PREMIUM_ANNUAL_MXN)
+      || STRIPE_PRICE_PREMIUM_ANNUAL || STRIPE_PRICE_PREMIUM
+    : (esMx && context.env.STRIPE_PRICE_PREMIUM_MXN)
+      || STRIPE_PRICE_PREMIUM;
 
   if (!priceId) {
     console.error('create-subscription: no price id configured for cadence', cadence);
