@@ -141,6 +141,10 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .mapa-cta-sec:hover{border-color:var(--gold-dim)}
 .mapa-gift-note{font-size:.7rem;color:var(--text-mute);text-align:center;margin-top:10px;line-height:1.5}
 .mapa-gift-note b{color:var(--gold);font-weight:600}
+.mapa-carrusel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:2px 2px 8px;margin:0 0 4px;scrollbar-width:none}
+.mapa-carrusel::-webkit-scrollbar{display:none}
+.mapa-carrusel img{flex:0 0 auto;width:72%;max-width:250px;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:12px;border:1px solid rgba(212,168,73,.25);scroll-snap-align:center;background:#12102a}
+.mapa-carrusel-hint{font-size:.62rem;color:var(--text-mute);text-align:center;margin:0 0 12px;letter-spacing:.06em}
 
 /* Section label */
 .slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:600;color:rgba(212,168,73,.78);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
@@ -470,7 +474,7 @@ body.modal-open #le-tabs{display:none !important}
 .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
   text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
 .hp-hint{margin-left:auto;text-transform:none;letter-spacing:0;font-size:.62rem;opacity:.6}
-.tres-claves{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}.tc-fila{display:flex;gap:11px;margin:11px 0;align-items:flex-start}.tc-gly{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}.tc-tit{font-size:.9rem;font-weight:600;color:var(--gold)}.tc-sub{font-weight:400;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.5))}.tc-txt{font-size:.86rem;line-height:1.6;margin-top:3px;color:var(--tx,rgba(255,255,255,.82))}.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.tres-claves{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}.tc-fila{display:flex;gap:11px;margin:11px 0;align-items:flex-start}.tc-gly{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}.tc-tit{font-size:.9rem;font-weight:600;color:var(--gold)}.tc-sub{font-weight:400;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.5))}.tc-txt{font-size:.86rem;line-height:1.6;margin-top:3px;color:var(--tx,rgba(255,255,255,.82))}.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-lock{display:block;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.45));border-top:1px dashed rgba(212,168,73,.25);padding-top:9px;margin-top:2px}.hp-lock b{color:var(--gold)}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
 .hp-item{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:11px;
   background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
   cursor:pointer;text-align:left;font-family:inherit;color:inherit;
@@ -627,7 +631,7 @@ body.modal-open #le-tabs{display:none !important}
              pero era ilegible; esto la traduce. Las casas YA vienen guardadas
              en natal_chart.houses — no se calcula nada nuevo. -->
         <div class="tres-claves" id="tres-claves" hidden>
-          <div class="hp-title"><span class="tp-ic">\u2726</span>
+          <div class="hp-title"><span class="tp-ic">&#x2726;</span>
             <span>Tus tres claves</span></div>
           <div class="tc-body"></div>
         </div>
@@ -767,6 +771,14 @@ body.modal-open #le-tabs{display:none !important}
         <div class="mapa-body">
           <p class="mapa-hd">Un cielo para recordar</p>
           <p class="mapa-desc">Impresi&oacute;n &uacute;nica del cielo exacto de tu fecha y lugar de nacimiento. Pieza coleccionable, ideal para regalar a quien amas.</p>
+          <div class="mapa-carrusel" aria-label="Ejemplos del Mapa Estelar">
+            <img src="/assets/mapa-ejemplos/ejemplo-1.webp" alt="Mapa estelar de cumplea&ntilde;os personalizado" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-2.webp" alt="Mapa estelar de la noche en que se conocieron" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-3.webp" alt="Mapa estelar de nacimiento" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-4.webp" alt="Mapa estelar enmarcado y como fondo de celular" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-5.webp" alt="Mapa estelar impreso en distintos tama&ntilde;os" loading="lazy" width="900" height="1125">
+          </div>
+          <p class="mapa-carrusel-hint">&larr; Desliza para ver ejemplos &rarr;</p>
           <div class="mapa-actions">
             <a href="/mapa-estelar.html" class="mapa-cta mapa-cta-primary tap-feedback">Regalar Mapa Estelar</a>
             <a href="/mapa-estelar.html#ejemplo" class="mapa-cta mapa-cta-sec tap-feedback">Ver ejemplo</a>
@@ -3275,12 +3287,34 @@ function renderHouses(chart){
                       'los días en que un planeta pasa por aquí.'));
         }
 
-        // (2026-08-04) Aquí vivía la capa del "planeta guía" (regente).
-        // Retirada de la ficha: el dueño tropezó dos veces con la frase, y
-        // una capa que hay que re-explicar no está aportando. El concepto
-        // queda mencionado en el botón "i" como nota, y el código de cálculo
-        // (SIGN_RULER, posicionPlaneta) sigue disponible para un futuro
-        // nivel "avanzado".
+        // (2026-08-04, dos iteraciones) La capa del "planeta guía" primero se
+        // retiró por confusa; el usuario decidió después: "que se desbloquee
+        // con el premium". Plus la ve completa; el gratuito ve UNA línea de
+        // qué se abre — la capa avanzada como razón de pago, no como estorbo.
+        var esPlus = (typeof currentUser !== 'undefined') && currentUser &&
+                     currentUser.tier === 'premium';
+        var reg = SIGN_RULER[h.sign];
+        var dondeReg = (esPlus && reg) ? posicionPlaneta(chart, reg) : null;
+        if(esPlus && reg && dondeReg && dondeReg.casa === n){
+          partes.push('\u2726 <b>Capa Plus \u2014 el planeta gu\u00eda:</b> cada signo ' +
+                      'tiene un planeta que lo gu\u00eda, y el de <b>' + h.sign +
+                      '</b> es <b>' + conArticulo(reg) + '</b> \u2014 que vive ' +
+                      '<b>aqu\u00ed mismo</b>, en esta casa. Esta \u00e1rea es ' +
+                      'autosuficiente: cuando no avance, se trabaja aqu\u00ed, de frente.');
+        } else if(esPlus && reg && dondeReg){
+          var areaReg = HOUSE_AREAS[dondeReg.casa];
+          partes.push('\u2726 <b>Capa Plus \u2014 el planeta gu\u00eda:</b> el de <b>' +
+                      h.sign + '</b> es <b>' + conArticulo(reg) + '</b>, y en tu ' +
+                      'carta vive en <b>' + dondeReg.sign + '</b> \u2014 tu casa ' +
+                      dondeReg.casa +
+                      (areaReg ? ', la de ' + areaReg.area.toLowerCase() : '') +
+                      '. Si esta \u00e1rea no avanza, lo que necesita atenci\u00f3n ' +
+                      'probablemente est\u00e1 all\u00e1: empieza por ah\u00ed.');
+        } else if(!esPlus && reg){
+          partes.push('<span class="hp-lock">\u2726 Con <b>Plus</b>: el planeta que ' +
+                      'gu\u00eda esta \u00e1rea, d\u00f3nde vive en tu carta y desde ' +
+                      'd\u00f3nde se destraba.</span>');
+        }
         if(activas[n]){
           partes.push('<span class="hp-gly">\u2726</span> <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
         }
