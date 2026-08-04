@@ -110,10 +110,10 @@
       systems = [
         { symbol: cc.western.symbol, label: isEn ? 'Western' : 'Occidental', value: isEn ? cc.western.name_en : cc.western.name_es, detail: isEn ? cc.western.element_en : cc.western.element_es, color: cc.western.color },
         { symbol: cc.chinese.animal.symbol, label: isEn ? 'Chinese' : 'Chino', value: isEn ? cc.chinese.animal.name_en : cc.chinese.animal.name_es, detail: cc.chinese.element[isEn?'en':'es'], color: cc.chinese.animal.color },
-        { symbol: '\u{1F52E}', label: isEn ? 'Mayan' : 'Maya', value: isEn ? cc.mayan.seal.name_en : cc.mayan.seal.name_es, detail: 'Kin ' + cc.mayan.kin + ' \u2022 ' + (isEn ? 'Tone' : 'Tono') + ' ' + cc.mayan.tone.num, color: cc.mayan.seal.color },
-        { symbol: '\u{1F549}\uFE0F', label: isEn ? 'Vedic' : 'Védica', value: cc.vedic.rashi.name_sa, detail: cc.vedic.nakshatra.name_sa, color: cc.vedic.rashi.color },
+        { symbol: '\u2609', label: isEn ? 'Mayan' : 'Maya', value: isEn ? cc.mayan.seal.name_en : cc.mayan.seal.name_es, detail: 'Kin ' + cc.mayan.kin + ' \u2022 ' + (isEn ? 'Tone' : 'Tono') + ' ' + cc.mayan.tone.num, color: cc.mayan.seal.color },
+        { symbol: '\u0950', label: isEn ? 'Vedic' : 'Védica', value: cc.vedic.rashi.name_sa, detail: cc.vedic.nakshatra.name_sa, color: cc.vedic.rashi.color },
         { symbol: String(cc.numerology.lifePathNumber), label: isEn ? 'Numerology' : 'Numerología', value: isEn ? cc.numerology.data.keyword_en : cc.numerology.data.keyword_es, detail: isEn ? cc.numerology.data.planet_en : cc.numerology.data.planet_es, color: cc.numerology.data.color },
-        { symbol: '\u{1F33F}', label: isEn ? 'Celtic' : 'Celta', value: isEn ? cc.celtic.name_en : cc.celtic.name_es, detail: 'Ogham: ' + cc.celtic.ogham, color: cc.celtic.color },
+        { symbol: '\u2618\uFE0E', label: isEn ? 'Celtic' : 'Celta', value: isEn ? cc.celtic.name_en : cc.celtic.name_es, detail: 'Ogham: ' + cc.celtic.ogham, color: cc.celtic.color },
         { symbol: '\u2B21', label: isEn ? 'Human Design' : 'Diseño Humano', value: 'Gate ' + cc.humanDesign.gate, detail: isEn ? cc.humanDesign.gateData.name_en : cc.humanDesign.gateData.name_es, color: '#7c5cbf' },
       ];
 

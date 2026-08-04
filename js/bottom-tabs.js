@@ -39,11 +39,11 @@
   // emoji character if the registry isn't present (defensive — e.g.
   // a page that includes bottom-tabs.js but skipped icons.js).
   var tabs = isEn ? [
-    { id:'inicio', label:'Home',     icon:'sparkles', fallback:'\u2728',       href:'/en/my-day.html',                   paths:['/en/my-day.html','/en/dashboard.html'] },
+    { id:'inicio', label:'Home',     icon:'sparkles', fallback:'\u2726',       href:'/en/my-day.html',                   paths:['/en/my-day.html','/en/dashboard.html'] },
     { id:'compat', label:'Compat.',  icon:'heart',    fallback:'\uD83D\uDC96', href:'/en/compatibility-personal.html',   paths:['/en/compatibility-personal.html'] },
     { id:'ajustes',label:'Settings', icon:'settings', fallback:'\u2699\uFE0F', href:'/ajustes.html',                     paths:['/ajustes.html'] }
   ] : [
-    { id:'inicio', label:'Inicio',  icon:'sparkles', fallback:'\u2728',       href:'/mi-dia.html',                   paths:['/mi-dia.html','/dashboard.html'] },
+    { id:'inicio', label:'Inicio',  icon:'sparkles', fallback:'\u2726',       href:'/mi-dia.html',                   paths:['/mi-dia.html','/dashboard.html'] },
     { id:'compat', label:'Compat.', icon:'heart',    fallback:'\uD83D\uDC96', href:'/compatibilidad-personal.html',  paths:['/compatibilidad-personal.html'] },
     { id:'ajustes',label:'Ajustes', icon:'settings', fallback:'\u2699\uFE0F', href:'/ajustes.html',                  paths:['/ajustes.html'] }
   ];

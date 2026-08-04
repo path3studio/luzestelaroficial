@@ -1233,10 +1233,10 @@
 
         var maxEl = Math.max(elements.fire, elements.earth, elements.air, elements.water);
         var elData = [
-            {key:'fire', label:'Fuego', emoji:'\u{1F525}', color:'#FF4500', val:elements.fire},
-            {key:'earth', label:'Tierra', emoji:'\u{1F33F}', color:'#2E8B57', val:elements.earth},
-            {key:'air', label:'Aire', emoji:'\u{1F4A8}', color:'#4169E1', val:elements.air},
-            {key:'water', label:'Agua', emoji:'\u{1F30A}', color:'#1E90FF', val:elements.water}
+            {key:'fire', label:'Fuego', emoji:LEIC('flame'), color:'#FF4500', val:elements.fire},
+            {key:'earth', label:'Tierra', emoji:LEIC('leaf'), color:'#2E8B57', val:elements.earth},
+            {key:'air', label:'Aire', emoji:LEIC('wind'), color:'#4169E1', val:elements.air},
+            {key:'water', label:'Agua', emoji:LEIC('droplet'), color:'#1E90FF', val:elements.water}
         ];
 
         var html = '';
@@ -1412,7 +1412,7 @@
     }
 
     // ── Profile Manager ──────────────────────────────────────
-    var LABEL_ICONS = {'Mi Perfil':'\u2B50','Pareja':'\u2764\uFE0F','Hijo/a':'\uD83D\uDC76','Madre':'\uD83D\uDC69','Padre':'\uD83D\uDC68','Hermano/a':'\uD83D\uDC65','Amigo/a':'\uD83E\uDD1D','Otro':'\u2728'};
+    var LABEL_ICONS = {'Mi Perfil':LEIC('star'),'Pareja':LEIC('heart'),'Hijo/a':LEIC('baby'),'Madre':LEIC('user'),'Padre':LEIC('user'),'Hermano/a':LEIC('users'),'Amigo/a':LEIC('users'),'Otro':LEIC('sparkles')};
 
     function renderProfileSwitcher() {
         var profiles = window._birthProfilesList || [];
@@ -1423,7 +1423,7 @@
         var html = '';
         profiles.forEach(function(p) {
             var isActive = currentProfile && currentProfile.id === p.id;
-            var icon = LABEL_ICONS[p.label] || '\u2728';
+            var icon = LABEL_ICONS[p.label] || LEIC('sparkles');
             html += '<button class="ps-pill' + (isActive ? ' active' : '') + '" onclick="switchProfile(\'' + p.id + '\')" title="' + escapeHtml(p.nombre) + '">';
             html += '<span class="ps-dot"></span>' + icon + ' ' + escapeHtml(p.label || p.nombre) + '</button>';
         });
@@ -1464,7 +1464,7 @@
         // Render profile cards
         var html = '';
         profiles.forEach(function(p) {
-            var icon = LABEL_ICONS[p.label] || '\u2728';
+            var icon = LABEL_ICONS[p.label] || LEIC('sparkles');
             var isActive = currentProfile && currentProfile.id === p.id;
             html += '<div class="pm-card' + (isActive ? ' active' : '') + '" style="' + (isActive ? 'border-color:rgba(212,168,73,0.3);' : '') + '">';
             html += '<div class="pm-avatar">' + icon + '</div>';
@@ -1475,10 +1475,10 @@
             html += '</div>';
             html += '<div class="pm-actions">';
             if (!isActive) {
-                html += '<button class="pm-btn" onclick="switchProfile(\'' + p.id + '\')" title="Ver perfil">\u{1F441}</button>';
+                html += '<button class="pm-btn" onclick="switchProfile(\'' + p.id + '\')" title="Ver perfil">'+LEIC('eye')+'</button>';
             }
             if (profiles.length > 1) {
-                html += '<button class="pm-btn pm-del" onclick="deleteProfile(\'' + p.id + '\',\'' + escapeHtml(p.nombre) + '\')" title="Eliminar">\u{1F5D1}</button>';
+                html += '<button class="pm-btn pm-del" onclick="deleteProfile(\'' + p.id + '\',\'' + escapeHtml(p.nombre) + '\')" title="Eliminar">'+LEIC('trash')+'</button>';
             }
             html += '</div>';
             html += '</div>';

@@ -588,7 +588,7 @@ function renderSettings(user){
   var isPremium = user.tier === 'premium';
   var badge = document.createElement('span');
   badge.className = 'tier-badge ' + (isPremium ? 'premium' : 'free');
-  badge.textContent = isPremium ? 'Plus \u2728' : 'Gratis';
+  badge.textContent = isPremium ? 'Plus \u2726' : 'Gratis';
   badgeWrap.appendChild(badge);
 
   /* Billing actions */

@@ -1200,10 +1200,10 @@
 
         var maxEl = Math.max(elements.fire, elements.earth, elements.air, elements.water);
         var elData = [
-            {key:'fire', label:'Fire', emoji:'\u{1F525}', color:'#FF4500', val:elements.fire},
-            {key:'earth', label:'Earth', emoji:'\u{1F33F}', color:'#2E8B57', val:elements.earth},
-            {key:'air', label:'Air', emoji:'\u{1F4A8}', color:'#4169E1', val:elements.air},
-            {key:'water', label:'Water', emoji:'\u{1F30A}', color:'#1E90FF', val:elements.water}
+            {key:'fire', label:'Fire', emoji:LEIC('flame'), color:'#FF4500', val:elements.fire},
+            {key:'earth', label:'Earth', emoji:LEIC('leaf'), color:'#2E8B57', val:elements.earth},
+            {key:'air', label:'Air', emoji:LEIC('wind'), color:'#4169E1', val:elements.air},
+            {key:'water', label:'Water', emoji:LEIC('droplet'), color:'#1E90FF', val:elements.water}
         ];
 
         var html = '';
@@ -1342,7 +1342,7 @@
     }
 
     // ── Profile Manager ──────────────────────────────────────
-    var LABEL_ICONS = {'My Profile':'\u2B50','Mi Perfil':'\u2B50','Partner':'\u2764\uFE0F','Pareja':'\u2764\uFE0F','Child':'\uD83D\uDC76','Hijo/a':'\uD83D\uDC76','Mother':'\uD83D\uDC69','Madre':'\uD83D\uDC69','Father':'\uD83D\uDC68','Padre':'\uD83D\uDC68','Sibling':'\uD83D\uDC65','Hermano/a':'\uD83D\uDC65','Friend':'\uD83E\uDD1D','Amigo/a':'\uD83E\uDD1D','Other':'\u2728','Otro':'\u2728'};
+    var LABEL_ICONS = {'My Profile':LEIC('star'),'Mi Perfil':LEIC('star'),'Partner':LEIC('heart'),'Pareja':LEIC('heart'),'Child':LEIC('baby'),'Hijo/a':LEIC('baby'),'Mother':LEIC('user'),'Madre':LEIC('user'),'Father':LEIC('user'),'Padre':LEIC('user'),'Sibling':LEIC('users'),'Hermano/a':LEIC('users'),'Friend':LEIC('users'),'Amigo/a':LEIC('users'),'Other':LEIC('sparkles'),'Otro':LEIC('sparkles')};
 
     function renderProfileSwitcher() {
         var profiles = window._birthProfilesList || [];
@@ -1353,7 +1353,7 @@
         var html = '';
         profiles.forEach(function(p) {
             var isActive = currentProfile && currentProfile.id === p.id;
-            var icon = LABEL_ICONS[p.label] || '\u2728';
+            var icon = LABEL_ICONS[p.label] || LEIC('sparkles');
             html += '<button class="ps-pill' + (isActive ? ' active' : '') + '" onclick="switchProfile(\'' + p.id + '\')" title="' + escapeHtml(p.nombre) + '">';
             html += '<span class="ps-dot"></span>' + icon + ' ' + escapeHtml(p.label || p.nombre) + '</button>';
         });
@@ -1391,7 +1391,7 @@
 
         var html = '';
         profiles.forEach(function(p) {
-            var icon = LABEL_ICONS[p.label] || '\u2728';
+            var icon = LABEL_ICONS[p.label] || LEIC('sparkles');
             var isActive = currentProfile && currentProfile.id === p.id;
             html += '<div class="pm-card' + (isActive ? ' active' : '') + '" style="' + (isActive ? 'border-color:rgba(212,168,73,0.3);' : '') + '">';
             html += '<div class="pm-avatar">' + icon + '</div>';
@@ -1402,10 +1402,10 @@
             html += '</div>';
             html += '<div class="pm-actions">';
             if (!isActive) {
-                html += '<button class="pm-btn" onclick="switchProfile(\'' + p.id + '\')" title="View profile">\u{1F441}</button>';
+                html += '<button class="pm-btn" onclick="switchProfile(\'' + p.id + '\')" title="View profile">'+LEIC('eye')+'</button>';
             }
             if (profiles.length > 1) {
-                html += '<button class="pm-btn pm-del" onclick="deleteProfile(\'' + p.id + '\',\'' + escapeHtml(p.nombre) + '\')" title="Delete">\u{1F5D1}</button>';
+                html += '<button class="pm-btn pm-del" onclick="deleteProfile(\'' + p.id + '\',\'' + escapeHtml(p.nombre) + '\')" title="Delete">'+LEIC('trash')+'</button>';
             }
             html += '</div>';
             html += '</div>';

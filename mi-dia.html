@@ -932,8 +932,8 @@ try{
 try{localStorage.setItem('le_lang','es');}catch(e){}
 
 var LANG='es';
-var SYS_IC={chinese:'\u{1F409}',numerology:'\u{1F522}',celtic:'\u{1F333}',mayan:'\u{1F3DB}',vedic:'\u{1F549}',human_design:'\u26A1',enneagram:'\u25CE'};
-var E_IC={love:'\u2764\uFE0F',career:'\u{1F4BC}',health:'\u{1F33F}',energy:'\u26A1'};
+var SYS_IC=null; // se construye tras definir sysIcon() — ver initSysIc()
+var E_IC={love:'heart',career:'briefcase',health:'leaf',energy:'zap'};
 var E_CLR={love:'#e8456a',career:'#d4a849',health:'#4aba7a',energy:'#7c5cbf'};
 var SIGNS={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
 var LABEL_OPTS=[{v:'Pareja',ic:'heart'},{v:'Familia',ic:'users'},{v:'Hijo/a',ic:'baby'},{v:'Amigo/a',ic:'users'},{v:'Otro',ic:'sparkles'}];
@@ -967,6 +967,10 @@ function sysIcon(key){
       return s+'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>'+e;
     case 'vedic': // lotus
       return s+'<path d="M12 18c-4 0-7-2-7-4 0 0 2 1 4 0 0 0 0-3 3-5 3 2 3 5 3 5 2 1 4 0 4 0 0 2-3 4-7 4z"/><path d="M12 18V9"/><path d="M9 14c-2 0-3-1-3-2"/><path d="M15 14c2 0 3-1 3-2"/>'+e;
+    case 'numerology': // hash
+      return s+'<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>'+e;
+    case 'human_design':
+      return sysIcon('humanDesign');
     case 'humanDesign': // body-graph (9 centers simplified)
       return s+'<circle cx="12" cy="4" r="1.3"/><path d="M9 8l3-2.5 3 2.5"/><rect x="9" y="8" width="6" height="3" rx=".5"/><path d="M7 14l5-3 5 3-5 3z"/><circle cx="12" cy="20" r="1.3"/><path d="M12 17v1.8"/>'+e;
     case 'enneagram': // 9-point star inside circle
@@ -1145,7 +1149,7 @@ function renderAll(){
   window._cc=cc;
 
   // Sign symbol
-  document.getElementById('sign-sym').textContent=SIGNS[cc.western.name_en]||'\u2726';
+  document.getElementById('sign-sym').textContent=(SIGNS[cc.western.name_en]?SIGNS[cc.western.name_en]+'\ufe0e':'\u2726');
 
   // CC chips (always shown, even for free as teaser)
   var chipHTML='';
@@ -1719,7 +1723,7 @@ function renderAll(){
         var cLore = CON_LORE[hit.id] || ('Constelación ' + (hit.name_es || hit.name_en || hit.id) + '.');
         body =
           '<div class="ci-hd">' +
-            '<span class="ci-glyph">\u2728</span>' +
+            '<span class="ci-glyph">'+LEIC('sparkles')+'</span>' +
             '<span class="ci-name">' + (hit.name_es || hit.name_en || hit.id) + '</span>' +
             (hit.name_en && hit.name_en !== hit.name_es ? '<span class="ci-pos">' + hit.name_en + '</span>' : '') +
           '</div>' +
@@ -2206,7 +2210,7 @@ async function loadDaily(offset){
       ['love','career','health','energy'].forEach(function(f){
         var v=d.energy[f];if(v==null)return;
         var p=v/10*100;
-        bh+='<div class="bar"><span class="bar-ic">'+E_IC[f]+'</span><div class="bar-tr"><div class="bar-fl" style="width:'+p+'%;background:'+E_CLR[f]+'"></div></div><span class="bar-v">'+v+'</span></div>';
+        bh+='<div class="bar"><span class="bar-ic" style="color:var(--gold)">'+LEIC(E_IC[f])+'</span><div class="bar-tr"><div class="bar-fl" style="width:'+p+'%;background:'+E_CLR[f]+'"></div></div><span class="bar-v">'+v+'</span></div>';
       });
       document.getElementById('bars').innerHTML=bh;
     }
@@ -2291,7 +2295,8 @@ async function loadDaily(offset){
     if(d.systemInsights&&d.systemInsights.length){
       var ih='', hasLock=false;
       d.systemInsights.forEach(function(ins){
-        var ic=SYS_IC[ins.system]||'✦';
+        if(!SYS_IC){SYS_IC={chinese:sysIcon('chinese'),numerology:sysIcon('numerology'),celtic:sysIcon('celtic'),mayan:sysIcon('mayan'),vedic:sysIcon('vedic'),human_design:sysIcon('humanDesign'),enneagram:sysIcon('enneagram')};}
+        var ic=SYS_IC[ins.system]||'\u2726';
         var locked=ins.locked;
         if(locked) hasLock=true;
         var txt=locked?'Disponible con Plus.':ins.text;
@@ -2504,7 +2509,7 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight){
 async function generateShareCard(){
   var firstName=((currentProfile&&currentProfile.nombre)||'').split(' ')[0]||'Tu nombre';
   var cc=window._cc||{};
-  var signGlyph=(cc.western&&cc.western.symbol)||'\u2728';
+  var signGlyph=(cc.western&&cc.western.symbol)||'\u2726';
   var signName=(cc.western&&cc.western.name_es)||'';
   var raw=(document.getElementById('rdg-text').textContent||'').trim();
   var excerpt=raw.split(/[.!?](\s|$)/)[0]||raw;
