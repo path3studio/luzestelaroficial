@@ -646,6 +646,12 @@ body.modal-open #le-tabs{display:none !important}
             pasa por ahí.</p>
             <p>Y cada signo tiene un <b>planeta guía</b>: mirar en qué casa
             vive te dice desde dónde se trabaja esa área de tu vida.</p>
+            <p><b>Cómo leer cada ficha</b> — son capas independientes, no una
+            cadena: <em>1)</em> qué rige esa área · <em>2)</em> tu estilo ahí
+            (el signo) · <em>3)</em> sus habitantes, si los hay (tus planetas)
+            · <em>4)</em> el planeta guía, que existe <em>siempre</em>, haya
+            habitantes o no. La ficha no "sustituye" nada: te muestra las
+            cuatro capas de esa zona de tu cielo.</p>
           </div>
           <!-- Para quien no sabe astrología: UNA frase que explica qué está
                viendo, antes de los 12 botones. Sin jerga: ni "cúspide" ni
@@ -3192,7 +3198,16 @@ function renderHouses(chart){
 
         var reg = SIGN_RULER[h.sign];
         var dondeReg = reg ? posicionPlaneta(chart, reg) : null;
-        if(reg && dondeReg){
+        if(reg && dondeReg && dondeReg.casa === n){
+          // El guía vive EN la casa que guía: decir "empieza por allá"
+          // apuntando aquí mismo era un absurdo (lo cazó el usuario en su
+          // casa 5). Este caso tiene su propia lectura, y es buena noticia.
+          partes.push('Cada signo tiene un planeta que lo guía, y el de <b>' +
+                      h.sign + '</b> es <b>' + conArticulo(reg) + '</b> — que ' +
+                      'vive <b>aquí mismo</b>, en esta casa. Eso significa que ' +
+                      'esta área es autosuficiente: no depende de otra zona de ' +
+                      'tu carta. Cuando no avance, se trabaja aquí, de frente.');
+        } else if(reg && dondeReg){
           var areaReg = HOUSE_AREAS[dondeReg.casa];
           partes.push('Cada signo tiene un planeta que lo guía, y el de <b>' +
                       h.sign + '</b> es <b>' + conArticulo(reg) + '</b>. En tu ' +
