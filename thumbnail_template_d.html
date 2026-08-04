@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--
+Thumbnail Variant D — "EL GRITO" (added 2026-08-04)
+Diseñada para leerse a 120px de ancho (el tamaño real en el feed):
+  - UNA sola idea: el signo del día, ENORME
+  - El gancho del tránsito en 2 líneas grandes de alto contraste
+  - Glifo como marca de agua, sello de fecha discreto
+Compite contra A/B/C en la rotación de 5. Medible vía thumb_variant_log.jsonl
++ YouTube Analytics (CTR por video).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@500;700;800&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#d4a849;--gold-light:#f0d078;--navy:#12102a;--navy2:#1c1838}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1280px;height:720px;overflow:hidden;position:relative;
+       background:radial-gradient(ellipse at 70% 30%,var(--navy2) 0%,var(--navy) 62%,#0b0a1e 100%);
+       font-family:'Inter',sans-serif;color:#fff}
+  .glifo-fondo{position:absolute;right:-60px;top:50%;transform:translateY(-50%);
+       font-family:'Noto Sans Symbols 2',serif;font-size:640px;line-height:1;
+       color:rgba(212,168,73,.10);font-variant-emoji:text}
+  .marco{position:absolute;inset:22px;border:2px solid rgba(212,168,73,.5);border-radius:18px}
+  .contenido{position:absolute;left:64px;top:0;bottom:0;width:820px;
+       display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .hoy{font-size:34px;font-weight:700;letter-spacing:.34em;color:var(--gold);
+       text-transform:uppercase}
+  .signo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:172px;
+       line-height:.94;text-transform:uppercase;letter-spacing:.01em;
+       background:linear-gradient(180deg,#fff 20%,var(--gold-light) 60%,var(--gold) 100%);
+       -webkit-background-clip:text;background-clip:text;color:transparent;
+       filter:drop-shadow(0 6px 24px rgba(0,0,0,.55))}
+  .gancho{font-size:44px;font-weight:800;line-height:1.22;max-width:780px;
+       color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.7)}
+  .gancho em{font-style:normal;color:var(--gold-light)}
+  .sello{position:absolute;right:52px;bottom:46px;display:flex;align-items:center;gap:14px}
+  .sello .fecha{font-size:26px;font-weight:700;color:var(--gold);
+       border:2px solid rgba(212,168,73,.65);border-radius:999px;padding:10px 26px;
+       letter-spacing:.08em;background:rgba(18,16,42,.6)}
+  .brand{position:absolute;left:64px;bottom:46px;font-family:'Cormorant Garamond',serif;
+       font-size:26px;letter-spacing:.3em;color:rgba(240,208,120,.85);text-transform:uppercase}
+</style>
+</head>
+<body>
+  <div class="glifo-fondo">{{SIGN_GLYPH}}&#xFE0E;</div>
+  <div class="marco"></div>
+  <div class="contenido">
+    <div class="hoy">El cielo de hoy habla a</div>
+    <div class="signo">{{SIGN_NAME}}</div>
+    <div class="gancho">{{TRANSIT_LINE}}</div>
+  </div>
+  <div class="brand">✦ Luz Estelar</div>
+  <div class="sello"><div class="fecha">{{DATE_TEXT}} · {{YEAR}}</div></div>
+</body>
+</html>
