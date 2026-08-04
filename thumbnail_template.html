@@ -129,10 +129,20 @@
     }
 
     /* ── Logo: top-left ─────────────────────────────── */
+    /* 2026-08-04 buff: logotipo OFICIAL (imagen) junto al nombre.
+       El concepto de A no cambia — solo sube al estándar de D/E. */
     .logo {
         position: absolute;
-        top: 32px;
+        top: 30px;
         left: 40px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 10;
+    }
+    .logo img { height: 44px; width: auto;
+        filter: drop-shadow(0 2px 8px rgba(0,0,0,.6)); }
+    .logo span {
         font-family: 'Cormorant Garamond', serif;
         font-size: 28px;
         font-weight: 700;
@@ -141,7 +151,6 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        z-index: 10;
     }
 
     /* ── Content stack (centered) ───────────────────── */
@@ -259,7 +268,7 @@
     <div class="corner-accent corner-accent--br"></div>
 
     <!-- Logo -->
-    <div class="logo">Luz Estelar</div>
+    <div class="logo"><img src="{{LOGO}}" alt=""><span>Luz Estelar</span></div>
 
     <!-- Main content -->
     <div class="content">
