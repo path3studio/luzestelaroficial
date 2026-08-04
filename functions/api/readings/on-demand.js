@@ -179,6 +179,14 @@ STYLE:
 - Reference concrete aspects from the data above — not "today brings" clichés. If Mars squares their natal Moon, say what that asks them to hold.
 - No emojis, no markdown, no asterisks, no bullet lists in the output.
 - Length: 280–360 words. One flowing piece in 4–5 paragraphs.
+- FOCUS: build the whole reading on the 2 strongest aspects, 3 at most. Naming
+  more dilutes it into noise — depth over inventory.
+- BANNED advice: journaling prompts ("write down three things…", "make a
+  list", "burn a paper"). The practical invitation must be a concrete physical
+  or relational act, tied to a concrete moment of the day ("before noon",
+  "tonight").
+- Open WITH the sky, not with a floating feeling: the first sentence must
+  fuse a real aspect from the data with how it lands in their body or day.
 
 STRUCTURE (implicit, not labeled):
 1. Opening image — the quality of today for them specifically
@@ -209,6 +217,15 @@ ESTILO:
 - Referencia aspectos concretos de los datos arriba — no clichés tipo "hoy trae". Si Marte cuadra su Luna natal, di qué te pide sostener.
 - Sin emojis, sin markdown, sin asteriscos, sin listas en el output.
 - Extensión: 280–360 palabras. Una pieza fluida en 4–5 párrafos.
+- FOCO: construye TODA la lectura sobre los 2 aspectos más fuertes, 3 como
+  máximo. Nombrar más los diluye en ruido — profundidad antes que inventario.
+- Consejo PROHIBIDO: ejercicios de journaling ("escribe tres cosas…", "haz
+  una lista", "quema un papel"). La invitación práctica debe ser un acto
+  físico o relacional concreto, anclado a un momento del día ("antes del
+  mediodía", "esta noche").
+- Abre CON el cielo, no con una sensación flotante: la primera frase debe
+  fundir un aspecto real de los datos con cómo se siente en su cuerpo o su
+  día.
 
 ESTRUCTURA (implícita, sin etiquetar):
 1. Imagen de apertura — el tono del día para ELLA/ÉL específicamente

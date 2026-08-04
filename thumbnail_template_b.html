@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!--
+Thumbnail Variant B (added 2026-05-21 for A/B testing)
+Same brand language as variant A but emphasizes:
+  - The SIGN OF THE DAY (large glyph + name center-stage)
+  - The MAIN ASTRO EVENT of today (text under the sign)
+  - Date moved to corner accent
+Purpose: A/B test against variant A to measure CTR on YouTube.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gold: #d4a849;
+        --gold-light: #f0d078;
+        --gold-deep: #c89030;
+        --gold-dim: rgba(212,168,73,0.15);
+        --bg-deep: #06061a;
+        --bg-mid: #0c0c2a;
+        --text: #e0dce8;
+        --text-dim: #9890a8;
+        --accent-purple: #7c5cbf;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg-deep);
+        position: relative;
+    }
+
+    .thumbnail {
+        width: 1280px;
+        height: 720px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* ── Background gradient ─────────────────────── */
+    .bg-base {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 70% 50% at 50% 50%, rgba(124,92,191,0.20) 0%, transparent 60%),
+            linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-mid) 50%, var(--bg-deep) 100%);
+    }
+
+    /* ── Sign glow halo behind glyph ─────────────── */
+    .glow-sign {
+        position: absolute;
+        left: 50%; top: 45%;
+        transform: translate(-50%, -50%);
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(212,168,73,0.28) 0%, rgba(212,168,73,0.06) 35%, transparent 70%);
+        filter: blur(30px);
+        z-index: 1;
+    }
+
+    /* ── Stars (drawn by JS) ─────────────────────── */
+    .star {
+        position: absolute;
+        background: var(--text);
+        border-radius: 50%;
+    }
+    .star--gold { background: var(--gold-light); }
+
+    /* ── Corner accents ─────────────────────────── */
+    .corner-accent {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border: 1px solid var(--gold);
+        opacity: 0.6;
+    }
+    .corner-accent--tl { top: 24px; left: 24px; border-right: none; border-bottom: none; }
+    .corner-accent--tr { top: 24px; right: 24px; border-left: none; border-bottom: none; }
+    .corner-accent--bl { bottom: 24px; left: 24px; border-right: none; border-top: none; }
+    .corner-accent--br { bottom: 24px; right: 24px; border-left: none; border-top: none; }
+
+    /* ── Top brand strip ─────────────────────────── */
+    .logo {
+        position: absolute;
+        top: 38px;
+        left: 60px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 26px;
+        font-weight: 600;
+        color: var(--gold);
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+    .date-corner {
+        position: absolute;
+        top: 38px;
+        right: 60px;
+        font-family: 'Inter', sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+        color: var(--text-dim);
+        letter-spacing: 0.08em;
+        z-index: 10;
+    }
+
+    /* ── Main content (centered) ─────────────────── */
+    .content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+
+    .label-top {
+        font-family: 'Inter', sans-serif;
+        font-size: 22px;
+        font-weight: 500;
+        color: var(--text-dim);
+        letter-spacing: 0.36em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+    }
+
+    .sign-glyph {
+        font-family: 'Noto Sans Symbols 2', 'Apple Symbols', sans-serif;
+        font-size: 200px;
+        color: var(--gold-light);
+        line-height: 1;
+        text-shadow:
+            0 0 20px rgba(240,208,120,0.7),
+            0 0 50px rgba(240,208,120,0.4),
+            0 0 90px rgba(124,92,191,0.4);
+        margin-bottom: 12px;
+    }
+
+    .sign-name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 82px;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    }
+
+    .divider {
+        width: 220px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+        margin: 14px 0 20px 0;
+    }
+
+    .transit {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 32px;
+        font-style: italic;
+        color: var(--text);
+        max-width: 900px;
+        text-align: center;
+        line-height: 1.3;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+
+    /* ── Bottom tagline ─────────────────────────── */
+    .tagline {
+        position: absolute;
+        bottom: 56px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Inter', sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        color: var(--text-dim);
+        letter-spacing: 0.30em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    /* ── Vignette ─────────────────────────────────── */
+    .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 80% 65% at 50% 50%, transparent 50%, rgba(6,6,26,0.5) 100%);
+        pointer-events: none;
+        z-index: 2;
+    }
+</style>
+</head>
+<body>
+<div class="thumbnail">
+    <div class="bg-base"></div>
+    <div class="glow-sign"></div>
+    <div class="vignette"></div>
+
+    <div class="corner-accent corner-accent--tl"></div>
+    <div class="corner-accent corner-accent--tr"></div>
+    <div class="corner-accent corner-accent--bl"></div>
+    <div class="corner-accent corner-accent--br"></div>
+
+    <div class="logo">Luz Estelar</div>
+    <div class="date-corner">{{DATE_TEXT}} · {{YEAR}}</div>
+
+    <div class="content">
+        <div class="label-top">Signo del Día</div>
+        <div class="sign-glyph">{{SIGN_GLYPH}}</div>
+        <div class="sign-name">{{SIGN_NAME}}</div>
+        <div class="divider"></div>
+        <div class="transit">{{TRANSIT_LINE}}</div>
+    </div>
+
+    <div class="tagline">Horóscopo del Día</div>
+
+    <script>
+        function mulberry32(a) {
+            return function() {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                var t = Math.imul(a ^ (a >>> 15), 1 | a);
+                t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+        var rand = mulberry32(42);
+        var thumbnail = document.querySelector('.thumbnail');
+        for (var i = 0; i < 180; i++) {
+            var star = document.createElement('div');
+            star.className = rand() > 0.85 ? 'star star--gold' : 'star';
+            var size = rand() < 0.7 ? 1 : (rand() < 0.9 ? 2 : 3);
+            var x = rand() * 1280, y = rand() * 720;
+            var opacity = rand() * 0.4 + 0.08;
+            var dx = (x - 640) / 640, dy = (y - 360) / 360;
+            if (Math.sqrt(dx*dx + dy*dy) < 0.5) opacity *= 0.3;
+            star.style.cssText = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + size + 'px;height:' + size + 'px;opacity:' + opacity.toFixed(3);
+            thumbnail.appendChild(star);
+        }
+    </script>
+</div>
+</body>
+</html>

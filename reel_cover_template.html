@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+Reel Cover Template — 1080×1920 PORTRAIT (9:16)
+2026-05-22: resized from 1400×1400 square to vertical to fit native ratio
+of IG Reels, FB Reels, YouTube Shorts. ONE design serves 4 platforms:
+  - IG Reel cover_url (already uses find_cover_for_sign)
+  - FB Reel/video thumb (Graph API multipart `thumb`)
+  - YouTube Short thumbnail (via thumbnails.set)
+  - TikTok would too but their API doesn't support custom thumb yet
+
+Per-sign, per-day. Each sign gets its own elemental color palette + today's
+main transit text. Cover for the podcast EPISODE (1/day, all 12 signs)
+remains 1400×1400 square — see podcast_episode_cover_template.html.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+    :root {
+        /* Fallback — overridden per-sign below */
+        --primary: #d4a849;
+        --secondary: #7c5cbf;
+        --bg-deep: #06061a;
+        --text: #e0dce8;
+        --text-dim: #9890a8;
+    }
+    /* 2026-05-22 — Per-sign palette by ELEMENT × MODALITY.
+       Each sign has its own tone within its element family. Same gama,
+       distinguishable. The astrology + design synergy: cardinal=initiating
+       (vivid), fija=sustaining (saturated), mutable=adapting (lighter). */
+
+    /* FUEGO (red/orange family) */
+    [data-sign="Aries"]     { --primary: #e85d2f; --secondary: #ffb83d; }  /* cardinal — rojo-naranja agresivo */
+    [data-sign="Leo"]       { --primary: #ff9b3d; --secondary: #ffd700; }  /* fija — ámbar dorado regal */
+    [data-sign="Sagitario"] { --primary: #ff5252; --secondary: #ffa07a; }  /* mutable — carmesí explorador */
+
+    /* TIERRA (olive/bronze family) */
+    [data-sign="Capricornio"] { --primary: #7d6f3a; --secondary: #b8a05a; } /* cardinal — bronce-musgo estructural */
+    [data-sign="Tauro"]       { --primary: #8b8333; --secondary: #c8b860; } /* fija — oliva tibio sensual */
+    [data-sign="Virgo"]       { --primary: #6b8e23; --secondary: #a3b95c; } /* mutable — verde salvia preciso */
+
+    /* AIRE (cyan/lavender family) */
+    [data-sign="Libra"]   { --primary: #a8b8e4; --secondary: #d4c5e8; } /* cardinal — lavanda-cyan equilibrado */
+    [data-sign="Acuario"] { --primary: #5dade2; --secondary: #b19cd9; } /* fija — azul eléctrico futurista */
+    [data-sign="Géminis"] { --primary: #7fd1e6; --secondary: #c5e3f0; } /* mutable — cyan brillante mercurial */
+
+    /* AGUA (blue/teal family) */
+    [data-sign="Cáncer"]   { --primary: #6fa8dc; --secondary: #c4dbf2; } /* cardinal — perla-lunar suave */
+    [data-sign="Escorpio"] { --primary: #2c5e7c; --secondary: #5b8aa6; } /* fija — teal profundo intenso */
+    [data-sign="Piscis"]   { --primary: #5dade8; --secondary: #00c9a7; } /* mutable — aqua-niebla onírico */
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-deep);
+        position: relative;
+    }
+    .cover {
+        width: 1080px;
+        height: 1920px;
+        position: relative;
+        overflow: hidden;
+    }
+    .bg-base {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 80% 50% at 50% 40%, color-mix(in srgb, var(--primary) 22%, transparent) 0%, transparent 60%),
+            linear-gradient(180deg, var(--bg-deep) 0%, color-mix(in srgb, var(--bg-deep) 70%, var(--secondary)) 50%, var(--bg-deep) 100%);
+    }
+    .star {
+        position: absolute;
+        background: var(--text);
+        border-radius: 50%;
+    }
+    .star--gold { background: var(--primary); }
+
+    .corner {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        border: 2px solid var(--primary);
+        opacity: 0.5;
+    }
+    .corner--tl { top: 36px; left: 36px; border-right: none; border-bottom: none; }
+    .corner--tr { top: 36px; right: 36px; border-left: none; border-bottom: none; }
+    .corner--bl { bottom: 36px; left: 36px; border-right: none; border-top: none; }
+    .corner--br { bottom: 36px; right: 36px; border-left: none; border-top: none; }
+
+    .brand-top {
+        position: absolute;
+        top: 120px;
+        left: 0; right: 0;
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 44px;
+        font-weight: 600;
+        color: var(--primary);
+        letter-spacing: 0.38em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    .content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+    .label-above {
+        font-family: 'Inter', sans-serif;
+        font-size: 32px;
+        font-weight: 500;
+        color: var(--text-dim);
+        letter-spacing: 0.46em;
+        text-transform: uppercase;
+        margin-bottom: 50px;
+    }
+    .sign-glyph {
+        font-family: 'Noto Sans Symbols 2', 'Apple Symbols', sans-serif;
+        font-size: 380px;
+        color: var(--primary);
+        line-height: 1;
+        text-shadow:
+            0 0 40px color-mix(in srgb, var(--primary) 70%, transparent),
+            0 0 100px color-mix(in srgb, var(--secondary) 50%, transparent),
+            0 0 180px color-mix(in srgb, var(--primary) 30%, transparent);
+        margin-bottom: 50px;
+    }
+    .sign-name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 130px;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: 0.10em;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+    .divider {
+        width: 360px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        margin: 30px 0 50px 0;
+    }
+    .transit {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 46px;
+        font-style: italic;
+        color: var(--text);
+        max-width: 920px;
+        text-align: center;
+        line-height: 1.32;
+        padding: 0 60px;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+    }
+
+    .date-bottom {
+        position: absolute;
+        bottom: 130px;
+        left: 0; right: 0;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 32px;
+        font-weight: 400;
+        color: var(--text-dim);
+        letter-spacing: 0.38em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+    .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 70% 55% at 50% 50%, transparent 50%, rgba(6,6,26,0.55) 100%);
+        pointer-events: none;
+        z-index: 2;
+    }
+    /* 2026-05-22 — Slot number behind content (like the legacy thumbs).
+       Recovers a useful anchor: viewers see at a glance "this is sign #3
+       of 12 today". Large + low opacity = present but never competes
+       with the glyph or name. */
+    .slot-number {
+        position: absolute;
+        top: 50%;
+        right: 70px;
+        transform: translateY(-50%);
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 540px;
+        font-weight: 700;
+        color: var(--primary);
+        opacity: 0.10;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        z-index: 3;  /* behind content (z:5) but above bg layers */
+        pointer-events: none;
+        text-shadow: 0 0 60px rgba(0,0,0,0.5);
+    }
+</style>
+</head>
+<body data-sign="{{SIGN_NAME_RAW}}" data-element="{{ELEMENT}}">
+<div class="cover">
+    <div class="bg-base"></div>
+    <div class="vignette"></div>
+    <div class="slot-number">{{SLOT_NUMBER}}</div>
+    <div class="corner corner--tl"></div>
+    <div class="corner corner--tr"></div>
+    <div class="corner corner--bl"></div>
+    <div class="corner corner--br"></div>
+
+    <div class="brand-top">Luz Estelar</div>
+
+    <div class="content">
+        <div class="label-above">Horóscopo de Hoy</div>
+        <div class="sign-glyph">{{SIGN_GLYPH}}</div>
+        <div class="sign-name">{{SIGN_NAME}}</div>
+        <div class="divider"></div>
+        <div class="transit">{{TRANSIT_LINE}}</div>
+    </div>
+
+    <div class="date-bottom">{{DATE_TEXT}} · {{YEAR}}</div>
+
+    <script>
+        function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+        var rand = mulberry32(42);
+        var cover = document.querySelector('.cover');
+        for (var i = 0; i < 240; i++) {
+            var star = document.createElement('div');
+            star.className = rand() > 0.85 ? 'star star--gold' : 'star';
+            var size = rand() < 0.7 ? 1 : (rand() < 0.9 ? 2 : 3);
+            var x = rand() * 1080, y = rand() * 1920;
+            var opacity = rand() * 0.4 + 0.08;
+            var dx = (x - 540) / 540, dy = (y - 960) / 960;
+            if (Math.sqrt(dx*dx + dy*dy) < 0.45) opacity *= 0.3;
+            star.style.cssText = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + size + 'px;height:' + size + 'px;opacity:' + opacity.toFixed(3);
+            cover.appendChild(star);
+        }
+    </script>
+</div>
+</body>
+</html>

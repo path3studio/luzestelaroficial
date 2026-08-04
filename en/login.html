@@ -118,7 +118,7 @@
             var res = await fetch('/api/auth/me', {cache: 'no-store', credentials: 'same-origin'});
             if (res.ok) {
                 var data = await res.json();
-                if (data.ok) window.location.href = '/en/dashboard.html';
+                if (data.ok) window.location.href = '/en/my-day.html';
             }
         } catch(e) {}
     })();

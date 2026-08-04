@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!--
+Podcast Episode Cover Template (1400×1400 square)
+ONE cover per day for the daily podcast episode (which contains all 12 signs).
+Different from reel_cover_template — that one is per-sign (12/day, IG Reels).
+This one features:
+  - Day's signo del día (sign of the day) as protagonist
+  - Main astro event of the day (transit)
+  - Date prominent
+  - "Episodio #N" or date as identifier
+  - Brand colors (gold/purple — not per-element, since the episode covers ALL signs)
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gold: #d4a849;
+        --gold-light: #f0d078;
+        --gold-deep: #c89030;
+        --bg-deep: #06061a;
+        --bg-mid: #0c0c2a;
+        --text: #e0dce8;
+        --text-dim: #9890a8;
+        --accent-purple: #7c5cbf;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: 1400px;
+        height: 1400px;
+        overflow: hidden;
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-deep);
+        position: relative;
+    }
+    .cover {
+        width: 1400px;
+        height: 1400px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* ── Background — multi-color cosmic gradient ─────────── */
+    .bg-base {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 60% 45% at 50% 40%, rgba(124,92,191,0.30) 0%, transparent 65%),
+            radial-gradient(ellipse 40% 30% at 30% 70%, rgba(212,168,73,0.18) 0%, transparent 65%),
+            linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-mid) 50%, var(--bg-deep) 100%);
+    }
+
+    /* ── Sign glow halo ─────────────────────────────────── */
+    .glow-sign {
+        position: absolute;
+        left: 50%; top: 36%;
+        transform: translate(-50%, -50%);
+        width: 580px;
+        height: 580px;
+        background: radial-gradient(circle, rgba(240,208,120,0.35) 0%, rgba(124,92,191,0.18) 35%, transparent 70%);
+        filter: blur(40px);
+        z-index: 1;
+    }
+
+    .star {
+        position: absolute;
+        background: var(--text);
+        border-radius: 50%;
+    }
+    .star--gold { background: var(--gold-light); }
+
+    /* ── Corner ornaments ────────────────────────────────── */
+    .corner {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        border: 2px solid var(--gold);
+        opacity: 0.55;
+    }
+    .corner--tl { top: 36px; left: 36px; border-right: none; border-bottom: none; }
+    .corner--tr { top: 36px; right: 36px; border-left: none; border-bottom: none; }
+    .corner--bl { bottom: 36px; left: 36px; border-right: none; border-top: none; }
+    .corner--br { bottom: 36px; right: 36px; border-left: none; border-top: none; }
+
+    /* ── Top brand strip ─────────────────────────────────── */
+    .brand-top {
+        position: absolute;
+        top: 80px;
+        left: 0; right: 0;
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 42px;
+        font-weight: 600;
+        color: var(--gold);
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+    .brand-sub {
+        position: absolute;
+        top: 142px;
+        left: 0; right: 0;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+        color: var(--text-dim);
+        letter-spacing: 0.46em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    /* ── Main content ─────────────────────────────────────── */
+    .content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+
+    .label-above {
+        font-family: 'Inter', sans-serif;
+        font-size: 28px;
+        font-weight: 500;
+        color: var(--gold-light);
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+    }
+
+    /* Big sign glyph in gold */
+    .sign-glyph {
+        font-family: 'Noto Sans Symbols 2', 'Apple Symbols', sans-serif;
+        font-size: 280px;
+        color: var(--gold-light);
+        line-height: 1;
+        text-shadow:
+            0 0 40px rgba(240,208,120,0.7),
+            0 0 90px rgba(240,208,120,0.4),
+            0 0 150px rgba(124,92,191,0.5);
+        margin-bottom: 20px;
+    }
+
+    .signo-del-dia {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 80px;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: 0.10em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        text-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    }
+
+    .episode-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 50px;
+        font-weight: 600;
+        font-style: italic;
+        color: var(--gold);
+        margin-top: 8px;
+        margin-bottom: 30px;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.5);
+    }
+
+    .divider {
+        width: 380px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        margin: 22px 0 28px 0;
+    }
+
+    .transit {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 38px;
+        font-style: italic;
+        color: var(--text);
+        max-width: 1180px;
+        text-align: center;
+        line-height: 1.32;
+        padding: 0 50px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+
+    /* ── Bottom date + 12 mini-zodiac row ────────────────── */
+    .zodiac-strip {
+        position: absolute;
+        bottom: 130px;
+        left: 0; right: 0;
+        text-align: center;
+        font-family: 'Noto Sans Symbols 2', 'Apple Symbols', sans-serif;
+        font-size: 36px;
+        color: rgba(212,168,73,0.45);
+        letter-spacing: 0.45em;
+        z-index: 8;
+    }
+
+    .date-bottom {
+        position: absolute;
+        bottom: 70px;
+        left: 0; right: 0;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 30px;
+        font-weight: 500;
+        color: var(--text);
+        letter-spacing: 0.36em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 80% 65% at 50% 50%, transparent 50%, rgba(6,6,26,0.55) 100%);
+        pointer-events: none;
+        z-index: 2;
+    }
+</style>
+</head>
+<body>
+<div class="cover">
+    <div class="bg-base"></div>
+    <div class="glow-sign"></div>
+    <div class="vignette"></div>
+
+    <div class="corner corner--tl"></div>
+    <div class="corner corner--tr"></div>
+    <div class="corner corner--bl"></div>
+    <div class="corner corner--br"></div>
+
+    <div class="brand-top">Luz Estelar</div>
+    <div class="brand-sub">Horóscopo Diario</div>
+
+    <div class="content">
+        <div class="label-above">Signo del Día</div>
+        <div class="sign-glyph">{{SIGN_GLYPH}}</div>
+        <div class="signo-del-dia">{{SIGN_NAME}}</div>
+        <div class="divider"></div>
+        <div class="transit">{{TRANSIT_LINE}}</div>
+    </div>
+
+    <div class="zodiac-strip">♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓</div>
+    <div class="date-bottom">{{DATE_TEXT}} · {{YEAR}}</div>
+
+    <script>
+        function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+        var rand = mulberry32(42);
+        var cover = document.querySelector('.cover');
+        for (var i = 0; i < 220; i++) {
+            var star = document.createElement('div');
+            star.className = rand() > 0.85 ? 'star star--gold' : 'star';
+            var size = rand() < 0.7 ? 1 : (rand() < 0.9 ? 2 : 3);
+            var x = rand() * 1400, y = rand() * 1400;
+            var opacity = rand() * 0.4 + 0.08;
+            var dx = (x - 700) / 700, dy = (y - 700) / 700;
+            if (Math.sqrt(dx*dx + dy*dy) < 0.5) opacity *= 0.3;
+            star.style.cssText = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + size + 'px;height:' + size + 'px;opacity:' + opacity.toFixed(3);
+            cover.appendChild(star);
+        }
+    </script>
+</div>
+</body>
+</html>

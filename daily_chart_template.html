@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Daily Chart — Luz Estelar</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width: 1080px; height: 1080px;
+    /* 2026-04-29: transparent bg. Chart se layerea sobre cosmic background
+       del short, no necesita su propio fondo. natal-chart.js skips its
+       internal bgGrad cuando opts.transparent=true. */
+    background: transparent;
+    overflow: hidden;
+  }
+  #wrap {
+    position: relative;
+    width: 1080px; height: 1080px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  canvas {
+    display: block;
+  }
+  /* 2026-04-29: brand + date hidden in chart export — Remotion overlays
+     them with React typography that stays upright when chart rotates. */
+  #brand, #date { display: none; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="brand">LUZ · ESTELAR</div>
+  <canvas id="chart"></canvas>
+  <div id="date">{{DATE_TEXT}}</div>
+</div>
+
+<script src="natal-chart.js"></script>
+<script>
+  // Today's chart data — populated by chart_renderer.py
+  const chartData = {{CHART_DATA_JSON}};
+
+  const canvas = document.getElementById('chart');
+  // 1000px chart inside a 1080 frame leaves room for brand + date
+  LuzEstelar.NatalChart.render(canvas, chartData, {
+    size: 1000,
+    dpr: 1,
+    signLabels: ['ARI','TAU','GÉM','CÁN','LEO','VIR','LIB','ESC','SAG','CAP','ACU','PIS'],
+    // 2026-04-29: geocentric orbits mode — each planet on its own
+    // concentric ring + Earth at center. Daily chart only; PWA stays
+    // on tier mode by default.
+    geocentricOrbits: true,
+    // 2026-04-29 sign-focus: highlights the sign's band + glows ruler.
+    // Injected by chart_renderer.py via {{SIGN_FOCUS}} (null = global view).
+    signFocus: {{SIGN_FOCUS}},
+    // 2026-04-29: transparent bg + skip labels (Remotion overlays them
+    // upright over a rotating geom layer for plumb-line readability).
+    transparent: {{TRANSPARENT}},
+    skipLabels: {{SKIP_LABELS}}
+  });
+</script>
+</body>
+</html>

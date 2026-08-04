@@ -207,7 +207,9 @@ export async function onRequestGet(context) {
   }
 
   // Set cookie and redirect (honor le_redirect cookie if present)
-  const defaultPath = lang === 'en' ? '/en/dashboard.html' : '/dashboard.html';
+  // 2026-08-04: el destino post-login es la casa única (antes dashboard,
+  // que ahora es un 301 — mejor aterrizar directo, sin doble salto).
+  const defaultPath = lang === 'en' ? '/en/my-day.html' : '/mi-dia.html';
   const cookies = context.request.headers.get('cookie') || '';
   const rdMatch = cookies.match(/le_redirect=([^;]+)/);
   let redirectPath = defaultPath;
