@@ -470,7 +470,7 @@ body.modal-open #le-tabs{display:none !important}
 .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
   text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
 .hp-hint{margin-left:auto;text-transform:none;letter-spacing:0;font-size:.62rem;opacity:.6}
-.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
 .hp-item{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:11px;
   background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
   cursor:pointer;text-align:left;font-family:inherit;color:inherit;
@@ -630,7 +630,22 @@ body.modal-open #le-tabs{display:none !important}
           <div class="hp-title">
             <span class="tp-ic">⌂</span>
             <span>Tus áreas de vida</span>
+            <button type="button" class="hp-info" id="hp-info-btn"
+                    aria-label="Cómo funcionan las casas" aria-expanded="false">i</button>
             <span class="hp-hint">toca una para entenderla</span>
+          </div>
+          <div class="hp-info-box" id="hp-info-box" hidden>
+            <p><b>Tu carta natal es una foto del cielo</b> tomada en tu momento
+            exacto de nacimiento. Ese cielo se divide en <b>12 franjas: tus
+            casas</b>, y cada una rige un área de tu vida — el dinero, el amor,
+            el trabajo…</p>
+            <p>El <b>signo</b> de cada casa marca tu <em>estilo</em> en esa
+            área. Tus <b>planetas</b> son sus <em>habitantes</em>: caen donde
+            caen, y una casa con planetas es un tema fuerte de tu vida. Una
+            casa vacía no es mala — solo se enciende los días en que un planeta
+            pasa por ahí.</p>
+            <p>Y cada signo tiene un <b>planeta guía</b>: mirar en qué casa
+            vive te dice desde dónde se trabaja esa área de tu vida.</p>
           </div>
           <!-- Para quien no sabe astrología: UNA frase que explica qué está
                viendo, antes de los 12 botones. Sin jerga: ni "cúspide" ni
@@ -3063,6 +3078,17 @@ function cargarCasasSignos(){
 
 function renderHouses(chart){
   cargarCasasSignos();
+  // Botón "i": muestra/oculta la explicación de qué son las casas.
+  var _ib = document.getElementById('hp-info-btn');
+  if(_ib && !_ib.dataset.wired){
+    _ib.dataset.wired = '1';
+    _ib.addEventListener('click', function(){
+      var box = document.getElementById('hp-info-box');
+      var abierto = !box.hidden;
+      box.hidden = abierto;
+      _ib.setAttribute('aria-expanded', String(!abierto));
+    });
+  }
   try{
     var panel = document.getElementById('houses-panel');
     var grid  = document.getElementById('hp-grid');
@@ -3173,8 +3199,12 @@ function renderHouses(chart){
                       'carta, ' + conArticulo(reg) + ' vive en <b>' +
                       dondeReg.sign + '</b> — tu casa ' + dondeReg.casa +
                       (areaReg ? ', la de ' + areaReg.area.toLowerCase() : '') +
-                      '. Traducción: cuando esta área se atora, se destraba ' +
-                      'desde allá.');
+                      '. ¿Y eso de qué te sirve? Si un día sientes que ' +
+                      'esta área no avanza, lo que necesita atención ' +
+                      'probablemente no está aquí, sino allá' +
+                      (areaReg ? ', en tu casa ' + dondeReg.casa + ' (' +
+                       areaReg.area.toLowerCase() + ')' : '') +
+                      ': empieza por ahí.');
         }
         if(activas[n]){
           partes.push('<span class="hp-gly">\u2726</span> <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
