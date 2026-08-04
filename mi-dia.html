@@ -470,7 +470,7 @@ body.modal-open #le-tabs{display:none !important}
 .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
   text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
 .hp-hint{margin-left:auto;text-transform:none;letter-spacing:0;font-size:.62rem;opacity:.6}
-.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.tres-claves{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}.tc-fila{display:flex;gap:11px;margin:11px 0;align-items:flex-start}.tc-gly{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}.tc-tit{font-size:.9rem;font-weight:600;color:var(--gold)}.tc-sub{font-weight:400;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.5))}.tc-txt{font-size:.86rem;line-height:1.6;margin-top:3px;color:var(--tx,rgba(255,255,255,.82))}.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
 .hp-item{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:11px;
   background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
   cursor:pointer;text-align:left;font-family:inherit;color:inherit;
@@ -626,6 +626,11 @@ body.modal-open #le-tabs{display:none !important}
              ubicar todo en un mismo lugar"). La rueda ya estaba en pantalla
              pero era ilegible; esto la traduce. Las casas YA vienen guardadas
              en natal_chart.houses — no se calcula nada nuevo. -->
+        <div class="tres-claves" id="tres-claves" hidden>
+          <div class="hp-title"><span class="tp-ic">\u2726</span>
+            <span>Tus tres claves</span></div>
+          <div class="tc-body"></div>
+        </div>
         <div class="houses-panel" id="houses-panel" hidden>
           <div class="hp-title">
             <span class="tp-ic">⌂</span>
@@ -644,14 +649,11 @@ body.modal-open #le-tabs{display:none !important}
             caen, y una casa con planetas es un tema fuerte de tu vida. Una
             casa vacía no es mala — solo se enciende los días en que un planeta
             pasa por ahí.</p>
-            <p>Y cada signo tiene un <b>planeta guía</b>: mirar en qué casa
-            vive te dice desde dónde se trabaja esa área de tu vida.</p>
             <p><b>Cómo leer cada ficha</b> — son capas independientes, no una
             cadena: <em>1)</em> qué rige esa área · <em>2)</em> tu estilo ahí
-            (el signo) · <em>3)</em> sus habitantes, si los hay (tus planetas)
-            · <em>4)</em> el planeta guía, que existe <em>siempre</em>, haya
-            habitantes o no. La ficha no "sustituye" nada: te muestra las
-            cuatro capas de esa zona de tu cielo.</p>
+            (el signo) · <em>3)</em> sus habitantes, si los hay (tus
+            planetas). Una casa vacía no se "sustituye" con nada: simplemente
+            es una zona tranquila de tu cielo.</p>
           </div>
           <!-- Para quien no sabe astrología: UNA frase que explica qué está
                viendo, antes de los 12 botones. Sin jerga: ni "cúspide" ni
@@ -1345,6 +1347,14 @@ function renderAll(){
       setSlma('slma-sun',sunP||{sign:cc.western.name_en},null,false);
       setSlma('slma-moon',moonP,'Calculando...',!moonP);
       setSlma('slma-asc',ascP,currentProfile.hora_nacimiento?'No disponible':'A\u00f1ade hora',!ascP);
+
+      // Tus tres claves: la explicación de los tres chips de arriba.
+      try{
+        var _tcSol = signES[(sunP||{sign:cc.western.name_en}).sign] || null;
+        var _tcLuna = moonP ? (signES[moonP.sign]||moonP.sign) : null;
+        var _tcAsc = ascP ? (signES[ascP.sign]||ascP.sign) : null;
+        renderTresClaves(_tcSol, _tcLuna, _tcAsc);
+      }catch(e){}
   } catch (e) { /* badges best-effort */ }
 
   // ── Canvas render — isolated so a draw error can't mask the badges ──
@@ -2180,10 +2190,18 @@ async function loadDaily(offset){
   if(nextBtn) nextBtn.disabled = offset>=1;
   var titleEl=document.getElementById('rdg-title');
   if(titleEl){
-    if(offset===0) titleEl.textContent='Tu lectura de hoy';
-    else if(offset===-1) titleEl.textContent='Tu lectura de ayer';
-    else if(offset===1) titleEl.textContent='Tu lectura de ma\u00f1ana';
-    else titleEl.textContent='Lectura del '+_dateKeyForOffset(offset);
+    // 2026-08-04 (pedido del usuario): la lectura "tiene que llevar fecha".
+    var _fmtFecha = function(off){
+      try{
+        var pz = _dateKeyForOffset(off).split('-');
+        var dt = new Date(+pz[0], +pz[1]-1, +pz[2]);
+        return dt.toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
+      }catch(e){ return _dateKeyForOffset(off); }
+    };
+    if(offset===0) titleEl.textContent='Tu lectura de hoy \u00b7 '+_fmtFecha(0);
+    else if(offset===-1) titleEl.textContent='Tu lectura de ayer \u00b7 '+_fmtFecha(-1);
+    else if(offset===1) titleEl.textContent='Tu lectura de ma\u00f1ana \u00b7 '+_fmtFecha(1);
+    else titleEl.textContent='Lectura del '+_fmtFecha(offset);
   }
   try{
     var dateParam = offset===0 ? '' : '&date='+_dateKeyForOffset(offset);
@@ -2215,7 +2233,34 @@ async function loadDaily(offset){
     // oriented if they browse past/future days.
     var rdgEl=document.getElementById('rdg-text');
     if(d.reading){
-      rdgEl.textContent=d.reading;
+      // 2026-08-04: "quizás debe de ser más corta" (usuario). El texto entero
+      // (~200 palabras) sigue ahí, pero abre plegado en las primeras frases
+      // con "Seguir leyendo" — el que quiere todo lo tiene a un toque, y el
+      // que va de pasada ya no ve un muro de texto.
+      (function(texto){
+        var LIM = 80;
+        var palabras = texto.split(/\s+/);
+        if(palabras.length <= LIM + 25){ rdgEl.textContent = texto; return; }
+        var corte = texto.length;
+        var re = /[.!?]\s/g, m;
+        while((m = re.exec(texto))){
+          var w = texto.slice(0, m.index + 1).split(/\s+/).length;
+          if(w >= LIM * 0.6){ corte = m.index + 1; break; }
+        }
+        var breve = texto.slice(0, corte);
+        rdgEl.textContent = breve;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Seguir leyendo';
+        btn.style.cssText = 'display:block;margin-top:8px;background:none;'+
+          'border:none;color:var(--gold);font:inherit;font-size:.85rem;'+
+          'cursor:pointer;padding:0;text-decoration:underline;'+
+          'text-underline-offset:3px';
+        btn.addEventListener('click', function(){
+          rdgEl.textContent = texto;
+        });
+        rdgEl.appendChild(btn);
+      })(d.reading);
     }else if(_dayOffset>0){
       rdgEl.textContent='Las lecturas se generan cada noche. La de mañana estará lista al amanecer.';
     }else if(_dayOffset<0){
@@ -3073,6 +3118,40 @@ var ART_ASTRO = { 'Sol': 'el Sol', 'Luna': 'la Luna' };
 function conArticulo(n){ return ART_ASTRO[n] || n; }
 
 var CASAS_SIGNOS = null;
+var TRES_CLAVES = null;
+function renderTresClaves(sol, luna, asc){
+  var cont = document.getElementById('tres-claves');
+  if(!cont) return;
+  var pinta = function(){
+    if(!TRES_CLAVES || !Object.keys(TRES_CLAVES).length){ cont.hidden = true; return; }
+    var filas = [
+      ['\u2609', 'Tu Sol en ' + (sol||'?'),
+       'quién eres cuando eliges ser tú', sol && TRES_CLAVES['sol|'+sol]],
+      ['\u263D', luna ? 'Tu Luna en ' + luna : null,
+       'cómo sientes por dentro', luna && TRES_CLAVES['luna|'+luna]],
+      ['\u2191', asc ? 'Tu Ascendente en ' + asc : null,
+       'la primera impresión que das', asc && TRES_CLAVES['ascendente|'+asc]]
+    ];
+    var html = '';
+    filas.forEach(function(f){
+      if(!f[1] || !f[3]) return;
+      html += '<div class="tc-fila"><div class="tc-gly">' + f[0] + '</div>' +
+              '<div><div class="tc-tit">' + f[1] +
+              ' <span class="tc-sub">— ' + f[2] + '</span></div>' +
+              '<div class="tc-txt">' + f[3] + '</div></div></div>';
+    });
+    if(!html){ cont.hidden = true; return; }
+    cont.querySelector('.tc-body').innerHTML = html;
+    cont.hidden = false;
+  };
+  if(TRES_CLAVES !== null){ pinta(); return; }
+  TRES_CLAVES = {};
+  fetch('/data/tres_claves.json')
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ if(j) TRES_CLAVES = j; pinta(); })
+    .catch(function(){ cont.hidden = true; });
+}
+
 function cargarCasasSignos(){
   if (CASAS_SIGNOS !== null) return;
   CASAS_SIGNOS = {};
@@ -3196,31 +3275,12 @@ function renderHouses(chart){
                       'los días en que un planeta pasa por aquí.'));
         }
 
-        var reg = SIGN_RULER[h.sign];
-        var dondeReg = reg ? posicionPlaneta(chart, reg) : null;
-        if(reg && dondeReg && dondeReg.casa === n){
-          // El guía vive EN la casa que guía: decir "empieza por allá"
-          // apuntando aquí mismo era un absurdo (lo cazó el usuario en su
-          // casa 5). Este caso tiene su propia lectura, y es buena noticia.
-          partes.push('Cada signo tiene un planeta que lo guía, y el de <b>' +
-                      h.sign + '</b> es <b>' + conArticulo(reg) + '</b> — que ' +
-                      'vive <b>aquí mismo</b>, en esta casa. Eso significa que ' +
-                      'esta área es autosuficiente: no depende de otra zona de ' +
-                      'tu carta. Cuando no avance, se trabaja aquí, de frente.');
-        } else if(reg && dondeReg){
-          var areaReg = HOUSE_AREAS[dondeReg.casa];
-          partes.push('Cada signo tiene un planeta que lo guía, y el de <b>' +
-                      h.sign + '</b> es <b>' + conArticulo(reg) + '</b>. En tu ' +
-                      'carta, ' + conArticulo(reg) + ' vive en <b>' +
-                      dondeReg.sign + '</b> — tu casa ' + dondeReg.casa +
-                      (areaReg ? ', la de ' + areaReg.area.toLowerCase() : '') +
-                      '. ¿Y eso de qué te sirve? Si un día sientes que ' +
-                      'esta área no avanza, lo que necesita atención ' +
-                      'probablemente no está aquí, sino allá' +
-                      (areaReg ? ', en tu casa ' + dondeReg.casa + ' (' +
-                       areaReg.area.toLowerCase() + ')' : '') +
-                      ': empieza por ahí.');
-        }
+        // (2026-08-04) Aquí vivía la capa del "planeta guía" (regente).
+        // Retirada de la ficha: el dueño tropezó dos veces con la frase, y
+        // una capa que hay que re-explicar no está aportando. El concepto
+        // queda mencionado en el botón "i" como nota, y el código de cálculo
+        // (SIGN_RULER, posicionPlaneta) sigue disponible para un futuro
+        // nivel "avanzado".
         if(activas[n]){
           partes.push('<span class="hp-gly">\u2726</span> <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
         }
