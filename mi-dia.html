@@ -3150,23 +3150,31 @@ function renderHouses(chart){
           });
           var txt = lista.length === 1 ? lista[0]
                   : lista.slice(0,-1).join(', ') + ' y ' + lista[lista.length-1];
-          partes.push('<span class="hp-gly">\u2641</span> Y aquí tienes ' + txt + '. Es una zona cargada de tu ' +
-                      'carta: le vas a dar más vueltas que la mayoría.');
+          partes.push('Cuando naciste, en esta zona del cielo quedó ' + txt +
+                      '. Por eso es un área cargada para ti: le vas a dar ' +
+                      'más vueltas que la mayoría.');
         } else {
-          partes.push('<span class="hp-gly">\u2641</span> No tienes planetas aquí, y eso <b>no es malo</b> — ' +
-                      'solo significa que no es un campo de batalla constante. ' +
-                      'Se activa cuando el cielo pasa por encima, como hoy.');
+          partes.push('Cuando naciste, en esta zona del cielo no había ningún ' +
+                      'planeta — y eso <b>no es malo</b>. El signo (' + h.sign +
+                      ') marca tu <em>estilo</em> en esta área; los planetas ' +
+                      'serían sus habitantes, y sin ellos simplemente no es un ' +
+                      'campo de batalla constante.' +
+                      (activas[n] ? ' Se enciende los días en que un planeta ' +
+                      'pasa por aquí — <b>como hoy</b>.' : ' Se enciende solo ' +
+                      'los días en que un planeta pasa por aquí.'));
         }
 
         var reg = SIGN_RULER[h.sign];
         var dondeReg = reg ? posicionPlaneta(chart, reg) : null;
         if(reg && dondeReg){
           var areaReg = HOUSE_AREAS[dondeReg.casa];
-          partes.push('La llave de esta área la tiene <b>' + conArticulo(reg) +
-                      '</b>, que en tu carta vive en <b>' + dondeReg.sign +
-                      '</b> — tu casa ' + dondeReg.casa +
-                      (areaReg ? ' (' + areaReg.area.toLowerCase() + ')' : '') +
-                      '. Cuando esta zona se atora, por ahí se destraba.');
+          partes.push('Cada signo tiene un planeta que lo guía, y el de <b>' +
+                      h.sign + '</b> es <b>' + conArticulo(reg) + '</b>. En tu ' +
+                      'carta, ' + conArticulo(reg) + ' vive en <b>' +
+                      dondeReg.sign + '</b> — tu casa ' + dondeReg.casa +
+                      (areaReg ? ', la de ' + areaReg.area.toLowerCase() : '') +
+                      '. Traducción: cuando esta área se atora, se destraba ' +
+                      'desde allá.');
         }
         if(activas[n]){
           partes.push('<span class="hp-gly">\u2726</span> <b>El cielo la está tocando hoy</b> — por eso puede que justo ahí se mueva algo.');
