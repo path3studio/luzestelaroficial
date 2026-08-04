@@ -113,6 +113,23 @@
             font-size: 1.8em; font-weight: 700; color: #fff; margin-bottom: 24px;
         }
 
+        /* Carrusel de ejemplos */
+        .mapa-carrusel {
+            display: flex; gap: 14px; overflow-x: auto;
+            scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+            padding: 4px 4px 12px; scrollbar-width: none;
+        }
+        .mapa-carrusel::-webkit-scrollbar { display: none; }
+        .mapa-carrusel img {
+            flex: 0 0 auto; width: 74%; max-width: 340px; height: auto; aspect-ratio: 4/5; object-fit: cover;
+            border-radius: 14px; border: 1px solid rgba(212,168,73,0.25);
+            scroll-snap-align: center; background: #12102a;
+        }
+        .mapa-carrusel-hint {
+            font-size: 0.78em; color: var(--text-dim); text-align: center;
+            margin-top: 4px; letter-spacing: 0.05em;
+        }
+
         /* Occasions */
         .occasions {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
@@ -391,6 +408,24 @@
                     </div>
                     <canvas id="star-map-preview" width="600" height="600" style="max-width:100%;border-radius:50%;border:2px solid rgba(212,168,73,0.3);"></canvas>
                     <p style="font-size:0.8em;color:var(--text-dim);margin-top:14px;font-style:italic;max-width:520px;margin-left:auto;margin-right:auto;">Vista previa ilustrativa. Tu mapa real incluye datos reales del catálogo <strong>Hipparcos</strong> con más de <strong>9.000 estrellas</strong>, la Vía Láctea y constelaciones visibles desde tu lugar y fecha exacta.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ejemplos reales -->
+        <section style="padding-top:0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2 style="text-align:center;">D&oacute;nde puedes usarlo</h2>
+                    <p style="font-size:0.88em;color:var(--text-dim);text-align:center;margin-bottom:20px;">Enmarcado, impreso en el tama&ntilde;o que quieras o como fondo de pantalla. Desliza para ver ejemplos.</p>
+                    <div class="mapa-carrusel" aria-label="Ejemplos del Mapa Estelar">
+                        <img src="/assets/mapa-ejemplos/ejemplo-4.webp" alt="Mapa estelar enmarcado y como fondo de celular" loading="lazy" width="900" height="1125">
+                        <img src="/assets/mapa-ejemplos/ejemplo-5.webp" alt="Mapa estelar impreso en distintos tama&ntilde;os" loading="lazy" width="900" height="1125">
+                        <img src="/assets/mapa-ejemplos/ejemplo-1.webp" alt="Mapa estelar de cumplea&ntilde;os personalizado" loading="lazy" width="900" height="1125">
+                        <img src="/assets/mapa-ejemplos/ejemplo-2.webp" alt="Mapa estelar de la noche en que se conocieron" loading="lazy" width="900" height="1125">
+                        <img src="/assets/mapa-ejemplos/ejemplo-3.webp" alt="Mapa estelar de nacimiento" loading="lazy" width="900" height="1125">
+                    </div>
+                    <p class="mapa-carrusel-hint">&larr; Desliza para ver m&aacute;s &rarr;</p>
                 </div>
             </div>
         </section>
