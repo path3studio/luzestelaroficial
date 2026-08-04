@@ -258,21 +258,16 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 
 /* Mapa Estelar — gift product */
 .mapa-card{padding:0;overflow:hidden}
-.mapa-preview{position:relative;aspect-ratio:1/1;max-height:320px;background:radial-gradient(ellipse at center,#1a1340 0%,#06061a 70%);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.mapa-stars{position:absolute;inset:0;pointer-events:none}
-.mapa-stars span{position:absolute;background:#fff;border-radius:50%;animation:twinkle ease-in-out infinite}
-.mapa-frame{position:relative;width:72%;aspect-ratio:1/1;border:1px solid rgba(212,168,73,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 10%;box-shadow:inset 0 0 30px rgba(212,168,73,.06)}
-.mapa-frame::before{content:"";position:absolute;inset:-7px;border:1px solid rgba(212,168,73,.18);border-radius:50%;pointer-events:none}
-.mapa-frame::after{content:"";position:absolute;inset:-14px;border:1px dashed rgba(212,168,73,.08);border-radius:50%;pointer-events:none}
-.mapa-caption{position:relative;z-index:2;text-align:center;pointer-events:none}
-.mapa-caption .mc-ttl{font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;line-height:1.15}
-.mapa-caption .mc-sub{font-size:.66rem;color:var(--text-dim);margin-top:5px;letter-spacing:.08em}
-.mapa-caption .mc-div{width:28px;height:1px;background:rgba(212,168,73,.4);margin:6px auto}
-.mapa-body{padding:16px 14px 14px}
+.mapa-body{padding:16px 14px 14px;text-align:center}
+.mapa-carrusel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:2px 2px 8px;margin:0 0 4px;scrollbar-width:none}
+.mapa-carrusel::-webkit-scrollbar{display:none}
+.mapa-carrusel img{flex:0 0 auto;width:72%;max-width:250px;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:12px;border:1px solid rgba(212,168,73,.25);scroll-snap-align:center;background:#12102a}
+.mapa-carrusel img.contain{object-fit:contain;background:#0a0a24}
+.mapa-carrusel-hint{font-size:.62rem;color:var(--text-mute);text-align:center;margin:0 0 12px;letter-spacing:.06em}
 .mapa-tag{display:inline-block;font-size:.58rem;color:var(--gold);background:var(--gold-dim);padding:3px 8px;border-radius:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:6px}
 .mapa-hd{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:6px}
 .mapa-desc{font-size:.78rem;color:var(--text-dim);line-height:1.55;margin-bottom:12px}
-.mapa-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mapa-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .mapa-cta{flex:1;min-width:140px;padding:10px 12px;border-radius:9px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s}
 .mapa-cta-primary{background:linear-gradient(135deg,var(--gold),#c89030);color:var(--bg);border:none}
 .mapa-cta-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,168,73,.28)}
@@ -582,19 +577,17 @@ body.modal-open #le-tabs{display:none !important}
     <section class="fade d6" style="margin-top:6px">
       <div class="slbl" style="justify-content:center;text-align:center"><span class="ic le-ic" data-icon="sparkles"></span> Star Map</div>
       <div class="card mapa-card">
-        <div class="mapa-preview">
-          <div class="mapa-stars" id="mapa-stars-preview" aria-hidden="true"></div>
-          <div class="mapa-frame">
-            <div class="mapa-caption">
-              <p class="mc-ttl" id="mapa-name">Your Name</p>
-              <div class="mc-div"></div>
-              <p class="mc-sub" id="mapa-info">Date &middot; Place</p>
-            </div>
-          </div>
-        </div>
         <div class="mapa-body">
           <p class="mapa-hd">A sky worth remembering</p>
-          <p class="mapa-desc">A unique print of the exact sky at your birth date and place. A collectible keepsake, ideal for gifting to someone you love.</p>
+          <p class="mapa-desc">The real sky of your exact date and place, with over 9,000 stars from the Hipparcos catalog. High resolution, ready to print or gift.</p>
+          <div class="mapa-carrusel" aria-label="Star Map examples">
+            <img src="/assets/mapa-ejemplos/mapa-real.webp" alt="Real star map example: Our Wedding — Ana y Pedro" loading="lazy" width="1200" height="1800" class="contain">
+            <img src="/assets/mapa-ejemplos/ejemplo-4.webp" alt="Framed star map and phone wallpaper" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-5.webp" alt="Star map printed in different sizes" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-1.webp" alt="Personalized birthday star map" loading="lazy" width="900" height="1125">
+            <img src="/assets/mapa-ejemplos/ejemplo-2.webp" alt="Star map of the night we met" loading="lazy" width="900" height="1125">
+          </div>
+          <p class="mapa-carrusel-hint">&larr; Swipe to see examples &rarr;</p>
           <div class="mapa-actions">
             <a href="/en/mapa-estelar.html" class="mapa-cta mapa-cta-primary">Gift a Star Map</a>
             <a href="/en/mapa-estelar.html#example" class="mapa-cta mapa-cta-sec">See example</a>
@@ -1546,33 +1539,6 @@ function renderAll(){
       updateActionRow(view);
     });
   })();
-
-  // Star Map — personalized preview
-  try{
-    var mNm=document.getElementById('mapa-name');
-    var mIn=document.getElementById('mapa-info');
-    if(mNm) mNm.textContent=(firstName||'Your name').toUpperCase();
-    if(mIn){
-      var dd=currentProfile.fecha_nacimiento||'';
-      var lug=currentProfile.lugar_nacimiento||'';
-      mIn.textContent=(dd?fmtDate(dd):'Date')+(lug?(' · '+lug):'');
-    }
-    var mst=document.getElementById('mapa-stars-preview');
-    if(mst && !mst.dataset.ready){
-      var mhtml='';
-      for(var mi=0;mi<45;mi++){
-        var msz=(Math.random()*2+0.6).toFixed(1);
-        var mtx=(Math.random()*100).toFixed(1);
-        var mty=(Math.random()*100).toFixed(1);
-        var mdur=(Math.random()*3+2).toFixed(1);
-        var mdel=(Math.random()*3).toFixed(1);
-        var mop=(Math.random()*0.6+0.3).toFixed(2);
-        mhtml+='<span style="width:'+msz+'px;height:'+msz+'px;left:'+mtx+'%;top:'+mty+'%;animation-duration:'+mdur+'s;animation-delay:'+mdel+'s;opacity:'+mop+'"></span>';
-      }
-      mst.innerHTML=mhtml;
-      mst.dataset.ready='1';
-    }
-  }catch(e){}
 
   // Perfiles
   renderProfiles();
