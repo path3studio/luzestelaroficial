@@ -49,9 +49,18 @@ lo prueba CON nuestros personajes, no con stock.
   .brand img{height:48px;width:auto;filter:drop-shadow(0 2px 12px rgba(0,0,0,.75))}
   .brand span{font-family:'Cormorant Garamond',serif;font-size:24px;letter-spacing:.28em;
        color:rgba(240,208,120,.95);text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+  /* ── texto adaptable por imagen (composicion.json) ──
+     lado-der: personaje a la izquierda → todo el texto a la derecha
+     compacto: personaje centrado → texto más chico y velo más fuerte */
+  body.lado-der .velo{background:linear-gradient(270deg,rgba(11,10,30,.9) 0%,rgba(18,16,42,.78) 40%,rgba(18,16,42,.3) 62%,transparent 100%)}
+  body.lado-der .contenido{left:auto;right:96px;align-items:flex-end;text-align:right}
+  body.lado-der .gancho{text-align:right}
+  body.lado-der .brand{left:auto;right:96px}
+  body.compacto .velo{background:rgba(11,10,30,.55)}
+  body.compacto .gancho{font-size:34px}
 </style>
 </head>
-<body>
+<body class="{{LADO_CLASE}}">
   <div class="velo"></div>
   <div class="foto"><img src="{{CHAR_IMG}}" alt=""></div>
   <div class="marco"></div>
