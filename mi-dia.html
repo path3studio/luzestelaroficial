@@ -3028,6 +3028,23 @@ function renderHouses(chart){
     var grid  = document.getElementById('hp-grid');
     if(!panel || !grid) return;
     var houses = chart && chart.houses;
+    // Cartas antiguas: se guardaron con `ascendant` pero sin `houses` (el
+    // formato cambió). Como usamos casas IGUALES desde el Ascendente, las 12
+    // cúspides se reconstruyen EXACTAS aquí mismo — es la misma reconstrucción
+    // que hace el endpoint del newsletter. Sin esto, quien tenga carta vieja
+    // (incluido el dueño) no ve el panel y parece que la función no existe.
+    if((!houses || houses.length !== 12) && chart && chart.ascendant &&
+       typeof chart.ascendant.longitude === 'number'){
+      var ascLon = chart.ascendant.longitude;
+      var zodEs = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo','Libra',
+                   'Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
+      houses = [];
+      for(var hi = 0; hi < 12; hi++){
+        var hlon = (ascLon + hi * 30) % 360;
+        houses.push({ house: hi + 1, sign: zodEs[Math.floor(hlon / 30)],
+                      cusp_degree: hlon });
+      }
+    }
     if(!houses || !houses.length){ panel.hidden = true; return; }
 
     // ¿Qué casas toca el cielo HOY? Se resalta con un punto dorado; si no
