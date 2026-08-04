@@ -364,7 +364,7 @@ body{
 
   <!-- Empty state: fewer than 2 profiles -->
   <div id="empty-profiles" class="glass empty-state hidden">
-    <span class="empty-icon">💫</span>
+    <span class="empty-icon text-gold"><span class="le-ic" data-icon="sparkles"></span></span>
     <p><strong>Add someone to compare yourself with</strong><br><span style="font-size:.85em;opacity:.75">partner, family, friend — each profile opens its own natal chart</span></p>
     <a href="/en/my-day.html#add-profile" class="btn-cta">Add another profile</a>
   </div>
@@ -394,7 +394,7 @@ body{
 
     <!-- Default hint -->
     <div id="hint-state" class="glass hint-state">
-      <span class="hint-icon">🔮</span>
+      <span class="hint-icon text-gold"><span class="le-ic" data-icon="crystal-ball"></span></span>
       <p>Select two profiles to see your compatibility analysis</p>
     </div>
 
@@ -406,7 +406,7 @@ body{
 
     <!-- Upgrade gate -->
     <div id="upgrade-gate" class="glass upgrade-gate hidden">
-      <span class="lock-icon">🔒</span>
+      <span class="lock-icon text-gold"><span class="le-ic" data-icon="lock"></span></span>
       <h3>Cross-Cultural Compatibility</h3>
       <p style="margin-bottom:10px;">Deep analysis between two profiles across 7 ancestral systems: overview, strengths, tensions, growth, and a personalized shared ritual.</p>
       <p style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 days free</strong> · Then from <strong style="color:#f0d078;">$2.50/month</strong> (annual plan).</p>
@@ -520,9 +520,9 @@ body{
   };
 
   function getEmoji(profile){
-    if(!profile) return '✨';
+    if(!profile) return '\u2726';
     var sign = (profile.westernSign || profile.western_sign || profile.sign || '').toLowerCase();
-    return signEmoji[sign] || '✨';
+    return (signEmoji[sign] ? signEmoji[sign] + '\ufe0e' : '\u2726');
   }
 
   function getDisplayName(profile){

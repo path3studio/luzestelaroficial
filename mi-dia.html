@@ -186,7 +186,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ins-txt{font-size:.82rem;line-height:1.55;color:rgba(224,220,232,.78)}
 .ins-lock{position:relative;overflow:hidden}
 .ins-lock .ins-txt{filter:blur(5px);user-select:none;color:var(--text-dim)}
-.ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
+.ins-lock::after{content:'';width:1em;height:1em;background:center/contain no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a849' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'/><path d='M7 11V7a5 5 0 0 1 10 0v4'/></svg>");position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
 .up-cta{display:block;text-align:center;padding:9px;margin-top:6px;background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(212,168,73,.04));border:1px solid rgba(212,168,73,.25);border-radius:10px;color:var(--gold);font-size:.78rem;font-weight:500;text-decoration:none}
 
 /* Moon + cosmic strip */
@@ -496,7 +496,7 @@ body.modal-open #le-tabs{display:none !important}
 <!-- No birth profile yet -->
 <div id="st-setup" class="state">
   <div class="auth-box">
-    <div style="font-size:3rem;color:var(--gold);margin-bottom:10px;opacity:.85">&#10024;</div>
+    <div style="font-size:3rem;color:var(--gold);margin-bottom:10px;opacity:.85"><span class="le-ic" data-icon="sparkles"></span></div>
     <h1>Tu universo te espera</h1>
     <p>Agrega tu fecha de nacimiento para que calculemos tus 8 sistemas: signo occidental, animal chino, n&uacute;mero de vida, &aacute;rbol celta, kin maya, n&aacute;kshatra v&eacute;dico, Human Design y tu eneagrama.</p>
     <!-- Antes iba a dashboard.html; con la redirección habría hecho un
@@ -531,7 +531,7 @@ body.modal-open #le-tabs{display:none !important}
 
   <main>
     <section class="greet fade">
-      <h1 id="greeting">Hola<span id="streak-pill" class="streak" style="display:none"><span class="stk-ic">&#128293;</span><span id="streak-txt">0</span></span></h1>
+      <h1 id="greeting">Hola<span id="streak-pill" class="streak" style="display:none"><span class="stk-ic le-ic" data-icon="flame"></span><span id="streak-txt">0</span></span></h1>
       <p id="date-fmt"></p>
       <div class="greet-sub" id="greet-sub" style="display:none"></div>
     </section>
@@ -758,7 +758,7 @@ body.modal-open #le-tabs{display:none !important}
             <a href="/mapa-estelar.html" class="mapa-cta mapa-cta-primary tap-feedback">Regalar Mapa Estelar</a>
             <a href="/mapa-estelar.html#ejemplo" class="mapa-cta mapa-cta-sec tap-feedback">Ver ejemplo</a>
           </div>
-          <p class="mapa-gift-note">&#10024; Incluido con <b>Plus</b> &middot; tambi&eacute;n disponible como regalo</p>
+          <p class="mapa-gift-note"><span class="le-ic" data-icon="sparkles"></span> Incluido con <b>Plus</b> &middot; tambi&eacute;n disponible como regalo</p>
         </div>
       </div>
     </section>
@@ -783,7 +783,7 @@ body.modal-open #le-tabs{display:none !important}
       <div class="slbl"><span class="ic le-ic" data-icon="mail"></span> Resumen Semanal</div>
       <div class="card news-card">
         <div class="news-hd">
-          <span class="nh-ic">&#10024;</span>
+          <span class="nh-ic"><span class="le-ic" data-icon="sparkles"></span></span>
           <span class="nh-tt">Tu horoscopo, cada semana</span>
         </div>
         <p class="news-sub">Recibe los movimientos clave del cosmos y una lectura personal en tu correo. Sin spam, cancelas cuando quieras.</p>
@@ -890,7 +890,7 @@ body.modal-open #le-tabs{display:none !important}
 <!-- Onboarding tour (shown once after first profile) -->
 <div class="tour-overlay" id="tour" role="dialog" aria-modal="true" aria-labelledby="tour-title">
   <div class="tour-card">
-    <div class="tour-ic" id="tour-ic">&#10024;</div>
+    <div class="tour-ic" id="tour-ic"><span class="le-ic" data-icon="sparkles"></span></div>
     <h2 class="tour-title" id="tour-title">Bienvenida a tu d&iacute;a</h2>
     <p class="tour-body" id="tour-body">Cada ma&ntilde;ana te traemos tu lectura personalizada desde 8 sistemas espirituales: signo occidental, animal chino, n&uacute;mero de vida, &aacute;rbol celta, kin maya, n&aacute;kshatra v&eacute;dico, Human Design y eneagrama.</p>
     <div class="tour-dots" id="tour-dots">
@@ -936,7 +936,7 @@ var SYS_IC={chinese:'\u{1F409}',numerology:'\u{1F522}',celtic:'\u{1F333}',mayan:
 var E_IC={love:'\u2764\uFE0F',career:'\u{1F4BC}',health:'\u{1F33F}',energy:'\u26A1'};
 var E_CLR={love:'#e8456a',career:'#d4a849',health:'#4aba7a',energy:'#7c5cbf'};
 var SIGNS={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
-var LABEL_OPTS=[{v:'Pareja',ic:'💞'},{v:'Familia',ic:'👨‍👩‍👧'},{v:'Hijo/a',ic:'🧒'},{v:'Amigo/a',ic:'🤝'},{v:'Otro',ic:'✨'}];
+var LABEL_OPTS=[{v:'Pareja',ic:'heart'},{v:'Familia',ic:'users'},{v:'Hijo/a',ic:'baby'},{v:'Amigo/a',ic:'users'},{v:'Otro',ic:'sparkles'}];
 
 function show(id){
   if(id==='login'){window.location.replace('/login.html');return;}
@@ -1029,9 +1029,9 @@ function bumpStreak(){
 // 3-slide walkthrough shown once after the user sees their first reading.
 // Triggered from init() via maybeShowTour(). Persisted in localStorage.
 var TOUR_SLIDES=[
-  {ic:'\u2728',title:'Bienvenida a tu d\u00eda',body:'Cada ma\u00f1ana te traemos tu lectura personalizada desde 8 sistemas espirituales: signo occidental, animal chino, n\u00famero de vida, \u00e1rbol celta, kin maya, n\u00e1kshatra v\u00e9dico, Human Design y eneagrama.'},
-  {ic:'\ud83d\udd2e',title:'Tu firma c\u00f3smica',body:'Abajo ver\u00e1s una sinfon\u00eda cruzada: c\u00f3mo tus ocho sistemas se alinean entre s\u00ed. Los d\u00edas en que convergen son momentos especiales para actuar.'},
-  {ic:'\ud83d\udc46',title:'Desliza para viajar en el tiempo',body:'Desliza la tarjeta de lectura hacia la izquierda para ver la de ma\u00f1ana, o hacia la derecha para repasar ayer. Tambi\u00e9n puedes usar las flechas \u2039 \u203a.'}
+  {ic:'sparkles',title:'Bienvenida a tu d\u00eda',body:'Cada ma\u00f1ana te traemos tu lectura personalizada desde 8 sistemas espirituales: signo occidental, animal chino, n\u00famero de vida, \u00e1rbol celta, kin maya, n\u00e1kshatra v\u00e9dico, Human Design y eneagrama.'},
+  {ic:'crystal-ball',title:'Tu firma c\u00f3smica',body:'Abajo ver\u00e1s una sinfon\u00eda cruzada: c\u00f3mo tus ocho sistemas se alinean entre s\u00ed. Los d\u00edas en que convergen son momentos especiales para actuar.'},
+  {ic:'move-horizontal',title:'Desliza para viajar en el tiempo',body:'Desliza la tarjeta de lectura hacia la izquierda para ver la de ma\u00f1ana, o hacia la derecha para repasar ayer. Tambi\u00e9n puedes usar las flechas \u2039 \u203a.'}
 ];
 function maybeShowTour(){
   try{
@@ -1049,7 +1049,7 @@ function maybeShowTour(){
   var skipBtn=document.getElementById('tour-skip');
   function render(){
     var s=TOUR_SLIDES[idx];
-    icEl.innerHTML=s.ic;
+    icEl.innerHTML=LEIC(s.ic);
     titleEl.textContent=s.title;
     bodyEl.textContent=s.body;
     var dots=dotsEl.querySelectorAll('.tour-dot');
@@ -1444,7 +1444,7 @@ function renderAll(){
             .catch(function(){ window.location.href = '/ajustes.html'; });
         }
         if(_sp.get('subscription') === 'success' && window.LuzEstelar && LuzEstelar.toast){
-          LuzEstelar.toast('✨ Bienvenida a Plus — tu lectura diaria personalizada ya está activa', {duration: 9000});
+          LuzEstelar.toast('✦ Bienvenida a Plus — tu lectura diaria personalizada ya está activa', {duration: 9000});
           _sp.delete('subscription'); _sp.delete('cadence');
           var _q = _sp.toString();
           history.replaceState(null, '', window.location.pathname + (_q ? '?' + _q : ''));
@@ -2054,11 +2054,11 @@ function buildSynth(cc){
   try{add((cc.vedic.rashi.element_en||'').toLowerCase());}catch(e){}
   var total=Object.values(els).reduce(function(a,b){return a+b;},0)||1;
   var clrs={Fuego:'#e8456a',Tierra:'#4aba7a',Aire:'#f0d078',Agua:'#6bb6e0'};
-  var icons={Fuego:'🔥',Tierra:'🌍',Aire:'💨',Agua:'💧'};
+  var icons={Fuego:'flame',Tierra:'leaf',Aire:'wind',Agua:'droplet'};
   var h='';
   ['Fuego','Tierra','Aire','Agua'].forEach(function(k){
     var pct=Math.round(els[k]/total*100);
-    h+='<div class="synth-it"><div class="slb">'+icons[k]+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
+    h+='<div class="synth-it"><div class="slb">'+LEIC(icons[k])+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
   });
   document.getElementById('synth-grid').innerHTML=h;
 
@@ -2105,7 +2105,7 @@ function renderProfiles(){
     // replaces it with SVG on hydrate, but if the registry never loads
     // the emoji stays visible instead of a blank box.
     var avIcon = pri ? 'star' : 'user';
-    var avFallback = pri ? '⭐' : '👤';
+    var avFallback = pri ? '✦' : '◦';
     // Rows are tappable to switch which profile's DATA renders in the
     // dashboard (chart, insights, synthesis). The ACCOUNT OWNER's name
     // in the greeting stays the same — the user is navigating between
@@ -2274,16 +2274,16 @@ async function loadDaily(offset){
 
     // Cosmic strip
     var cos=[];
-    if(d.moon) cos.push('<span>🌙 '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
-    if(d.luckyNumber) cos.push('<span>🍀 '+d.luckyNumber+'</span>');
+    if(d.moon) cos.push('<span>'+LEIC('moon')+' '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
+    if(d.luckyNumber) cos.push('<span>'+LEIC('clover')+' '+d.luckyNumber+'</span>');
     document.getElementById('cosm').innerHTML=cos.join('');
 
     // Greeting subtitle — moon phase + energy at a glance
     var gs=document.getElementById('greet-sub');
     if(gs){
       var pieces=[];
-      if(d.moon&&d.moon.phase) pieces.push('<span class="gs-tag">🌙 <b>'+d.moon.phase+'</b></span>');
-      if(ov!=null) pieces.push('<span class="gs-tag">⚡ <b>'+ov+'</b>/10</span>');
+      if(d.moon&&d.moon.phase) pieces.push('<span class="gs-tag">'+LEIC('moon')+' <b>'+d.moon.phase+'</b></span>');
+      if(ov!=null) pieces.push('<span class="gs-tag">'+LEIC('zap')+' <b>'+ov+'</b>/10</span>');
       if(pieces.length){gs.innerHTML=pieces.join('');gs.style.display='flex';}
     }
 
@@ -2689,7 +2689,7 @@ var apLabel='Pareja', apLat=null, apLng=null, apSTO=null;
 function buildLabelChips(){
   var box=document.getElementById('ap-chips');
   box.innerHTML=LABEL_OPTS.map(function(o){
-    return '<button type="button" class="chip'+(o.v===apLabel?' on':'')+'" data-v="'+o.v+'"><span>'+o.ic+'</span><span>'+o.v+'</span></button>';
+    return '<button type="button" class="chip'+(o.v===apLabel?' on':'')+'" data-v="'+o.v+'"><span>'+LEIC(o.ic)+'</span><span>'+o.v+'</span></button>';
   }).join('');
   box.querySelectorAll('.chip').forEach(function(c){
     c.addEventListener('click',function(){apLabel=c.dataset.v;buildLabelChips();});
@@ -2991,6 +2991,7 @@ init();
 </script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 <script src="/js/icons.js" defer></script>
+<script>function LEIC(n){return window.LuzEstelarIcons?'<span class="le-ic">'+LuzEstelarIcons.render(n)+'</span>':''}</script>
 <script src="/js/toast.js" defer></script>
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
@@ -3011,18 +3012,18 @@ init();
 // pago). Aquí solo se traduce: cada casa a un área de vida con su signo,
 // y al tocarla, qué significa tener ESE signo ahí. Cero llamadas nuevas.
 var HOUSE_AREAS = {
-  1:  {em:'🌱', area:'Tu esencia',     q:'cómo te presentas ante el mundo y cómo arrancas todo lo nuevo. Es la primera impresión que dejas, antes de que digas nada'},
-  2:  {em:'💰', area:'Dinero',         q:'tu relación con lo material: cómo ganas, en qué gastas y qué necesitas tener para sentirte a salvo'},
-  3:  {em:'💬', area:'Comunicación',   q:'cómo piensas y te explicas, qué aprendes con facilidad, y el trato con hermanos y gente cercana'},
-  4:  {em:'🏠', area:'Hogar y raíces', q:'tu familia, la casa donde creciste y la que construyes. De dónde vienes y qué te sostiene por dentro'},
-  5:  {em:'✨', area:'Creatividad',    q:'lo que haces por puro gusto: crear, jugar, enamorarte, los hijos. Donde te sale el brillo sin esfuerzo'},
-  6:  {em:'🌿', area:'Salud y rutina', q:'tu cuerpo y tu día a día: cómo trabajas, qué hábitos te sostienen y dónde se te nota el desgaste'},
-  7:  {em:'❤️', area:'Amor',           q:'cómo te vinculas de tú a tú: la pareja, los socios, y qué buscas en el otro que no ves en ti'},
-  8:  {em:'🌊', area:'Transformación', q:'lo que compartes con otros — dinero, intimidad, secretos — y las crisis que te obligan a cambiar de piel'},
-  9:  {em:'🧭', area:'Sentido',        q:'en qué crees, qué te expande: los viajes, los estudios largos, la búsqueda de una verdad propia'},
-  10: {em:'💼', area:'Trabajo',        q:'tu carrera y tu reputación: qué quieres construir y por qué te gustaría que te recordaran'},
-  11: {em:'🤝', area:'Comunidad',      q:'tus amistades, los grupos donde encajas y los sueños que persigues a largo plazo'},
-  12: {em:'🌙', area:'Mundo interno',  q:'lo que no se ve: tu descanso, tu intuición, los miedos silenciosos y lo que sueltas a solas'}
+  1:  {area:'Tu esencia',     q:'cómo te presentas ante el mundo y cómo arrancas todo lo nuevo. Es la primera impresión que dejas, antes de que digas nada'},
+  2:  {area:'Dinero',         q:'tu relación con lo material: cómo ganas, en qué gastas y qué necesitas tener para sentirte a salvo'},
+  3:  {area:'Comunicación',   q:'cómo piensas y te explicas, qué aprendes con facilidad, y el trato con hermanos y gente cercana'},
+  4:  {area:'Hogar y raíces', q:'tu familia, la casa donde creciste y la que construyes. De dónde vienes y qué te sostiene por dentro'},
+  5:  {area:'Creatividad',    q:'lo que haces por puro gusto: crear, jugar, enamorarte, los hijos. Donde te sale el brillo sin esfuerzo'},
+  6:  {area:'Salud y rutina', q:'tu cuerpo y tu día a día: cómo trabajas, qué hábitos te sostienen y dónde se te nota el desgaste'},
+  7:  {area:'Amor',           q:'cómo te vinculas de tú a tú: la pareja, los socios, y qué buscas en el otro que no ves en ti'},
+  8:  {area:'Transformación', q:'lo que compartes con otros — dinero, intimidad, secretos — y las crisis que te obligan a cambiar de piel'},
+  9:  {area:'Sentido',        q:'en qué crees, qué te expande: los viajes, los estudios largos, la búsqueda de una verdad propia'},
+  10: {area:'Trabajo',        q:'tu carrera y tu reputación: qué quieres construir y por qué te gustaría que te recordaran'},
+  11: {area:'Comunidad',      q:'tus amistades, los grupos donde encajas y los sueños que persigues a largo plazo'},
+  12: {area:'Mundo interno',  q:'lo que no se ve: tu descanso, tu intuición, los miedos silenciosos y lo que sueltas a solas'}
 };
 // Cómo OPERA cada signo cuando rige un área. Escrito para que se entienda sin
 // saber astrología: conducta observable, no jerga.

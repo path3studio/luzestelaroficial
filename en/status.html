@@ -49,12 +49,13 @@ h1{font-size:1.8em;color:var(--gold);font-weight:600;margin-bottom:6px;}
   header{position:relative;}
 }
 </style>
+    <link rel="stylesheet" href="/css/icons.css">
 </head>
 <body>
 <div class="wrap">
   <a href="/status.html" class="lang">ES</a>
   <header>
-    <h1>&#11088; System status</h1>
+    <h1><span class="le-ic" data-icon="star"></span> System status</h1>
     <p class="tagline">Live status of Luz Estelar &mdash; refreshes every minute</p>
   </header>
   <div id="content"><div class="loading">Loading...</div></div>
@@ -144,5 +145,6 @@ function render(data) {
 load();
 setInterval(load, 60000);
 </script>
+<script src="/js/icons.js" defer></script>
 </body>
 </html>

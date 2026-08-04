@@ -151,7 +151,7 @@
         .di-txt{font-size:0.85em;line-height:1.6;color:var(--text);}
         .di-lock{position:relative;overflow:hidden;}
         .di-lock .di-txt{filter:blur(5px);user-select:none;color:var(--text-dim);}
-        .di-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem;}
+        .di-lock::after{content:'';width:1em;height:1em;background:center/contain no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a849' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'/><path d='M7 11V7a5 5 0 0 1 10 0v4'/></svg>");position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem;}
         .di-up{display:block;text-align:center;padding:10px;margin-top:10px;background:linear-gradient(135deg,rgba(212,168,73,0.12),rgba(212,168,73,0.04));border:1px solid rgba(212,168,73,0.25);border-radius:10px;color:var(--gold);font-size:0.82em;font-weight:500;text-decoration:none;grid-column:1/-1;}
 
         /* Loading */
@@ -318,7 +318,7 @@
 
             <!-- Multi-system summary (8 systems) -->
             <div class="dash-card dash-full">
-                <h2><span class="icon">&#10024;</span> Your Multi-System Profile</h2>
+                <h2><span class="icon"><span class="le-ic" data-icon="sparkles"></span></span> Your Multi-System Profile</h2>
                 <div class="system-grid" id="system-summary">
                     <!-- 7 date-based systems filled by JS + 1 enneagram link -->
                 </div>
@@ -331,7 +331,7 @@
 
             <!-- Elemental Synthesis -->
             <div class="dash-card dash-full" style="margin-top:20px;">
-                <h2><span class="icon">&#127760;</span> Elemental Synthesis</h2>
+                <h2><span class="icon"><span class="le-ic" data-icon="globe"></span></span> Elemental Synthesis</h2>
                 <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:12px;">Element balance across your 7 ancestral systems.</p>
                 <div class="synthesis-grid" id="synth-grid">
                     <!-- Filled by JS: Fire, Earth, Air, Water bars -->
@@ -352,11 +352,11 @@
 
             <!-- Profile Manager (Premium: manage family/friends profiles) -->
             <div class="dash-card dash-full" id="profile-manager-card" style="margin-top:20px;">
-                <h2><span class="icon">&#128101;</span> My Profiles</h2>
+                <h2><span class="icon"><span class="le-ic" data-icon="users"></span></span> My Profiles</h2>
                 <p style="font-size:0.85em;color:var(--text-dim);margin-bottom:16px;">Manage profiles for your family and friends. Compare compatibility and discover their astral maps.</p>
                 <!-- Free gate -->
                 <div id="pm-free-gate" class="upgrade-cta hidden">
-                    <h3>&#128274; Additional Profiles</h3>
+                    <h3><span class="le-ic" data-icon="lock"></span> Additional Profiles</h3>
                     <p>With Plus you can add up to 5 profiles for family and friends, each with a complete astral map across 8 systems.</p>
                     <button type="button" class="btn-upgrade" onclick="window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:'en'})">View Plus</button>
                 </div>
@@ -419,7 +419,7 @@
         <div class="dash-grid" id="sec-explore">
             <!-- Cross-cultural report preview -->
             <div class="dash-card dash-full">
-                <h2><span class="icon">&#127760;</span> Cross-Cultural Report</h2>
+                <h2><span class="icon"><span class="le-ic" data-icon="globe"></span></span> Cross-Cultural Report</h2>
                 <div id="cross-cultural-preview">
                     <p style="color:var(--text-dim);">Your personalized report combines eight ancestral systems to reveal unique patterns in your personality.</p>
                 </div>
@@ -435,12 +435,12 @@
                  at functions/api/reports/compatibility.js. Free users see an upgrade
                  gate; premium users can add a partner profile inline and calculate. -->
             <div class="dash-card dash-full" id="compat-card">
-                <h2><span class="icon">&#128150;</span> Couple Compatibility</h2>
+                <h2><span class="icon"><span class="le-ic" data-icon="heart"></span></span> Couple Compatibility</h2>
                 <p style="font-size:0.88em;color:var(--text-dim);margin-bottom:16px;">Analyze compatibility between two profiles across 7 ancestral systems: Western, Chinese, Numerology, Celtic, Mayan, Vedic and Human Design.</p>
 
                 <!-- State: free user — upgrade gate -->
                 <div id="compat-upgrade-gate" class="upgrade-cta hidden">
-                    <h3>&#128274; Plus Feature</h3>
+                    <h3><span class="le-ic" data-icon="lock"></span> Plus Feature</h3>
                     <p>Cross-cultural couple compatibility requires a Plus account. Includes analysis across 7 ancestral systems and up to 5 saved profiles.</p>
                     <button type="button" class="btn-upgrade" onclick="window.LuzEstelar&amp;&amp;LuzEstelar.UpgradeSheet&amp;&amp;LuzEstelar.UpgradeSheet.open({lang:'en'})">View Plus</button>
                 </div>
@@ -509,12 +509,12 @@
                  dashboard UI stays focused on insights. GDPR endpoints
                  (export / delete) remain one click away via <details>. -->
             <details class="dash-full" style="margin:20px 0 8px;padding:10px 18px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
-                <summary style="font-size:0.82em;color:var(--text-dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;"><span>&#128274;</span> Privacy &amp; Data</summary>
+                <summary style="font-size:0.82em;color:var(--text-dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;"><span><span class="le-ic" data-icon="lock"></span></span> Privacy &amp; Data</summary>
                 <div style="padding-top:14px;">
                     <p style="font-size:0.8em;color:var(--text-dim);margin-bottom:12px;">You have the right to download a copy of all your information or permanently delete your account. See our <a href="/en/privacy-policy.html" style="color:var(--gold);">Privacy Policy</a>.</p>
                     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                        <button class="btn-share" onclick="exportMyData()" id="btn-export" style="font-size:0.78em;padding:6px 12px;">&#128229; Download my data</button>
-                        <button class="btn-share" onclick="confirmDeleteAccount()" id="btn-delete" style="font-size:0.78em;padding:6px 12px;border-color:rgba(220,80,80,0.4);color:#ff8080;">&#128465; Delete my account</button>
+                        <button class="btn-share" onclick="exportMyData()" id="btn-export" style="font-size:0.78em;padding:6px 12px;"><span class="le-ic" data-icon="download"></span> Download my data</button>
+                        <button class="btn-share" onclick="confirmDeleteAccount()" id="btn-delete" style="font-size:0.78em;padding:6px 12px;border-color:rgba(220,80,80,0.4);color:#ff8080;"><span class="le-ic" data-icon="trash"></span> Delete my account</button>
                     </div>
                     <p id="privacy-msg" style="font-size:0.78em;color:var(--text-dim);margin-top:10px;display:none;"></p>
                 </div>
@@ -524,9 +524,9 @@
         <!-- Mobile bottom nav (inside main-dashboard so it inherits hidden state) -->
         <nav class="mob-nav" id="mob-nav">
             <a href="#sec-today" class="active" data-sec="sec-today"><span class="mn-icon">&#9788;</span>Today</a>
-            <a href="#sec-profile" data-sec="sec-profile"><span class="mn-icon">&#10024;</span>Profile</a>
-            <a href="#sec-explore" data-sec="sec-explore"><span class="mn-icon">&#128302;</span>Explore</a>
-            <a href="/en/" data-sec="home"><span class="mn-icon">&#127968;</span>Home</a>
+            <a href="#sec-profile" data-sec="sec-profile"><span class="mn-icon"><span class="le-ic" data-icon="sparkles"></span></span>Profile</a>
+            <a href="#sec-explore" data-sec="sec-explore"><span class="mn-icon"><span class="le-ic" data-icon="crystal-ball"></span></span>Explore</a>
+            <a href="/en/" data-sec="home"><span class="mn-icon"><span class="le-ic" data-icon="home"></span></span>Home</a>
         </nav>
     </div>
 
@@ -599,22 +599,22 @@
 
                 var html = '<p>' + horoscopeText + '</p>';
                 html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;">';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">❤️</div><div style="font-size:0.75em;color:var(--text-dim);">Love</div><div style="font-weight:600;color:var(--gold);">' + love + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">💼</div><div style="font-size:0.75em;color:var(--text-dim);">Career</div><div style="font-weight:600;color:var(--gold);">' + career + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">🌿</div><div style="font-size:0.75em;color:var(--text-dim);">Health</div><div style="font-weight:600;color:var(--gold);">' + health + '/10</div></div>';
-                html += '<div style="text-align:center;"><div style="font-size:1.4em;">⚡</div><div style="font-size:0.75em;color:var(--text-dim);">Energy</div><div style="font-weight:600;color:var(--gold);">' + overall + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;color:var(--gold);">'+LEIC('heart')+'</div><div style="font-size:0.75em;color:var(--text-dim);">Love</div><div style="font-weight:600;color:var(--gold);">' + love + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;color:var(--gold);">'+LEIC('briefcase')+'</div><div style="font-size:0.75em;color:var(--text-dim);">Career</div><div style="font-weight:600;color:var(--gold);">' + career + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;color:var(--gold);">'+LEIC('leaf')+'</div><div style="font-size:0.75em;color:var(--text-dim);">Health</div><div style="font-weight:600;color:var(--gold);">' + health + '/10</div></div>';
+                html += '<div style="text-align:center;"><div style="font-size:1.4em;color:var(--gold);">'+LEIC('zap')+'</div><div style="font-size:0.75em;color:var(--text-dim);">Energy</div><div style="font-weight:600;color:var(--gold);">' + overall + '/10</div></div>';
                 html += '</div>';
                 if (data.moon) {
-                    html += '<p style="margin-top:14px;font-size:0.82em;color:var(--text-dim);">🌙 ' + data.moon.phase + ' — Illumination: ' + data.moon.illumination + '%</p>';
+                    html += '<p style="margin-top:14px;font-size:0.82em;color:var(--text-dim);">'+LEIC('moon')+' ' + data.moon.phase + ' — Illumination: ' + data.moon.illumination + '%</p>';
                 }
                 if (data.luckyNumber) {
-                    html += '<p style="font-size:0.82em;color:var(--text-dim);">🍀 Lucky number: ' + data.luckyNumber + '</p>';
+                    html += '<p style="font-size:0.82em;color:var(--text-dim);">'+LEIC('clover')+' Lucky number: ' + data.luckyNumber + '</p>';
                 }
                 if (data.cosmicToday) {
                     var ct = data.cosmicToday;
                     html += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(212,168,73,0.15);font-size:0.78em;color:var(--text-dim);display:flex;gap:18px;flex-wrap:wrap;justify-content:center;">';
-                    html += '<span title="Today\'s Mayan energy">🌞 Mayan: Tone ' + ct.mayanTone + ' · ' + ct.mayanSeal + '</span>';
-                    html += '<span title="Today\'s Vedic lunar Nakshatra">🌙 Nakshatra: ' + ct.nakshatra + '</span>';
+                    html += '<span title="Today\'s Mayan energy">'+LEIC('sun')+' Mayan: Tone ' + ct.mayanTone + ' · ' + ct.mayanSeal + '</span>';
+                    html += '<span title="Today\'s Vedic lunar Nakshatra">'+LEIC('moon')+' Nakshatra: ' + ct.nakshatra + '</span>';
                     html += '</div>';
                 }
                 el.innerHTML = html;
@@ -634,7 +634,7 @@
 
     async function loadDailyInsights(lang) {
         var el = document.getElementById('daily-insights');
-        var SIC = {chinese:'🐉',numerology:'🔢',celtic:'🌳',mayan:'🏛️',vedic:'🕉️',human_design:'⚡',enneagram:'◎'};
+        var SIC = {chinese:LEIC('lantern'),numerology:LEIC('hash'),celtic:LEIC('tree'),mayan:LEIC('pyramid'),vedic:'\u0950',human_design:LEIC('zap'),enneagram:'\u25ce'};
         try {
             var res = await fetch('/api/dashboard/daily-reading?lang=' + lang);
             if (!res.ok) { el.innerHTML = ''; return; }
@@ -743,9 +743,9 @@
         summaryHTML += '<a href="/en/signos/' + cc.western.slug_en + '.html" class="system-item"><span class="sys-symbol">' + cc.western.symbol + '</span><span class="sys-name">' + cc.western.name_en + '</span><span class="sys-detail">' + cc.western.element_en + '</span></a>';
         summaryHTML += '<a href="/en/chinese-zodiac/' + cc.chinese.animal.slug_en + '.html" class="system-item"><span class="sys-symbol">' + cc.chinese.animal.symbol + '</span><span class="sys-name">' + cc.chinese.animal.name_en + '</span><span class="sys-detail">' + cc.chinese.element.en + ' | ' + cc.chinese.yinYang + '</span></a>';
         summaryHTML += '<a href="/en/numerology/' + cc.numerology.data.slug_en + '.html" class="system-item"><span class="sys-symbol">' + cc.numerology.lifePathNumber + '</span><span class="sys-name">' + cc.numerology.data.keyword_en + '</span><span class="sys-detail">Life Path Number</span></a>';
-        summaryHTML += '<a href="/en/celtic-zodiac/' + cc.celtic.slug_en + '.html" class="system-item"><span class="sys-symbol">&#127807;</span><span class="sys-name">' + cc.celtic.name_en + '</span><span class="sys-detail">Ogham: ' + cc.celtic.ogham + '</span></a>';
-        summaryHTML += '<a href="/en/mayan-astrology/' + cc.mayan.seal.slug_en + '.html" class="system-item"><span class="sys-symbol">&#128302;</span><span class="sys-name">' + cc.mayan.seal.name_en + '</span><span class="sys-detail">Kin ' + cc.mayan.kin + ' \u2022 Tone ' + cc.mayan.tone.num + '</span></a>';
-        summaryHTML += '<a href="/en/vedic-astrology/' + cc.vedic.rashi.slug_en + '.html" class="system-item"><span class="sys-symbol">&#128329;\uFE0F</span><span class="sys-name">' + cc.vedic.rashi.name_sa + '</span><span class="sys-detail">' + cc.vedic.nakshatra.name_sa + ' \u2022 ' + cc.vedic.rashi.ruler_en + '</span></a>';
+        summaryHTML += '<a href="/en/celtic-zodiac/' + cc.celtic.slug_en + '.html" class="system-item"><span class="sys-symbol"><span class="le-ic" data-icon="leaf"></span></span><span class="sys-name">' + cc.celtic.name_en + '</span><span class="sys-detail">Ogham: ' + cc.celtic.ogham + '</span></a>';
+        summaryHTML += '<a href="/en/mayan-astrology/' + cc.mayan.seal.slug_en + '.html" class="system-item"><span class="sys-symbol"><span class="le-ic" data-icon="crystal-ball"></span></span><span class="sys-name">' + cc.mayan.seal.name_en + '</span><span class="sys-detail">Kin ' + cc.mayan.kin + ' \u2022 Tone ' + cc.mayan.tone.num + '</span></a>';
+        summaryHTML += '<a href="/en/vedic-astrology/' + cc.vedic.rashi.slug_en + '.html" class="system-item"><span class="sys-symbol">&#2384;</span><span class="sys-name">' + cc.vedic.rashi.name_sa + '</span><span class="sys-detail">' + cc.vedic.nakshatra.name_sa + ' \u2022 ' + cc.vedic.rashi.ruler_en + '</span></a>';
         summaryHTML += '<a href="/en/human-design/gate-' + cc.humanDesign.gate + '.html" class="system-item" style="animation-delay:0.3s"><span class="sys-color-bar" style="background:#7c5cbf"></span><span class="sys-symbol">&#11041;</span><span class="sys-name">Gate ' + cc.humanDesign.gate + '</span><span class="sys-detail">' + cc.humanDesign.gateData.name_en + ' \u2022 Line ' + cc.humanDesign.line + '</span></a>';
         if (currentProfile.enneagram_type) {
             var et = LuzEstelar.CrossCultural.ENNEAGRAM_TYPES[currentProfile.enneagram_type];
@@ -1554,6 +1554,7 @@
     <script src="/js/profile-card.js"></script>
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
     <script src="/js/icons.js" defer></script>
+<script>function LEIC(n){return window.LuzEstelarIcons?'<span class="le-ic">'+LuzEstelarIcons.render(n)+'</span>':''}</script>
     <script src="/js/toast.js" defer></script>
     <script src="/js/sw-update.js" defer></script>
     <script src="/js/haptic.js" defer></script>

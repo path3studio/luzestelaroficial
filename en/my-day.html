@@ -152,7 +152,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ins-txt{font-size:.82rem;line-height:1.55;color:rgba(224,220,232,.78)}
 .ins-lock{position:relative;overflow:hidden}
 .ins-lock .ins-txt{filter:blur(5px);user-select:none;color:var(--text-dim)}
-.ins-lock::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
+.ins-lock::after{content:'';width:1em;height:1em;background:center/contain no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a849' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'/><path d='M7 11V7a5 5 0 0 1 10 0v4'/></svg>");position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
 .up-cta{display:block;text-align:center;padding:9px;margin-top:6px;background:linear-gradient(135deg,rgba(212,168,73,.12),rgba(212,168,73,.04));border:1px solid rgba(212,168,73,.25);border-radius:10px;color:var(--gold);font-size:.78rem;font-weight:500;text-decoration:none}
 
 /* Moon + cosmic strip */
@@ -402,7 +402,7 @@ body.modal-open #le-tabs{display:none !important}
 <!-- No birth profile yet -->
 <div id="st-setup" class="state">
   <div class="auth-box">
-    <div class="empty-ic">&#10024;</div>
+    <div class="empty-ic"><span class="le-ic" data-icon="sparkles"></span></div>
     <h1>Your universe awaits</h1>
     <p>Add your birth date so we can map your 8 systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and your enneagram.</p>
     <a href="/en/dashboard.html" class="btn-gold">Create my first profile</a>
@@ -434,7 +434,7 @@ body.modal-open #le-tabs{display:none !important}
 
   <main>
     <section class="greet fade">
-      <h1 id="greeting">Hello<span id="streak-pill" class="streak" style="display:none"><span class="stk-ic">&#128293;</span><span id="streak-txt">0</span></span></h1>
+      <h1 id="greeting">Hello<span id="streak-pill" class="streak" style="display:none"><span class="stk-ic"><span class="le-ic" data-icon="flame"></span></span><span id="streak-txt">0</span></span></h1>
       <p id="date-fmt"></p>
       <div class="greet-sub" id="greet-sub" style="display:none"></div>
     </section>
@@ -592,7 +592,7 @@ body.modal-open #le-tabs{display:none !important}
             <a href="/en/mapa-estelar.html" class="mapa-cta mapa-cta-primary">Gift a Star Map</a>
             <a href="/en/mapa-estelar.html#example" class="mapa-cta mapa-cta-sec">See example</a>
           </div>
-          <p class="mapa-gift-note">&#10024; Included with <b>Plus</b> &middot; also available as a gift</p>
+          <p class="mapa-gift-note"><span class="le-ic" data-icon="sparkles"></span> Included with <b>Plus</b> &middot; also available as a gift</p>
         </div>
       </div>
     </section>
@@ -617,7 +617,7 @@ body.modal-open #le-tabs{display:none !important}
       <div class="slbl"><span class="ic le-ic" data-icon="mail"></span> Weekly Digest</div>
       <div class="card news-card">
         <div class="news-hd">
-          <span class="nh-ic">&#10024;</span>
+          <span class="nh-ic"><span class="le-ic" data-icon="sparkles"></span></span>
           <span class="nh-tt">Your horoscope, every week</span>
         </div>
         <p class="news-sub">Get the key cosmic movements and a personal reading straight to your inbox. No spam, unsubscribe anytime.</p>
@@ -694,7 +694,7 @@ body.modal-open #le-tabs{display:none !important}
 <!-- Onboarding tour (shown once after first profile) -->
 <div class="tour-overlay" id="tour" role="dialog" aria-modal="true" aria-labelledby="tour-title">
   <div class="tour-card">
-    <div class="tour-ic" id="tour-ic">&#10024;</div>
+    <div class="tour-ic" id="tour-ic"><span class="le-ic" data-icon="sparkles"></span></div>
     <h2 class="tour-title" id="tour-title">Welcome to your day</h2>
     <p class="tour-body" id="tour-body">Every morning we bring you a personalized reading drawn from 8 spiritual systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and enneagram.</p>
     <div class="tour-dots" id="tour-dots">
@@ -731,7 +731,7 @@ var SYS_IC={chinese:'\u{1F409}',numerology:'\u{1F522}',celtic:'\u{1F333}',mayan:
 var E_IC={love:'\u2764\uFE0F',career:'\u{1F4BC}',health:'\u{1F33F}',energy:'\u26A1'};
 var E_CLR={love:'#e8456a',career:'#d4a849',health:'#4aba7a',energy:'#7c5cbf'};
 var SIGNS={Aries:'\u2648',Taurus:'\u2649',Gemini:'\u264A',Cancer:'\u264B',Leo:'\u264C',Virgo:'\u264D',Libra:'\u264E',Scorpio:'\u264F',Sagittarius:'\u2650',Capricorn:'\u2651',Aquarius:'\u2652',Pisces:'\u2653'};
-var LABEL_OPTS=[{v:'Partner',ic:'💞'},{v:'Family',ic:'👨‍👩‍👧'},{v:'Child',ic:'🧒'},{v:'Friend',ic:'🤝'},{v:'Other',ic:'✨'}];
+var LABEL_OPTS=[{v:'Partner',ic:'heart'},{v:'Family',ic:'users'},{v:'Child',ic:'baby'},{v:'Friend',ic:'users'},{v:'Other',ic:'sparkles'}];
 
 function show(id){
   if(id==='login'){window.location.replace('/en/login.html');return;}
@@ -821,9 +821,9 @@ function bumpStreak(){
 
 // ── Onboarding tour ──
 var TOUR_SLIDES=[
-  {ic:'\u2728',title:'Welcome to your day',body:'Every morning we bring you a personalized reading drawn from 8 spiritual systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and enneagram.'},
-  {ic:'\ud83d\udd2e',title:'Your cosmic signature',body:'Below you\u2019ll see a cross-cultural synthesis — how your eight systems align with each other. The days they converge are special moments to act.'},
-  {ic:'\ud83d\udc46',title:'Swipe through time',body:'Swipe the reading card left to see tomorrow, or right to revisit yesterday. You can also use the \u2039 \u203a arrows.'}
+  {ic:'sparkles',title:'Welcome to your day',body:'Every morning we bring you a personalized reading drawn from 8 spiritual systems: western sign, Chinese animal, life-path number, Celtic tree, Mayan kin, Vedic nakshatra, Human Design and enneagram.'},
+  {ic:'crystal-ball',title:'Your cosmic signature',body:'Below you\u2019ll see a cross-cultural synthesis — how your eight systems align with each other. The days they converge are special moments to act.'},
+  {ic:'move-horizontal',title:'Swipe through time',body:'Swipe the reading card left to see tomorrow, or right to revisit yesterday. You can also use the \u2039 \u203a arrows.'}
 ];
 function maybeShowTour(){
   try{
@@ -841,7 +841,7 @@ function maybeShowTour(){
   var skipBtn=document.getElementById('tour-skip');
   function render(){
     var s=TOUR_SLIDES[idx];
-    icEl.innerHTML=s.ic;
+    icEl.innerHTML=LEIC(s.ic);
     titleEl.textContent=s.title;
     bodyEl.textContent=s.body;
     var dots=dotsEl.querySelectorAll('.tour-dot');
@@ -1570,11 +1570,11 @@ function buildSynth(cc){
   try{add((cc.vedic.rashi.element_en||'').toLowerCase());}catch(e){}
   var total=Object.values(els).reduce(function(a,b){return a+b;},0)||1;
   var clrs={Fire:'#e8456a',Earth:'#4aba7a',Air:'#f0d078',Water:'#6bb6e0'};
-  var icons={Fire:'🔥',Earth:'🌍',Air:'💨',Water:'💧'};
+  var icons={Fire:'flame',Earth:'leaf',Air:'wind',Water:'droplet'};
   var h='';
   ['Fire','Earth','Air','Water'].forEach(function(k){
     var pct=Math.round(els[k]/total*100);
-    h+='<div class="synth-it"><div class="slb">'+icons[k]+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
+    h+='<div class="synth-it"><div class="slb">'+LEIC(icons[k])+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
   });
   document.getElementById('synth-grid').innerHTML=h;
 
@@ -1597,7 +1597,7 @@ function renderProfiles(){
     var pri=p.is_primary;
     var active = (currentProfile && currentProfile.id === p.id);
     var avIcon = pri ? 'star' : 'user';
-    var avFallback = pri ? '⭐' : '👤';
+    var avFallback = pri ? '✦' : '◦';
     h+='<div class="pf-row'+(active?' is-active':'')+'" data-profile-id="'+p.id+'" role="button" tabindex="0">';
     h+='<span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
     h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
@@ -1699,16 +1699,16 @@ async function loadDaily(offset){
 
     // Cosmic strip
     var cos=[];
-    if(d.moon) cos.push('<span>🌙 '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
-    if(d.luckyNumber) cos.push('<span>🍀 '+d.luckyNumber+'</span>');
+    if(d.moon) cos.push('<span>'+LEIC('moon')+' '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
+    if(d.luckyNumber) cos.push('<span>'+LEIC('clover')+' '+d.luckyNumber+'</span>');
     document.getElementById('cosm').innerHTML=cos.join('');
 
     // Greeting subtitle — moon phase + energy at a glance
     var gs=document.getElementById('greet-sub');
     if(gs){
       var pieces=[];
-      if(d.moon&&d.moon.phase) pieces.push('<span class="gs-tag">🌙 <b>'+d.moon.phase+'</b></span>');
-      if(ov!=null) pieces.push('<span class="gs-tag">⚡ <b>'+ov+'</b>/10</span>');
+      if(d.moon&&d.moon.phase) pieces.push('<span class="gs-tag">'+LEIC('moon')+' <b>'+d.moon.phase+'</b></span>');
+      if(ov!=null) pieces.push('<span class="gs-tag">'+LEIC('zap')+' <b>'+ov+'</b>/10</span>');
       if(pieces.length){gs.innerHTML=pieces.join('');gs.style.display='flex';}
     }
 
@@ -2030,7 +2030,7 @@ var apLabel='Partner', apLat=null, apLng=null, apSTO=null;
 function buildLabelChips(){
   var box=document.getElementById('ap-chips');
   box.innerHTML=LABEL_OPTS.map(function(o){
-    return '<button type="button" class="chip'+(o.v===apLabel?' on':'')+'" data-v="'+o.v+'"><span>'+o.ic+'</span><span>'+o.v+'</span></button>';
+    return '<button type="button" class="chip'+(o.v===apLabel?' on':'')+'" data-v="'+o.v+'"><span>'+LEIC(o.ic)+'</span><span>'+o.v+'</span></button>';
   }).join('');
   box.querySelectorAll('.chip').forEach(function(c){
     c.addEventListener('click',function(){apLabel=c.dataset.v;buildLabelChips();});
@@ -2276,6 +2276,7 @@ init();
 </script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 <script src="/js/icons.js" defer></script>
+<script>function LEIC(n){return window.LuzEstelarIcons?'<span class="le-ic">'+LuzEstelarIcons.render(n)+'</span>':''}</script>
 <script src="/js/toast.js" defer></script>
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
