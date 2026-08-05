@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+Thumbnail Variant C v2 — "La Infografía" rediseñada (2026-08-04)
+Pedido del usuario: "ver si la variante C se puede mejorar, como la
+infografía que mejoramos". El diagnóstico: la infografía se diseña para
+leerse en el FEED — a tamaño miniatura (120px) sus párrafos desaparecen.
+Receta v2, la misma del upgrade de junio: el ARTE cósmico protagonista
+(la infografía como fondo, recortada a su mitad visual), y UN solo mensaje
+grande: el evento astronómico del día en tipografía de portada.
+Concepto intacto — sigue siendo la variante astronómica/didáctica.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#d4a849;--gold-light:#f0d078;--navy:#12102a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1280px;height:720px;overflow:hidden;position:relative;
+       font-family:'Inter',sans-serif;color:#fff;background:var(--navy)}
+  /* v3: nada de reciclar la imagen del feed (sus textos se colaban detrás
+     del título — sopa). El "cielo real" se dibuja EN LIMPIO: anillos
+     orbitales con los DOS planetas del aspecto más exacto de hoy, colocados
+     a su ángulo real. Galaxia propia de fondo. */
+  .cielo{position:absolute;inset:0;background:#12102a url("{{COSMIC_BG}}") center/cover no-repeat}
+  .velo{position:absolute;inset:0;
+       background:linear-gradient(0deg,rgba(11,10,30,.92) 0%,rgba(18,16,42,.5) 40%,rgba(18,16,42,.25) 100%)}
+  .marco{position:absolute;inset:22px;border:2px solid rgba(212,168,73,.5);border-radius:18px}
+  .orbita{position:absolute;left:50%;top:220px;transform:translate(-50%,-50%)}
+  .anillo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+       border:1px solid rgba(212,168,73,.35);border-radius:50%}
+  .a1{width:340px;height:340px}
+  .a2{width:230px;height:230px;border-style:dashed;border-color:rgba(212,168,73,.22)}
+  .tierra{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+       width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#9db8ff,#3a5bbf)}
+  .planeta{position:absolute;left:50%;top:50%;width:26px;height:26px;border-radius:50%;
+       background:radial-gradient(circle at 35% 35%,#fff3d0,var(--gold));
+       box-shadow:0 0 26px 8px rgba(212,168,73,.5)}
+  .pl-label{position:absolute;font-size:21px;font-weight:700;color:var(--gold-light);
+       letter-spacing:.06em;text-shadow:0 2px 10px rgba(0,0,0,.9);white-space:nowrap}
+  .linea{position:absolute;left:50%;top:50%;height:2px;transform-origin:0 50%;
+       background:linear-gradient(90deg,rgba(240,208,120,.85),rgba(240,208,120,.15))}
+  .grados{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+       font-size:19px;color:rgba(240,208,120,.9);letter-spacing:.08em;
+       text-shadow:0 2px 8px rgba(0,0,0,.9)}
+  .etiqueta{position:absolute;left:0;right:0;bottom:170px;text-align:center;
+       font-size:26px;font-weight:700;letter-spacing:.34em;color:var(--gold);
+       text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+  .evento{position:absolute;left:70px;right:70px;bottom:64px;text-align:center;
+       font-family:'Cormorant Garamond',serif;font-weight:700;
+       font-size:{{EVENTO_SIZE}}px;line-height:1.02;
+       background:linear-gradient(180deg,#fff 20%,var(--gold-light) 60%,var(--gold) 100%);
+       -webkit-background-clip:text;background-clip:text;color:transparent;
+       filter:drop-shadow(0 6px 24px rgba(0,0,0,.65))}
+  .brand{position:absolute;left:44px;top:38px;display:flex;align-items:center;gap:12px}
+  .brand img{height:46px;width:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,.7))}
+  .brand span{font-family:'Cormorant Garamond',serif;font-size:24px;letter-spacing:.28em;
+       color:rgba(240,208,120,.95);text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+  .luna{position:absolute;right:44px;top:40px;font-size:24px;font-weight:700;
+       color:var(--gold);border:2px solid rgba(212,168,73,.6);border-radius:999px;
+       padding:9px 22px;background:rgba(18,16,42,.72);letter-spacing:.04em}
+  .fecha{position:absolute;left:44px;bottom:34px;font-size:21px;font-weight:700;
+       color:var(--gold);border:2px solid rgba(212,168,73,.55);border-radius:999px;
+       padding:7px 20px;background:rgba(18,16,42,.72);letter-spacing:.06em}
+</style>
+</head>
+<body>
+  <div class="cielo"></div>
+  <div class="velo"></div>
+  <div class="marco"></div>
+  <div class="orbita">
+    <div class="anillo a1"></div><div class="anillo a2"></div>
+    <div class="tierra"></div>
+    <div class="linea" style="width:170px;transform:rotate({{ROT1}}deg)"></div>
+    <div class="linea" style="width:170px;transform:rotate({{ROT2}}deg)"></div>
+    <div class="planeta" style="transform:translate(-50%,-50%) rotate({{ROT1}}deg) translateX(170px)"></div>
+    <div class="planeta" style="transform:translate(-50%,-50%) rotate({{ROT2}}deg) translateX(170px);width:20px;height:20px"></div>
+    <div class="pl-label" style="transform:translate(-50%,-50%) rotate({{ROT1}}deg) translateX(214px) rotate({{NROT1}}deg)">{{P1}}</div>
+    <div class="pl-label" style="transform:translate(-50%,-50%) rotate({{ROT2}}deg) translateX(214px) rotate({{NROT2}}deg)">{{P2}}</div>
+    <div class="grados">{{ANGULO}}°</div>
+  </div>
+  <div class="brand"><img src="{{LOGO}}" alt=""><span>Luz Estelar</span></div>
+  <div class="luna">☽&#xFE0E; {{FASE_LUNAR}}</div>
+  <div class="etiqueta">El cielo real de hoy · posiciones verdaderas</div>
+  <div class="evento">{{EVENTO}}</div>
+  <div class="fecha">{{DATE_TEXT}} · {{YEAR}}</div>
+</body>
+</html>
