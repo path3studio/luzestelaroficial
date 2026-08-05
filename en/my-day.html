@@ -249,6 +249,17 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .transits-panel{margin-top:16px;padding:14px 14px 10px;background:linear-gradient(135deg,rgba(124,92,191,.08),rgba(212,168,73,.04));border:1px solid var(--glass-b);border-radius:var(--r-lg);animation:fadeInUp .28s ease-out}
 .transits-panel .tp-title{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(212,168,73,.72);margin-bottom:10px}
 .transits-panel .tp-ic{color:var(--gold);font-size:.9rem}
+/* ── Your three keys — EN port of ES .tres-claves (mi-dia.html) ─────── */
+.tres-claves{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}
+.tres-claves .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.tres-claves .tp-ic{color:var(--gold);font-size:.9rem}
+.tc-fila{display:flex;gap:11px;margin:11px 0;align-items:flex-start}
+.tc-gly{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}
+.tc-tit{font-size:.9rem;font-weight:600;color:var(--gold)}
+.tc-sub{font-weight:400;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.5))}
+.tc-txt{font-size:.86rem;line-height:1.6;margin-top:3px;color:var(--tx,rgba(255,255,255,.82))}
+.hp-lock{display:block;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.45));border-top:1px dashed rgba(212,168,73,.25);padding-top:9px;margin-top:2px}
+.hp-lock b{color:var(--gold)}
 .tp-list{display:flex;flex-direction:column;gap:8px}
 .tp-row{display:grid;grid-template-columns:1.4rem auto 1.4rem auto 1fr auto;align-items:center;gap:6px;padding:6px 8px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid var(--tc,rgba(212,168,73,.3));font-size:.78rem;color:var(--text);font-feature-settings:"tnum"}
 .tp-row .tp-gly{font-family:'Noto Sans Symbols 2',serif;color:var(--gold);font-size:.95rem;text-align:center;font-variant-emoji:text}
@@ -501,6 +512,15 @@ body.modal-open #le-tabs{display:none !important}
             <span>Today's transits</span>
           </div>
           <div class="tp-list" id="tp-list"></div>
+        </div>
+        <!-- Your three keys — the explanation behind the Sun/Moon/Asc chips
+             above. EN port of the ES section (#tres-claves, mi-dia.html):
+             breakdown is always visible, with an "add your birth time" hint
+             on the Moon/Ascendant rows when the birth time is missing. -->
+        <div class="tres-claves" id="three-keys" hidden>
+          <div class="hp-title"><span class="tp-ic">&#x2726;</span>
+            <span>Your three keys</span></div>
+          <div class="tc-body"></div>
         </div>
       </div>
     </section>
@@ -1105,6 +1125,13 @@ function renderAll(){
       if(moonP) setSlma('slma-moon',signSym[moonP.sign]||'\u263E',moonP.sign,false);
       if(ascP && ascP.sign) setSlma('slma-asc',signSym[ascP.sign]||'\u2191',ascP.sign,false);
       else setSlma('slma-asc','\u2191','Add birth time',true);
+
+      // Your three keys: the explanation of the three chips above.
+      try{
+        renderThreeKeys(sunP ? sunP.sign : null,
+                        moonP ? moonP.sign : null,
+                        (ascP && ascP.sign) ? ascP.sign : null);
+      }catch(e){}
     }catch(e){/* slma is decorative */}
   }catch(e){
     document.getElementById('chart-meta').textContent='Chart temporarily unavailable';
@@ -1308,6 +1335,49 @@ function renderAll(){
     var skyC = document.getElementById('sky');
     if (skyC) bindCanvasTap(skyC, 'SkyMap');
   })();
+
+  // ── Your three keys (EN) ──
+  // Mirrors the ES renderTresClaves (mi-dia.html): one row per chip
+  // (Sun / Moon / Ascendant) with its behavioral text from
+  // /data/three_keys.json. The breakdown is ALWAYS shown — rows whose
+  // sign is unknown (missing birth time) carry an unlock hint instead.
+  function renderThreeKeys(sun, moon, asc){
+    var cont = document.getElementById('three-keys');
+    if(!cont) return;
+    // Cache on window: renderAll re-runs (day nav, profile edits) and a
+    // local var here would reset and refetch the JSON on every render.
+    var paint = function(){
+      var THREE_KEYS = window.__threeKeys;
+      if(!THREE_KEYS || !Object.keys(THREE_KEYS).length){ cont.hidden = true; return; }
+      var HINT = '<span class="hp-lock">Add your birth time in your profile to unlock this key.</span>';
+      var rows = [
+        ['☉', 'Your Sun in ' + (sun||'?'),
+         'who you are when you choose to be yourself', (sun && THREE_KEYS['sun|'+sun]) || ''],
+        ['☽', moon ? 'Your Moon in ' + moon : 'Your Moon',
+         'how you feel inside', moon ? (THREE_KEYS['moon|'+moon]||'') : HINT],
+        ['↑', asc ? 'Your Ascendant in ' + asc : 'Your Ascendant',
+         'the first impression you make', asc ? (THREE_KEYS['ascendant|'+asc]||'') : HINT]
+      ];
+      var html = '';
+      rows.forEach(function(r){
+        if(!r[1]) return;
+        html += '<div class="tc-fila"><div class="tc-gly">' + r[0] + '</div>' +
+                '<div><div class="tc-tit">' + r[1] +
+                ' <span class="tc-sub">— ' + r[2] + '</span></div>' +
+                (r[3] ? '<div class="tc-txt">' + r[3] + '</div>' : '') +
+                '</div></div>';
+      });
+      if(!html){ cont.hidden = true; return; }
+      cont.querySelector('.tc-body').innerHTML = html;
+      cont.hidden = false;
+    };
+    if(window.__threeKeys !== undefined){ paint(); return; }
+    window.__threeKeys = {};
+    fetch('/data/three_keys.json')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if(j) window.__threeKeys = j; paint(); })
+      .catch(function(){ cont.hidden = true; });
+  }
 
   // ── Transits panel populator (EN) ──
   // Mirrors the ES populateTransitsPanel — renders the top aspects
