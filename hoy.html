@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--
+/hoy — el horóscopo del día, PÚBLICO y legible en el sitio (2026-08-05).
+La pieza que faltaba entre el video diario y el perfil cósmico: el tráfico
+de /links y de Google puede LEER aquí (el mismo texto gratuito del video),
+y el CTA lo invita al paso probado del embudo: su perfil cósmico gratis.
+Datos: /api/hoy (KV diario ya pagado — esta página no genera nada).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El horóscopo de hoy — los 12 signos · Luz Estelar</title>
+<meta name="description" content="Tu horóscopo de hoy, gratis: la lectura del día para los 12 signos, calculada con posiciones astronómicas reales. Actualizado cada mañana.">
+<link rel="canonical" href="https://luzestelaroficial.com/hoy">
+<link rel="icon" type="image/png" href="/app_icon.png">
+<meta property="og:title" content="El horóscopo de hoy — los 12 signos">
+<meta property="og:description" content="La lectura del día, gratis, con astronomía real. Actualizado cada mañana.">
+<meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#d4a849;--gold-light:#f0d078;--navy:#12102a;--tx:#e8e4f0;--dim:#9a93b5}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--navy);color:var(--tx);font-family:'Inter',sans-serif;
+       min-height:100vh;padding:26px 16px 60px}
+  .wrap{max-width:760px;margin:0 auto}
+  header{text-align:center;margin-bottom:22px}
+  .logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+  .logo img{height:40px}
+  .logo span{font-family:'Cormorant Garamond',serif;font-size:20px;
+       letter-spacing:.26em;color:var(--gold-light);text-transform:uppercase}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(26px,6vw,38px);
+     margin:16px 0 4px;color:#fff}
+  .fecha{color:var(--dim);font-size:14px}
+  .stale{color:#caa84e;font-size:12.5px;margin-top:5px}
+  .cta{display:block;margin:20px auto 26px;max-width:520px;text-align:center;
+       padding:14px 18px;border:1px solid var(--gold);border-radius:14px;
+       text-decoration:none;color:#fff;background:rgba(212,168,73,.08)}
+  .cta b{color:var(--gold-light)}
+  .cta small{display:block;color:var(--dim);margin-top:3px}
+  .cards{display:grid;gap:12px}
+  .card{border:1px solid rgba(212,168,73,.22);border-radius:15px;
+       background:rgba(255,255,255,.025);padding:15px 16px}
+  .card summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:11px}
+  .card summary::-webkit-details-marker{display:none}
+  .gly{flex:none;width:38px;height:38px;border-radius:50%;display:flex;
+       align-items:center;justify-content:center;font-size:19px;color:var(--gold);
+       font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;
+       background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.24),rgba(212,168,73,.03) 70%);
+       border:1px solid rgba(212,168,73,.3)}
+  .nom{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#fff}
+  .ele{font-size:12px;color:var(--dim);margin-left:2px}
+  .chev{margin-left:auto;color:var(--gold);transition:transform .18s ease}
+  details[open] .chev{transform:rotate(180deg)}
+  .txt{margin-top:12px;line-height:1.65;font-size:15px;color:var(--tx)}
+  .bio{display:flex;gap:14px;margin-top:11px;font-size:12.5px;color:var(--dim)}
+  .bio b{color:var(--gold)}
+  .cargando{text-align:center;color:var(--dim);padding:40px 0}
+  footer{text-align:center;margin-top:34px;font-size:13px;color:var(--dim)}
+  footer a{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="logo" href="/"><img src="/app_icon.png" alt=""><span>Luz Estelar</span></a>
+    <h1>El horóscopo de hoy</h1>
+    <div class="fecha" id="fecha">&nbsp;</div>
+    <div class="stale" id="stale" hidden>Mostrando la lectura más reciente — la de hoy llega en unas horas.</div>
+  </header>
+
+  <a class="cta" href="/mi-dia.html">
+    <b>✦ ¿Y si el cielo te hablara a TI?</b> Descubre tu Perfil Cósmico gratis
+    <small>tu carta natal + los 8 sistemas ancestrales · sin tarjeta</small>
+  </a>
+
+  <div class="cards" id="cards"><div class="cargando">Leyendo el cielo de hoy…</div></div>
+
+  <footer>
+    También en video, cada mañana:
+    <a href="https://www.youtube.com/@LuzEstelarOficial" rel="noopener">YouTube</a>
+    &nbsp;·&nbsp; <a href="/links">todos nuestros enlaces</a>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
+           'septiembre','octubre','noviembre','diciembre'];
+  fetch('/api/hoy').then(function(r){return r.json();}).then(function(d){
+    var cont=document.getElementById('cards');
+    if(!d.ok || !d.signs || !d.signs.length){
+      cont.innerHTML='<div class="cargando">La lectura de hoy se está preparando — vuelve en un rato ✦</div>';
+      return;
+    }
+    var p=d.date.split('-');
+    document.getElementById('fecha').textContent=
+      (+p[2])+' de '+MES[+p[1]-1]+' de '+p[0];
+    if(d.stale) document.getElementById('stale').hidden=false;
+    var html='';
+    d.signs.forEach(function(s,i){
+      html+='<details class="card"'+(i===0?' open':'')+'>'+
+        '<summary><span class="gly">'+(s.symbol||'✦')+'︎</span>'+
+        '<span><span class="nom">'+s.sign+'</span>'+
+        (s.element?' <span class="ele">· '+s.element+'</span>':'')+'</span>'+
+        '<span class="chev">▾</span></summary>'+
+        '<div class="txt">'+String(s.text||'').replace(/</g,'&lt;')+'</div>'+
+        (s.bio?'<div class="bio"><span>Amor <b>'+s.bio.love+'</b></span>'+
+          '<span>Trabajo <b>'+s.bio.career+'</b></span>'+
+          '<span>Salud <b>'+s.bio.health+'</b></span>'+
+          '<span>Energía <b>'+s.bio.energy+'</b></span></div>':'')+
+        '</details>';
+    });
+    cont.innerHTML=html;
+  }).catch(function(){
+    document.getElementById('cards').innerHTML=
+      '<div class="cargando">No pudimos leer el cielo ahora mismo — intenta de nuevo ✦</div>';
+  });
+})();
+</script>
+</body>
+</html>

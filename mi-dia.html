@@ -846,6 +846,20 @@ body.modal-open #le-tabs{display:none !important}
         </div>
       </div>
     </section>
+
+    <!-- Cafecito (2026-08-05, pedido del usuario): también dentro de la app,
+         discreto — quien nos lee a diario es quien más probablemente invite. -->
+    <section class="fade d8">
+      <a href="https://ko-fi.com/luzestelaroficial" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;gap:12px;padding:13px 16px;
+                border:1px dashed rgba(212,168,73,.35);border-radius:13px;
+                text-decoration:none;color:var(--tx-dim,rgba(255,255,255,.6));
+                font-size:.85rem">
+        <span style="font-size:1.3rem">☕</span>
+        <span><b style="color:var(--gold)">Invítanos un cafecito</b> —
+        si nuestras lecturas te acompañan, ayúdanos a seguir.</span>
+      </a>
+    </section>
   </main>
 </div>
 </div>
@@ -1502,8 +1516,18 @@ function renderAll(){
     Promise.all([
       fetch('/data/stars.json').then(function(r){ return r.json(); }),
       fetch('/data/constellations.json').then(function(r){ return r.json(); }),
+      // Catálogo denso Hipparcos (mag ≤ 5.5) — el mismo cielo que el
+      // producto impreso. Fail-soft: si no llega, seguimos con el base.
+      fetch('/data/stars-full.json').then(function(r){ return r.json(); })
+        .catch(function(){ return { stars: [] }; }),
     ]).then(function(results){
-      window.__skyCatalogs = { stars: results[0], constellations: results[1] };
+      window.__skyCatalogs = {
+        stars: results[0],
+        constellations: results[1],
+        // Lista combinada para las vistas de cielo (base con nombres +
+        // relleno débil). La carta natal sigue usando .stars (objeto).
+        starsFull: results[0].stars.concat(results[2].stars || []),
+      };
       // Re-render current view with the catalogs
       try {
         if (window.__currentChartData) {
@@ -1940,10 +1964,10 @@ function renderAll(){
       var p = window.__currentProfile;
       var cmEl = document.getElementById('chart-meta');
 
-      // Observer coords. In "now" mode we still default to profile lat/lon
-      // because asking for geolocation every open is intrusive; if the
-      // profile has no coords we skip rather than pop a permission dialog.
-      if (p.lat == null || p.lon == null) {
+      // Observer coords. "now" mode prefers the device's real location
+      // (resolved async below); the profile is the fallback. Only bail
+      // when we have NEITHER profile coords nor a geolocation fix.
+      if ((p.lat == null || p.lon == null) && !(mode === 'now' && window.__geoPos)) {
         if (cmEl) cmEl.textContent = mode === 'now'
           ? 'Cielo en vivo requiere lugar geocodificado — edita tu perfil'
           : 'Cielo real requiere hora + lugar exactos';
@@ -1952,12 +1976,29 @@ function renderAll(){
 
       var d, metaLabel;
       if (mode === 'now') {
-        // Current UTC moment → the sky right over profile location now.
+        // Current UTC moment → the sky right over the viewer NOW.
+        // 2026-08-05 (pedido del usuario): usar la ubicación ACTUAL del
+        // dispositivo ("qué estrellas hay arriba de mí en este momento"),
+        // no la de nacimiento. Pedimos geolocalización UNA vez por sesión;
+        // mientras llega (o si la niegan) usamos las coords del perfil.
+        if (window.__geoPos) {
+          p = { lat: window.__geoPos.lat, lon: window.__geoPos.lon,
+                lugar_nacimiento: 'tu ubicación actual' };
+        } else if (!window.__geoAsked && navigator.geolocation) {
+          window.__geoAsked = true;
+          navigator.geolocation.getCurrentPosition(function(pos){
+            window.__geoPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+            if (skyCanv.dataset.mode === 'now' && skyCanv.style.display !== 'none') {
+              drawSky('now');   // redibuja ya con el cielo de verdad encima
+            }
+          }, function(){ /* denegada → nos quedamos con el perfil */ },
+          { maximumAge: 600000, timeout: 8000 });
+        }
         d = new Date();
         var nowStr = d.toLocaleString('es-MX', {
           hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'
         });
-        metaLabel = 'Cielo en vivo · ' + (p.lugar_nacimiento || 'tu ubicación') + ' · ' + nowStr;
+        metaLabel = 'Cielo en vivo · ' + (window.__geoPos ? 'tu ubicación actual' : (p.lugar_nacimiento || 'tu ubicación')) + ' · ' + nowStr;
       } else {
         // Birth-time horizon view — needs exact hora_nacimiento.
         if (!p.hora_nacimiento) {
@@ -2006,11 +2047,17 @@ function renderAll(){
           lat: p.lat,
           lng: p.lon,
           utc: d,
-          stars: window.__skyCatalogs.stars.stars,
+          stars: window.__skyCatalogs.starsFull || window.__skyCatalogs.stars.stars,
           constellations: window.__skyCatalogs.constellations.constellations,
           planets: planetOverlays,
           size: w > 0 ? Math.min(w, 320) : 280,
           showLabels: true,
+          // Mismo lenguaje visual que el mapa a la venta (2026-08-05):
+          // nombres de constelaciones siempre; en "Cielo al nacer" además
+          // las 12 casas desde el ASC, para que "Áreas de tu vida" (abajo)
+          // tenga anclaje visual en el cielo real del nacimiento.
+          constellationLabels: true,
+          houses: mode === 'birth' ? {} : null,
         });
         if (cmEl) cmEl.textContent = metaLabel;
         // ── Marca de agua + upsell (solo Cielo al nacer, sin Plus) ──
@@ -2038,7 +2085,7 @@ function renderAll(){
             upsell = document.createElement('div');
             upsell.id = 'sky-upsell';
             upsell.style.cssText = 'margin-top:6px;font-size:.72rem;line-height:1.5;color:var(--text-dim)';
-            upsell.innerHTML = '\u2726 Con <a href="/planes.html" style="color:var(--gold)">Plus</a> recibes tu Mapa Estelar de nacimiento sin marca de agua y en varios formatos: alta resoluci\u00f3n para imprimir, fondo de pantalla y m\u00e1s.';
+            upsell.innerHTML = '\u2726 Con <a href="/planes.html" style="color:var(--gold)">Plus</a> recibes tu Mapa Estelar de nacimiento sin marca de agua y en varios formatos: alta resoluci\u00f3n para imprimir, fondo de pantalla y m\u00e1s \u2014 incluida la versi\u00f3n con las franjas zodiacales y tu signo resaltado.';
             cmEl.insertAdjacentElement('afterend', upsell);
           }
           if (upsell) upsell.hidden = false;
