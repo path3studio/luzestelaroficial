@@ -63,3 +63,18 @@
   min-height: 1em;
   display: inline-block;
 }
+
+/* ── Peso óptico del trazo (2026-08-05) ────────────────────────────
+ * Los glifos de astros y signos (Virgo, Escorpio, Capricornio…) tienen
+ * más trazos juntos que un icono común. A 1.75 el trazo cae por debajo
+ * del píxel en tamaños chicos y el glifo se APAGA sobre el fondo oscuro.
+ * El dibujo no cambia — solo engorda — así que la identidad se conserva.
+ * Verificado comparando 1.75 / 2.25 / 2.75 a 14 y 18 px: 2.25 es el
+ * punto donde se lee sin que se cierren las contraformas.
+ * Las puntas siguen redondeadas: es la familia del resto del sistema.
+ */
+.le-ic-sm > svg { stroke-width: 2.25; }
+
+/* Uso denso explícito (rueda, barras, listas apretadas): el consumidor
+   marca .le-ic-dense y el trazo sube sin depender del tamaño heredado. */
+.le-ic-dense > svg { stroke-width: 2.25; }

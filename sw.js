@@ -315,7 +315,7 @@
 // keeps the sign-level text — zero regression. The feature stays dark
 // until the ENABLE_ONDEMAND_READINGS secret is flipped to "1".
 // v70 → v71 (Ago 4): dashboard.html retirado — /mi-dia es la casa única.
-const CACHE_NAME = 'luzestelar-v74';
+const CACHE_NAME = 'luzestelar-v75';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
@@ -345,7 +345,7 @@ const PRECACHE_URLS = [
   '/js/upgrade-sheet.js',
   '/js/install-prompt.js',
   '/js/hero-install.js',
-  '/js/sky-map.js',
+  '/js/sky-map.js?v=2',
   '/js/transits.js?v=3',
   '/js/share-card.js?v=10',
   '/data/stars.json',
@@ -443,7 +443,7 @@ self.addEventListener('fetch', (event) => {
   //     PWA without them having to uninstall/reinstall.
   //   - Images/fonts → cache-first (they rarely change, so we save
   //     the round-trip).
-  if (request.url.match(/\.(css|js)$/)) {
+  if (request.url.match(/\.(css|js)(\?|$)/)) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) =>
         cache.match(request).then((cached) => {

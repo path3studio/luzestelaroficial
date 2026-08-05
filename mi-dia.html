@@ -631,9 +631,19 @@ body.modal-open #le-tabs{display:none !important}
             Marcar el camino del Sol por los signos
           </label>
         </div>
-        <details id="sky-glossary" hidden style="margin-top:12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:12px 16px">
+        <details id="sky-glossary" style="margin-top:12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:12px 16px">
           <summary style="cursor:pointer;font-size:.8rem;color:var(--gold);font-weight:600;list-style:none">✦ ¿Qué estoy viendo?</summary>
-          <ul style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;font-size:.76rem;line-height:1.55;color:var(--text-dim);text-align:left">
+          <!-- Glosario de la CARTA NATAL (rueda simbólica) -->
+          <ul id="gloss-natal" style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;font-size:.76rem;line-height:1.55;color:var(--text-dim);text-align:left">
+            <li><b style="color:var(--text)">El aro exterior</b> — los 12 signos, cada uno con el color de su elemento (fuego, tierra, aire, agua). Aquí el zodiaco es un círculo perfecto de 12 rebanadas iguales: es un mapa simbólico, no una foto del cielo.</li>
+            <li><b style="color:var(--text)">Los símbolos dentro</b> — tus planetas, colocados en el grado exacto del zodiaco donde estaban al nacer.</li>
+            <li><b style="color:var(--text)">Las líneas que cruzan el centro</b> — los aspectos: ángulos notables entre dos planetas. El color dice el tipo (armónicos vs. de tensión) y por eso la carta de cada persona teje una figura distinta.</li>
+            <li><b style="color:var(--text)">ASC y MC</b> — Ascendente (el signo que salía por el horizonte cuando naciste) y Medio Cielo (el punto más alto). Dependen de tu hora exacta: son lo que hace tu carta única frente a alguien nacido el mismo día.</li>
+            <li><b style="color:var(--text)">Las 12 casas</b> — las áreas de la vida, contadas desde tu Ascendente. Son las que ves traducidas en "Áreas de tu vida", aquí abajo.</li>
+            <li>¿Quieres ver el cielo de verdad, con las estrellas donde estaban? Cambia a <b style="color:var(--text)">Cielo al nacer</b>.</li>
+          </ul>
+          <!-- Glosario de las vistas de CIELO REAL -->
+          <ul id="gloss-sky" hidden style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;font-size:.76rem;line-height:1.55;color:var(--text-dim);text-align:left">
             <li><b style="color:var(--text)">Puntos blancos</b> — estrellas reales sobre ese lugar y momento; entre más grande el punto, más brilla a simple vista.</li>
             <li><b style="color:var(--text)">Nombres dorados</b> — constelaciones: grupos de estrellas reales (OSA MAYOR, VIRGO…).</li>
             <li><b style="color:var(--text)">Línea dorada</b> — el camino del Sol: cada tramo es un signo, donde estaba en ese momento.</li>
@@ -1968,7 +1978,7 @@ function renderAll(){
     function ensureSkyMap(cb){
       if (window.LuzEstelar && window.LuzEstelar.SkyMap) return cb();
       var s = document.createElement('script');
-      s.src = '/js/sky-map.js';
+      s.src = '/js/sky-map.js?v=2';
       s.onload = cb;
       s.onerror = function(){ console.warn('[sky-map] load failed'); };
       document.head.appendChild(s);
@@ -2158,21 +2168,23 @@ function renderAll(){
         b.classList.toggle('is-on', on);
         b.setAttribute('aria-selected', on ? 'true' : 'false');
       });
+      // El glosario acompaña a las TRES vistas (2026-08-05, user); solo
+      // cambia el cuerpo. Las opciones de capas son exclusivas del cielo.
       var optsEl = document.getElementById('sky-options');
-      var glosEl = document.getElementById('sky-glossary');
+      var glossSky = document.getElementById('gloss-sky');
+      var glossNatal = document.getElementById('gloss-natal');
+      if (glossSky) glossSky.hidden = (view !== 'sky');
+      if (glossNatal) glossNatal.hidden = (view === 'sky');
+      if (optsEl) optsEl.hidden = (view !== 'sky');
       if (view === 'sky') {
         natalCanv.style.display = 'none';
         skyCanv.style.display = 'block';
         skyCanv.dataset.mode = skyMode;
-        if (optsEl) optsEl.hidden = false;
-        if (glosEl) glosEl.hidden = false;
         drawSky(skyMode);
         if (skyMode === 'now') startNowTicker(); else stopNowTicker();
       } else {
         skyCanv.style.display = 'none';
         natalCanv.style.display = 'block';
-        if (optsEl) optsEl.hidden = true;
-        if (glosEl) glosEl.hidden = true;
         stopNowTicker();
         var cm = document.getElementById('chart-meta');
         if (cm && window.__currentProfile) {
