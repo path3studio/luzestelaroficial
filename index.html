@@ -437,13 +437,15 @@
             .hamburger { display: block; }
             .mobile-portal-btn { display: inline-flex; padding: 6px 11px 6px 10px; font-size: 0.75em; }
             .mobile-portal-btn .star { display: none; }
-            /* 5/ago: ES|EN se encimaba con la píldora "Mi Portal" en móvil.
-               El idioma vive dentro del menú hamburguesa en pantallas chicas. */
-            nav .lang-inline{display:none}
-        .lang-selector { display: none; }
-            nav .nav-links .lang-inline { display: flex; gap: 10px; padding: 14px 0 4px;
-                border-top: 1px solid rgba(212,168,73,.2); margin-top: 10px; }
-            .mobile-portal-btn { margin-right: 10px; }
+            /* 5/ago (v2): el selector ES|EN se QUEDA en su esquina — decisión
+               del usuario. Lo que se mueve es "Mi Portal", que en móvil ya
+               vive dentro del menú hamburguesa: la píldora duplicada se
+               retira en pantallas estrechas en vez de encimarse.
+               (El intento anterior metió un segundo selector "Español
+               English" cuya regla de ocultado quedó DENTRO de esta media
+               query → en escritorio se veían los dos. Retirado.) */
+            nav .lang-selector { font-size: 0.72em; margin-left: 8px; }
+            nav .lang-selector a { padding: 2px 4px; }
             nav .nav-inner { gap: 8px; padding: 12px 14px; }
             nav .logo { font-size: 1.15em; }
             nav .nav-links {
@@ -855,6 +857,7 @@
         }
 
         /* ── Language selector ────────────────────────────── */
+        @media (max-width: 560px) { .mobile-portal-btn { display: none !important; } }
         .lang-selector {
             display: flex; align-items: center; gap: 4px;
             font-size: 0.82em; margin-left: 16px;
@@ -1080,10 +1083,6 @@
                 <a href="#plataformas">Plataformas</a>
                 <a href="planes.html">Planes</a>
                 <a href="mi-dia.html" style="color:var(--gold-light);">✦ Mi Portal</a>
-                <div class="lang-inline">
-                    <a href="#" class="active" style="color:var(--gold)">Español</a>
-                    <a href="en/">English</a>
-                </div>
             </div>
             <div class="lang-selector">
                 <a href="#" class="active">ES</a>
@@ -1121,8 +1120,8 @@
              horóscopo (aprobada por el usuario junto con /hoy). -->
         <a href="/hoy" style="display:flex;align-items:center;justify-content:center;
            gap:10px;padding:13px 18px;margin:0 auto;max-width:820px;
-           border:1px solid rgba(212,168,73,.35);border-radius:0 0 14px 14px;
-           border-top:none;text-decoration:none;color:var(--text,#e8e4f0);
+           border:1px solid rgba(212,168,73,.35);border-radius:14px;
+           margin-top:-4px;text-decoration:none;color:var(--text,#e8e4f0);
            background:rgba(212,168,73,.06);font-size:.95em">
           <span style="font-family:'Noto Sans Symbols 2',serif;color:var(--gold)">☽&#xFE0E;</span>
           <span><b style="color:var(--gold)">El cielo de hoy</b> — la lectura de los 12 signos ya está lista</span>
