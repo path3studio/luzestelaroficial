@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+Thumbnail Variant A v2 — "La Clásica", buff completo (2026-08-04)
+El usuario: "pensé que le habíamos dado un mejor formato, que la habíamos
+bufeado". El logo y la galaxia no bastaban: A sube al lenguaje de C/E
+CONSERVANDO su concepto exacto — la FECHA como protagonista y los 12 glifos.
+Es la portada-calendario: quien la ve sabe que hay horóscopo nuevo hoy.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@500;700;800&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#d4a849;--gold-light:#f0d078;--navy:#12102a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1280px;height:720px;overflow:hidden;position:relative;
+       background:#12102a url("{{COSMIC_BG}}") center/cover no-repeat;
+       font-family:'Inter',sans-serif;color:#fff}
+  .velo{position:absolute;inset:0;
+       background:radial-gradient(ellipse 75% 65% at 50% 46%,rgba(11,10,30,.28) 0%,rgba(11,10,30,.62) 62%,rgba(11,10,30,.88) 100%)}
+  .marco{position:absolute;inset:22px;border:2px solid rgba(212,168,73,.5);border-radius:18px}
+  .centro{position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;gap:10px;padding-bottom:26px}
+  .etiqueta{font-size:30px;font-weight:700;letter-spacing:.4em;color:var(--gold);
+       text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+  .fecha{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:150px;
+       line-height:1;letter-spacing:.01em;
+       background:linear-gradient(180deg,#fff 20%,var(--gold-light) 60%,var(--gold) 100%);
+       -webkit-background-clip:text;background-clip:text;color:transparent;
+       filter:drop-shadow(0 6px 26px rgba(0,0,0,.6))}
+  .anio{font-family:'Cormorant Garamond',serif;font-size:44px;letter-spacing:.45em;
+       color:rgba(240,208,120,.85);margin-left:.45em}
+  .separador{width:260px;height:1px;margin:8px 0 4px;
+       background:linear-gradient(90deg,transparent,rgba(212,168,73,.7),transparent)}
+  .glifos{font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-size:34px;
+       letter-spacing:.62em;color:rgba(212,168,73,.9);font-variant-emoji:text;
+       text-shadow:0 2px 10px rgba(0,0,0,.8);margin-left:.62em}
+  .brand{position:absolute;left:44px;bottom:40px;display:flex;align-items:center;gap:13px}
+  .brand img{height:50px;width:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,.7))}
+  .brand span{font-family:'Cormorant Garamond',serif;font-size:25px;letter-spacing:.28em;
+       color:rgba(240,208,120,.92);text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+  .luna{position:absolute;right:44px;top:40px;font-size:23px;font-weight:700;
+       color:var(--gold);border:2px solid rgba(212,168,73,.6);border-radius:999px;
+       padding:9px 22px;background:rgba(18,16,42,.72);letter-spacing:.04em}
+</style>
+</head>
+<body>
+  <div class="velo"></div>
+  <div class="marco"></div>
+  <div class="centro">
+    <div class="etiqueta">Horóscopo del día</div>
+    <div class="fecha">{{DATE_TEXT}}</div>
+    <div class="anio">{{YEAR}}</div>
+    <div class="separador"></div>
+    <div class="glifos">♈&#xFE0E;♉&#xFE0E;♊&#xFE0E;♋&#xFE0E;♌&#xFE0E;♍&#xFE0E;♎&#xFE0E;♏&#xFE0E;♐&#xFE0E;♑&#xFE0E;♒&#xFE0E;♓&#xFE0E;</div>
+  </div>
+  <div class="brand"><img src="{{LOGO}}" alt=""><span>Luz Estelar</span></div>
+  <div class="luna">☽&#xFE0E; {{FASE_LUNAR}}</div>
+</body>
+</html>
