@@ -555,6 +555,37 @@ body.modal-open #le-tabs{display:none !important}
          ubicación — eso último le da razón a abrir la app sin motivo
          específico porque cambia cada minuto. -->
     <section class="fade d1">
+      <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+        <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Tu lectura de hoy</span></span>
+        <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
+          <button type="button" class="day-nav-btn" id="day-prev" aria-label="D&iacute;a anterior">&#8249;</button>
+          <span id="day-label" style="font-size:.64rem;color:var(--text-mute);min-width:42px;text-align:center">hoy</span>
+          <button type="button" class="day-nav-btn" id="day-next" aria-label="D&iacute;a siguiente" disabled>&#8250;</button>
+        </span>
+      </div>
+      <div class="card" id="rdg-card">
+        <div class="energy">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="50"/>
+              <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
+              <text class="ring-num" x="60" y="50" id="ring-n">—</text>
+              <text class="ring-lbl" x="60" y="79">Energ&iacute;a</text>
+            </svg>
+          </div>
+          <div class="bars" id="bars"></div>
+        </div>
+        <p id="rdg-text" class="rdg-text" style="margin-top:12px">
+          <span class="sk sk-line w-full"></span>
+          <span class="sk sk-line w-90"></span>
+          <span class="sk sk-line w-75"></span>
+        </p>
+        <div class="cosm" id="cosm" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- 2. Insights por sistema -->
+    <section class="fade d2">
       <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Carta Natal</div>
       <div class="card">
         <div class="slma" id="slma-row">
@@ -679,44 +710,34 @@ body.modal-open #le-tabs{display:none !important}
     </section>
 
     <!-- 2. Lectura del día (hábito diario — lo que te trae cada día) -->
-    <section class="fade d2">
-      <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-        <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Tu lectura de hoy</span></span>
-        <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
-          <button type="button" class="day-nav-btn" id="day-prev" aria-label="D&iacute;a anterior">&#8249;</button>
-          <span id="day-label" style="font-size:.64rem;color:var(--text-mute);min-width:42px;text-align:center">hoy</span>
-          <button type="button" class="day-nav-btn" id="day-next" aria-label="D&iacute;a siguiente" disabled>&#8250;</button>
-        </span>
-      </div>
-      <div class="card" id="rdg-card">
-        <div class="energy">
-          <div class="ring-wrap">
-            <svg viewBox="0 0 120 120">
-              <circle class="ring-bg" cx="60" cy="60" r="50"/>
-              <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
-              <text class="ring-num" x="60" y="50" id="ring-n">—</text>
-              <text class="ring-lbl" x="60" y="79">Energ&iacute;a</text>
-            </svg>
-          </div>
-          <div class="bars" id="bars"></div>
-        </div>
-        <p id="rdg-text" class="rdg-text" style="margin-top:12px">
-          <span class="sk sk-line w-full"></span>
-          <span class="sk sk-line w-90"></span>
-          <span class="sk sk-line w-75"></span>
-        </p>
-        <div class="cosm" id="cosm" style="margin-top:10px"></div>
+    <section class="fade d3">
+      <!-- 2026-08-05: mismo nombre que la promesa de la portada ("descubre tu
+           perfil cósmico") — quien llega desde ahí debe RECONOCER que esto
+           es lo prometido. -->
+      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Tu Perfil Cósmico · 8 sistemas ancestrales</div>
+      <div class="sys-grid" id="sys-grid"></div>
+      <div class="share-row">
+        <button class="btn-share" id="btn-share" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg> Compartir</button>
       </div>
     </section>
 
-    <!-- 2. Insights por sistema -->
-    <section class="fade d2" id="ins-sec" style="display:none">
+    <!-- 5. Síntesis elemental -->
+    <section class="fade d3" id="ins-sec" style="display:none">
       <div class="slbl"><span class="ic le-ic" data-icon="sparkles"></span> Insights por sistema</div>
       <div id="ins-box" class="ins-grid"></div>
     </section>
 
     <!-- 3. CROSS-CULTURAL (profundidad — venta para Free, reflexión para Plus) -->
-    <section class="fade d3">
+    <section class="fade d4">
+      <div class="slbl"><span class="ic le-ic" data-icon="globe"></span> Síntesis Elemental</div>
+      <div class="card">
+        <div class="synth-grid" id="synth-grid"></div>
+        <div class="synth-insight" id="synth-text">—</div>
+      </div>
+    </section>
+
+    <!-- 7. Mis perfiles -->
+    <section class="fade d4">
       <div class="slbl"><span class="ic le-ic" data-icon="star"></span> Tu Reporte Cross-Cultural <span class="badge-new" id="cc-badge">Plus</span></div>
       <div class="cc-hero" id="cc-hero">
         <div class="cc-head">
@@ -732,28 +753,7 @@ body.modal-open #le-tabs{display:none !important}
     </section>
 
     <!-- 4. 8 sistemas -->
-    <section class="fade d4">
-      <!-- 2026-08-05: mismo nombre que la promesa de la portada ("descubre tu
-           perfil cósmico") — quien llega desde ahí debe RECONOCER que esto
-           es lo prometido. -->
-      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Tu Perfil Cósmico · 8 sistemas ancestrales</div>
-      <div class="sys-grid" id="sys-grid"></div>
-      <div class="share-row">
-        <button class="btn-share" id="btn-share" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg> Compartir</button>
-      </div>
-    </section>
-
-    <!-- 5. Síntesis elemental -->
     <section class="fade d5">
-      <div class="slbl"><span class="ic le-ic" data-icon="globe"></span> Síntesis Elemental</div>
-      <div class="card">
-        <div class="synth-grid" id="synth-grid"></div>
-        <div class="synth-insight" id="synth-text">—</div>
-      </div>
-    </section>
-
-    <!-- 7. Mis perfiles -->
-    <section class="fade d6">
       <div class="slbl"><span class="ic le-ic" data-icon="users"></span> Mis Perfiles</div>
       <div class="card">
         <div id="pf-list"></div>
@@ -763,7 +763,7 @@ body.modal-open #le-tabs{display:none !important}
     </section>
 
     <!-- 7.5 Mapa Estelar — producto regalable -->
-    <section class="fade d6" style="margin-top:6px">
+    <section class="fade d5" style="margin-top:6px">
       <div class="slbl" style="justify-content:center;text-align:center"><span class="ic le-ic" data-icon="sparkles"></span> Mapa Estelar</div>
       <div class="card mapa-card">
         <span class="mapa-badge" aria-label="Regalo">Regalo</span>
@@ -849,7 +849,7 @@ body.modal-open #le-tabs{display:none !important}
 
     <!-- Cafecito (2026-08-05, pedido del usuario): también dentro de la app,
          discreto — quien nos lee a diario es quien más probablemente invite. -->
-    <section class="fade d8">
+    <section class="fade d7">
       <a href="https://ko-fi.com/luzestelaroficial" target="_blank" rel="noopener"
          style="display:flex;align-items:center;gap:12px;padding:13px 16px;
                 border:1px dashed rgba(212,168,73,.35);border-radius:13px;
@@ -2043,6 +2043,11 @@ function renderAll(){
 
       ensureSkyMap(function(){
         var w = skyCanv.parentElement.offsetWidth;
+        // ── Nivel del usuario (decide marca de agua + upsell) ──
+        // 2026-08-05 (user): el mapa natal de alta resolución es producto
+        // Plus; la vista gratuita lleva marca de agua discreta.
+        var isPlus = false;
+        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
         window.LuzEstelar.SkyMap.render(skyCanv, {
           lat: p.lat,
           lng: p.lon,
@@ -2058,27 +2063,12 @@ function renderAll(){
           // tenga anclaje visual en el cielo real del nacimiento.
           constellationLabels: true,
           houses: mode === 'birth' ? {} : null,
+          // La marca de agua la dibuja el propio renderer (antes se
+          // pintaba aquí afuera y en pantallas retina caía fuera del
+          // lienzo → los no-Plus se llevaban el mapa limpio).
+          watermark: (mode === 'birth' && !isPlus) ? 'LUZ ESTELAR' : null,
         });
         if (cmEl) cmEl.textContent = metaLabel;
-        // ── Marca de agua + upsell (solo Cielo al nacer, sin Plus) ──
-        // 2026-08-05 (user): el mapa natal de alta resolución es producto
-        // Plus; la vista gratuita lleva marca de agua discreta.
-        var isPlus = false;
-        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
-        if (mode === 'birth' && !isPlus) {
-          try {
-            var wmx = skyCanv.getContext('2d');
-            wmx.save();
-            wmx.translate(skyCanv.width/2, skyCanv.height/2);
-            wmx.rotate(-Math.PI/8);
-            wmx.font = '600 ' + Math.round(skyCanv.width/8.5) + 'px "Cormorant Garamond", Georgia, serif';
-            wmx.fillStyle = 'rgba(212,168,73,0.14)';
-            wmx.textAlign = 'center';
-            wmx.textBaseline = 'middle';
-            wmx.fillText('LUZ ESTELAR', 0, 0);
-            wmx.restore();
-          } catch(e){}
-        }
         var upsell = document.getElementById('sky-upsell');
         if (mode === 'birth' && !isPlus) {
           if (!upsell && cmEl) {

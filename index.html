@@ -428,8 +428,13 @@
             .hamburger { display: block; }
             .mobile-portal-btn { display: inline-flex; padding: 6px 11px 6px 10px; font-size: 0.75em; }
             .mobile-portal-btn .star { display: none; }
-            nav .lang-selector { font-size: 0.72em; margin-left: 0; }
-            nav .lang-selector a { padding: 2px 4px; }
+            /* 5/ago: ES|EN se encimaba con la píldora "Mi Portal" en móvil.
+               El idioma vive dentro del menú hamburguesa en pantallas chicas. */
+            nav .lang-inline{display:none}
+        .lang-selector { display: none; }
+            nav .nav-links .lang-inline { display: flex; gap: 10px; padding: 14px 0 4px;
+                border-top: 1px solid rgba(212,168,73,.2); margin-top: 10px; }
+            .mobile-portal-btn { margin-right: 10px; }
             nav .nav-inner { gap: 8px; padding: 12px 14px; }
             nav .logo { font-size: 1.15em; }
             nav .nav-links {
@@ -1066,6 +1071,10 @@
                 <a href="#plataformas">Plataformas</a>
                 <a href="planes.html">Planes</a>
                 <a href="mi-dia.html" style="color:var(--gold-light);">✦ Mi Portal</a>
+                <div class="lang-inline">
+                    <a href="#" class="active" style="color:var(--gold)">Español</a>
+                    <a href="en/">English</a>
+                </div>
             </div>
             <div class="lang-selector">
                 <a href="#" class="active">ES</a>
