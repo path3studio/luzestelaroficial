@@ -1088,10 +1088,10 @@
             <div class="hero-content fade-in">
                 <div class="icon-wrap"><img src="app_icon.png" alt="Luz Estelar" class="icon" width="160" height="160" fetchpriority="high" decoding="async"></div>
                 <h1><span class="gold">Luz Estelar</span><br>Oficial</h1>
-                <p class="tagline">Horóscopo Técnico Diario — Basado en Datos Astronómicos Reales</p>
+                <p class="tagline">El cielo, leído en TU carta natal — con datos astronómicos reales</p>
                 <div class="cta-row">
-                    <a id="heroAppCta" href="/mi-dia.html" class="btn btn-primary"><span class="le-ic" data-icon="sparkles" style="vertical-align:-0.18em;margin-right:6px"></span><span class="cta-label">Abrir la App</span></a>
-                    <a href="#signos" class="btn btn-outline">Explorar Signos</a>
+                    <a href="#descubre" class="btn btn-primary"><span class="le-ic" data-icon="sparkles" style="vertical-align:-0.18em;margin-right:6px"></span><span class="cta-label">Descubre tu Perfil Cósmico gratis</span></a>
+                    <a id="heroAppCta" href="/mi-dia.html" class="btn btn-outline"><span class="cta-label">Ya tengo cuenta · Abrir la App</span></a>
                 </div>
                 <p style="margin-top:14px;font-size:0.82em;color:var(--text-dim)">¿Prefieres video? <a href="https://www.youtube.com/@LuzEstelarOficial" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(212,168,73,0.3);padding-bottom:1px">Míranos en YouTube</a></p>
             </div>
@@ -1112,6 +1112,26 @@
         </a>
 
         <!-- ── Daily Energy ──────────────────────────── -->
+        <!-- Portada v2 (2026-08-05): 4 puertas claras en vez de enciclopedia.
+             Lo educativo sigue abajo (SEO intacto) — esto es el mapa. -->
+        <section style="padding:34px 24px 8px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:820px;margin:0 auto">
+            <a href="/hoy" class="cat-card">☽&#xFE0E;<b>El horóscopo de hoy</b><span>los 12 signos, gratis</span></a>
+            <a href="#signos" class="cat-card">♈&#xFE0E;<b>Los 12 signos</b><span>guías y personalidad</span></a>
+            <a href="/aprende/compatibilidad" class="cat-card">♡<b>Compatibilidad</b><span>la química entre dos</span></a>
+            <a href="#aprende" class="cat-card">✦<b>Aprende</b><span>los 8 sistemas ancestrales</span></a>
+          </div>
+        </section>
+        <style>
+          .cat-card{display:flex;flex-direction:column;align-items:center;gap:5px;
+            padding:16px 10px;border:1px solid var(--glass-border);border-radius:14px;
+            text-decoration:none;color:var(--gold);font-size:1.35em;text-align:center;
+            background:var(--glass);transition:border-color .25s,transform .25s}
+          .cat-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+          .cat-card b{font-size:.68em;color:#fff;font-weight:700}
+          .cat-card span{font-size:.5em;color:var(--text-dim)}
+        </style>
+
         <section id="energia" style="background:var(--bg-mid);padding:60px 24px;">
             <div class="section-inner" style="text-align:center;">
                 <div class="fade-in">
@@ -1653,7 +1673,23 @@
             {symbol:sysIconHome('humanDesign'),type:'svg',name:'Gate '+cc.humanDesign.gate,detail:cc.humanDesign.gateData.name_es+' \u2022 L\u00ednea '+cc.humanDesign.line,color:'#7C5CBF',href:'diseno-humano/gate-'+cc.humanDesign.gate+'.html'}
         ];
         var html='';
-        items.forEach(function(it){
+        // Opción A (2026-08-05, decisión del usuario): probar-antes-de-
+        // registrarse. Los 3 primeros sistemas se ven completos; los demás,
+        // velados — la cuenta gratis los revela y los guarda.
+        var LIBRES = 3;
+        items.forEach(function(it, idx){
+            var bloqueado = idx >= LIBRES;
+            if(bloqueado){
+                html+='<a href="/mi-dia.html" style="background:var(--glass);border:1px dashed rgba(212,168,73,.35);border-radius:14px;padding:20px 12px;text-decoration:none;color:#fff;display:block;position:relative;overflow:hidden">'+
+                '<div style="filter:blur(7px);opacity:.55;pointer-events:none">'+
+                '<div style="width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(212,168,73,.1);border:1px solid rgba(212,168,73,.25);color:var(--gold);margin-bottom:8px;font-family:\'Cormorant Garamond\',serif;font-size:1.5em">✦</div>'+
+                '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.15em;font-weight:700">'+it.name+'</div>'+
+                '<div style="font-size:0.78em;color:var(--text-dim);margin-top:4px">'+it.detail+'</div></div>'+
+                '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">'+
+                '<span style="font-size:1.1em;color:var(--gold)">🔒</span>'+
+                '<span style="font-size:.72em;color:var(--text-dim)">con tu cuenta gratis</span></div></a>';
+                return;
+            }
             var symHtml=it.type==='svg'
               ? '<div style="width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.14),rgba(212,168,73,.02) 70%);border:1px solid rgba(212,168,73,.25);color:var(--gold);margin-bottom:8px">'+it.symbol+'</div>'
               : '<div style="width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.14),rgba(212,168,73,.02) 70%);border:1px solid rgba(212,168,73,.25);color:var(--gold);margin-bottom:8px;font-family:\'Cormorant Garamond\',serif;font-size:1.5em;font-weight:700;line-height:1">'+it.symbol+'</div>';
@@ -1664,6 +1700,7 @@
             '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.15em;font-weight:700;">'+it.name+'</div>'+
             '<div style="font-size:0.78em;color:var(--text-dim);margin-top:4px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+it.color+';vertical-align:middle;margin-right:5px;"></span>'+it.detail+'</div></a>';
         });
+        html+='<a href="/mi-dia.html" style="grid-column:1/-1;display:block;text-align:center;padding:15px;border:1px solid var(--gold);border-radius:14px;background:rgba(212,168,73,.08);text-decoration:none;color:#fff;margin-top:2px"><b style="color:var(--gold)">✦ Crea tu cuenta gratis</b> — ve tus 8 sistemas completos y guárdalos para siempre<br><span style="font-size:.8em;color:var(--text-dim)">sin tarjeta · 30 segundos</span></a>';
         document.getElementById('profile-grid').innerHTML=html;
         var r=document.getElementById('profile-result');
         r.style.display='block';
