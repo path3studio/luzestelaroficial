@@ -45,10 +45,13 @@ Concepto intacto — sigue siendo la variante astronómica/didáctica.
   .grados{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
        font-size:19px;color:rgba(240,208,120,.9);letter-spacing:.08em;
        text-shadow:0 2px 8px rgba(0,0,0,.9)}
-  .etiqueta{position:absolute;left:0;right:0;bottom:170px;text-align:center;
+  .posiciones{position:absolute;left:0;right:0;bottom:188px;text-align:center;
+       font-size:19px;font-weight:500;letter-spacing:.14em;
+       color:rgba(240,208,120,.72);text-shadow:0 2px 10px rgba(0,0,0,.85)}
+  .etiqueta{position:absolute;left:0;right:0;bottom:215px;text-align:center;
        font-size:26px;font-weight:700;letter-spacing:.34em;color:var(--gold);
        text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.8)}
-  .evento{position:absolute;left:70px;right:70px;bottom:64px;text-align:center;
+  .evento{position:absolute;left:110px;right:110px;bottom:105px;text-align:center;
        font-family:'Cormorant Garamond',serif;font-weight:700;
        font-size:{{EVENTO_SIZE}}px;line-height:1.02;
        background:linear-gradient(180deg,#fff 20%,var(--gold-light) 60%,var(--gold) 100%);
@@ -72,7 +75,8 @@ Concepto intacto — sigue siendo la variante astronómica/didáctica.
   <div class="marco"></div>
   <div class="brand"><img src="{{LOGO}}" alt=""><span>Luz Estelar</span></div>
   <div class="luna">☽&#xFE0E; {{FASE_LUNAR}}</div>
-  <div class="etiqueta">El cielo real de hoy · a {{ANGULO}}° de distancia</div>
+  <div class="etiqueta">El cielo real de hoy</div>
+  <div class="posiciones">{{POS1}} &nbsp;·&nbsp; {{ANGULO}}° de distancia &nbsp;·&nbsp; {{POS2}}</div>
   <div class="evento">{{EVENTO}}</div>
   <div class="fecha">{{DATE_TEXT}} · {{YEAR}}</div>
 </body>
