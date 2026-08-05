@@ -73,7 +73,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
 /* Topbar — compact with subtle gold nimbus */
 .topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top,0));background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(212,168,73,.08),rgba(6,6,26,.94) 70%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-b)}
-.logo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.05rem;color:var(--gold);letter-spacing:.02em;text-decoration:none}
+.logo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.05rem;color:var(--gold);letter-spacing:.02em;text-decoration:none;display:inline-flex;align-items:center;gap:7px}.logo-star{height:22px;width:22px;border-radius:5px}
 .topbar .dt{font-size:.72rem;color:var(--text-dim)}
 .tier-pill{font-size:.62rem;padding:2px 8px;border-radius:10px;background:var(--gold-dim);color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .tier-pill.plus{background:rgba(124,92,191,.18);color:var(--purple)}
@@ -535,7 +535,7 @@ body.modal-open #le-tabs{display:none !important}
 <!-- Main -->
 <div id="st-home" class="state">
   <header class="topbar">
-    <a href="/" class="logo">Luz Estelar</a>
+    <a href="/" class="logo"><img src="/app_icon.png" alt="" class="logo-star">Luz Estelar</a>
     <div class="hdr-actions">
       <a href="/en/my-day.html" class="lang-pill only-web" id="hdr-lang" aria-label="Switch to English">EN</a>
       <span class="tier-pill" id="tier-pill">Free</span>
