@@ -256,7 +256,16 @@
         .feature-card p { font-size: 0.9em; line-height: 1.7; color: var(--text-dim); }
 
         /* ── Zodiac wheel ─────────────────────────────────── */
-        #signos { background: var(--bg-mid); }
+        /* 2026-08-05 (user: "se ve cortada"): los fondos sólidos de las
+           secciones terminaban en línea dura contra el campo de estrellas.
+           El gradiente funde ambos bordes con el fondo de la página. */
+        #signos, #energia {
+            background: linear-gradient(180deg,
+                rgba(12,12,42,0) 0,
+                var(--bg-mid) 72px,
+                var(--bg-mid) calc(100% - 72px),
+                rgba(12,12,42,0) 100%) !important;
+        }
         .zodiac-grid {
             display: grid; grid-template-columns: repeat(4, 1fr);
             gap: 16px; margin-top: 50px;

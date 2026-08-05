@@ -2344,7 +2344,21 @@ async function loadDaily(offset){
   try{
     var dateParam = offset===0 ? '' : '&date='+_dateKeyForOffset(offset);
     var r=await api('/api/dashboard/daily-reading?lang='+LANG+dateParam);
-    if(!r.ok)return;
+    // 2026-08-05 (user: "la barra de amor y la de energía no carga"):
+    // antes un fallo aquí dejaba anillo y barras VACÍOS sin decir nada —
+    // imposible de distinguir de "aún cargando". Ahora la falla se ve y
+    // se explica (401 = sesión expirada, lo más común en la PWA cacheada).
+    if(!r.ok){
+      var _bx=document.getElementById('bars');
+      if(_bx && !_bx.children.length){
+        _bx.innerHTML='<div style="font-size:.78rem;color:var(--text-dim);line-height:1.5">'
+          +(r.status===401
+            ? 'Tu sesión expiró — <a href="/login.html" style="color:var(--gold)">vuelve a entrar</a> para ver tu energía de hoy.'
+            : 'Tu energía de hoy no cargó (error '+r.status+'). Desliza hacia abajo para reintentar.')
+          +'</div>';
+      }
+      return;
+    }
     var d=await r.json();
     if(!d.ok)return;
 
