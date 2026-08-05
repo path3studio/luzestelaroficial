@@ -1741,15 +1741,24 @@ function buildSynth(cc){
   // Frase con contexto astral del día (KV, vía daily-reading) si existe;
   // si no, catálogo estático. El fetch del daily puede llegar después:
   // deja un hook re-aplicable.
-  window.__synthPick={top:top[0],sec:sec};
+  // 2026-08-05 (user): frase por PERFIL — catálogo estático signo×dominante
+  // (data/sintesis_elemental.json, generado una sola vez). Sin LLM diario.
+  window.__synthPick={sign:cc.western.name_en,top:top[0],sec:sec};
   window.__applyDaySynth=function(){
     var pk=window.__synthPick;if(!pk)return;
-    var t=null,day=window.__daySynthesis;
-    if(day){t=(pk.sec&&day[pk.top+'|'+pk.sec])||day[pk.top]||null;}
+    var t=null,cat=window.__synthCatalog;
+    if(cat){t=cat[pk.sign+'|'+pk.top]||null;}
     if(!t){var c=insights[pk.top]||{};t=(pk.sec&&c[pk.sec])||c._||'Elemental balance in progress.';}
     document.getElementById('synth-text').textContent=t;
   };
   window.__applyDaySynth();
+  if(!window.__synthCatalog&&!window.__synthCatLoading){
+    window.__synthCatLoading=1;
+    fetch('/data/sintesis_elemental.json')
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(j){if(j&&j.en){window.__synthCatalog=j.en;window.__applyDaySynth();}})
+      .catch(function(){});
+  }
 }
 
 function renderProfiles(){
@@ -1862,8 +1871,6 @@ async function loadDaily(offset){
 
     // Cosmic strip
     var cos=[];
-    if(d.elementalSynthesis){window.__daySynthesis=d.elementalSynthesis;
-      if(window.__applyDaySynth) window.__applyDaySynth();}
     if(d.moon) cos.push('<span>'+LEIC('moon')+' '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
     if(d.luckyNumber) cos.push('<span>'+LEIC('clover')+' '+d.luckyNumber+'</span>');
     document.getElementById('cosm').innerHTML=cos.join('');
