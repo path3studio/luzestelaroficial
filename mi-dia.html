@@ -623,6 +623,25 @@ body.modal-open #le-tabs{display:none !important}
           <button type="button" class="ch-tab" data-view="sky" data-sky-mode="birth" role="tab" aria-selected="false">Cielo al nacer</button>
           <button type="button" class="ch-tab" data-view="sky" data-sky-mode="now" role="tab" aria-selected="false">Cielo hoy</button>
         </div>
+
+        <!-- ── Opciones + glosario de las vistas de cielo (2026-08-05, user) ── -->
+        <div id="sky-options" hidden style="margin-top:10px;text-align:center">
+          <label style="display:inline-flex;align-items:center;gap:8px;font-size:.78rem;color:var(--text-dim);cursor:pointer">
+            <input type="checkbox" id="sky-ecliptic" style="accent-color:var(--gold)">
+            Marcar el camino del Sol por los signos
+          </label>
+        </div>
+        <details id="sky-glossary" hidden style="margin-top:12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:12px 16px">
+          <summary style="cursor:pointer;font-size:.8rem;color:var(--gold);font-weight:600;list-style:none">✦ ¿Qué estoy viendo?</summary>
+          <ul style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;font-size:.76rem;line-height:1.55;color:var(--text-dim);text-align:left">
+            <li><b style="color:var(--text)">Puntos blancos</b> — estrellas reales sobre ese lugar y momento; entre más grande el punto, más brilla a simple vista.</li>
+            <li><b style="color:var(--text)">Nombres dorados</b> — constelaciones: grupos de estrellas reales (OSA MAYOR, VIRGO…).</li>
+            <li><b style="color:var(--text)">Línea dorada</b> — el camino del Sol: cada tramo es un signo, donde estaba en ese momento.</li>
+            <li><b style="color:var(--text)">Marcas plateadas 1–12</b> — tus casas, contadas desde el <b style="color:var(--text)">ASC</b> (el punto del zodiaco que salía por el horizonte este cuando naciste). Conectan con "Áreas de tu vida", aquí abajo.</li>
+            <li><b style="color:var(--text)">N · S · E · O</b> — puntos cardinales; el centro del círculo es el cielo justo sobre tu cabeza.</li>
+            <li>¿El glifo de un signo no cae sobre su constelación? Es normal: el bamboleo de la Tierra (precesión) los ha separado casi un signo completo en 2,000 años. Las estrellas son el cielo; los signos, el calendario de las estaciones.</li>
+          </ul>
+        </details>
         <!-- Action row — only "Compartir mi carta" on the natal view.
              Sky views show no CTA (exploration-only tabs). -->
         <div class="chart-action-row" id="chart-action-row">
@@ -2076,6 +2095,14 @@ function renderAll(){
           // tenga anclaje visual en el cielo real del nacimiento.
           constellationLabels: true,
           houses: mode === 'birth' ? {} : null,
+          // Casilla "camino del Sol" (2026-08-05, user): la eclíptica con
+          // sus 12 signos, en ambas vistas de cielo. Resalta el signo solar
+          // del perfil cuando lo conocemos.
+          eclipticBand: (function(){
+            var c = document.getElementById('sky-ecliptic');
+            if (!c || !c.checked) return null;
+            return { focusSign: (p.signo || p.sign || null) };
+          })(),
           // La marca de agua la dibuja el propio renderer (antes se
           // pintaba aquí afuera y en pantallas retina caía fuera del
           // lienzo → los no-Plus se llevaban el mapa limpio).
@@ -2131,15 +2158,21 @@ function renderAll(){
         b.classList.toggle('is-on', on);
         b.setAttribute('aria-selected', on ? 'true' : 'false');
       });
+      var optsEl = document.getElementById('sky-options');
+      var glosEl = document.getElementById('sky-glossary');
       if (view === 'sky') {
         natalCanv.style.display = 'none';
         skyCanv.style.display = 'block';
         skyCanv.dataset.mode = skyMode;
+        if (optsEl) optsEl.hidden = false;
+        if (glosEl) glosEl.hidden = false;
         drawSky(skyMode);
         if (skyMode === 'now') startNowTicker(); else stopNowTicker();
       } else {
         skyCanv.style.display = 'none';
         natalCanv.style.display = 'block';
+        if (optsEl) optsEl.hidden = true;
+        if (glosEl) glosEl.hidden = true;
         stopNowTicker();
         var cm = document.getElementById('chart-meta');
         if (cm && window.__currentProfile) {
@@ -2150,6 +2183,12 @@ function renderAll(){
         }
       }
       updateActionRow(view);
+    });
+
+    // Casilla "camino del Sol": redibuja la vista de cielo activa.
+    var eclEl = document.getElementById('sky-ecliptic');
+    if (eclEl) eclEl.addEventListener('change', function(){
+      if (skyCanv.style.display !== 'none') drawSky(skyCanv.dataset.mode || 'birth');
     });
   })();
 }
@@ -2373,6 +2412,9 @@ async function loadDaily(offset){
       var bh='';
       ['love','career','health','energy'].forEach(function(f){
         var v=d.energy[f];if(v==null)return;
+        // 2026-08-05: los perfiles Plus traen floats crudos y se veía
+        // "8.690000000000001" — un decimal es lo humano.
+        v=Math.round(v*10)/10;
         var p=v/10*100;
         bh+='<div class="bar"><span class="bar-ic">'+LEIC(E_IC[f])+'</span><div class="bar-tr"><div class="bar-fl" style="--w:'+p+'%;--c:'+E_CLR[f]+'"></div></div><span class="bar-v" style="color:'+E_CLR[f]+'">'+v+'</span></div>';
       });
