@@ -473,7 +473,7 @@ body.modal-open #le-tabs{display:none !important}
 .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
   text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
 .hp-hint{margin-left:auto;text-transform:none;letter-spacing:0;font-size:.62rem;opacity:.6}
-.tres-claves{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}.tc-fila{display:flex;gap:11px;margin:11px 0;align-items:flex-start}.tc-gly{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}.tc-tit{font-size:.9rem;font-weight:600;color:var(--gold)}.tc-sub{font-weight:400;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.5))}.tc-txt{font-size:.86rem;line-height:1.6;margin-top:3px;color:var(--tx,rgba(255,255,255,.82))}.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-lock{display:block;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.45));border-top:1px dashed rgba(212,168,73,.25);padding-top:9px;margin-top:2px}.hp-lock b{color:var(--gold)}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.tres-claves{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}.tc-toggle{width:100%;background:none;border:none;cursor:pointer;padding:0;font:inherit;color:inherit;display:flex;align-items:center;gap:7px}.tc-chev{margin-left:6px;color:var(--gold);font-size:.8rem;transition:transform .18s ease}.tc-toggle[aria-expanded="true"] .tc-chev{transform:rotate(180deg)}.tc-fila{display:flex;gap:11px;margin:11px 0;align-items:flex-start}.tc-gly{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;font-family:'Noto Sans Symbols 2','Apple Symbols',serif;font-variant-emoji:text;background:radial-gradient(circle at 30% 30%,rgba(212,168,73,.22),rgba(212,168,73,.03) 70%);border:1px solid rgba(212,168,73,.28)}.tc-tit{font-size:.9rem;font-weight:600;color:var(--gold)}.tc-sub{font-weight:400;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.5))}.tc-txt{font-size:.86rem;line-height:1.6;margin-top:3px;color:var(--tx,rgba(255,255,255,.82))}.hp-info{width:20px;height:20px;border-radius:50%;flex:none;cursor:pointer;border:1px solid rgba(212,168,73,.4);background:transparent;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:700;font-size:.8rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}.hp-info[aria-expanded="true"]{background:rgba(212,168,73,.18)}.hp-info-box{margin:8px 0 12px;padding:13px 15px;border-radius:11px;background:rgba(212,168,73,.06);border:1px solid rgba(212,168,73,.18);font-size:.82rem;line-height:1.6;color:var(--tx-dim,rgba(255,255,255,.62))}.hp-info-box p{margin:0 0 9px}.hp-info-box p:last-child{margin-bottom:0}.hp-info-box b{color:var(--gold)}.hp-info-box em{font-style:normal;color:#fff}.hp-lock{display:block;font-size:.78rem;color:var(--tx-dim,rgba(255,255,255,.45));border-top:1px dashed rgba(212,168,73,.25);padding-top:9px;margin-top:2px}.hp-lock b{color:var(--gold)}.hp-intro{margin:2px 0 10px;font-size:.82rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55))}.hp-intro em{color:var(--gold);font-style:normal}.hp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
 .hp-item{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:11px;
   background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
   cursor:pointer;text-align:left;font-family:inherit;color:inherit;
@@ -630,9 +630,17 @@ body.modal-open #le-tabs{display:none !important}
              pero era ilegible; esto la traduce. Las casas YA vienen guardadas
              en natal_chart.houses — no se calcula nada nuevo. -->
         <div class="tres-claves" id="tres-claves" hidden>
-          <div class="hp-title"><span class="tp-ic">&#x2726;</span>
-            <span>Tus tres claves</span></div>
-          <div class="tc-body"></div>
+          <!-- 2026-08-05: desplegable y CERRADO por defecto (pedido del
+               usuario) — la carta ya es densa; esto es profundidad opcional,
+               un toque cuando la persona quiera leerse. -->
+          <button type="button" class="hp-title tc-toggle" id="tc-toggle"
+                  aria-expanded="false">
+            <span class="tp-ic">&#x2726;</span>
+            <span>Tus tres claves</span>
+            <span class="hp-hint">Sol · Luna · Ascendente</span>
+            <span class="tc-chev" aria-hidden="true">&#x25BE;</span>
+          </button>
+          <div class="tc-body" hidden></div>
         </div>
         <div class="houses-panel" id="houses-panel" hidden>
           <div class="hp-title">
@@ -725,7 +733,10 @@ body.modal-open #le-tabs{display:none !important}
 
     <!-- 4. 8 sistemas -->
     <section class="fade d4">
-      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Tu Perfil Multi-Sistema</div>
+      <!-- 2026-08-05: mismo nombre que la promesa de la portada ("descubre tu
+           perfil cósmico") — quien llega desde ahí debe RECONOCER que esto
+           es lo prometido. -->
+      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Tu Perfil Cósmico · 8 sistemas ancestrales</div>
       <div class="sys-grid" id="sys-grid"></div>
       <div class="share-row">
         <button class="btn-share" id="btn-share" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg> Compartir</button>
@@ -3225,6 +3236,15 @@ function renderTresClaves(sol, luna, asc){
     if(!html){ cont.hidden = true; return; }
     cont.querySelector('.tc-body').innerHTML = html;
     cont.hidden = false;
+    var _tg = document.getElementById('tc-toggle');
+    if(_tg && !_tg.dataset.wired){
+      _tg.dataset.wired = '1';
+      _tg.addEventListener('click', function(){
+        var b = cont.querySelector('.tc-body');
+        b.hidden = !b.hidden;
+        _tg.setAttribute('aria-expanded', String(!b.hidden));
+      });
+    }
   };
   if(TRES_CLAVES !== null){ pinta(); return; }
   TRES_CLAVES = {};
