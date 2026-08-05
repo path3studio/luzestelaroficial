@@ -59,6 +59,76 @@ canvas { display: block; margin: 0 auto; }
 }
 .presets button:hover { border-color: var(--gold-dim); color: var(--gold); }
 .info { color: var(--text-dim); font-size: var(--fs-xs); text-align: center; line-height: 1.5; margin-top: var(--sp-3); }
+.glossary {
+  margin-top: var(--sp-4);
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+}
+.glossary h2 {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: var(--fs-lg);
+  margin-bottom: var(--sp-3);
+}
+.glossary ul { list-style: none; display: grid; gap: var(--sp-3); }
+.glossary li {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  line-height: 1.5;
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.glossary b { color: var(--text); font-weight: 600; }
+.glossary h3 {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: var(--fs-base);
+  margin: var(--sp-4) 0 var(--sp-2);
+}
+.glyphs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: var(--sp-2);
+}
+.glyphs span {
+  display: flex; align-items: center; gap: 8px;
+  font-size: var(--fs-sm); color: var(--text-dim);
+}
+.glyphs i {
+  font-style: normal;
+  font-family: "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", serif;
+  font-size: 1.25rem;
+  color: var(--gold);
+  width: 1.4em; text-align: center;
+}
+/* Muestras visuales — mismos colores que el canvas */
+.sw { display: block; width: 22px; height: 14px; position: relative; }
+.sw.gold-line::after {
+  content: ''; position: absolute; inset: 5px 0 auto 0;
+  height: 3px; border-top: 1.6px solid rgba(212,168,73,0.85);
+  border-bottom: 1.6px solid rgba(212,168,73,0.5);
+}
+.sw.gold-curve::after {
+  content: ''; position: absolute; inset: 2px 0 2px 0;
+  border-bottom: 2.6px solid #d4a849; border-radius: 0 0 60% 60%;
+}
+.sw.silver::after {
+  content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+  border-left: 2px solid rgba(224,220,232,0.75);
+}
+.sw.dot-big::after {
+  content: ''; position: absolute; left: 7px; top: 4px;
+  width: 7px; height: 7px; border-radius: 50%; background: #fff;
+}
+.sw.dot-gold::after {
+  content: ''; position: absolute; left: 7px; top: 4px;
+  width: 7px; height: 7px; border-radius: 50%; background: #d4a849;
+  box-shadow: 0 0 5px rgba(212,168,73,0.9);
+}
 </style>
 </head>
 <body>
@@ -74,32 +144,102 @@ canvas { display: block; margin: 0 auto; }
     <input type="number" id="lat" value="25.6866" step="0.0001">
     <label>Longitud</label>
     <input type="number" id="lng" value="-100.3161" step="0.0001">
+    <label>Rueda del zodiaco (aro)</label>
+    <input type="checkbox" id="ring" checked>
+    <label>Camino del Sol por los signos</label>
+    <input type="checkbox" id="band" checked>
+    <label>Casas (desde el Ascendente)</label>
+    <input type="checkbox" id="houses" checked>
+    <label>Cielo completo (+2,719 estrellas)</label>
+    <input type="checkbox" id="fullcat" checked>
+    <label>Nombres de constelaciones</label>
+    <input type="checkbox" id="connames" checked>
+    <label>Signo resaltado</label>
+    <select id="focus">
+      <option value="">— ninguno —</option>
+      <option>Aries</option><option>Tauro</option><option>Géminis</option>
+      <option>Cáncer</option><option>Leo</option><option selected>Virgo</option>
+      <option>Libra</option><option>Escorpio</option><option>Sagitario</option>
+      <option>Capricornio</option><option>Acuario</option><option>Piscis</option>
+    </select>
   </div>
   <div class="presets">
     <button data-p="ernesto">Ernesto · 1993</button>
     <button data-p="now">Ahora · Monterrey</button>
-    <button data-p="london">Londres · medianoche</button>
-    <button data-p="sydney">Sydney · invierno</button>
+    <button data-p="london">Ahora · Londres</button>
+    <button data-p="sydney">Ahora · Sydney</button>
+    <button data-p="tokyo">Ahora · Tokio</button>
   </div>
+
+  <div class="glossary">
+    <h2>Glosario</h2>
+    <ul>
+      <li><i class="sw gold-line"></i> <b>Aro exterior</b> — las 12 franjas del zodiaco (simbólicas, siempre en el mismo orden).</li>
+      <li><i class="sw gold-curve"></i> <b>Línea dorada que cruza</b> — la eclíptica: el camino real del Sol. Cada tramo es un signo, donde estaba en ese momento.</li>
+      <li><i class="sw silver"></i> <b>Marcas plateadas y números</b> — las 12 casas, contadas desde el <b>ASC</b> (Ascendente: el punto del zodiaco que iba saliendo por el horizonte este).</li>
+      <li><i class="sw dot-big"></i> <b>Puntos blancos</b> — estrellas reales; el tamaño y el brillo siguen su magnitud (entre más grande, más brillante a simple vista).</li>
+      <li><i class="sw dot-gold"></i> <b>Puntos dorados con glifo</b> — planetas, en su posición real del cielo.</li>
+      <li><b>N · S · E · O</b> — los puntos cardinales; el centro del círculo es justo encima de tu cabeza (el cenit).</li>
+    </ul>
+
+    <h3>Planetas</h3>
+    <div class="glyphs" id="glyphs-planets"></div>
+
+    <h3>Signos</h3>
+    <div class="glyphs" id="glyphs-signs"></div>
+  </div>
+
   <p class="info">
     Proyección estereográfica desde el zenith, epoch J2000.<br>
-    114 estrellas, 22 constelaciones, 80 líneas.<br>
+    Catálogo base: 131 estrellas con nombre · Catálogo completo: +2,719 (Hipparcos mag ≤ 5.5).<br>
     Los planetas son las posiciones eclípticas del natal chart de Ernesto convertidas a ecuatoriales.
   </p>
 </div>
 
-<script src="/js/sky-map.js"></script>
 <script>
+// Página de desarrollo: sky-map.js SIEMPRE fresco (ver nota en _preview-mi-cielo).
+const skymapReady = new Promise((resolve, reject) => {
+  const s = document.createElement('script');
+  s.src = '/js/sky-map.js?nocache=' + Date.now();
+  s.onload = resolve; s.onerror = reject;
+  document.head.appendChild(s);
+});
+</script>
+<script>
+// ── Glosario de glifos (U+FE0E para forzar texto, nunca emoji) ──
+(() => {
+  const P = [['☉','Sol'],['☽','Luna'],['☿','Mercurio'],['♀','Venus'],
+             ['♂','Marte'],['♃','Júpiter'],['♄','Saturno'],['♅','Urano'],
+             ['♆','Neptuno'],['♇','Plutón']];
+  const S = [['♈','Aries'],['♉','Tauro'],['♊','Géminis'],['♋','Cáncer'],
+             ['♌','Leo'],['♍','Virgo'],['♎','Libra'],['♏','Escorpio'],
+             ['♐','Sagitario'],['♑','Capricornio'],['♒','Acuario'],['♓','Piscis']];
+  const fill = (id, list) => {
+    document.getElementById(id).innerHTML = list
+      .map(([g, n]) => `<span><i>${g}︎</i>${n}</span>`).join('');
+  };
+  fill('glyphs-planets', P);
+  fill('glyphs-signs', S);
+})();
+
 // ── Load catalogs ──
 Promise.all([
+  skymapReady,
   fetch('/data/stars.json').then(r => r.json()),
   fetch('/data/constellations.json').then(r => r.json()),
-]).then(([starsData, constData]) => {
+  fetch('/data/stars-full.json').then(r => r.json()).catch(() => ({ stars: [] })),
+]).then(([, starsData, constData, fullData]) => {
   const canvas = document.getElementById('sky');
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
   const latEl = document.getElementById('lat');
   const lngEl = document.getElementById('lng');
+  const ringEl = document.getElementById('ring');
+  const bandEl = document.getElementById('band');
+  const housesEl = document.getElementById('houses');
+  const fullcatEl = document.getElementById('fullcat');
+  const connamesEl = document.getElementById('connames');
+  const focusEl = document.getElementById('focus');
 
   // Ernesto's natal chart — ecliptic longitudes (from D1)
   const ernestoPlanets = [
@@ -123,33 +263,43 @@ Promise.all([
       lat: parseFloat(latEl.value),
       lng: parseFloat(lngEl.value),
       utc: utc,
-      stars: starsData.stars,
+      stars: fullcatEl.checked ? starsData.stars.concat(fullData.stars) : starsData.stars,
       constellations: constData.constellations,
       planets: ernestoPlanets,
       size: 420,
       showLabels: true,
+      zodiacRing: ringEl.checked ? { focusSign: focusEl.value || null } : null,
+      eclipticBand: bandEl.checked ? { focusSign: focusEl.value || null } : null,
+      houses: housesEl.checked ? {} : null,
+      constellationLabels: connamesEl.checked,
     });
   }
 
-  [dateEl, timeEl, latEl, lngEl].forEach(el => el.addEventListener('input', draw));
+  [dateEl, timeEl, latEl, lngEl, ringEl, bandEl, housesEl, fullcatEl, connamesEl, focusEl].forEach(el => el.addEventListener('input', draw));
 
   document.querySelectorAll('.presets button').forEach(btn => {
     btn.addEventListener('click', () => {
       const p = btn.dataset.p;
+      // Todos los presets de lugar usan el AHORA (mismo instante UTC),
+      // así se compara qué está viendo cada ciudad del planeta en este
+      // preciso momento — que es justo la gracia de "Cielo de hoy".
+      const nowUTC = () => {
+        const n = new Date();
+        dateEl.value = n.toISOString().slice(0, 10);
+        timeEl.value = n.toISOString().slice(11, 16);
+      };
+      const PLACES = {
+        now:    ['25.6866', '-100.3161'],   // Monterrey
+        london: ['51.5074', '-0.1278'],
+        sydney: ['-33.8688', '151.2093'],
+        tokyo:  ['35.6762', '139.6503'],
+      };
       if (p === 'ernesto') {
         dateEl.value = '1993-09-09'; timeEl.value = '20:33';
         latEl.value = '25.6866'; lngEl.value = '-100.3161';
-      } else if (p === 'now') {
-        const now = new Date();
-        dateEl.value = now.toISOString().slice(0, 10);
-        timeEl.value = now.toISOString().slice(11, 16);
-        latEl.value = '25.6866'; lngEl.value = '-100.3161';
-      } else if (p === 'london') {
-        dateEl.value = '2024-12-21'; timeEl.value = '00:00';
-        latEl.value = '51.5074'; lngEl.value = '-0.1278';
-      } else if (p === 'sydney') {
-        dateEl.value = '2024-06-21'; timeEl.value = '10:00';
-        latEl.value = '-33.8688'; lngEl.value = '151.2093';
+      } else if (PLACES[p]) {
+        nowUTC();
+        latEl.value = PLACES[p][0]; lngEl.value = PLACES[p][1];
       }
       draw();
     });

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Mi cielo (vistas de mi-día)</title>
+<link rel="icon" href="/app_icon_192.png">
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link rel="stylesheet" href="/css/components.css">
+<style>
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100dvh;
+  padding: var(--sp-5);
+}
+h1 {
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: var(--fs-2xl);
+  text-align: center;
+  margin-bottom: var(--sp-2);
+}
+.sub { text-align:center; color:var(--text-dim); font-size:var(--fs-sm); margin-bottom:var(--sp-5); }
+.grid {
+  display:grid; gap:var(--sp-5);
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  max-width:1100px; margin:0 auto;
+}
+.card {
+  background:var(--glass); border:1px solid var(--glass-b);
+  border-radius:var(--r-lg); padding:var(--sp-4); text-align:center;
+}
+.card h2 { font-family:var(--font-display); color:var(--gold); font-size:var(--fs-lg); margin-bottom:var(--sp-1); }
+.card .meta { color:var(--text-dim); font-size:var(--fs-xs); margin-bottom:var(--sp-3); line-height:1.5; }
+canvas { display:block; margin:0 auto; }
+.upsell { margin-top:var(--sp-3); font-size:.72rem; line-height:1.5; color:var(--text-dim); }
+.upsell a { color:var(--gold); }
+.controls {
+  max-width:1100px; margin:0 auto var(--sp-5);
+  display:flex; gap:var(--sp-3); flex-wrap:wrap; justify-content:center;
+  background:var(--glass); border:1px solid var(--glass-b);
+  border-radius:var(--r-lg); padding:var(--sp-4);
+  font-size:var(--fs-sm);
+}
+.controls label { display:flex; align-items:center; gap:6px; color:var(--text-dim); cursor:pointer; }
+</style>
+</head>
+<body>
+<h1>Mi cielo — vistas de mi-día</h1>
+<p class="sub">Réplica exacta de lo que renderiza <b>mi-dia.html</b>, sin necesidad de iniciar sesión.<br>
+Perfil de ejemplo: 9 de septiembre de 1993, 14:33, Monterrey.</p>
+
+<div class="controls">
+  <!-- Decisión 5/ago (usuario): el aro de la rueda NO va en las vistas de
+       cielo — confunde (el zodiaco real aquí es la curva de la eclíptica,
+       no el borde). El aro vive en la rueda geocéntrica y en el marco del
+       producto impreso. -->
+  <label><input type="checkbox" id="plus"> Simular usuario <b>Plus</b> (sin marca de agua)</label>
+  <label><input type="checkbox" id="band"> Marcar el camino del Sol por los signos</label>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Cielo al nacer</h2>
+    <p class="meta" id="meta-birth"></p>
+    <canvas id="sky-birth"></canvas>
+    <p class="upsell" id="upsell">✦ Con <a href="/planes.html">Plus</a> recibes tu Mapa Estelar de nacimiento sin marca de agua y en varios formatos: alta resolución para imprimir, fondo de pantalla y más — incluida la versión con las franjas zodiacales y tu signo resaltado.</p>
+  </div>
+  <div class="card">
+    <h2>Cielo de hoy</h2>
+    <p class="meta" id="meta-now"></p>
+    <canvas id="sky-now"></canvas>
+  </div>
+</div>
+
+<script>
+// Página de desarrollo: sky-map.js SIEMPRE fresco. Sin esto, el disco del
+// navegador (o el service worker de la PWA) sirve la versión anterior y uno
+// cree que un cambio "no funciona" cuando en realidad no llegó.
+const skymapReady = new Promise((resolve, reject) => {
+  const s = document.createElement('script');
+  s.src = '/js/sky-map.js?nocache=' + Date.now();
+  s.onload = resolve; s.onerror = reject;
+  document.head.appendChild(s);
+});
+
+Promise.all([
+  skymapReady,
+  fetch('/data/stars.json').then(r => r.json()),
+  fetch('/data/constellations.json').then(r => r.json()),
+  fetch('/data/stars-full.json').then(r => r.json()).catch(() => ({ stars: [] })),
+]).then(([, base, consts, full]) => {
+  const stars = base.stars.concat(full.stars || []);
+  const constellations = consts.constellations;
+
+  // Perfil de ejemplo (mismo que el laboratorio)
+  const PROFILE = { lat: 25.6866, lon: -100.3161, lugar: 'Monterrey',
+                    fecha: '1993-09-09', hora: '14:33', tz: -6 };
+  const PLANETS = [
+    { name:'Sol', symbol:'☉', longitude:167.25, color:'#FFD700' },
+    { name:'Luna', symbol:'☾', longitude:84.14, color:'#C0C8E0' },
+    { name:'Mercurio', symbol:'☿', longitude:177.32, color:'#B0B0B0' },
+    { name:'Venus', symbol:'♀', longitude:135.87, color:'#F0C070' },
+    { name:'Marte', symbol:'♂', longitude:198.61, color:'#FF6060' },
+    { name:'Júpiter', symbol:'♃', longitude:196.97, color:'#E0B060' },
+    { name:'Saturno', symbol:'♄', longitude:325.52, color:'#C0A080' },
+  ];
+
+  const plusEl = document.getElementById('plus');
+  const bandEl = document.getElementById('band');
+
+  function draw() {
+    // Clamp inferior: con la ventana/panel muy angosto (o oculto),
+    // innerWidth-80 se vuelve negativo y createRadialGradient truena.
+    const size = Math.max(240, Math.min(360, window.innerWidth - 80));
+    const extra = {
+      eclipticBand: bandEl.checked ? { focusSign: 'Virgo' } : null,
+    };
+
+    // ── Cielo al nacer ──
+    const t = PROFILE.hora.split(':').map(Number);
+    const d = PROFILE.fecha.split('-').map(Number);
+    const birthUTC = new Date(Date.UTC(d[0], d[1]-1, d[2], t[0] - PROFILE.tz, t[1]));
+    const birthCanvas = document.getElementById('sky-birth');
+    LuzEstelar.SkyMap.render(birthCanvas, {
+      lat: PROFILE.lat, lng: PROFILE.lon, utc: birthUTC,
+      stars, constellations, planets: PLANETS,
+      size, showLabels: true,
+      constellationLabels: true,
+      houses: {},
+      watermark: plusEl.checked ? null : 'LUZ ESTELAR',
+      ...extra,
+    });
+    document.getElementById('meta-birth').textContent =
+      'Cielo sobre ' + PROFILE.lugar + ' · ' + PROFILE.fecha + ' ' + PROFILE.hora;
+    document.getElementById('upsell').hidden = plusEl.checked;
+
+    // ── Cielo de hoy ──
+    // Cielo de hoy: SIN capas astrológicas (rueda/eclíptica/casas).
+    // Esas capas pertenecen al momento de nacer; aquí solo el cielo,
+    // con Sol y Luna del instante (efeméride ligera del renderer).
+    const now = new Date();
+    const SM = LuzEstelar.SkyMap;
+    const jdNow = SM.julianDate(now.getUTCFullYear(), now.getUTCMonth() + 1,
+      now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+    const nowCanvas = document.getElementById('sky-now');
+    LuzEstelar.SkyMap.render(nowCanvas, {
+      lat: PROFILE.lat, lng: PROFILE.lon, utc: now,
+      stars, constellations,
+      planets: [
+        { name: 'Sol',  symbol: '☉', longitude: SM.sunLongitude(jdNow),  color: '#FFD700' },
+        { name: 'Luna', symbol: '☾', longitude: SM.moonLongitude(jdNow), color: '#C0C8E0' },
+      ],
+      size, showLabels: true,
+      constellationLabels: true,
+      houses: null,
+    });
+    document.getElementById('meta-now').textContent =
+      'Cielo en vivo · tu ubicación actual · ' +
+      now.toLocaleString('es-MX', { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' });
+  }
+
+  [plusEl, bandEl].forEach(el => el.addEventListener('change', draw));
+  window.addEventListener('resize', draw);
+  draw();
+});
+</script>
+</body>
+</html>

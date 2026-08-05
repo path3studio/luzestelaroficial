@@ -25,6 +25,8 @@
  *     ],
  *     size: 320,
  *     showLabels: true,
+ *     zodiacRing: { focusSign: 'Leo' },    // optional: symbolic 12-band ring
+ *     eclipticBand: { focusSign: 'Leo' },  // optional: REAL zodiac positions
  *   });
  *
  * Source of truth for the astronomy:
@@ -170,16 +172,333 @@
     };
   }
 
+  // ── Sun & Moon ecliptic longitudes ───────────────────────────
+  // Low-precision Meeus (ch. 25 abridged / main lunar term only):
+  // Sun ±0.01°, Moon ±1° — más que de sobra para un punto en un canvas.
+  // Con esto "Cielo de hoy" puede mostrar Sol y Luna sin efemérides del
+  // servidor (2026-08-05, pedido del usuario: "ahorita lo tengo encima").
+  function sunLongitude(jd) {
+    var n = jd - 2451545.0;
+    var L = 280.460 + 0.9856474 * n;
+    var g = ((357.528 + 0.9856003 * n) % 360) * DEG;
+    var lon = L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g);
+    return ((lon % 360) + 360) % 360;
+  }
+
+  function moonLongitude(jd) {
+    var n = jd - 2451545.0;
+    var L = 218.316 + 13.176396 * n;
+    var M = ((134.963 + 13.064993 * n) % 360) * DEG;
+    var lon = L + 6.289 * Math.sin(M);
+    return ((lon % 360) + 360) % 360;
+  }
+
+  // ── Zodiac ring (Mapa Maestro, Fase 1) ───────────────────────
+  // Same visual language as the aspect wheel in infographic_generator
+  // (_build_aspect_wheel_html) and natal-chart.js: 12 equal 30° bands,
+  // 0° Aries at 9 o'clock, signs running counterclockwise on screen,
+  // glyphs forced to text presentation with U+FE0E (no emoji rendering).
+  // The ring is SYMBOLIC longitude space — it frames the alt/az sky disc
+  // with the brand wheel; it does not claim the sky under each band.
+  var SIGN_GLYPHS = ['♈︎','♉︎','♊︎','♋︎',
+                     '♌︎','♍︎','♎︎','♏︎',
+                     '♐︎','♑︎','♒︎','♓︎'];
+  var SIGN_NAMES = [
+    ['aries','aries'], ['tauro','taurus'], ['geminis','gemini'],
+    ['cancer','cancer'], ['leo','leo'], ['virgo','virgo'],
+    ['libra','libra'], ['escorpio','scorpio'], ['sagitario','sagittarius'],
+    ['capricornio','capricorn'], ['acuario','aquarius'], ['piscis','pisces'],
+  ];
+
+  function resolveSignIndex(v) {
+    if (typeof v === 'number' && isFinite(v)) return ((Math.round(v) % 12) + 12) % 12;
+    if (!v) return -1;
+    var s = String(v).toLowerCase();
+    // Deaccent (Géminis → geminis) without String.normalize dependency issues
+    try { s = s.normalize('NFD').replace(/[̀-ͯ]/g, ''); } catch (e) {}
+    for (var i = 0; i < 12; i++) {
+      if (s === SIGN_NAMES[i][0] || s === SIGN_NAMES[i][1]) return i;
+    }
+    return -1;
+  }
+
+  // Ecliptic longitude (deg) → canvas point at radius r.
+  // Matches the wheel convention: x = cx − r·cos, y = cy + r·sin.
+  function ringPoint(cx, cy, lonDeg, r) {
+    var rad = lonDeg * DEG;
+    return { x: cx - r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  // Canvas arc angle for an ecliptic longitude (see ringPoint): θ = π − lon.
+  function ringAngle(lonDeg) { return Math.PI - lonDeg * DEG; }
+
+  function drawZodiacRing(ctx, cx, cy, size, sizeFactor, ring) {
+    var Rin  = size * 0.385;
+    var Rout = size * 0.450;
+    var Rg   = (Rin + Rout) / 2;         // glyph radius
+    var focusIdx = resolveSignIndex(ring.focusSign);
+
+    // Band edges — outer stronger, inner faint (mirrors the wheel's
+    // R ring at 0.30 alpha + dashed inner ring)
+    ctx.strokeStyle = 'rgba(212,168,73,0.30)';
+    ctx.lineWidth = 1.6 * sizeFactor;
+    ctx.beginPath(); ctx.arc(cx, cy, Rout, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = 'rgba(212,168,73,0.18)';
+    ctx.lineWidth = 1.0 * sizeFactor;
+    ctx.beginPath(); ctx.arc(cx, cy, Rin, 0, TAU); ctx.stroke();
+
+    // Focused sign: filled annular wedge + brighter edges
+    if (focusIdx >= 0) {
+      var l1 = focusIdx * 30, l2 = l1 + 30;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Rout, ringAngle(l1), ringAngle(l2), true);
+      ctx.arc(cx, cy, Rin,  ringAngle(l2), ringAngle(l1), false);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(212,168,73,0.14)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(212,168,73,0.55)';
+      ctx.lineWidth = 1.4 * sizeFactor;
+      ctx.stroke();
+    }
+
+    // Ticks every 30° spanning the band
+    ctx.strokeStyle = 'rgba(212,168,73,0.35)';
+    ctx.lineWidth = 1.4 * sizeFactor;
+    for (var k = 0; k < 12; k++) {
+      var a = ringPoint(cx, cy, k * 30, Rin);
+      var b = ringPoint(cx, cy, k * 30, Rout);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+
+    // Glyphs at each band's midpoint
+    ctx.font = Math.round(size * 0.036) + 'px "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var g = 0; g < 12; g++) {
+      var gp = ringPoint(cx, cy, g * 30 + 15, Rg);
+      ctx.fillStyle = (g === focusIdx) ? '#d4a849' : 'rgba(224,220,232,0.38)';
+      ctx.fillText(SIGN_GLYPHS[g], gp.x, gp.y);
+    }
+  }
+
+  // ── Ecliptic band (Mapa Maestro, Fase 1b) ────────────────────
+  // Unlike the symbolic outer ring, this draws the zodiac where it
+  // ACTUALLY crosses the sky at the given moment: the ecliptic great
+  // circle projected onto the horizon view, split into its 12 sign
+  // segments (ticks at each 30° boundary, glyph at the visible
+  // midpoint of each segment). Answers "¿dónde estaba Virgo en el
+  // cielo cuando nací?" — the honest version of the ring.
+  function drawEclipticBand(ctx, cx, cy, R, size, sizeFactor, lst, lat, band) {
+    var focusIdx = resolveSignIndex(band.focusSign);
+    var STEP = 2;                       // sampling step in ecliptic lon (deg)
+    var pts = [];                       // index = lon/STEP
+    for (var lon = 0; lon <= 360; lon += STEP) {
+      var eq = eclipticLonToEquatorial(lon % 360);
+      var h = equatorialToHorizontal(eq.ra, eq.dec, lst, lat);
+      var p = stereographicFromZenith(h.alt, h.az);
+      pts.push({
+        lon: lon,
+        up: h.alt > 0 && p.r <= 1.0,
+        x: cx + p.x * R,
+        y: cy + p.y * R,
+      });
+    }
+
+    function strokeSegment(fromLon, toLon, style, width, glow) {
+      ctx.strokeStyle = style;
+      ctx.lineWidth = width;
+      ctx.save();
+      if (glow) { ctx.shadowColor = 'rgba(212,168,73,0.8)'; ctx.shadowBlur = 6 * sizeFactor; }
+      ctx.beginPath();
+      var started = false;
+      for (var i = fromLon / STEP; i <= toLon / STEP; i++) {
+        var q = pts[i];
+        if (!q.up) { started = false; continue; }
+        if (!started) { ctx.moveTo(q.x, q.y); started = true; }
+        else ctx.lineTo(q.x, q.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Base line (all signs), then the focused sign re-stroked on top
+    strokeSegment(0, 360, 'rgba(212,168,73,0.35)', 1.2 * sizeFactor, false);
+    if (focusIdx >= 0) {
+      strokeSegment(focusIdx * 30, focusIdx * 30 + 30, '#d4a849', 2.6 * sizeFactor, true);
+    }
+
+    // Boundary ticks every 30°, perpendicular to the local direction
+    ctx.strokeStyle = 'rgba(212,168,73,0.55)';
+    ctx.lineWidth = 1.4 * sizeFactor;
+    for (var k = 0; k < 12; k++) {
+      var bi = (k * 30) / STEP;
+      var q0 = pts[bi];
+      if (!q0 || !q0.up) continue;
+      var qn = pts[bi + 1] && pts[bi + 1].up ? pts[bi + 1] : pts[bi - 1];
+      if (!qn) continue;
+      var dx = qn.x - q0.x, dy = qn.y - q0.y;
+      var n = Math.sqrt(dx * dx + dy * dy) || 1;
+      var tx = -dy / n, ty = dx / n;         // unit perpendicular
+      var t = size * 0.012;
+      ctx.beginPath();
+      ctx.moveTo(q0.x - tx * t, q0.y - ty * t);
+      ctx.lineTo(q0.x + tx * t, q0.y + ty * t);
+      ctx.stroke();
+    }
+
+    // Glyph at the visible midpoint of each sign's segment, offset
+    // radially outward (away from the disc center) so it clears the line
+    ctx.font = Math.round(size * 0.03) + 'px "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var g = 0; g < 12; g++) {
+      var vis = [];
+      for (var j = (g * 30) / STEP; j <= (g * 30 + 30) / STEP; j++) {
+        if (pts[j] && pts[j].up) vis.push(pts[j]);
+      }
+      if (vis.length < 3) continue;          // sign (almost) below horizon
+      var mid = vis[(vis.length / 2) | 0];
+      var rx = mid.x - cx, ry = mid.y - cy;
+      var rn = Math.sqrt(rx * rx + ry * ry) || 1;
+      var off = size * 0.028;
+      var gx = mid.x + (rx / rn) * off;
+      var gy = mid.y + (ry / rn) * off;
+      ctx.fillStyle = (g === focusIdx) ? '#d4a849' : 'rgba(224,220,232,0.55)';
+      ctx.fillText(SIGN_GLYPHS[g], gx, gy);
+    }
+  }
+
+  // ── Ascendant + house layer (Mapa Maestro, Fase 1c) ─────────
+  // ASC = ecliptic longitude rising on the EASTERN horizon right now.
+  // Found numerically on the same transforms the band uses (coarse 1°
+  // sweep for the − → + altitude crossing on the east side, then 10
+  // bisection steps → well under 0.01°, far below visual resolution).
+  function computeAscendant(lst, lat) {
+    function altAz(lon) {
+      var eq = eclipticLonToEquatorial(((lon % 360) + 360) % 360);
+      return equatorialToHorizontal(eq.ra, eq.dec, lst, lat);
+    }
+    // Note the direction: at the EASTERN crossing, altitude goes + → −
+    // as lon increases (longitudes past the ASC haven't risen yet), so we
+    // look for ANY sign change whose azimuth is on the east half.
+    var prev = altAz(0);
+    for (var lon = 1; lon <= 360; lon++) {
+      var cur = altAz(lon);
+      var azMid = cur.az / DEG;
+      if ((prev.alt < 0) !== (cur.alt < 0) && azMid > 0 && azMid < 180) {
+        var lo = lon - 1, hi = lon;
+        var loNeg = prev.alt < 0;
+        for (var i = 0; i < 10; i++) {
+          var mid = (lo + hi) / 2;
+          if ((altAz(mid).alt < 0) === loNeg) lo = mid; else hi = mid;
+        }
+        return ((lo + hi) / 2) % 360;
+      }
+      prev = cur;
+    }
+    return null;   // polar edge case: ecliptic never crosses the E horizon
+  }
+
+  // Equal-house cusps from the ASC, drawn ON the ecliptic curve so the
+  // viewer sees where each house actually sat in their sky. Silver
+  // (not gold) so the layer reads apart from the sign glyphs.
+  function drawHouses(ctx, cx, cy, R, size, sizeFactor, lst, lat, housesOpt, drawGuide) {
+    var asc = computeAscendant(lst, lat);
+    if (asc === null) return;
+
+    function project(lon) {
+      var eq = eclipticLonToEquatorial(((lon % 360) + 360) % 360);
+      var h = equatorialToHorizontal(eq.ra, eq.dec, lst, lat);
+      if (h.alt <= 0) return null;
+      var p = stereographicFromZenith(h.alt, h.az);
+      if (p.r > 1.0) return null;
+      return { x: cx + p.x * R, y: cy + p.y * R };
+    }
+
+    var SILVER = 'rgba(224,220,232,0.75)';
+
+    // The cusps are marks ON the ecliptic. If the ecliptic layer isn't
+    // drawing the curve, the houses layer draws its own faint guide —
+    // otherwise the ticks float with nothing connecting them.
+    if (drawGuide) {
+      ctx.strokeStyle = 'rgba(224,220,232,0.22)';
+      ctx.lineWidth = 1.1 * sizeFactor;
+      ctx.beginPath();
+      var started = false;
+      for (var gl = 0; gl <= 360; gl += 2) {
+        var gp = project(gl);
+        if (!gp) { started = false; continue; }
+        if (!started) { ctx.moveTo(gp.x, gp.y); started = true; }
+        else ctx.lineTo(gp.x, gp.y);
+      }
+      ctx.stroke();
+    }
+    // Cusp markers: house k (1-12) starts at asc + 30·(k−1).
+    // (Equal-house system; the zodiac runs BACKWARD from the ASC in
+    // house order, i.e. cusp of house 2 = asc − 30... no: equal houses
+    // ascend in ecliptic longitude: cusp_k = asc + 30(k−1).)
+    for (var k = 0; k < 12; k++) {
+      var lonC = asc + 30 * k;
+      var q0 = project(lonC);
+      if (!q0) continue;
+      var q1 = project(lonC + 1.5) || project(lonC - 1.5);
+      if (!q1) continue;
+      var dx = q1.x - q0.x, dy = q1.y - q0.y;
+      var n = Math.sqrt(dx * dx + dy * dy) || 1;
+      var tx = -dy / n, ty = dx / n;
+      var t = size * 0.018;                  // longer than sign ticks
+      ctx.strokeStyle = SILVER;
+      ctx.lineWidth = 1.6 * sizeFactor;
+      ctx.beginPath();
+      ctx.moveTo(q0.x - tx * t, q0.y - ty * t);
+      ctx.lineTo(q0.x + tx * t, q0.y + ty * t);
+      ctx.stroke();
+      if (k === 0) {
+        // Label the Ascendant itself
+        var ax = q0.x + tx * (t + size * 0.02);
+        var ay = q0.y + ty * (t + size * 0.02);
+        ctx.fillStyle = SILVER;
+        ctx.font = 'bold ' + Math.round(size * 0.024) + 'px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('ASC', ax, ay);
+      }
+    }
+    // House numbers at each house's midpoint, offset INWARD (toward the
+    // disc center — sign glyphs live on the outward side, no collisions)
+    ctx.fillStyle = 'rgba(224,220,232,0.6)';
+    ctx.font = Math.round(size * 0.024) + 'px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var m = 0; m < 12; m++) {
+      var q = project(asc + 30 * m + 15);
+      if (!q) continue;
+      var rx = cx - q.x, ry = cy - q.y;      // toward center
+      var rn = Math.sqrt(rx * rx + ry * ry) || 1;
+      var off = size * 0.026;
+      ctx.fillText(String(m + 1), q.x + (rx / rn) * off, q.y + (ry / rn) * off);
+    }
+  }
+
   // ── Magnitude → pixel radius ─────────────────────────────────
-  function starRadius(mag, sizeFactor) {
-    var r;
-    if      (mag <= -0.5) r = 3.6;
-    else if (mag <=  0.5) r = 2.8;
-    else if (mag <=  1.5) r = 2.2;
-    else if (mag <=  2.5) r = 1.6;
-    else if (mag <=  3.5) r = 1.1;
-    else                  r = 0.8;
-    return r * sizeFactor;
+  // Product parity (2026-08-05, pedido del usuario: "las estrellas se ven
+  // falsas… lo quería como el mapa que ofrecemos a la venta"): same
+  // continuous magnitude → radius/alpha mapping as
+  // scripts/starmap_generator.py render_starmap():
+  //   star_r = (6.0 − mag) · R / 600      alpha = clamp((6.0 − mag)·60, 80, 255)
+  // Canvas draws float radii, so no int() floor. On small phone canvases
+  // the print formula goes sub-pixel; a gentle boost keeps the map legible
+  // at 320px while converging to exact product sizing as R grows.
+  function starRadius(mag, horizonR) {
+    var boost = Math.max(1, 1.9 - horizonR / 400);
+    return Math.max(0.5, (6.0 - mag) * horizonR / 600 * boost);
+  }
+
+  function starAlpha(mag) {
+    return Math.min(255, Math.max(80, (6.0 - mag) * 60)) / 255;
   }
 
   // ── Main render ───────────────────────────────────────────────
@@ -199,8 +518,11 @@
 
     var cx = size / 2, cy = size / 2;
     // R shrunk so the N/S/E/O cardinal letters drawn at R + ~5.5%
-    // always stay inside the canvas at any size.
-    var R = size * 0.42;                 // horizon radius on canvas
+    // always stay inside the canvas at any size. With the zodiac ring
+    // enabled the horizon shrinks further to leave room for the band
+    // (ring occupies 0.385–0.450 of size) and the cardinals move inside.
+    var ring = opts.zodiacRing || null;
+    var R = size * (ring ? 0.35 : 0.42); // horizon radius on canvas
     var sizeFactor = size / 320;         // relative to baseline
 
     // ── Parse UTC moment ──
@@ -254,15 +576,20 @@
     ctx.arc(cx, cy, R, 0, TAU);
     ctx.stroke();
 
+    // ── Zodiac ring (drawn before cardinals so letters paint on top) ──
+    if (ring) drawZodiacRing(ctx, cx, cy, size, sizeFactor, ring);
+
     // ── Cardinal letters (N/S/E/W) ──
     if (opts.showCardinal !== false) {
-      ctx.fillStyle = 'rgba(212,168,73,0.78)';
-      ctx.font = 'bold ' + Math.round(size * 0.035) + 'px Inter, sans-serif';
+      ctx.fillStyle = ring ? 'rgba(212,168,73,0.55)' : 'rgba(212,168,73,0.78)';
+      ctx.font = 'bold ' + Math.round(size * (ring ? 0.028 : 0.035)) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       // Offset = half-font so the letter sits *outside* the horizon
       // circle with a comfortable gap yet never exceeds the canvas.
-      var off = R + size * 0.04;
+      // With the ring on, the letters move just INSIDE the horizon edge
+      // (the outside gap now belongs to the band).
+      var off = ring ? R - size * 0.045 : R + size * 0.04;
       ctx.fillText('N', cx, cy - off);
       ctx.fillText('S', cx, cy + off);
       ctx.fillText('E', cx + off, cy);
@@ -298,7 +625,8 @@
     }
 
     // ── Constellation stick figures ──
-    ctx.strokeStyle = 'rgba(212,168,73,0.32)';
+    // Product parity: starmap_generator draws these at gold alpha 40/255.
+    ctx.strokeStyle = 'rgba(212,168,73,0.17)';
     ctx.lineWidth = 0.9 * sizeFactor;
     ctx.lineCap = 'round';
     var constellations = opts.constellations || [];
@@ -316,25 +644,50 @@
       }
     }
 
+    // ── Ecliptic band (real zodiac positions; under the stars so the
+    // star field stays crisp on top) ──
+    if (opts.eclipticBand) {
+      drawEclipticBand(ctx, cx, cy, R, size, sizeFactor, lst, lat, opts.eclipticBand);
+    }
+
+    // ── Houses (equal-house from the ASC, separate layer) ──
+    if (opts.houses) {
+      drawHouses(ctx, cx, cy, R, size, sizeFactor, lst, lat, opts.houses,
+                 !opts.eclipticBand);
+    }
+
+    // ── Constellation name labels (product style: VIRGO, OSA MAYOR…) ──
+    if (opts.constellationLabels) {
+      // Product parity: names at gold alpha ~100/255, quiet like the print
+      ctx.fillStyle = 'rgba(212,168,73,0.45)';
+      ctx.font = Math.round(size * 0.024) + 'px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (var cli = 0; cli < constellations.length; cli++) {
+        var cl = constellations[cli];
+        var clPts = [];
+        for (var clj = 0; clj < (cl.lines || []).length; clj++) {
+          var ca = projected[cl.lines[clj][0]];
+          var cb = projected[cl.lines[clj][1]];
+          if (ca) clPts.push(ca);
+          if (cb) clPts.push(cb);
+        }
+        if (clPts.length < 4) continue;      // mostly below horizon → skip
+        var clx = 0, cly = 0;
+        for (var clk = 0; clk < clPts.length; clk++) { clx += clPts[clk].x; cly += clPts[clk].y; }
+        ctx.fillText((cl.name_es || cl.id).toUpperCase(),
+                     clx / clPts.length, cly / clPts.length);
+      }
+    }
+
     // ── Stars ──
     var ids = Object.keys(projected);
+    // Crisp dots like the printed product — no glow blobs (they made the
+    // sky read as "puntos que pusimos nosotros" instead of a real sky).
     for (var k = 0; k < ids.length; k++) {
       var pr = projected[ids[k]];
-      var rad = starRadius(pr.mag, sizeFactor);
-
-      // Soft halo for the very bright ones — gives the stars "presence"
-      if (pr.mag <= 1.2) {
-        var glow = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, rad * 3.5);
-        glow.addColorStop(0.00, 'rgba(255,245,210,0.55)');
-        glow.addColorStop(0.55, 'rgba(255,245,210,0.12)');
-        glow.addColorStop(1.00, 'rgba(255,245,210,0)');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(pr.x, pr.y, rad * 3.5, 0, TAU);
-        ctx.fill();
-      }
-
-      ctx.fillStyle = '#ffffff';
+      var rad = starRadius(pr.mag, R);
+      ctx.fillStyle = 'rgba(255,255,255,' + starAlpha(pr.mag).toFixed(3) + ')';
       ctx.beginPath();
       ctx.arc(pr.x, pr.y, rad, 0, TAU);
       ctx.fill();
@@ -469,6 +822,26 @@
       }
     }
 
+    // ── Marca de agua (producto no-Plus) ──
+    // Vive AQUÍ y no en la página porque el contexto sigue escalado por
+    // devicePixelRatio al terminar el render: quien la dibujara afuera
+    // usando canvas.width (píxeles de dispositivo) la mandaba fuera del
+    // lienzo en pantallas retina — es decir, los usuarios gratis recibían
+    // el mapa SIN marca. Aquí las unidades son las mismas que el resto
+    // del dibujo (`size`), así que siempre queda centrada.
+    if (opts.watermark) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-Math.PI / 8);
+      ctx.font = '600 ' + Math.round(size / 8.5) +
+                 'px "Cormorant Garamond", Georgia, serif';
+      ctx.fillStyle = 'rgba(212,168,73,0.14)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(opts.watermark === true ? 'LUZ ESTELAR' : opts.watermark, 0, 0);
+      ctx.restore();
+    }
+
     // ── Hit regions for tap-to-identify ──
     // Saved on the canvas so click handlers outside this file can
     // nearest-match against them. Two types:
@@ -481,7 +854,7 @@
     for (var si = 0; si < starIds.length; si++) {
       var sp = projected[starIds[si]];
       // Bigger hit target than the visible dot — finger-friendly.
-      var hitR = Math.max(starRadius(sp.mag, sizeFactor) * 2.2, size * 0.018);
+      var hitR = Math.max(starRadius(sp.mag, R) * 2.2, size * 0.018);
       hitRegions.push({
         type: 'star',
         id:   starIds[si],
@@ -558,6 +931,8 @@
     render: render,
     hitTest: hitTest,
     julianDate: julianDate,
+    sunLongitude: sunLongitude,
+    moonLongitude: moonLongitude,
     localSiderealTime: localSiderealTime,
     equatorialToHorizontal: equatorialToHorizontal,
     equatorialToEcliptic: equatorialToEcliptic,

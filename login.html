@@ -11,6 +11,7 @@
 <link rel="alternate" hreflang="es" href="https://luzestelaroficial.com/login.html">
 <link rel="icon" type="image/png" href="app_icon.png">
 <link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="app_icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#d4a849;--gold-light:#f0d078;--bg:#06061a;--text:rgba(255,255,255,0.88);--text-dim:rgba(255,255,255,0.55);--text-muted:rgba(255,255,255,0.35);--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--accent-rose:#e8788a;}
@@ -44,7 +45,10 @@ body{
 /* Logo */
 .logo-section{text-align:center;}
 .logo-star{
-  font-size:3rem;display:block;margin-bottom:12px;
+  /* 2026-08-05: aquí va el LOGO de la marca (app_icon.png), no un icono
+     genérico de destello — el isotipo es parte de la identidad. */
+  width:72px;height:72px;display:block;margin:0 auto 12px;
+  object-fit:contain;
   animation:float 4s ease-in-out infinite;
 }
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
@@ -129,7 +133,7 @@ body{
 <div class="login-content">
   <!-- Logo -->
   <div class="logo-section">
-    <span class="logo-star"><span class="le-ic" data-icon="sparkles"></span></span>
+    <img class="logo-star" src="/app_icon.png" alt="Luz Estelar" width="72" height="72">
     <h1 class="logo-title">Luz Estelar</h1>
     <p class="logo-subtitle">Tu guía cósmica personal</p>
   </div>

@@ -2014,9 +2014,10 @@ function renderAll(){
         metaLabel = 'Cielo sobre ' + (p.lugar_nacimiento || 'tu ubicación') + ' · ' + (p.fecha_nacimiento || '') + ' ' + (p.hora_nacimiento || '');
       }
 
-      // Planet overlays only for birth mode — we don't have today's
-      // ecliptic longitudes pre-computed client-side. (Adding a cheap
-      // JS ephemeris for the "now" mode is a follow-up in B: tránsitos.)
+      // Planet overlays. Birth mode: longitudes del natal chart (D1).
+      // Now mode: Sol y Luna con la efeméride ligera de sky-map.js
+      // (2026-08-05: "ahorita tengo el Sol encima y no aparece") — el
+      // resto de planetas sigue pendiente (tránsitos, fase B).
       var planetOverlays = [];
       if (mode === 'birth') {
         var natal = window.__currentChartData;
@@ -2043,6 +2044,18 @@ function renderAll(){
 
       ensureSkyMap(function(){
         var w = skyCanv.parentElement.offsetWidth;
+        // Sol y Luna del momento actual (solo aquí: sky-map.js ya cargó)
+        if (mode === 'now') {
+          var SM = window.LuzEstelar.SkyMap;
+          if (SM.sunLongitude) {
+            var jdNow = SM.julianDate(d.getUTCFullYear(), d.getUTCMonth() + 1,
+              d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds());
+            planetOverlays = [
+              { name: 'Sol',  symbol: '☉', longitude: SM.sunLongitude(jdNow),  color: '#FFD700' },
+              { name: 'Luna', symbol: '☾', longitude: SM.moonLongitude(jdNow), color: '#C0C8E0' },
+            ];
+          }
+        }
         // ── Nivel del usuario (decide marca de agua + upsell) ──
         // 2026-08-05 (user): el mapa natal de alta resolución es producto
         // Plus; la vista gratuita lleva marca de agua discreta.
