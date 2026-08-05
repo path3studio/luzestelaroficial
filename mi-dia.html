@@ -164,7 +164,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ring-wrap{width:108px;height:108px}
 .ring-wrap svg{width:100%;height:100%}
 .ring-bg{fill:none;stroke:var(--glass-b);stroke-width:6}
-.ring-val{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:0 314.16;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s ease-out}
+.ring-val{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:0 314.16;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s ease-out;filter:drop-shadow(0 0 6px rgba(212,168,73,.55)) drop-shadow(0 0 14px rgba(212,168,73,.25));animation:lering-glow 2.8s ease-in-out 1.2s infinite alternate}@keyframes lering-glow{from{filter:drop-shadow(0 0 5px rgba(212,168,73,.45)) drop-shadow(0 0 12px rgba(212,168,73,.2))}to{filter:drop-shadow(0 0 8px rgba(212,168,73,.7)) drop-shadow(0 0 18px rgba(212,168,73,.35))}}@media (prefers-reduced-motion:reduce){.ring-val{animation:none}}
 .ring-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;fill:var(--gold);text-anchor:middle;dominant-baseline:central}
 .ring-lbl{font-size:9px;fill:var(--text-dim);text-anchor:middle;font-family:'Inter',sans-serif}
 .bars{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;width:100%;max-width:280px;margin-top:10px}
@@ -686,8 +686,8 @@ body.modal-open #le-tabs{display:none !important}
             <svg viewBox="0 0 120 120">
               <circle class="ring-bg" cx="60" cy="60" r="50"/>
               <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
-              <text class="ring-num" x="60" y="54" id="ring-n">—</text>
-              <text class="ring-lbl" x="60" y="72">Energ&iacute;a</text>
+              <text class="ring-num" x="60" y="50" id="ring-n">—</text>
+              <text class="ring-lbl" x="60" y="79">Energ&iacute;a</text>
             </svg>
           </div>
           <div class="bars" id="bars"></div>
@@ -2002,6 +2002,39 @@ function renderAll(){
           showLabels: true,
         });
         if (cmEl) cmEl.textContent = metaLabel;
+        // ── Marca de agua + upsell (solo Cielo al nacer, sin Plus) ──
+        // 2026-08-05 (user): el mapa natal de alta resolución es producto
+        // Plus; la vista gratuita lleva marca de agua discreta.
+        var isPlus = false;
+        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
+        if (mode === 'birth' && !isPlus) {
+          try {
+            var wmx = skyCanv.getContext('2d');
+            wmx.save();
+            wmx.translate(skyCanv.width/2, skyCanv.height/2);
+            wmx.rotate(-Math.PI/8);
+            wmx.font = '600 ' + Math.round(skyCanv.width/8.5) + 'px "Cormorant Garamond", Georgia, serif';
+            wmx.fillStyle = 'rgba(212,168,73,0.14)';
+            wmx.textAlign = 'center';
+            wmx.textBaseline = 'middle';
+            wmx.fillText('LUZ ESTELAR', 0, 0);
+            wmx.restore();
+          } catch(e){}
+        }
+        var upsell = document.getElementById('sky-upsell');
+        if (mode === 'birth' && !isPlus) {
+          if (!upsell && cmEl) {
+            upsell = document.createElement('div');
+            upsell.id = 'sky-upsell';
+            upsell.style.cssText = 'margin-top:6px;font-size:.72rem;line-height:1.5;color:var(--text-dim)';
+            upsell.innerHTML = '\u2726 Con <a href="/planes.html" style="color:var(--gold)">Plus</a> recibes tu Mapa Estelar de nacimiento sin marca de agua y en varios formatos: alta resoluci\u00f3n para imprimir, fondo de pantalla y m\u00e1s.';
+            cmEl.insertAdjacentElement('afterend', upsell);
+          }
+          if (upsell) upsell.hidden = false;
+        } else if (upsell) {
+          upsell.hidden = true;
+        }
+
       });
     }
 
@@ -2075,7 +2108,7 @@ function buildSynth(cc){
   var h='';
   ['Fuego','Tierra','Aire','Agua'].forEach(function(k){
     var pct=Math.round(els[k]/total*100);
-    h+='<div class="synth-it"><div class="slb">'+LEIC(icons[k])+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
+    h+='<div class="synth-it"><div class="slb"><span style="color:'+clrs[k]+';filter:drop-shadow(0 0 3px '+clrs[k]+'88)">'+LEIC(icons[k])+'</span> '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
   });
   document.getElementById('synth-grid').innerHTML=h;
 
@@ -3127,21 +3160,24 @@ function renderTresClaves(sol, luna, asc){
   if(!cont) return;
   var pinta = function(){
     if(!TRES_CLAVES || !Object.keys(TRES_CLAVES).length){ cont.hidden = true; return; }
+    // 2026-08-05 (user): el desglose SIEMPRE se muestra — filas con pista si falta la hora.
+    var HINT = '<span class="hp-lock">A\u00f1ade tu hora de nacimiento en tu perfil para desbloquear esta clave.</span>';
     var filas = [
       ['\u2609', 'Tu Sol en ' + (sol||'?'),
-       'quién eres cuando eliges ser tú', sol && TRES_CLAVES['sol|'+sol]],
-      ['\u263D', luna ? 'Tu Luna en ' + luna : null,
-       'cómo sientes por dentro', luna && TRES_CLAVES['luna|'+luna]],
-      ['\u2191', asc ? 'Tu Ascendente en ' + asc : null,
-       'la primera impresión que das', asc && TRES_CLAVES['ascendente|'+asc]]
+       'quién eres cuando eliges ser tú', (sol && TRES_CLAVES['sol|'+sol]) || ''],
+      ['\u263D', luna ? 'Tu Luna en ' + luna : 'Tu Luna',
+       'cómo sientes por dentro', luna ? (TRES_CLAVES['luna|'+luna]||'') : HINT],
+      ['\u2191', asc ? 'Tu Ascendente en ' + asc : 'Tu Ascendente',
+       'la primera impresión que das', asc ? (TRES_CLAVES['ascendente|'+asc]||'') : HINT]
     ];
     var html = '';
     filas.forEach(function(f){
-      if(!f[1] || !f[3]) return;
+      if(!f[1]) return;
       html += '<div class="tc-fila"><div class="tc-gly">' + f[0] + '</div>' +
               '<div><div class="tc-tit">' + f[1] +
               ' <span class="tc-sub">— ' + f[2] + '</span></div>' +
-              '<div class="tc-txt">' + f[3] + '</div></div></div>';
+              (f[3] ? '<div class="tc-txt">' + f[3] + '</div>' : '') +
+              '</div></div>';
     });
     if(!html){ cont.hidden = true; return; }
     cont.querySelector('.tc-body').innerHTML = html;

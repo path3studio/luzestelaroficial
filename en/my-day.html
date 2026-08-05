@@ -130,7 +130,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .ring-wrap{width:108px;height:108px}
 .ring-wrap svg{width:100%;height:100%}
 .ring-bg{fill:none;stroke:var(--glass-b);stroke-width:6}
-.ring-val{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:0 314.16;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s ease-out}
+.ring-val{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:0 314.16;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s ease-out;filter:drop-shadow(0 0 6px rgba(212,168,73,.55)) drop-shadow(0 0 14px rgba(212,168,73,.25));animation:lering-glow 2.8s ease-in-out 1.2s infinite alternate}@keyframes lering-glow{from{filter:drop-shadow(0 0 5px rgba(212,168,73,.45)) drop-shadow(0 0 12px rgba(212,168,73,.2))}to{filter:drop-shadow(0 0 8px rgba(212,168,73,.7)) drop-shadow(0 0 18px rgba(212,168,73,.35))}}@media (prefers-reduced-motion:reduce){.ring-val{animation:none}}
 .ring-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;fill:var(--gold);text-anchor:middle;dominant-baseline:central}
 .ring-lbl{font-size:9px;fill:var(--text-dim);text-anchor:middle;font-family:'Inter',sans-serif}
 .bars{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;width:100%;max-width:280px;margin-top:10px}
@@ -521,8 +521,8 @@ body.modal-open #le-tabs{display:none !important}
             <svg viewBox="0 0 120 120">
               <circle class="ring-bg" cx="60" cy="60" r="50"/>
               <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
-              <text class="ring-num" x="60" y="54" id="ring-n">—</text>
-              <text class="ring-lbl" x="60" y="72">Energy</text>
+              <text class="ring-num" x="60" y="50" id="ring-n">—</text>
+              <text class="ring-lbl" x="60" y="79">Energy</text>
             </svg>
           </div>
           <div class="bars" id="bars"></div>
@@ -1521,6 +1521,37 @@ function renderAll(){
           showLabels: true
         });
         if (cmEl) cmEl.textContent = metaLabel;
+        // ── Watermark + upsell (birth sky only, non-Plus) ──
+        var isPlus = false;
+        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
+        if (mode === 'birth' && !isPlus) {
+          try {
+            var wmx = skyCanv.getContext('2d');
+            wmx.save();
+            wmx.translate(skyCanv.width/2, skyCanv.height/2);
+            wmx.rotate(-Math.PI/8);
+            wmx.font = '600 ' + Math.round(skyCanv.width/8.5) + 'px "Cormorant Garamond", Georgia, serif';
+            wmx.fillStyle = 'rgba(212,168,73,0.14)';
+            wmx.textAlign = 'center';
+            wmx.textBaseline = 'middle';
+            wmx.fillText('LUZ ESTELAR', 0, 0);
+            wmx.restore();
+          } catch(e){}
+        }
+        var upsell = document.getElementById('sky-upsell');
+        if (mode === 'birth' && !isPlus) {
+          if (!upsell && cmEl) {
+            upsell = document.createElement('div');
+            upsell.id = 'sky-upsell';
+            upsell.style.cssText = 'margin-top:6px;font-size:.72rem;line-height:1.5;color:var(--text-dim)';
+            upsell.innerHTML = '\u2726 With <a href="/en/planes.html" style="color:var(--gold)">Plus</a> you get your birth Star Map without watermark and in multiple formats: print-ready high resolution, phone wallpaper and more.';
+            cmEl.insertAdjacentElement('afterend', upsell);
+          }
+          if (upsell) upsell.hidden = false;
+        } else if (upsell) {
+          upsell.hidden = true;
+        }
+
       });
     }
 
@@ -1591,7 +1622,7 @@ function buildSynth(cc){
   var h='';
   ['Fire','Earth','Air','Water'].forEach(function(k){
     var pct=Math.round(els[k]/total*100);
-    h+='<div class="synth-it"><div class="slb">'+LEIC(icons[k])+' '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
+    h+='<div class="synth-it"><div class="slb"><span style="color:'+clrs[k]+';filter:drop-shadow(0 0 3px '+clrs[k]+'88)">'+LEIC(icons[k])+'</span> '+k+'</div><div class="sbr"><div class="sfl" style="width:'+pct+'%;background:'+clrs[k]+'"></div></div><div class="sv">'+pct+'%</div></div>';
   });
   document.getElementById('synth-grid').innerHTML=h;
 
