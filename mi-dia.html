@@ -2143,8 +2143,18 @@ function buildSynth(cc){
       Aire:'Agua que conversa: pones palabras a lo que otros solo intuyen. Compártelo — alguien necesita oírlo hoy.'
     }
   };
-  var _cat=insights[top[0]]||{};
-  document.getElementById('synth-text').textContent=(sec&&_cat[sec])||_cat._||'Balance elemental en construcción.';
+  // Frase con contexto astral del día (KV, vía daily-reading) si existe;
+  // si no, catálogo estático. El fetch del daily puede llegar después:
+  // deja un hook re-aplicable.
+  window.__synthPick={top:top[0],sec:sec};
+  window.__applyDaySynth=function(){
+    var pk=window.__synthPick;if(!pk)return;
+    var t=null,day=window.__daySynthesis;
+    if(day){t=(pk.sec&&day[pk.top+'|'+pk.sec])||day[pk.top]||null;}
+    if(!t){var c=insights[pk.top]||{};t=(pk.sec&&c[pk.sec])||c._||'Balance elemental en construcción.';}
+    document.getElementById('synth-text').textContent=t;
+  };
+  window.__applyDaySynth();
 }
 
 function renderProfiles(){
@@ -2348,6 +2358,8 @@ async function loadDaily(offset){
 
     // Cosmic strip
     var cos=[];
+    if(d.elementalSynthesis){window.__daySynthesis=d.elementalSynthesis;
+      if(window.__applyDaySynth) window.__applyDaySynth();}
     if(d.moon) cos.push('<span>'+LEIC('moon')+' '+d.moon.phase+' · '+d.moon.illumination+'%</span>');
     if(d.luckyNumber) cos.push('<span>'+LEIC('clover')+' '+d.luckyNumber+'</span>');
     document.getElementById('cosm').innerHTML=cos.join('');

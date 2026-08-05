@@ -125,8 +125,17 @@ export async function onRequestGet(context) {
   const kvPromises = [
     AUTH_KV.get(horoscopeKey).catch(() => null),
     ...snippetKeys.map(k => AUTH_KV.get(k).catch(() => null)),
+    // Frases del día para la Síntesis Elemental (mi-dia). Best-effort:
+    // el cliente tiene catálogo estático de respaldo si la clave no existe.
+    AUTH_KV.get(`synthesis_${dateKey}_${lang}`).catch(() => null),
   ];
   const kvResults = await Promise.all(kvPromises);
+
+  let elementalSynthesis = null;
+  try {
+    const rawSynth = kvResults[kvResults.length - 1];
+    if (rawSynth) elementalSynthesis = JSON.parse(rawSynth);
+  } catch (e) { /* ignore parse errors */ }
 
   // Parse main horoscope
   let horoscope = null;
@@ -207,6 +216,7 @@ export async function onRequestGet(context) {
     },
     reading: horoscope?.text || null,
     systemInsights,
+    elementalSynthesis,
     energy,
     moon: {
       phase: moonPhases[moon.idx],
