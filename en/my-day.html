@@ -1627,14 +1627,38 @@ function buildSynth(cc){
   document.getElementById('synth-grid').innerHTML=h;
 
   // Insight text
-  var top=Object.entries(els).sort(function(a,b){return b[1]-a[1];})[0];
+  // 2026-08-05 (user): expanded catalog — dominant + secondary (16 phrases)
+  var _ent=Object.entries(els).sort(function(a,b){return b[1]-a[1];});
+  var top=_ent[0];
+  var sec=(_ent[1]&&_ent[1][1]>0)?_ent[1][0]:null;
   var insights={
-    Fire:'Your essence is driving energy. Act on intuition when your mind hesitates.',
-    Earth:'Your strength is steadiness. What you build today is tomorrow\u2019s foundation.',
-    Air:'Your gift is connecting ideas and people. Say what you think, unfiltered.',
-    Water:'You feel before you think. Trust what your body already knows.'
+    Fire:{
+      _:'Your essence is driving energy. Act on intuition when your mind hesitates.',
+      Earth:'Fire with direction: your drive takes shape when you anchor it in concrete steps. Ignite, but build.',
+      Air:'Spark and wind: your ideas feed your action. Speak from enthusiasm and others will follow.',
+      Water:'Fire that feels: your passion is born from emotion. Let what moves you steer what you start.'
+    },
+    Earth:{
+      _:'Your strength is steadiness. What you build today is tomorrow\u2019s foundation.',
+      Fire:'Steadiness with embers: you move firmly, driven by an engine that never goes out. Today one solid step beats ten ideas.',
+      Air:'Root and breeze: you think best with your feet on the ground. Turn that idea circling your mind into something you can touch.',
+      Water:'Fertile ground: your calm holds others up. Care for your energy like you care for what you love — steadily, without overdemanding.'
+    },
+    Air:{
+      _:'Your gift is connecting ideas and people. Say what you think, unfiltered.',
+      Fire:'Wind that kindles: your words ignite. Use them to open doors, not just to fill silences.',
+      Earth:'Ideas with roots: your mind flies best when it lands on the practical. Write down what you\u2019ve been thinking for days.',
+      Water:'A mind that feels: you understand people before they speak. Listen twice as much today and you\u2019ll reach the bottom of it.'
+    },
+    Water:{
+      _:'You feel before you think. Trust what your body already knows.',
+      Fire:'Tide with embers: you feel deeply and act strongly. When emotion and drive align, don\u2019t hold back.',
+      Earth:'A river with a course: your sensitivity thrives on structure. Give what matters to you a schedule.',
+      Air:'Water that speaks: you put words to what others only sense. Share it — someone needs to hear it today.'
+    }
   };
-  document.getElementById('synth-text').textContent=insights[top[0]]||'Elemental balance in progress.';
+  var _cat=insights[top[0]]||{};
+  document.getElementById('synth-text').textContent=(sec&&_cat[sec])||_cat._||'Elemental balance in progress.';
 }
 
 function renderProfiles(){

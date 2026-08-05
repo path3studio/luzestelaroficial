@@ -2113,14 +2113,38 @@ function buildSynth(cc){
   document.getElementById('synth-grid').innerHTML=h;
 
   // Insight text
-  var top=Object.entries(els).sort(function(a,b){return b[1]-a[1];})[0];
+  // 2026-08-05 (user): catálogo ampliado — dominante + secundario (16 frases)
+  var _ent=Object.entries(els).sort(function(a,b){return b[1]-a[1];});
+  var top=_ent[0];
+  var sec=(_ent[1]&&_ent[1][1]>0)?_ent[1][0]:null;
   var insights={
-    Fuego:'Tu esencia es energía que impulsa. Actúa con tu intuición cuando dude tu cabeza.',
-    Tierra:'Tu fuerza está en la constancia. Lo que construyes hoy, mañana es tu cimiento.',
-    Aire:'Tu don es conectar ideas y personas. Expresa lo que piensas sin filtro.',
-    Agua:'Sientes antes de pensar. Confía en lo que tu cuerpo ya sabe.'
+    Fuego:{
+      _:'Tu esencia es energía que impulsa. Actúa con tu intuición cuando dude tu cabeza.',
+      Tierra:'Ardes con dirección: tu impulso encuentra forma cuando lo anclas en pasos concretos. Enciende, pero construye.',
+      Aire:'Chispa y viento: tus ideas avivan tu acción. Cuando hables desde el entusiasmo, arrastrarás a otros contigo.',
+      Agua:'Fuego que siente: tu pasión nace de la emoción. Deja que lo que te conmueve dirija lo que emprendes.'
+    },
+    Tierra:{
+      _:'Tu fuerza está en la constancia. Lo que construyes hoy, mañana es tu cimiento.',
+      Fuego:'Constancia con brasa: avanzas firme y con un motor que no se apaga. Hoy, un paso sólido vale más que diez ideas.',
+      Aire:'Raíz y brisa: piensas mejor con los pies en el suelo. Convierte esa idea que te ronda en algo que se pueda tocar.',
+      Agua:'Tierra fértil: tu calma sostiene a los demás. Cuida tu energía como cuidas lo que amas — con ritmo, sin exigirte de más.'
+    },
+    Aire:{
+      _:'Tu don es conectar ideas y personas. Expresa lo que piensas sin filtro.',
+      Fuego:'Viento que aviva: tus palabras encienden. Úsalas para abrir puertas, no solo para llenar silencios.',
+      Tierra:'Ideas con raíz: tu mente vuela mejor cuando aterriza en lo práctico. Escribe eso que llevas días pensando.',
+      Agua:'Mente que siente: entiendes a las personas antes de que hablen. Hoy escucha el doble y llegarás al fondo.'
+    },
+    Agua:{
+      _:'Sientes antes de pensar. Confía en lo que tu cuerpo ya sabe.',
+      Fuego:'Marea con brasa: sientes hondo y actúas fuerte. Cuando emoción e impulso se alineen, no te frenes.',
+      Tierra:'Río con cauce: tu sensibilidad rinde cuando tiene estructura. Dale un horario a lo que te importa.',
+      Aire:'Agua que conversa: pones palabras a lo que otros solo intuyen. Compártelo — alguien necesita oírlo hoy.'
+    }
   };
-  document.getElementById('synth-text').textContent=insights[top[0]]||'Balance elemental en construcción.';
+  var _cat=insights[top[0]]||{};
+  document.getElementById('synth-text').textContent=(sec&&_cat[sec])||_cat._||'Balance elemental en construcción.';
 }
 
 function renderProfiles(){
