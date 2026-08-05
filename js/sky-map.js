@@ -380,6 +380,15 @@
         }
         return false;
       }
+      // The candidate anchors above only avoided *other* labels, never the
+      // edge of the canvas, so a star near the rim took the first anchor
+      // and had its name cut off ("Arcturus" → "Arcturu"). Requiring the
+      // padded box to fit inside the size×size logical space makes such a
+      // star fall through to the opposite-side anchor on its own.
+      function boxInBounds(b) {
+        return b.x >= 0 && b.y >= 0 &&
+               b.x + b.w <= size && b.y + b.h <= size;
+      }
       ctx.fillStyle = 'rgba(255,255,255,0.82)';
       for (var vi = 0; vi < visible.length; vi++) {
         var v = visible[vi];
@@ -398,7 +407,7 @@
         for (var ci2 = 0; ci2 < candidates.length; ci2++) {
           var c2 = candidates[ci2];
           var box = { x: c2.boxX, y: c2.boxY, w: textW + pad * 2, h: lineH + pad * 2 };
-          if (!boxOverlaps(box)) {
+          if (!boxOverlaps(box) && boxInBounds(box)) {
             chosen = { c: c2, box: box };
             break;
           }
