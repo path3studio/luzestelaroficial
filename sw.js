@@ -321,7 +321,7 @@
 // pisaban entre planetas de anillos vecinos (Ura/Nep). sky-map.js pasa a
 // llevar ?v=2 —antes iba sin versión, así que su copia precacheada era
 // inmortal— y natal-chart.js sube a ?v=13.
-const CACHE_NAME = 'luzestelar-v77';
+const CACHE_NAME = 'luzestelar-v78';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

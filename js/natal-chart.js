@@ -349,6 +349,46 @@
       focusIdx = SIGN_NAMES.indexOf(canonName);
       focusRulerName = SIGN_RULERS[focusSignName] || SIGN_RULERS[canonName] || null;
     }
+    // ── Franjas completas hasta la Tierra (Mapa Maestro, 2026-08-05) ──
+    // Diseño aprobado por el usuario: cada signo extiende su franja desde
+    // el aro hasta el centro, en UN solo tono dorado muy tenue (opacidades
+    // alternas para que se lean las 12 rebanadas), con divisores radiales
+    // que se desvanecen hacia la Tierra. Pintado ANTES de la banda y de
+    // los planetas para que todo lo demás quede encima. Se apaga con
+    // opts.fullWedges === false.
+    if (opts.fullWedges !== false) {
+      for (var fw = 0; fw < 12; fw++) {
+        var fwStart = ((fw * 30 + ascOffset) * DEG) - Math.PI / 2;
+        var fwEnd   = (((fw + 1) * 30 + ascOffset) * DEG) - Math.PI / 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, signR, fwStart, fwEnd);
+        ctx.closePath();
+        ctx.fillStyle = (fw === focusIdx)
+          ? 'rgba(212,168,73,0.10)'
+          : (fw % 2 === 0 ? 'rgba(212,168,73,0.045)' : 'rgba(212,168,73,0.015)');
+        ctx.fill();
+      }
+      // Divisores radiales finos — nacen cerca del centro (sin tocar la
+      // Tierra) y ganan presencia hacia el aro.
+      for (var fd = 0; fd < 12; fd++) {
+        var fda = ((fd * 30 + ascOffset) * DEG) - Math.PI / 2;
+        var fx0 = cx + Math.cos(fda) * size * 0.055;
+        var fy0 = cy + Math.sin(fda) * size * 0.055;
+        var fx1 = cx + Math.cos(fda) * signR;
+        var fy1 = cy + Math.sin(fda) * signR;
+        var fGrad = ctx.createLinearGradient(fx0, fy0, fx1, fy1);
+        fGrad.addColorStop(0, 'rgba(212,168,73,0)');
+        fGrad.addColorStop(1, 'rgba(212,168,73,0.22)');
+        ctx.strokeStyle = fGrad;
+        ctx.lineWidth = Math.max(0.6, size * 0.0012);
+        ctx.beginPath();
+        ctx.moveTo(fx0, fy0);
+        ctx.lineTo(fx1, fy1);
+        ctx.stroke();
+      }
+    }
+
     for (var i = 0; i < 12; i++) {
       var startAngle = ((i * 30 + ascOffset) * DEG) - Math.PI / 2;
       var endAngle = (((i + 1) * 30 + ascOffset) * DEG) - Math.PI / 2;

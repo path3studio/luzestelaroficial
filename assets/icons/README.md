@@ -47,29 +47,16 @@ plataforma y rompen la paleta dorada). Todo icono nuevo se añade aquí, no inli
 - La web usa su propio registro inline (`website/js/icons.js` + `css/icons.css`) con los
   mismos trazados; si añades un icono aquí, considera añadirlo también allí.
 
+## Astros y signos (2026-08-05, contornos de fuente)
 
-## Astros y signos (añadidos 2026-08-05)
+Los 22 glifos astrológicos —`sol-astro`, `luna-astro`, `mercurio`, `venus`, `marte`,
+`jupiter`, `saturno`, `urano`, `neptuno`, `pluton` y los 12 signos (`aries`…`piscis`)—
+se extrajeron de las fuentes Noto Sans Symbols (SIL OFL). Ver `GLIFOS-LICENCIA.md`.
 
-Glifos clásicos redibujados en el lenguaje del sistema (trazo 1.75, viewBox 24, sin
-relleno, puntas redondeadas). **Nombres en español**, igual que el resto de iconos de
-dominio del almacén (`sol`, `luna`, `amor`, `salud`, `trabajo`, `energia`):
+**Son contornos rellenos**, a diferencia del resto del almacén (trazo dorado). Es
+deliberado: los signos zodiacales son tipografía y quien sabe de astrología reconoce la
+forma exacta. En el registro `js/icons.js` sus paths llevan `fill="currentColor"
+stroke="none"` para anular los atributos de trazo del envoltorio compartido.
 
-- **Astros** — `sol`, `luna` (ya existían) + `mercurio`, `venus`, `marte`, `jupiter`,
-  `saturno`, `urano`, `neptuno`, `pluton`.
-- **Signos** — `aries`, `tauro`, `geminis`, `cancer`, `leo`, `virgo`, `libra`,
-  `escorpio`, `sagitario`, `capricornio`, `acuario`, `piscis`.
-
-Sustituyen a los glifos Unicode (U+2648–2653, U+2609…), que se dibujan distinto en cada
-sistema operativo y salen como emoji a color si no se blindan con U+FE0E.
-
-**Ojo con los tamaños chicos**: estos glifos llevan más trazos juntos que un icono
-común. Por debajo de ~18 px el trazo 1.75 cae bajo el píxel y el glifo se apaga sobre
-fondo oscuro. Usar `.le-ic-sm` o `.le-ic-dense` (`css/icons.css`), que suben el trazo a
-2.25 — el dibujo es el mismo, solo engorda. Comprobado contra 1.75 / 2.25 / 2.75 a 14 y
-18 px; hojas de prueba: `/_preview-iconos.html`, `/_preview-iconos-chico.html`,
-`/_preview-iconos-peso.html`.
-
-**Nota de nomenclatura**: el registro `js/icons.js` mezcla nombres en inglés para los
-iconos genéricos de UI (`heart`, `star`, `sun`, `moon`, heredados de Lucide) con estos
-de dominio en español. Al cablear desde código que use nombres ingleses de planeta
-(`natal-chart.js` usa `Sun`, `Moon`, `Mercury`…), traducir en el punto de uso.
+`sol` (sol con rayos) y `luna` siguen existiendo como iconos genéricos de interfaz; para
+cartas y ruedas se usan `sol-astro` (☉ círculo con punto) y `luna-astro` (☽ creciente).
