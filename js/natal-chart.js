@@ -42,6 +42,15 @@
     Jupiter:'\u2643\uFE0E', Saturn:'\u2644\uFE0E', Uranus:'\u2645\uFE0E', Neptune:'\u2646\uFE0E', Pluto:'\u2647\uFE0E',
     NorthNode:'\u260A\uFE0E', Chiron:'\u26B7\uFE0E'
   };
+  // Radio de cada órbita en el modo geocéntrico (× size). A nivel de módulo
+  // porque lo necesitan DOS pasadas: las líneas de aspecto (que se dibujan
+  // antes) y los planetas. Antes vivía solo dentro del bloque de planetas y
+  // las líneas se trazaban a un radio fijo, sin tocar los cuerpos que unen.
+  var ORBIT_R = {
+    Moon:    0.115, Mercury: 0.140, Venus:   0.165, Sun:     0.190, Mars:    0.215,
+    Jupiter: 0.240, Saturn:  0.265, Uranus:  0.290, Neptune: 0.310, Pluto:   0.330,
+  };
+
   var PLANET_COLORS = {
     Sun:'#FFD700', Moon:'#b8c4e0', Mercury:'#00CED1', Venus:'#DA70D6', Mars:'#FF4500',
     Jupiter:'#9400D3', Saturn:'#708090', Uranus:'#00CED1', Neptune:'#1E90FF', Pluto:'#8B0000',
@@ -285,6 +294,10 @@
     // Accept both shapes: a bare number (legacy) OR an object { sign, degree, longitude }
     // which is what calculate_natal_chart() in consultation_generator.py emits.
     // Similarly for midheaven below.
+    // Declarado aquí arriba porque lo necesitan las líneas de aspecto, que
+    // se dibujan antes que los planetas.
+    var GEOCENTRIC = opts.geocentricOrbits === true;
+
     var ascLongitude = (typeof chartData.ascendant === 'object' && chartData.ascendant !== null)
       ? chartData.ascendant.longitude
       : chartData.ascendant;
@@ -649,16 +662,30 @@
       ctx.strokeStyle = '#d4a849';
       ctx.lineWidth = 2;
       ctx.beginPath();
+      // 2026-08-05 (user): la línea llegaba hasta fuera del aro y cruzaba la
+      // banda del zodiaco, tapando el nombre de 3 letras y el glifo del signo
+      // que le tocara encima. Ahora se detiene justo antes de la banda: marca
+      // la dirección igual de bien y deja la banda limpia.
       ctx.moveTo(cx + Math.cos(ascAngle) * (innerR - 5), cy + Math.sin(ascAngle) * (innerR - 5));
-      ctx.lineTo(cx + Math.cos(ascAngle) * (outerR + 5), cy + Math.sin(ascAngle) * (outerR + 5));
+      ctx.lineTo(cx + Math.cos(ascAngle) * signR, cy + Math.sin(ascAngle) * signR);
       ctx.stroke();
-      // Label
-      ctx.fillStyle = '#d4a849';
+      // Etiqueta justo por dentro de la banda, sobre una pastilla oscura
+      // para que se lea aunque caiga encima de una órbita o un aspecto.
       ctx.font = 'bold ' + Math.round(size * 0.025) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      var ascLabelX = cx + Math.cos(ascAngle) * (outerR + 14);
-      var ascLabelY = cy + Math.sin(ascAngle) * (outerR + 14);
+      var ascLabelX = cx + Math.cos(ascAngle) * (signR - size * 0.030);
+      var ascLabelY = cy + Math.sin(ascAngle) * (signR - size * 0.030);
+      var ascW = ctx.measureText('ASC').width;
+      ctx.fillStyle = 'rgba(8,8,22,0.72)';
+      ctx.beginPath();
+      ctx.roundRect
+        ? ctx.roundRect(ascLabelX - ascW / 2 - 4, ascLabelY - size * 0.017,
+                        ascW + 8, size * 0.034, size * 0.017)
+        : ctx.rect(ascLabelX - ascW / 2 - 4, ascLabelY - size * 0.017,
+                   ascW + 8, size * 0.034);
+      ctx.fill();
+      ctx.fillStyle = '#d4a849';
       ctx.fillText('ASC', ascLabelX, ascLabelY);
       // Hit region — generous radius so tapping the label or the line works
       hitRegions.push({
@@ -672,15 +699,25 @@
       ctx.strokeStyle = 'rgba(212,168,73,0.5)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
+      // Mismo criterio que el ASC: la línea se detiene antes de la banda.
       ctx.moveTo(cx + Math.cos(mcAngle) * (innerR - 5), cy + Math.sin(mcAngle) * (innerR - 5));
-      ctx.lineTo(cx + Math.cos(mcAngle) * (outerR + 5), cy + Math.sin(mcAngle) * (outerR + 5));
+      ctx.lineTo(cx + Math.cos(mcAngle) * signR, cy + Math.sin(mcAngle) * signR);
       ctx.stroke();
-      ctx.fillStyle = 'rgba(212,168,73,0.7)';
       ctx.font = 'bold ' + Math.round(size * 0.022) + 'px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      var mcLabelX = cx + Math.cos(mcAngle) * (outerR + 14);
-      var mcLabelY = cy + Math.sin(mcAngle) * (outerR + 14);
+      var mcLabelX = cx + Math.cos(mcAngle) * (signR - size * 0.030);
+      var mcLabelY = cy + Math.sin(mcAngle) * (signR - size * 0.030);
+      var mcW = ctx.measureText('MC').width;
+      ctx.fillStyle = 'rgba(8,8,22,0.72)';
+      ctx.beginPath();
+      ctx.roundRect
+        ? ctx.roundRect(mcLabelX - mcW / 2 - 4, mcLabelY - size * 0.016,
+                        mcW + 8, size * 0.032, size * 0.016)
+        : ctx.rect(mcLabelX - mcW / 2 - 4, mcLabelY - size * 0.016,
+                   mcW + 8, size * 0.032);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(212,168,73,0.7)';
       ctx.fillText('MC', mcLabelX, mcLabelY);
       hitRegions.push({
         type: 'angle', name: 'MC', longitude: mcLongitude,
@@ -719,9 +756,30 @@
         ctx.strokeStyle = style.color + aspectAlphaHex(alphaByte);
         ctx.lineWidth = style.weight * orbFactor;
         ctx.setLineDash(style.dash);
+        // 2026-08-05 (user: "va de Saturno a la Luna pero ni se topan"):
+        // en modo órbitas cada planeta está a su propia distancia, así que
+        // una línea trazada a un radio fijo no tocaba ninguno de los dos y
+        // parecía decorativa. Ahora arranca y termina justo al borde de
+        // cada cuerpo. En modo por niveles se conserva el radio común.
+        var r1 = aspectR, r2 = aspectR;
+        if (GEOCENTRIC) {
+          if (ORBIT_R[asp.planet1] !== undefined) r1 = ORBIT_R[asp.planet1] * size;
+          if (ORBIT_R[asp.planet2] !== undefined) r2 = ORBIT_R[asp.planet2] * size;
+        }
+        var x1 = cx + Math.cos(a1) * r1, y1 = cy + Math.sin(a1) * r1;
+        var x2 = cx + Math.cos(a2) * r2, y2 = cy + Math.sin(a2) * r2;
+        if (GEOCENTRIC) {
+          // Recortar el trazo en el borde de cada esfera para que la línea
+          // "salga" del planeta en vez de atravesarlo.
+          var dxA = x2 - x1, dyA = y2 - y1;
+          var len = Math.sqrt(dxA * dxA + dyA * dyA) || 1;
+          var gap = size * 0.026;
+          x1 += (dxA / len) * gap; y1 += (dyA / len) * gap;
+          x2 -= (dxA / len) * gap; y2 -= (dyA / len) * gap;
+        }
         ctx.beginPath();
-        ctx.moveTo(cx + Math.cos(a1) * aspectR, cy + Math.sin(a1) * aspectR);
-        ctx.lineTo(cx + Math.cos(a2) * aspectR, cy + Math.sin(a2) * aspectR);
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
         ctx.setLineDash([]);
       });
@@ -758,21 +816,10 @@
       // outward from Earth). Earth marker drawn at center. Used by
       // chart_renderer.py for shorts; the PWA still uses tier mode by
       // default unless the page passes opts.geocentricOrbits = true.
-      var GEOCENTRIC = opts.geocentricOrbits === true;
+      /* GEOCENTRIC ya se calculó al inicio de render() */
       // Order: Moon (closest), Mercury, Venus, Sun, Mars, Jupiter, Saturn,
       // Uranus, Neptune, Pluto (farthest). Multipliers × size.
-      var PLANET_ORBIT_R = {
-        Moon:    0.115,
-        Mercury: 0.140,
-        Venus:   0.165,
-        Sun:     0.190,
-        Mars:    0.215,
-        Jupiter: 0.240,
-        Saturn:  0.265,
-        Uranus:  0.290,
-        Neptune: 0.310,
-        Pluto:   0.330,
-      };
+      var PLANET_ORBIT_R = ORBIT_R;
 
       // Draw faint orbit rings + Earth marker BEFORE planets if in
       // geocentric mode. Drawn here (inside the planet block) so the

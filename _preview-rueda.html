@@ -34,7 +34,7 @@ no toca el pipeline ni genera archivos.</p>
 <div class="controls">
   <label><input type="checkbox" id="wedges" checked> Franjas hasta la Tierra</label>
   <label>Intensidad
-    <input type="range" id="alpha" min="0" max="120" value="45">
+    <input type="range" id="alpha" min="0" max="120" value="28">
     <output id="alphaOut">0.045</output>
   </label>
   <label>Signo resaltado
@@ -61,8 +61,20 @@ no toca el pipeline ni genera archivos.</p>
   </div>
 </div>
 
-<script src="/js/astro-glyphs.js?nc=1"></script>
-<script src="/js/natal-chart.js?nc=1"></script>
+<script>
+// Anti-caché DINÁMICO: con una query fija (?nc=1) el navegador guarda la
+// copia y uno edita el renderizador sin ver ningún cambio. Con Date.now()
+// cada recarga trae el archivo de verdad.
+const _v = '?nc=' + Date.now();
+function loadJS(src){ return new Promise((ok, err) => {
+  const el = document.createElement('script');
+  el.src = src + _v; el.onload = ok; el.onerror = err;
+  document.head.appendChild(el);
+}); }
+const libsReady = loadJS('/js/astro-glyphs.js')
+  .then(() => loadJS('/js/sky-map.js'))
+  .then(() => loadJS('/js/natal-chart.js'));
+</script>
 <script>
 // Datos de ejemplo con la forma que espera natal-chart.js
 // (mismos campos que arma chart_renderer.py::build_chart_data).
@@ -91,6 +103,19 @@ const alphaEl  = document.getElementById('alpha');
 const alphaOut = document.getElementById('alphaOut');
 const focusEl  = document.getElementById('focus');
 
+// Las constelaciones reales dentro de la banda salen solo si se pasan los
+// catálogos; el renderizador ya sabe proyectarlas (usa sky-map.js para la
+// conversión a coordenadas eclípticas).
+Promise.all([
+  libsReady,
+  fetch('/data/stars.json').then(r => r.json()),
+  fetch('/data/constellations.json').then(r => r.json()),
+]).then(([, st, co]) => {
+  CHART.starCatalog = st;
+  CHART.constellationCatalog = co;
+  draw();
+});
+
 function draw(){
   const a = alphaEl.value / 1000;
   alphaOut.textContent = a.toFixed(3);
@@ -108,7 +133,6 @@ function draw(){
 
 [wedgesEl, alphaEl, focusEl].forEach(el => el.addEventListener('input', draw));
 window.addEventListener('resize', draw);
-draw();
 </script>
 </body>
 </html>
