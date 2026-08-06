@@ -10,3 +10,11 @@
 .cfignore
 .assetsignore
 node_modules/
+
+# Respaldos locales (*.bak-ago05, etc.). El .gitignore evita que se commiteen,
+# pero un `wrangler pages deploy .` manual sube la CARPETA tal cual: sin esta
+# regla se publicarían con el código fuente completo. Ya pasó una vez con
+# mi-dia.html.bak-ago03, que devolvía 200 con 164 KB.
+*.bak
+*.bak-*
+*.bak_*
