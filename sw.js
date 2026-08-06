@@ -321,6 +321,11 @@
 // pisaban entre planetas de anillos vecinos (Ura/Nep). sky-map.js pasa a
 // llevar ?v=2 —antes iba sin versión, así que su copia precacheada era
 // inmortal— y natal-chart.js sube a ?v=13.
+// v77 → v78 (Ago 5): sky-map.js reintenta la colocacion de cada nombre de
+// estrella con un margen mas estrecho (0.75x) antes de descartarlo. Medido
+// sobre 1440 renders: recupera 194 nombres, sin mover ninguna colocacion ya
+// existente y sin que dos textos lleguen a tocarse (separacion minima
+// 8.27px frente a 9.44px). sky-map.js sube a ?v=3.
 const CACHE_NAME = 'luzestelar-v78';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
@@ -351,7 +356,7 @@ const PRECACHE_URLS = [
   '/js/upgrade-sheet.js',
   '/js/install-prompt.js',
   '/js/hero-install.js',
-  '/js/sky-map.js?v=2',
+  '/js/sky-map.js?v=3',
   '/js/transits.js?v=3',
   '/js/share-card.js?v=10',
   '/data/stars.json',

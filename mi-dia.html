@@ -1978,7 +1978,7 @@ function renderAll(){
     function ensureSkyMap(cb){
       if (window.LuzEstelar && window.LuzEstelar.SkyMap) return cb();
       var s = document.createElement('script');
-      s.src = '/js/sky-map.js?v=2';
+      s.src = '/js/sky-map.js?v=3';
       s.onload = cb;
       s.onerror = function(){ console.warn('[sky-map] load failed'); };
       document.head.appendChild(s);

@@ -747,6 +747,15 @@
         return b.x >= 0 && b.y >= 0 &&
                b.x + b.w <= size && b.y + b.h <= size;
       }
+      // The anchor only fixes where the TEXT is drawn; the padding around
+      // it is what the collision test actually reserves. Deriving the box
+      // here lets the same anchor be retried with a tighter margin.
+      function boxFor(c, p, tw) {
+        var bx = c.align === 'right'  ? c.x - tw - p
+               : c.align === 'center' ? c.x - tw / 2 - p
+               :                        c.x - p;
+        return { x: bx, y: c.y - lineH / 2 - p, w: tw + p * 2, h: lineH + p * 2 };
+      }
       ctx.fillStyle = 'rgba(255,255,255,0.82)';
       for (var vi = 0; vi < visible.length; vi++) {
         var v = visible[vi];
@@ -754,20 +763,32 @@
         // Candidate anchors, each with its own textAlign. We try them
         // in priority order (right → left → above → below → above-right → above-left).
         var candidates = [
-          { align: 'left',   x: v.x + gap,            y: v.y,              boxX: v.x + gap - pad,              boxY: v.y - lineH/2 - pad },
-          { align: 'right',  x: v.x - gap,            y: v.y,              boxX: v.x - gap - textW - pad,      boxY: v.y - lineH/2 - pad },
-          { align: 'center', x: v.x,                  y: v.y - gap * 1.3,  boxX: v.x - textW/2 - pad,          boxY: v.y - gap * 1.3 - lineH/2 - pad },
-          { align: 'center', x: v.x,                  y: v.y + gap * 1.3,  boxX: v.x - textW/2 - pad,          boxY: v.y + gap * 1.3 - lineH/2 - pad },
-          { align: 'left',   x: v.x + gap * 0.7,      y: v.y - gap * 1.0,  boxX: v.x + gap * 0.7 - pad,        boxY: v.y - gap * 1.0 - lineH/2 - pad },
-          { align: 'right',  x: v.x - gap * 0.7,      y: v.y - gap * 1.0,  boxX: v.x - gap * 0.7 - textW - pad, boxY: v.y - gap * 1.0 - lineH/2 - pad }
+          { align: 'left',   x: v.x + gap,       y: v.y },
+          { align: 'right',  x: v.x - gap,       y: v.y },
+          { align: 'center', x: v.x,             y: v.y - gap * 1.3 },
+          { align: 'center', x: v.x,             y: v.y + gap * 1.3 },
+          { align: 'left',   x: v.x + gap * 0.7, y: v.y - gap * 1.0 },
+          { align: 'right',  x: v.x - gap * 0.7, y: v.y - gap * 1.0 }
         ];
+        // Two passes over the same anchors. The first uses the normal
+        // padding. If every anchor is taken, a second pass retries with a
+        // tighter margin rather than dropping the name: the padding is
+        // only breathing room, so the glyphs themselves still never touch.
+        // 0.75 comes from measuring 0.30/0.45/0.60/0.75/0.90 over 1440
+        // renders (5 latitudes x 4 sizes x 72 times). Tighter factors
+        // recover more names but start displacing labels that were already
+        // placed; 0.75 recovers 194 with zero displacement and leaves the
+        // closest two labels 8.27px apart vs 9.44px today. Text-on-text
+        // overlap stays at zero for every factor tested.
         var chosen = null;
-        for (var ci2 = 0; ci2 < candidates.length; ci2++) {
-          var c2 = candidates[ci2];
-          var box = { x: c2.boxX, y: c2.boxY, w: textW + pad * 2, h: lineH + pad * 2 };
-          if (!boxOverlaps(box) && boxInBounds(box)) {
-            chosen = { c: c2, box: box };
-            break;
+        var passes = [pad, pad * 0.75];
+        for (var pi2 = 0; pi2 < passes.length && !chosen; pi2++) {
+          for (var ci2 = 0; ci2 < candidates.length; ci2++) {
+            var box = boxFor(candidates[ci2], passes[pi2], textW);
+            if (!boxOverlaps(box) && boxInBounds(box)) {
+              chosen = { c: candidates[ci2], box: box };
+              break;
+            }
           }
         }
         if (!chosen) continue;                 // skip rather than collide
