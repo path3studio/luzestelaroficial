@@ -979,7 +979,7 @@ body.modal-open #le-tabs{display:none !important}
      phase 6.2 geocentric renderer lands immediately on the user's
      device instead of waiting for the cache window to expire. -->
 <script src="/js/transits.js?v=3"></script>
-<script src="/js/astro-glyphs.js?v=1"></script>
+<script src="/js/astro-glyphs.js?v=2"></script>
 <script src="/js/natal-chart.js?v=15"></script>
 <script src="/js/share-card.js?v=10"></script>
 <script>
@@ -1460,7 +1460,17 @@ function renderAll(){
         var ic=el.querySelector('.slma-ic');
         var nom=el.querySelector('.slma-nom');
         if(planet && planet.sign){
-          ic.textContent=signSym[planet.sign]||ic.textContent;
+          // 2026-08-06: glifo de marca (contorno exacto) en vez del carácter
+          // Unicode, que cada sistema dibuja distinto. Si el módulo no cargó,
+          // se conserva el comportamiento anterior.
+          var _ag=window.LuzEstelar&&window.LuzEstelar.AstroGlyphs;
+          var _k=_ag&&_ag.signKeyFromName(planet.sign);
+          if(_k&&window.LuzEstelarIcons){
+            ic.innerHTML='<span class="le-ic" data-icon="'+_k+'"></span>';
+            LuzEstelarIcons.hydrate(ic);
+          } else {
+            ic.textContent=signSym[planet.sign]||ic.textContent;
+          }
           nom.textContent=signES[planet.sign]||planet.sign;
           el.classList.remove('muted');
         }else if(fallbackName){
@@ -3386,9 +3396,9 @@ function renderTresClaves(sol, luna, asc){
     // 2026-08-05 (user): el desglose SIEMPRE se muestra — filas con pista si falta la hora.
     var HINT = '<span class="hp-lock">A\u00f1ade tu hora de nacimiento en tu perfil para desbloquear esta clave.</span>';
     var filas = [
-      ['\u2609', 'Tu Sol en ' + (sol||'?'),
+      ['<span class="le-ic" data-icon="sol-astro"></span>', 'Tu Sol en ' + (sol||'?'),
        'quién eres cuando eliges ser tú', (sol && TRES_CLAVES['sol|'+sol]) || ''],
-      ['\u263D', luna ? 'Tu Luna en ' + luna : 'Tu Luna',
+      ['<span class="le-ic" data-icon="luna-astro"></span>', luna ? 'Tu Luna en ' + luna : 'Tu Luna',
        'cómo sientes por dentro', luna ? (TRES_CLAVES['luna|'+luna]||'') : HINT],
       ['\u2191', asc ? 'Tu Ascendente en ' + asc : 'Tu Ascendente',
        'la primera impresión que das', asc ? (TRES_CLAVES['ascendente|'+asc]||'') : HINT]
@@ -3404,6 +3414,7 @@ function renderTresClaves(sol, luna, asc){
     });
     if(!html){ cont.hidden = true; return; }
     cont.querySelector('.tc-body').innerHTML = html;
+    if(window.LuzEstelarIcons) LuzEstelarIcons.hydrate(cont);
     cont.hidden = false;
     var _tg = document.getElementById('tc-toggle');
     if(_tg && !_tg.dataset.wired){

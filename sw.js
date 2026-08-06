@@ -331,7 +331,7 @@
 // v82 → v83 (Ago 6): nueva /en/offline.html. La pagina de respaldo sin
 // conexion era unica y estaba en espanol, asi que un lector bajo /en/ veia
 // "Sin conexion". Ahora la rama de navegacion elige segun la ruta.
-const CACHE_NAME = 'luzestelar-v83';
+const CACHE_NAME = 'luzestelar-v84';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
@@ -365,7 +365,7 @@ const PRECACHE_URLS = [
   '/js/install-prompt.js',
   '/js/hero-install.js',
   '/js/sky-map.js?v=3',
-  '/js/astro-glyphs.js?v=1',
+  '/js/astro-glyphs.js?v=2',
   '/js/transits.js?v=3',
   '/js/share-card.js?v=10',
   '/data/stars.json',

@@ -91,10 +91,29 @@
   }
 
   function sign(i) { return SIGN_ORDER[((i % 12) + 12) % 12]; }
+
+  // Nombre de signo (español o inglés, con o sin acentos) → clave del icono.
+  // Las cartas guardadas por el pipeline traen los signos en español incluso
+  // en la página inglesa, así que hay que aceptar ambos.
+  var SIGN_BY_NAME = {
+    aries:'aries', tauro:'tauro', taurus:'tauro', geminis:'geminis', gemini:'geminis',
+    cancer:'cancer', leo:'leo', virgo:'virgo', libra:'libra',
+    escorpio:'escorpio', escorpion:'escorpio', scorpio:'escorpio',
+    sagitario:'sagitario', sagittarius:'sagitario',
+    capricornio:'capricornio', capricorn:'capricornio',
+    acuario:'acuario', aquarius:'acuario', piscis:'piscis', pisces:'piscis'
+  };
+  function signKeyFromName(name) {
+    if (!name) return null;
+    var k = String(name).toLowerCase();
+    try { k = k.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) {}
+    return SIGN_BY_NAME[k] || null;
+  }
   function planet(name) { return PLANET_BY_EN[name] || PLANET_BY_ES[name] || null; }
 
   ns.AstroGlyphs = {
     PATHS: PATHS, SIGN_ORDER: SIGN_ORDER,
-    draw: draw, sign: sign, planet: planet, supported: canPath2D
+    draw: draw, sign: sign, planet: planet, signKeyFromName: signKeyFromName,
+    supported: canPath2D
   };
 })();

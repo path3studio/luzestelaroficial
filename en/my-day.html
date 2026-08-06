@@ -752,7 +752,7 @@ body.modal-open #le-tabs{display:none !important}
 
 <script src="/js/cross-cultural.js"></script>
 <script src="/js/transits.js?v=3"></script>
-<script src="/js/astro-glyphs.js?v=1"></script>
+<script src="/js/astro-glyphs.js?v=2"></script>
 <script src="/js/natal-chart.js?v=15"></script>
 <script src="/js/share-card.js?v=10"></script>
 <script>
@@ -1130,7 +1130,18 @@ function renderAll(){
         else{el.classList.remove('muted');}
         var icEl=el.querySelector('.slma-ic');
         var vlEl=el.querySelector('.slma-vl');
-        if(symbol && icEl) icEl.textContent=symbol;
+        // 2026-08-06: mismo criterio que la página española — glifo de marca
+        // (contorno exacto) cuando se puede; si no, el carácter Unicode.
+        if(symbol && icEl){
+          var _ag=window.LuzEstelar&&window.LuzEstelar.AstroGlyphs;
+          var _k=_ag&&_ag.signKeyFromName(value);
+          if(_k&&window.LuzEstelarIcons){
+            icEl.innerHTML='<span class="le-ic" data-icon="'+_k+'"></span>';
+            LuzEstelarIcons.hydrate(icEl);
+          } else {
+            icEl.textContent=symbol;
+          }
+        }
         if(vlEl) vlEl.textContent=value||'—';
       }
       var sunP=chartData.planets.find(function(p){return p.name==='Sun';});
