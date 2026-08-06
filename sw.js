@@ -315,7 +315,13 @@
 // keeps the sign-level text — zero regression. The feature stays dark
 // until the ENABLE_ONDEMAND_READINGS secret is flipped to "1".
 // v70 → v71 (Ago 4): dashboard.html retirado — /mi-dia es la casa única.
-const CACHE_NAME = 'luzestelar-v76';
+// v76 → v77 (Ago 5): sky-map.js deja de recortar nombres de estrellas contra
+// el borde del lienzo y acepta `cardinals` para localizar N/S/E/O (las
+// páginas EN mandan W). natal-chart.js separa las etiquetas de grado que se
+// pisaban entre planetas de anillos vecinos (Ura/Nep). sky-map.js pasa a
+// llevar ?v=2 —antes iba sin versión, así que su copia precacheada era
+// inmortal— y natal-chart.js sube a ?v=13.
+const CACHE_NAME = 'luzestelar-v77';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

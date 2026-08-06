@@ -752,7 +752,7 @@ body.modal-open #le-tabs{display:none !important}
 
 <script src="/js/cross-cultural.js"></script>
 <script src="/js/transits.js?v=3"></script>
-<script src="/js/natal-chart.js?v=12"></script>
+<script src="/js/natal-chart.js?v=13"></script>
 <script src="/js/share-card.js?v=10"></script>
 <script>
 (function(){
@@ -1557,7 +1557,7 @@ function renderAll(){
     function ensureSkyMap(cb){
       if (window.LuzEstelar && window.LuzEstelar.SkyMap) return cb();
       var s = document.createElement('script');
-      s.src = '/js/sky-map.js';
+      s.src = '/js/sky-map.js?v=2';
       s.onload = cb;
       s.onerror = function(){ console.warn('[sky-map] load failed'); };
       document.head.appendChild(s);
@@ -1615,7 +1615,10 @@ function renderAll(){
           constellations: window.__skyCatalogs.constellations.constellations,
           planets: planetOverlays,
           size: w > 0 ? Math.min(w, 320) : 280,
-          showLabels: true
+          showLabels: true,
+          // The library defaults the west letter to "O" (Oeste); this page
+          // is English, so it needs W.
+          cardinals: { N:'N', S:'S', E:'E', W:'W' }
         });
         if (cmEl) cmEl.textContent = metaLabel;
         // ── Watermark + upsell (birth sky only, non-Plus) ──

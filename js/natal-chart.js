@@ -772,6 +772,23 @@
       // Spread overlapping planets
       var sorted = chartData.planets.slice().sort(function(a,b) { return a.longitude - b.longitude; });
       var positions = [];
+      // Degree labels ("Nep 18°") used to be drawn at a fixed offset below
+      // each planet, so two bodies close in longitude — on different orbit
+      // rings, where the spheres themselves never touch — printed their
+      // labels on top of each other. Track the boxes already drawn and try
+      // a few vertical alternatives. Planet positions are NOT touched: in
+      // geocentric mode the radius comes from the orbit ring, so nudging a
+      // planet's angle would move it off its true longitude to fix
+      // something that is purely a label problem.
+      var placedLabels = [];
+      function labelHits(b) {
+        for (var li = 0; li < placedLabels.length; li++) {
+          var p2 = placedLabels[li];
+          if (b.x < p2.x + p2.w && b.x + b.w > p2.x &&
+              b.y < p2.y + p2.h && b.y + b.h > p2.y) return true;
+        }
+        return false;
+      }
       sorted.forEach(function(p) {
         var angle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
         // Nudge if too close to previous (SAME tier only — different-tier
@@ -862,7 +879,23 @@
           ctx.shadowBlur = 3;
           ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)';
           ctx.font = (GEOCENTRIC ? '600 ' : '') + Math.round(size * (GEOCENTRIC ? 0.0155 : 0.018)) + 'px Inter, sans-serif';
-          ctx.fillText(degStr, px, py + size * 0.038);
+          // Default spot first, then above / further below / further above.
+          // If every option is taken the default is used anyway, so a label
+          // is never lost — the worst case is exactly today's behavior.
+          var lblW = ctx.measureText(degStr).width;
+          var lblH = size * 0.026;
+          var lblYs = [py + size * 0.038, py - size * 0.042,
+                       py + size * 0.066, py - size * 0.070];
+          var boxAt = function(y) {
+            return { x: px - lblW / 2 - 1, y: y - lblH / 2, w: lblW + 2, h: lblH };
+          };
+          var lblY = null;
+          for (var lyi = 0; lyi < lblYs.length; lyi++) {
+            if (!labelHits(boxAt(lblYs[lyi]))) { lblY = lblYs[lyi]; break; }
+          }
+          if (lblY === null) lblY = lblYs[0];
+          placedLabels.push(boxAt(lblY));
+          ctx.fillText(degStr, px, lblY);
           ctx.restore();
         }
 

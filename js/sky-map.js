@@ -27,6 +27,7 @@
  *     showLabels: true,
  *     zodiacRing: { focusSign: 'Leo' },    // optional: symbolic 12-band ring
  *     eclipticBand: { focusSign: 'Leo' },  // optional: REAL zodiac positions
+ *     cardinals: {W:'W'},   // optional; defaults to Spanish (W → "O")
  *   });
  *
  * Source of truth for the astronomy:
@@ -590,10 +591,14 @@
       // With the ring on, the letters move just INSIDE the horizon edge
       // (the outside gap now belongs to the band).
       var off = ring ? R - size * 0.045 : R + size * 0.04;
-      ctx.fillText('N', cx, cy - off);
-      ctx.fillText('S', cx, cy + off);
-      ctx.fillText('E', cx + off, cy);
-      ctx.fillText('O', cx - off, cy);   // Oeste (Spanish)
+      // Letters default to Spanish (W = "O" de Oeste) so existing callers
+      // keep their output; pass opts.cardinals to localize, e.g. the EN
+      // pages send { W: 'W' }.
+      var card = opts.cardinals || {};
+      ctx.fillText(card.N || 'N', cx, cy - off);
+      ctx.fillText(card.S || 'S', cx, cy + off);
+      ctx.fillText(card.E || 'E', cx + off, cy);
+      ctx.fillText(card.W || 'O', cx - off, cy);
     }
 
     // ── Project every star, cache by id ──
