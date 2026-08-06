@@ -440,20 +440,27 @@
       }
       ctx.fillStyle = elemColor + washOpacity;
       ctx.fill();
-      // Resaltado del signo enfocado: contorno, no mancha.
+      // 2026-08-06 (user): vuelve el sector COLOREADO —le gustaba más— pero
+      // sin el arco a media banda, que era justo la línea que cruzaba el
+      // nombre del signo. El contorno rojo pasa a ser un filo muy fino, y el
+      // color se extiende en degradado hasta la Tierra: tiñe el sector
+      // entero sin tapar nada de lo que lleva encima.
       if (focusIdx === i) {
         ctx.save();
-        ctx.shadowColor = elemColor;
-        ctx.shadowBlur = size * 0.020;
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = elemColor + 'E0';
+        // Cuña completa del aro a la Tierra, desvaneciéndose hacia el centro
+        var fg = ctx.createRadialGradient(cx, cy, 0, cx, cy, outerR);
+        fg.addColorStop(0.00, elemColor + '00');
+        fg.addColorStop(0.55, elemColor + '14');
+        fg.addColorStop(1.00, elemColor + '2E');
         ctx.beginPath();
+        ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, outerR, startAngle, endAngle);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(cx, cy, signR, startAngle, endAngle);
-        ctx.stroke();
-        // Cierres radiales, para que se lea como un sector completo
+        ctx.closePath();
+        ctx.fillStyle = fg;
+        ctx.fill();
+        // Filo fino en los bordes del sector, sin arco a media banda
+        ctx.lineWidth = 0.75;
+        ctx.strokeStyle = elemColor + '99';
         ctx.beginPath();
         ctx.moveTo(cx + Math.cos(startAngle) * signR, cy + Math.sin(startAngle) * signR);
         ctx.lineTo(cx + Math.cos(startAngle) * outerR, cy + Math.sin(startAngle) * outerR);
@@ -472,10 +479,14 @@
 
       var midAngle = ((i * 30 + 15 + ascOffset) * DEG) - Math.PI / 2;
 
-      // Sign 3-letter label in-band — gold-muted, small caps
-      var nx = cx + Math.cos(midAngle) * nameR;
-      var ny = cy + Math.sin(midAngle) * nameR;
-      if (!SKIP_LABELS && !HAS_FIGURES) {
+      // Sign 3-letter label in-band — gold-muted, small caps.
+      // 2026-08-06: con figuras zodiacales el nombre sube al BORDE EXTERIOR
+      // de la banda y la constelación se dibuja debajo; antes compartían el
+      // centro del sector y la figura se comía el texto.
+      var _nameR = HAS_FIGURES ? (outerR - size * 0.013) : nameR;
+      var nx = cx + Math.cos(midAngle) * _nameR;
+      var ny = cy + Math.sin(midAngle) * _nameR;
+      if (!SKIP_LABELS) {
         ctx.font = '600 ' + Math.round(size * 0.020) + 'px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -636,9 +647,10 @@
       }
       var SIGN_IDX = { Ari:0, Tau:1, Gem:2, Cnc:3, Leo:4, Vir:5,
                        Lib:6, Sco:7, Sgr:8, Cap:9, Aqr:10, Psc:11 };
-      var bC = (signR + outerR) / 2;
-      var MAX_ARC = size * 0.170;   // ancho máximo a lo largo del arco
-      var MAX_RAD = size * 0.052;   // alto máximo en el grosor de la banda
+      // Centro de la figura: por debajo del nombre, que va pegado al aro.
+      var bC = signR + (outerR - signR) * 0.40;
+      var MAX_ARC = size * 0.175;   // ancho máximo a lo largo del arco
+      var MAX_RAD = size * 0.038;   // alto máximo (la franja bajo el nombre)
 
       ctx.save();
       for (var ci = 0; ci < zf.constellations.length; ci++) {
@@ -678,17 +690,26 @@
           if (Math.abs(dLon) > maxDLon) maxDLon = Math.abs(dLon);
           if (Math.abs(dLat) > maxDLat) maxDLat = Math.abs(dLat);
         }
-        // Escala propia de cada figura → las doce ocupan lo mismo
-        var k = Math.min((MAX_ARC / 2) / maxDLon, (MAX_RAD / 2) / maxDLat);
+        // 2026-08-06 (user: "Aries está demasiado larga, Tauro muy pequeña"):
+        // con una sola escala isotrópica, una figura ancha y plana como Aries
+        // se estira por el arco y queda larguísima, mientras que una compacta
+        // como Tauro se queda diminuta. Se escala cada eje por separado para
+        // que todas llenen su hueco, PERO limitando la deformación a 1.6× para
+        // que la forma siga siendo reconocible.
+        var kx = (MAX_ARC / 2) / maxDLon;
+        var ky = (MAX_RAD / 2) / maxDLat;
+        var DISTOR = 1.6;
+        if (kx > ky * DISTOR) kx = ky * DISTOR;
+        if (ky > kx * DISTOR) ky = kx * DISTOR;
 
         var midA = ((idx * 30 + 15 + ascOffset) * DEG) - Math.PI / 2;
         var ux = -Math.sin(midA), uy = Math.cos(midA);   // a lo largo del arco
         var rx = Math.cos(midA),  ry = Math.sin(midA);   // radial
         function place(nm) {
           var o = off[nm];
-          var rr = bC + o.dLat * k;
-          return { x: cx + rx * rr + ux * o.dLon * k,
-                   y: cy + ry * rr + uy * o.dLon * k };
+          var rr = bC + o.dLat * ky;
+          return { x: cx + rx * rr + ux * o.dLon * kx,
+                   y: cy + ry * rr + uy * o.dLon * kx };
         }
 
         var esFoco = (idx === focusIdx);
