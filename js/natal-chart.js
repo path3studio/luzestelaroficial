@@ -285,7 +285,12 @@
     // the label ended at px ≈ 161 which clipped by 1px on the
     // edge — enough to eat the "M" of MC.
     var outerR = size * 0.42;
-    var signR  = size * 0.36;
+    // 2026-08-06 (user: "que sean del tamaño del espacio que tiene cada
+    // casa"): la banda medía 0.06·size y, descontando el nombre, a la
+    // constelación le quedaban ~14px de alto a tamaño 420 — por eso se veían
+    // diminutas por más que llenaran el arco. Ensanchada a 0.085·size,
+    // comiendo del hueco muerto que había entre innerR y la banda.
+    var signR  = size * 0.335;
     var innerR = size * 0.30;
     var planetR = size * 0.24;
     var aspectR = size * 0.20;
@@ -648,9 +653,9 @@
       var SIGN_IDX = { Ari:0, Tau:1, Gem:2, Cnc:3, Leo:4, Vir:5,
                        Lib:6, Sco:7, Sgr:8, Cap:9, Aqr:10, Psc:11 };
       // Centro de la figura: por debajo del nombre, que va pegado al aro.
-      var bC = signR + (outerR - signR) * 0.40;
-      var MAX_ARC = size * 0.175;   // ancho máximo a lo largo del arco
-      var MAX_RAD = size * 0.038;   // alto máximo (la franja bajo el nombre)
+      var bC = signR + (outerR - signR) * 0.38;
+      var MAX_ARC = size * 0.186;   // ~92% del arco del sector
+      var MAX_RAD = size * 0.052;   // la franja bajo el nombre, ya más ancha
 
       ctx.save();
       for (var ci = 0; ci < zf.constellations.length; ci++) {
@@ -698,7 +703,10 @@
         // que la forma siga siendo reconocible.
         var kx = (MAX_ARC / 2) / maxDLon;
         var ky = (MAX_RAD / 2) / maxDLat;
-        var DISTOR = 1.6;
+        // El tope de deformación también encogía las figuras: al limitar el
+        // eje holgado, el otro arrastraba a la baja. 2.2 deja que cada una
+        // llene su hueco sin dejar de ser reconocible.
+        var DISTOR = 2.2;
         if (kx > ky * DISTOR) kx = ky * DISTOR;
         if (ky > kx * DISTOR) ky = kx * DISTOR;
 
