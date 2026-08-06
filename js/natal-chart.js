@@ -297,6 +297,13 @@
     // Declarado aquí arriba porque lo necesitan las líneas de aspecto, que
     // se dibujan antes que los planetas.
     var GEOCENTRIC = opts.geocentricOrbits === true;
+    // ¿Vamos a dibujar los emblemas zodiacales en la banda? La banda es
+    // delgada y no caben figura y nombre en el mismo sitio: cuando hay
+    // figura, el nombre de 3 letras se calla — el glifo de fuera ya
+    // identifica el signo y así la constelación se lee limpia.
+    var HAS_FIGURES = !!(chartData.zodiacFigures &&
+                         chartData.zodiacFigures.constellations &&
+                         chartData.zodiacFigures.stars);
 
     var ascLongitude = (typeof chartData.ascendant === 'object' && chartData.ascendant !== null)
       ? chartData.ascendant.longitude
@@ -419,9 +426,13 @@
       ctx.closePath();
       // 2026-04-29: focus mode brightens the focused sign's segment a lot,
       // dims others slightly so attention is drawn naturally.
+      // 2026-08-06 (user): el signo resaltado se pintaba con un relleno del
+      // color de su elemento tan fuerte (~31%) que atravesaba el nombre y la
+      // figura de la constelación. Ahora el resaltado es de TRAZO: un arco
+      // marcado en los dos bordes de la banda, sin relleno que tape nada.
       var washOpacity;
       if (focusIdx === i) {
-        washOpacity = '50';   // ~31% — strong wash
+        washOpacity = '10';   // ~6% — apenas un tinte
       } else if (focusIdx >= 0) {
         washOpacity = '04';   // ~1.5% — much dimmer than default 0x08
       } else {
@@ -429,15 +440,25 @@
       }
       ctx.fillStyle = elemColor + washOpacity;
       ctx.fill();
-      // Extra outer halo on the focused segment to pop it
+      // Resaltado del signo enfocado: contorno, no mancha.
       if (focusIdx === i) {
         ctx.save();
         ctx.shadowColor = elemColor;
-        ctx.shadowBlur = size * 0.025;
-        ctx.lineWidth = 1.6;
-        ctx.strokeStyle = elemColor + 'C8';
+        ctx.shadowBlur = size * 0.020;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = elemColor + 'E0';
         ctx.beginPath();
-        ctx.arc(cx, cy, (outerR + signR) / 2, startAngle, endAngle);
+        ctx.arc(cx, cy, outerR, startAngle, endAngle);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, signR, startAngle, endAngle);
+        ctx.stroke();
+        // Cierres radiales, para que se lea como un sector completo
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(startAngle) * signR, cy + Math.sin(startAngle) * signR);
+        ctx.lineTo(cx + Math.cos(startAngle) * outerR, cy + Math.sin(startAngle) * outerR);
+        ctx.moveTo(cx + Math.cos(endAngle) * signR, cy + Math.sin(endAngle) * signR);
+        ctx.lineTo(cx + Math.cos(endAngle) * outerR, cy + Math.sin(endAngle) * outerR);
         ctx.stroke();
         ctx.restore();
       }
@@ -454,7 +475,7 @@
       // Sign 3-letter label in-band — gold-muted, small caps
       var nx = cx + Math.cos(midAngle) * nameR;
       var ny = cy + Math.sin(midAngle) * nameR;
-      if (!SKIP_LABELS) {
+      if (!SKIP_LABELS && !HAS_FIGURES) {
         ctx.font = '600 ' + Math.round(size * 0.020) + 'px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -588,7 +609,115 @@
           };
         })();
 
-    if (chartData.starCatalog && chartData.starCatalog.stars) {
+    // ── Emblemas zodiacales normalizados (2026-08-06) ──────────────────
+    // Pedido del usuario: "poner solamente la principal y en grande, más o
+    // menos del mismo tamaño las doce, para que se vean parejas". Con el
+    // catálogo general salían figuras dispares (Tauro con 3 estrellas) y
+    // dos constelaciones cayendo en el mismo sector.
+    //
+    // Usa data/constellations_zodiac.json + data/stars_zodiac.json: las 12
+    // figuras curadas del video (remotion/zodiacConstellations.ts), ya
+    // portadas y hasta ahora sin usar por nadie.
+    //
+    // OJO — decisión deliberada: cada figura se dibuja CENTRADA EN SU PROPIO
+    // sector y escalada a un tamaño común. Es un EMBLEMA, no una posición:
+    // por la precesión, la constelación de Leo cae de verdad en el sector de
+    // Virgo. Aquí la banda ya es simbólica (el glifo de Leo también está en
+    // el sector de Leo), y es lo que hace el video. Donde las posiciones SÍ
+    // importan —las vistas de cielo real de mi-día— se siguen proyectando
+    // donde de verdad están.
+    if (chartData.zodiacFigures && chartData.zodiacFigures.constellations &&
+        chartData.zodiacFigures.stars) {
+      var zf = chartData.zodiacFigures;
+      var zStar = {};
+      for (var zi = 0; zi < zf.stars.length; zi++) {
+        var zs = zf.stars[zi];
+        zStar[zs[0]] = { ra: zs[2], dec: zs[3], mag: zs[4] };
+      }
+      var SIGN_IDX = { Ari:0, Tau:1, Gem:2, Cnc:3, Leo:4, Vir:5,
+                       Lib:6, Sco:7, Sgr:8, Cap:9, Aqr:10, Psc:11 };
+      var bC = (signR + outerR) / 2;
+      var MAX_ARC = size * 0.170;   // ancho máximo a lo largo del arco
+      var MAX_RAD = size * 0.052;   // alto máximo en el grosor de la banda
+
+      ctx.save();
+      for (var ci = 0; ci < zf.constellations.length; ci++) {
+        var zc = zf.constellations[ci];
+        var idx = SIGN_IDX[zc.id];
+        if (idx === undefined) continue;
+
+        // Estrellas de la figura → coordenadas eclípticas
+        var ids = {}, order = [];
+        for (var li = 0; li < (zc.lines || []).length; li++) {
+          for (var e = 0; e < 2; e++) {
+            var nm = zc.lines[li][e];
+            if (!ids[nm] && zStar[nm]) { ids[nm] = true; order.push(nm); }
+          }
+        }
+        if (order.length < 2) continue;
+        var pos = {}, sumX = 0, sumY = 0, sumLat = 0;
+        for (var oi = 0; oi < order.length; oi++) {
+          var st = zStar[order[oi]];
+          var ec = _eq2ecl(st.ra, st.dec);
+          pos[order[oi]] = ec;
+          sumX += Math.cos(ec.lon * DEG); sumY += Math.sin(ec.lon * DEG);
+          sumLat += ec.lat;
+        }
+        // Centroide: media CIRCULAR en longitud (promediar 351° y 27°
+        // aritméticamente da 189°, justo al otro lado del cielo).
+        var cLon = Math.atan2(sumY, sumX) / DEG;
+        var cLat = sumLat / order.length;
+
+        // Desplazamientos respecto al centroide + extensión de la figura
+        var maxDLon = 0.001, maxDLat = 0.001, off = {};
+        for (var pi2 = 0; pi2 < order.length; pi2++) {
+          var p2 = pos[order[pi2]];
+          var dLon = ((p2.lon - cLon + 540) % 360) - 180;
+          var dLat = p2.lat - cLat;
+          off[order[pi2]] = { dLon: dLon, dLat: dLat };
+          if (Math.abs(dLon) > maxDLon) maxDLon = Math.abs(dLon);
+          if (Math.abs(dLat) > maxDLat) maxDLat = Math.abs(dLat);
+        }
+        // Escala propia de cada figura → las doce ocupan lo mismo
+        var k = Math.min((MAX_ARC / 2) / maxDLon, (MAX_RAD / 2) / maxDLat);
+
+        var midA = ((idx * 30 + 15 + ascOffset) * DEG) - Math.PI / 2;
+        var ux = -Math.sin(midA), uy = Math.cos(midA);   // a lo largo del arco
+        var rx = Math.cos(midA),  ry = Math.sin(midA);   // radial
+        function place(nm) {
+          var o = off[nm];
+          var rr = bC + o.dLat * k;
+          return { x: cx + rx * rr + ux * o.dLon * k,
+                   y: cy + ry * rr + uy * o.dLon * k };
+        }
+
+        var esFoco = (idx === focusIdx);
+        // Trazos de la figura
+        ctx.strokeStyle = esFoco ? 'rgba(255,245,220,0.75)' : 'rgba(255,245,220,0.34)';
+        ctx.lineWidth = (esFoco ? 1.2 : 0.85) * (size / 320);
+        ctx.lineCap = 'round';
+        for (var lj = 0; lj < zc.lines.length; lj++) {
+          var a1 = zc.lines[lj][0], b1 = zc.lines[lj][1];
+          if (!off[a1] || !off[b1]) continue;
+          var pa = place(a1), pb = place(b1);
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.stroke();
+        }
+        // Estrellas: el tamaño sigue la magnitud, como en el cielo
+        for (var sj = 0; sj < order.length; sj++) {
+          var pp = place(order[sj]);
+          var mg = zStar[order[sj]].mag;
+          var rad = Math.max(0.9, (4.2 - (typeof mg === 'number' ? mg : 3)) * (size / 900));
+          ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.95)' : 'rgba(255,250,235,0.6)';
+          ctx.beginPath();
+          ctx.arc(pp.x, pp.y, rad, 0, TAU);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    } else if (chartData.starCatalog && chartData.starCatalog.stars) {
       // Band geometry: lat 0° sits at (signR + innerR) / 2, lat ±18° at the
       // annulus edges (innerR ↔ outerR, symmetric around band center).
       var bandCenter = (signR + outerR) / 2;

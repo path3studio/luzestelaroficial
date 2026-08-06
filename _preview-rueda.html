@@ -110,18 +110,21 @@ const prodEl   = document.getElementById('producto');
 // conversión a coordenadas eclípticas).
 Promise.all([
   libsReady,
-  fetch('/data/stars.json').then(r => r.json()),
-  fetch('/data/constellations.json').then(r => r.json()),
-]).then(([, st, co]) => {
-  CHART.starCatalog = st;
-  CHART.constellationCatalog = co;
+  fetch('/data/constellations_zodiac.json').then(r => r.json()),
+  fetch('/data/stars_zodiac.json').then(r => r.json()),
+]).then(([, zc, zs]) => {
+  // Las 12 figuras curadas (las mismas del video), normalizadas por el
+  // renderizador para que las doce ocupen lo mismo.
+  CHART.zodiacFigures = { constellations: zc.constellations, stars: zs.stars };
   draw();
 });
 
 function draw(){
   const a = alphaEl.value / 1000;
   alphaOut.textContent = a.toFixed(3);
-  const size = Math.min(420, window.innerWidth - 90);
+  // Clamp inferior: con el panel angosto u oculto, innerWidth-90 se vuelve
+  // negativo y createRadialGradient truena con radio < 0.
+  const size = Math.max(260, Math.min(420, window.innerWidth - 90));
   const base = {
     size,
     fullWedges: wedgesEl.checked,
@@ -137,7 +140,7 @@ function draw(){
   const vid = Object.assign({}, base, { geocentricOrbits: true });
   if (prodEl.checked) {
     Object.assign(vid, {
-      size: Math.min(420, window.innerWidth - 90),   // el real es 1000; se escala igual
+      size: Math.max(260, Math.min(420, window.innerWidth - 90)), // el real es 1000
       signLabels: ['ARI','TAU','GÉM','CÁN','LEO','VIR','LIB','ESC','SAG','CAP','ACU','PIS'],
       transparent: true,
       skipLabels: true,
