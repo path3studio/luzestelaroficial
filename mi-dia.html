@@ -2322,7 +2322,7 @@ function buildSynth(cc){
   window.__applyDaySynth();
   if(!window.__synthCatalog&&!window.__synthCatLoading){
     window.__synthCatLoading=1;
-    fetch('/data/sintesis_elemental.json')
+    fetch('/data/sintesis_elemental.json', {cache: 'no-cache'})
       .then(function(r){return r.ok?r.json():null;})
       .then(function(j){if(j&&j.es){window.__synthCatalog=j.es;window.__applyDaySynth();}})
       .catch(function(){});
@@ -3417,7 +3417,7 @@ function renderTresClaves(sol, luna, asc){
   };
   if(TRES_CLAVES !== null){ pinta(); return; }
   TRES_CLAVES = {};
-  fetch('/data/tres_claves.json')
+  fetch('/data/tres_claves.json', {cache: 'no-cache'})
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){ if(j) TRES_CLAVES = j; pinta(); })
     .catch(function(){ cont.hidden = true; });
@@ -3426,7 +3426,7 @@ function renderTresClaves(sol, luna, asc){
 function cargarCasasSignos(){
   if (CASAS_SIGNOS !== null) return;
   CASAS_SIGNOS = {};
-  fetch('/data/casas_signos.json')
+  fetch('/data/casas_signos.json', {cache: 'no-cache'})
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){ if (j) CASAS_SIGNOS = j; })
     .catch(function(){ /* se queda el texto genérico */ });

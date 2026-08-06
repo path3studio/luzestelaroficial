@@ -1401,7 +1401,7 @@ function renderAll(){
     };
     if(window.__threeKeys !== undefined){ paint(); return; }
     window.__threeKeys = {};
-    fetch('/data/three_keys.json')
+    fetch('/data/three_keys.json', {cache: 'no-cache'})
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(j){ if(j) window.__threeKeys = j; paint(); })
       .catch(function(){ cont.hidden = true; });
@@ -1774,7 +1774,7 @@ function buildSynth(cc){
   window.__applyDaySynth();
   if(!window.__synthCatalog&&!window.__synthCatLoading){
     window.__synthCatLoading=1;
-    fetch('/data/sintesis_elemental.json')
+    fetch('/data/sintesis_elemental.json', {cache: 'no-cache'})
       .then(function(r){return r.ok?r.json():null;})
       .then(function(j){if(j&&j.en){window.__synthCatalog=j.en;window.__applyDaySynth();}})
       .catch(function(){});
