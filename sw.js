@@ -315,7 +315,7 @@
 // keeps the sign-level text — zero regression. The feature stays dark
 // until the ENABLE_ONDEMAND_READINGS secret is flipped to "1".
 // v70 → v71 (Ago 4): dashboard.html retirado — /mi-dia es la casa única.
-const CACHE_NAME = 'luzestelar-v75';
+const CACHE_NAME = 'luzestelar-v76';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
