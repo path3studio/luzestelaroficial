@@ -332,7 +332,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .transits-panel .tp-ic{color:var(--gold);font-size:.9rem}
 .tp-list{display:flex;flex-direction:column;gap:8px}
 .tp-row{display:grid;grid-template-columns:1.4rem auto 1.4rem auto 1fr auto;align-items:center;gap:6px;padding:6px 8px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid var(--tc,rgba(212,168,73,.3));font-size:.78rem;color:var(--text);font-feature-settings:"tnum"}
-.tp-row .tp-gly{font-family:'Noto Sans Symbols 2',serif;color:var(--gold);font-size:.95rem;text-align:center;font-variant-emoji:text}
+.tp-intro{font-size:.78rem;line-height:1.55;color:var(--tx-dim,rgba(255,255,255,.55));margin:2px 0 11px}.tp-intro b{color:var(--gold);font-weight:600}.tp-hum{font-size:.79rem;line-height:1.5;color:var(--tx-dim,rgba(255,255,255,.62));margin:-2px 0 10px;padding-left:2px}.tp-hum b{color:var(--tx,rgba(255,255,255,.85));font-weight:600}.tp-f{color:var(--gold);opacity:.85}.tp-row .tp-gly{font-family:'Noto Sans Symbols 2',serif;color:var(--gold);font-size:.95rem;text-align:center;font-variant-emoji:text}
 .tp-row .tp-nm{font-size:.74rem;color:var(--text-dim)}
 .tp-row .tp-asp{font-family:'Noto Sans Symbols 2','Segoe UI Symbol','Apple Symbols',serif;font-size:1rem;color:var(--tc,var(--gold));text-align:center;font-variant-emoji:text;line-height:1}
 .tp-row .tp-orb{font-size:.68rem;color:var(--text-mute);margin-left:auto;white-space:nowrap;padding-left:6px}
@@ -680,6 +680,7 @@ body.modal-open #le-tabs{display:none !important}
             <span class="tp-ic">✧</span>
             <span>Tránsitos de hoy</span>
           </div>
+          <p class="tp-intro" id="tp-intro"></p>
           <div class="tp-list" id="tp-list"></div>
         </div>
 
@@ -1359,6 +1360,11 @@ function renderAll(){
       window.populateTransitsPanel = function populateTransitsPanel(aspects) {
         var panel = document.getElementById('transits-panel');
         var list  = document.getElementById('tp-list');
+        // Nadie nace sabiendo qué es un tránsito: se dice antes de la lista.
+        var intro = document.getElementById('tp-intro');
+        if (intro) intro.innerHTML =
+          'Los planetas <b>de hoy</b> pasando por encima de los de <b>tu carta</b>. ' +
+          'Cada línea es un encuentro entre algo del cielo actual y algo tuyo de nacimiento.';
         if (!panel || !list) return;
         if (!aspects || !aspects.length) { panel.hidden = true; list.innerHTML = ''; return; }
         var PNAME = {
@@ -1382,6 +1388,32 @@ function renderAll(){
           sextile:     '\u26B9' + VS15,
         };
         var ASP_NAME = { conjunction:'conjunción', opposition:'oposición', square:'cuadratura', trine:'trígono', sextile:'sextil' };
+        // Qué área de ti mueve cada planeta (en 2-4 palabras, para frase corta)
+        var AREA = {
+          Sun:'tu identidad', Moon:'tus emociones', Mercury:'tu manera de pensar y hablar',
+          Venus:'tu forma de querer', Mars:'tu empuje', Jupiter:'tus ganas de crecer',
+          Saturn:'tus límites y tu disciplina', Uranus:'tu necesidad de romper moldes',
+          Neptune:'tu intuición', Pluto:'lo que estás transformando',
+          Ascendant:'cómo te presentas', Midheaven:'tu lugar en el mundo',
+          NorthNode:'hacia dónde vas', Chiron:'tu herida y tu don'
+        };
+        // Qué HACE el ángulo entre los dos. Dos formas porque el sujeto puede
+        // ser plural ("tus emociones TIRAN", no "tira") — la concordancia se
+        // nota y delata que el texto es de máquina.
+        var VERBO = {
+          conjunction:['se funde con','se funden con'],
+          opposition: ['tira y afloja con','tiran y aflojan con'],
+          square:     ['choca con','chocan con'],
+          trine:      ['fluye con','fluyen con'],
+          sextile:    ['le abre una puerta a','le abren una puerta a']
+        };
+        var PLURAL = { Moon:1, Saturn:1, Jupiter:1 };  // áreas en plural
+        // El orbe en palabras: qué tan encima lo vas a sentir
+        function fuerza(o){
+          return o <= 1 ? 'Se siente fuerte hoy'
+               : o <= 2.5 ? 'Se nota'
+               : 'De fondo';
+        }
         var ASP_COLOR = { conjunction:'#f4c88a', opposition:'#ff8080', square:'#ffa870', trine:'#8edca0', sextile:'#9acbe0' };
         var top = aspects.slice(0, 5);
         list.innerHTML = top.map(function(a){
@@ -1399,7 +1431,12 @@ function renderAll(){
             '<span class="tp-gly">' + nG + '</span>' +
             '<span class="tp-nm">' + nN + '</span>' +
             '<span class="tp-orb">' + a.orb.toFixed(1) + '°</span>' +
-          '</div>';
+          '</div>' +
+          '<div class="tp-hum">' +
+            (function(t){ return t.charAt(0).toUpperCase() + t.slice(1); })(AREA[a.transit] || tN) +
+            ' <b>' + ((VERBO[a.type] || ['toca','tocan'])[PLURAL[a.transit] ? 1 : 0]) + '</b> ' +
+            (AREA[a.natal] || nN) + ' · <span class="tp-f">' +
+            fuerza(a.orb) + '</span></div>';
         }).join('');
         panel.hidden = false;
       };
