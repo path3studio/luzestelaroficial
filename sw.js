@@ -185,7 +185,7 @@
 // Add Profile sheet 400ms after hydrate — Compat's "Agregar otro
 // perfil" CTA now uses it, collapsing a 3-tap flow (Compat → Inicio
 // → scroll → + Agregar perfil) to 1 tap. (3) Scripts bumped:
-// transits.js?v=2, natal-chart.js?v=12.
+// transits.js?v=2, natal-chart.js?v=14.
 // v58 → v59 (Apr 19 p15.1): ROOT CAUSE of "no puedo guardar perfil"
 // finally found. #le-tabs (the PWA bottom-tabs bar) is fixed-positioned
 // at z-index 9999 — the Add Profile modal sheet was at z-index 81.
@@ -328,7 +328,7 @@
 // 8.27px frente a 9.44px). sky-map.js sube a ?v=3.
 // v78 → v79 (Ago 5): glifos exactos de astros y signos (js/astro-glyphs.js)
 // en canvas y HTML. sky-map.js se queda en ?v=3.
-const CACHE_NAME = 'luzestelar-v79';
+const CACHE_NAME = 'luzestelar-v80';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 

@@ -357,6 +357,12 @@
     // los planetas para que todo lo demás quede encima. Se apaga con
     // opts.fullWedges === false.
     if (opts.fullWedges !== false) {
+      // opts.wedgeAlpha ajusta la intensidad de la franja "par"; la impar y
+      // la del signo enfocado se derivan de ella para que la relación entre
+      // las tres se mantenga al subir o bajar el tono.
+      var wA = (typeof opts.wedgeAlpha === 'number') ? opts.wedgeAlpha : 0.045;
+      var wAodd   = wA / 3;
+      var wAfocus = Math.min(wA * 2.2, 0.30);
       for (var fw = 0; fw < 12; fw++) {
         var fwStart = ((fw * 30 + ascOffset) * DEG) - Math.PI / 2;
         var fwEnd   = (((fw + 1) * 30 + ascOffset) * DEG) - Math.PI / 2;
@@ -364,9 +370,8 @@
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, signR, fwStart, fwEnd);
         ctx.closePath();
-        ctx.fillStyle = (fw === focusIdx)
-          ? 'rgba(212,168,73,0.10)'
-          : (fw % 2 === 0 ? 'rgba(212,168,73,0.045)' : 'rgba(212,168,73,0.015)');
+        ctx.fillStyle = 'rgba(212,168,73,' +
+          ((fw === focusIdx) ? wAfocus : (fw % 2 === 0 ? wA : wAodd)).toFixed(4) + ')';
         ctx.fill();
       }
       // Divisores radiales finos — nacen cerca del centro (sin tocar la
@@ -911,7 +916,12 @@
         // Degree label — in geocentric mode, prepend planet abbreviation
         // ("Mar 12°") so each planet is identifiable without a legend.
         // Slight shadow keeps it readable when planets cluster.
-        var degStr = Math.floor(p.degree) + '\u00B0';
+        // 2026-08-05: `degree` es un adorno opcional del payload; si falta,
+        // Math.floor(undefined) pintaba "Sol NaN\u00B0" al usuario. El grado
+        // siempre se puede derivar de la longitud, que s\u00ED es obligatoria.
+        var degVal = (typeof p.degree === 'number' && !isNaN(p.degree))
+          ? p.degree : degreeInSign(p.longitude);
+        var degStr = Math.floor(degVal) + '\u00B0';
         // 2026-06-28: name shown on natal charts too (was geocentric-only) —
         // user feedback that the shared natal card had bare degrees, no names.
         if (PLANET_ABBR_ES[p.name]) {
