@@ -280,8 +280,12 @@
     ctx.textBaseline = 'middle';
     for (var g = 0; g < 12; g++) {
       var gp = ringPoint(cx, cy, g * 30 + 15, Rg);
-      ctx.fillStyle = (g === focusIdx) ? '#d4a849' : 'rgba(224,220,232,0.38)';
-      ctx.fillText(SIGN_GLYPHS[g], gp.x, gp.y);
+      var gCol = (g === focusIdx) ? '#d4a849' : 'rgba(224,220,232,0.38)';
+      ctx.fillStyle = gCol;
+      var AGr = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+      if (!(AGr && AGr.draw(ctx, AGr.sign(g), gp.x, gp.y, size * 0.040, gCol))) {
+        ctx.fillText(SIGN_GLYPHS[g], gp.x, gp.y);
+      }
     }
   }
 
@@ -367,8 +371,12 @@
       var off = size * 0.028;
       var gx = mid.x + (rx / rn) * off;
       var gy = mid.y + (ry / rn) * off;
-      ctx.fillStyle = (g === focusIdx) ? '#d4a849' : 'rgba(224,220,232,0.55)';
-      ctx.fillText(SIGN_GLYPHS[g], gx, gy);
+      var bCol = (g === focusIdx) ? '#d4a849' : 'rgba(224,220,232,0.55)';
+      ctx.fillStyle = bCol;
+      var AGb = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+      if (!(AGb && AGb.draw(ctx, AGb.sign(g), gx, gy, size * 0.034, bCol))) {
+        ctx.fillText(SIGN_GLYPHS[g], gx, gy);
+      }
     }
   }
 
@@ -833,7 +841,11 @@
       ctx.arc(px, py, 3 * sizeFactor, 0, TAU);
       ctx.fill();
 
-      if (pl.symbol) {
+      var AGp = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+      var pKey = AGp && pl.name && AGp.planet(pl.name);
+      if (pKey && AGp.draw(ctx, pKey, px, py, size * 0.034, '#06061a')) {
+        /* glifo exacto dibujado */
+      } else if (pl.symbol) {
         ctx.fillStyle = '#06061a';
         ctx.font = 'bold ' + Math.round(size * 0.028) + 'px serif';
         ctx.textAlign = 'center';

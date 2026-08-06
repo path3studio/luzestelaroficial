@@ -512,17 +512,22 @@ body{
     loadProfiles();
   });
 
-  // Western sign emojis
+  // Glifos de marca (contornos exactos de fuente) — antes eran caracteres
+  // Unicode, que cada sistema dibuja distinto y a veces como emoji a color.
   var signEmoji = {
-    'aries':'♈','taurus':'♉','gemini':'♊','cancer':'♋',
-    'leo':'♌','virgo':'♍','libra':'♎','scorpio':'♏',
-    'sagittarius':'♐','capricorn':'♑','aquarius':'♒','pisces':'♓'
+    'aries':'aries','taurus':'tauro','gemini':'geminis','cancer':'cancer',
+    'leo':'leo','virgo':'virgo','libra':'libra','scorpio':'escorpio',
+    'sagittarius':'sagitario','capricorn':'capricornio','aquarius':'acuario','pisces':'piscis'
   };
 
+  // Devuelve el MARKUP del glifo de marca (contorno exacto). Antes devolvía
+  // un carácter Unicode que se insertaba como texto.
   function getEmoji(profile){
-    if(!profile) return '\u2726';
+    var fallback = '<span class="le-ic" data-icon="sparkles"></span>';
+    if(!profile) return fallback;
     var sign = (profile.westernSign || profile.western_sign || profile.sign || '').toLowerCase();
-    return (signEmoji[sign] ? signEmoji[sign] + '\ufe0e' : '\u2726');
+    if(!signEmoji[sign]) return fallback;
+    return '<span class="le-ic" data-icon="' + signEmoji[sign] + '"></span>';
   }
 
   function getDisplayName(profile){
@@ -595,14 +600,16 @@ body{
 
   function updateButtons(){
     if(selectedA){
-      elLabelA.textContent = getEmoji(selectedA) + ' ' + getDisplayName(selectedA);
+      elLabelA.innerHTML = getEmoji(selectedA) + ' ' + escHtml(getDisplayName(selectedA));
+      if(window.LuzEstelarIcons) LuzEstelarIcons.hydrate(elLabelA);
       elBtnA.classList.add('active');
     } else {
       elLabelA.textContent = 'Seleccionar...';
       elBtnA.classList.remove('active');
     }
     if(selectedB){
-      elLabelB.textContent = getEmoji(selectedB) + ' ' + getDisplayName(selectedB);
+      elLabelB.innerHTML = getEmoji(selectedB) + ' ' + escHtml(getDisplayName(selectedB));
+      if(window.LuzEstelarIcons) LuzEstelarIcons.hydrate(elLabelB);
       elBtnB.classList.add('active');
     } else {
       elLabelB.textContent = 'Seleccionar...';
@@ -627,6 +634,7 @@ body{
     div.setAttribute('data-id', profile.id);
     div.innerHTML = '<span class="dd-emoji">' + getEmoji(profile) + '</span>'
                   + '<span class="dd-name">' + escHtml(getDisplayName(profile)) + '</span>';
+    if(window.LuzEstelarIcons) LuzEstelarIcons.hydrate(div);
     div.addEventListener('click', function(e){
       e.stopPropagation();
       if(slot === 'a'){
@@ -1048,6 +1056,7 @@ body{
      can call LuzEstelar.NatalChart.render and LuzEstelar.Transits
      .findAspects inside renderResults(). -->
 <script src="/js/transits.js?v=3"></script>
+<script src="/js/astro-glyphs.js?v=1"></script>
 <script src="/js/natal-chart.js?v=13"></script>
 <script src="/js/icons.js" defer></script>
 <script src="/js/toast.js" defer></script>

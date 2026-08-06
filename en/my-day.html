@@ -752,6 +752,7 @@ body.modal-open #le-tabs{display:none !important}
 
 <script src="/js/cross-cultural.js"></script>
 <script src="/js/transits.js?v=3"></script>
+<script src="/js/astro-glyphs.js?v=1"></script>
 <script src="/js/natal-chart.js?v=13"></script>
 <script src="/js/share-card.js?v=10"></script>
 <script>
@@ -1369,9 +1370,9 @@ function renderAll(){
       if(!THREE_KEYS || !Object.keys(THREE_KEYS).length){ cont.hidden = true; return; }
       var HINT = '<span class="hp-lock">Add your birth time in your profile to unlock this key.</span>';
       var rows = [
-        ['☉', 'Your Sun in ' + (sun||'?'),
+        ['<span class="le-ic" data-icon="sol-astro"></span>', 'Your Sun in ' + (sun||'?'),
          'who you are when you choose to be yourself', (sun && THREE_KEYS['sun|'+sun]) || ''],
-        ['☽', moon ? 'Your Moon in ' + moon : 'Your Moon',
+        ['<span class="le-ic" data-icon="luna-astro"></span>', moon ? 'Your Moon in ' + moon : 'Your Moon',
          'how you feel inside', moon ? (THREE_KEYS['moon|'+moon]||'') : HINT],
         ['↑', asc ? 'Your Ascendant in ' + asc : 'Your Ascendant',
          'the first impression you make', asc ? (THREE_KEYS['ascendant|'+asc]||'') : HINT]

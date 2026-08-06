@@ -79,6 +79,11 @@ Perfil de ejemplo: 9 de septiembre de 1993, 14:33, Monterrey.</p>
 // Página de desarrollo: sky-map.js SIEMPRE fresco. Sin esto, el disco del
 // navegador (o el service worker de la PWA) sirve la versión anterior y uno
 // cree que un cambio "no funciona" cuando en realidad no llegó.
+const glyphsReady = new Promise((res, rej) => {
+  const g = document.createElement('script');
+  g.src = '/js/astro-glyphs.js?nocache=' + Date.now();
+  g.onload = res; g.onerror = rej; document.head.appendChild(g);
+});
 const skymapReady = new Promise((resolve, reject) => {
   const s = document.createElement('script');
   s.src = '/js/sky-map.js?nocache=' + Date.now();
@@ -87,11 +92,12 @@ const skymapReady = new Promise((resolve, reject) => {
 });
 
 Promise.all([
+  glyphsReady,
   skymapReady,
   fetch('/data/stars.json').then(r => r.json()),
   fetch('/data/constellations.json').then(r => r.json()),
   fetch('/data/stars-full.json').then(r => r.json()).catch(() => ({ stars: [] })),
-]).then(([, base, consts, full]) => {
+]).then(([, , base, consts, full]) => {
   const stars = base.stars.concat(full.stars || []);
   const constellations = consts.constellations;
 

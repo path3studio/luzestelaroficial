@@ -6,6 +6,7 @@
 <title>Preview — Sky Map</title>
 <link rel="stylesheet" href="/css/design-tokens.css">
 <link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/icons.css">
 <style>
 body {
   font-family: var(--font-body);
@@ -77,11 +78,13 @@ canvas { display: block; margin: 0 auto; }
   font-size: var(--fs-sm);
   color: var(--text-dim);
   line-height: 1.5;
-  display: grid;
-  grid-template-columns: 26px 1fr;
-  align-items: center;
+  /* flex, no grid: con grid cada nodo de texto se volvía una celda
+     aparte y el párrafo caía en columna de una palabra por línea. */
+  display: flex;
+  align-items: flex-start;
   gap: var(--sp-2);
 }
+.glossary li > .sw { margin-top: 4px; }
 .glossary b { color: var(--text); font-weight: 600; }
 .glossary h3 {
   font-family: var(--font-display);
@@ -99,11 +102,9 @@ canvas { display: block; margin: 0 auto; }
   font-size: var(--fs-sm); color: var(--text-dim);
 }
 .glyphs i {
-  font-style: normal;
-  font-family: "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", serif;
   font-size: 1.25rem;
   color: var(--gold);
-  width: 1.4em; text-align: center;
+  flex: 0 0 auto;
 }
 /* Muestras visuales — mismos colores que el canvas */
 .sw { display: block; width: 22px; height: 14px; position: relative; }
@@ -198,6 +199,11 @@ canvas { display: block; margin: 0 auto; }
 
 <script>
 // Página de desarrollo: sky-map.js SIEMPRE fresco (ver nota en _preview-mi-cielo).
+const glyphsReady = new Promise((res, rej) => {
+  const g = document.createElement('script');
+  g.src = '/js/astro-glyphs.js?nocache=' + Date.now();
+  g.onload = res; g.onerror = rej; document.head.appendChild(g);
+});
 const skymapReady = new Promise((resolve, reject) => {
   const s = document.createElement('script');
   s.src = '/js/sky-map.js?nocache=' + Date.now();
@@ -206,29 +212,34 @@ const skymapReady = new Promise((resolve, reject) => {
 });
 </script>
 <script>
-// ── Glosario de glifos (U+FE0E para forzar texto, nunca emoji) ──
+// ── Glosario de glifos (iconos de marca: contornos exactos de fuente) ──
 (() => {
-  const P = [['☉','Sol'],['☽','Luna'],['☿','Mercurio'],['♀','Venus'],
-             ['♂','Marte'],['♃','Júpiter'],['♄','Saturno'],['♅','Urano'],
-             ['♆','Neptuno'],['♇','Plutón']];
-  const S = [['♈','Aries'],['♉','Tauro'],['♊','Géminis'],['♋','Cáncer'],
-             ['♌','Leo'],['♍','Virgo'],['♎','Libra'],['♏','Escorpio'],
-             ['♐','Sagitario'],['♑','Capricornio'],['♒','Acuario'],['♓','Piscis']];
+  const P = [['sol-astro','Sol'],['luna-astro','Luna'],['mercurio','Mercurio'],['venus','Venus'],
+             ['marte','Marte'],['jupiter','Júpiter'],['saturno','Saturno'],['urano','Urano'],
+             ['neptuno','Neptuno'],['pluton','Plutón']];
+  const S = [['aries','Aries'],['tauro','Tauro'],['geminis','Géminis'],['cancer','Cáncer'],
+             ['leo','Leo'],['virgo','Virgo'],['libra','Libra'],['escorpio','Escorpio'],
+             ['sagitario','Sagitario'],['capricornio','Capricornio'],['acuario','Acuario'],
+             ['piscis','Piscis']];
   const fill = (id, list) => {
     document.getElementById(id).innerHTML = list
-      .map(([g, n]) => `<span><i>${g}︎</i>${n}</span>`).join('');
+      .map(([k, n]) => `<span><i class="le-ic" data-icon="${k}"></i>${n}</span>`).join('');
   };
   fill('glyphs-planets', P);
   fill('glyphs-signs', S);
+  const s = document.createElement('script');
+  s.src = '/js/icons.js?nocache=' + Date.now();
+  document.head.appendChild(s);
 })();
 
 // ── Load catalogs ──
 Promise.all([
+  glyphsReady,
   skymapReady,
   fetch('/data/stars.json').then(r => r.json()),
   fetch('/data/constellations.json').then(r => r.json()),
   fetch('/data/stars-full.json').then(r => r.json()).catch(() => ({ stars: [] })),
-]).then(([, starsData, constData, fullData]) => {
+]).then(([, , starsData, constData, fullData]) => {
   const canvas = document.getElementById('sky');
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');

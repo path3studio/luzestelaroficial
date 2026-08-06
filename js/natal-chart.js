@@ -459,13 +459,17 @@
       ctx.lineWidth = 0.8;
       ctx.beginPath(); ctx.arc(gx, gy, discR - 1, 0, TAU); ctx.stroke();
 
-      // Glyph itself
+      // Glyph itself — contorno exacto de la fuente (astro-glyphs.js);
+      // el carácter Unicode queda como alternativa si el módulo no cargó.
       if (!SKIP_LABELS) {
-        ctx.font = '600 ' + Math.round(size * 0.036) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
         ctx.shadowColor = elemColor;
         ctx.shadowBlur = 6;
         ctx.fillStyle = '#fff8e7';
-        ctx.fillText(SIGN_GLYPHS[i], gx, gy);
+        var AG = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+        if (!(AG && AG.draw(ctx, AG.sign(i), gx, gy, size * 0.042, '#fff8e7'))) {
+          ctx.font = '600 ' + Math.round(size * 0.036) + 'px "Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif';
+          ctx.fillText(SIGN_GLYPHS[i], gx, gy);
+        }
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
       }
@@ -892,13 +896,13 @@
                            p.name === 'Uranus')
             ? 'rgba(20,12,6,0.85)'
             : 'rgba(255,248,230,0.92)';
-          ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          if (p.name === 'Moon') {
-            ctx.fillText('\u263D', px, py);
-          } else {
-            ctx.fillText(glyph, px, py);
+          var AGp = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+          var pKey = AGp && AGp.planet(p.name);
+          if (!(pKey && AGp.draw(ctx, pKey, px, py, size * 0.030, ctx.fillStyle))) {
+            ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
+            ctx.fillText(p.name === 'Moon' ? '\u263D' : glyph, px, py);
           }
           ctx.shadowColor = 'transparent';
           ctx.shadowBlur = 0;
@@ -1050,11 +1054,14 @@
                          t.name === 'Uranus')
           ? 'rgba(20,12,6,0.85)'
           : 'rgba(255,248,230,0.92)';
-        ctx.font = 'bold ' + Math.round(size * 0.020) + 'px "Noto Sans Symbols 2", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        if (t.name === 'Moon') ctx.fillText('\u263D', tx, ty);
-        else ctx.fillText(tGlyph, tx, ty);
+        var AGt = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+        var tKey = AGt && AGt.planet(t.name);
+        if (!(tKey && AGt.draw(ctx, tKey, tx, ty, size * 0.026, ctx.fillStyle))) {
+          ctx.font = 'bold ' + Math.round(size * 0.020) + 'px "Noto Sans Symbols 2", serif';
+          ctx.fillText(t.name === 'Moon' ? '\u263D' : tGlyph, tx, ty);
+        }
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
 
