@@ -458,7 +458,21 @@
         ctx.font = '600 ' + Math.round(size * 0.020) + 'px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = 'rgba(212,168,73,0.55)';
+        // 2026-08-06 (user): las estrellas de las constelaciones se dibujan
+        // en esta misma banda y se comían el nombre. Una pastilla oscura
+        // detrás lo despega sin taparlas.
+        var _nw = ctx.measureText(signLabels[i]).width;
+        ctx.fillStyle = 'rgba(8,8,22,0.55)';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(nx - _nw / 2 - size * 0.008, ny - size * 0.014,
+                        _nw + size * 0.016, size * 0.028, size * 0.014);
+        } else {
+          ctx.rect(nx - _nw / 2 - size * 0.008, ny - size * 0.014,
+                   _nw + size * 0.016, size * 0.028);
+        }
+        ctx.fill();
+        ctx.fillStyle = 'rgba(212,168,73,0.72)';
         ctx.fillText(signLabels[i], nx, ny);
       }
 
@@ -606,7 +620,16 @@
       }
 
       // Constellation stick figures (only pairs where BOTH stars made it in)
-      var consts = (chartData.constellationCatalog && chartData.constellationCatalog.constellations) || [];
+      // 2026-08-06 (user: "esas no son las correctas"): el filtro era
+      // geométrico —cualquier estrella con |lat| < 18°— y colaba fragmentos
+      // de constelaciones que NO son del zodiaco: Pegaso con 1 estrella,
+      // Auriga con 2, Orión con 2, Can Menor con 1. Sueltas parecen ruido.
+      // Esta vista es el ZODIACO, así que solo entran las 12 zodiacales.
+      var ZODIACAL = { Ari:1, Tau:1, Gem:1, Cnc:1, Leo:1, Vir:1,
+                       Lib:1, Sco:1, Sgr:1, Cap:1, Aqr:1, Psc:1 };
+      var consts = ((chartData.constellationCatalog &&
+                     chartData.constellationCatalog.constellations) || [])
+                   .filter(function (c) { return ZODIACAL[c.id]; });
       ctx.save();
       // 2026-04-29: bumped opacity 0.28 → 0.45 + soft glow shadow so
       // constellation stick figures (Orion etc.) feel more present in
