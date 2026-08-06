@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline — Luz Estelar</title>
+    <style>
+        :root{--gold:#d4a849;--bg-deep:#06061a;--text:#e0dce8;--text-dim:#9890a8;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
+        .container{max-width:420px;}
+        .symbol{font-size:4em;margin-bottom:20px;opacity:0.6;}
+        h1{font-size:1.6em;color:var(--gold);margin-bottom:12px;}
+        p{font-size:0.95em;color:var(--text-dim);line-height:1.7;margin-bottom:20px;}
+        .btn{display:inline-block;padding:12px 28px;border:1px solid var(--gold);border-radius:8px;color:var(--gold);text-decoration:none;font-size:0.9em;transition:background 0.3s;}
+        .btn:hover{background:rgba(212,168,73,0.1);}
+    </style>
+<link rel="icon" href="/app_icon_192.png">
+</head>
+<body>
+    <div class="container">
+        <div class="symbol"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d4a849" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M12 3l1.8 4.8L18 9l-4.2 1.2L12 15l-1.8-4.8L6 9l4.2-1.2L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg></div>
+        <h1>You're offline</h1>
+        <p>It looks like you have no internet connection. The stars are still up there, but we need the network to show you your horoscope.</p>
+        <a href="/en/" class="btn" onclick="window.location.reload(); return false;">Try again</a>
+    </div>
+</body>
+</html>

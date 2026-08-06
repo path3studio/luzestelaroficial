@@ -328,8 +328,14 @@
 // 8.27px frente a 9.44px). sky-map.js sube a ?v=3.
 // v78 → v79 (Ago 5): glifos exactos de astros y signos (js/astro-glyphs.js)
 // en canvas y HTML. sky-map.js se queda en ?v=3.
-const CACHE_NAME = 'luzestelar-v82';
+// v82 → v83 (Ago 6): nueva /en/offline.html. La pagina de respaldo sin
+// conexion era unica y estaba en espanol, asi que un lector bajo /en/ veia
+// "Sin conexion". Ahora la rama de navegacion elige segun la ruta.
+const CACHE_NAME = 'luzestelar-v83';
 const OFFLINE_URL = '/offline.html';
+// English readers used to fall back to the Spanish offline page — it is the
+// fallback for the whole site, so /en/ visitors got "Sin conexión".
+const OFFLINE_URL_EN = '/en/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
 // Static assets to precache on install.
@@ -368,6 +374,7 @@ const PRECACHE_URLS = [
   '/app_icon.png',
   '/manifest.json',
   OFFLINE_URL,
+  OFFLINE_URL_EN,
 ];
 
 // Accept SKIP_WAITING messages from the client (sw-update.js toast).
@@ -441,9 +448,11 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          // Offline: try cache, then offline page
+          // Offline: try cache, then the offline page in the language the
+          // reader was already browsing.
+          const offline = path.startsWith('/en/') ? OFFLINE_URL_EN : OFFLINE_URL;
           return caches.match(request).then((cached) => {
-            return cached || caches.match(OFFLINE_URL);
+            return cached || caches.match(offline);
           });
         })
     );
