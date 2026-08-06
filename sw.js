@@ -328,7 +328,7 @@
 // 8.27px frente a 9.44px). sky-map.js sube a ?v=3.
 // v78 → v79 (Ago 5): glifos exactos de astros y signos (js/astro-glyphs.js)
 // en canvas y HTML. sky-map.js se queda en ?v=3.
-const CACHE_NAME = 'luzestelar-v81';
+const CACHE_NAME = 'luzestelar-v82';
 const OFFLINE_URL = '/offline.html';
 const READING_CACHE = 'luzestelar-reading-v1';
 
