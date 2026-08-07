@@ -112,6 +112,17 @@
    * so the caller gets a clean .catch with a real error message, which
    * can then be surfaced in the share button text.
    */
+  // Isotipo de marca para el pie de la tarjeta. Se pide UNA vez y en cuanto
+  // se carga este módulo, para que ya esté listo cuando el usuario pulse
+  // compartir. Nadie lo espera: si no llegó, el pie cae al ✦ de siempre.
+  var _logo = null;
+  (function cargaLogo() {
+    try {
+      _logo = new Image();
+      _logo.src = '/app_icon_192.png';
+    } catch (e) { _logo = null; }
+  })();
+
   function build(opts) {
     // Progress callback — lets the caller (e.g. the share button
     // handler) update its label as we move through stages. If ANY
@@ -139,9 +150,17 @@
       // one hangs, the button label freezes on its name, telling us
       // exactly which step misbehaves. Yields use setTimeout(0) so the
       // browser actually paints the updated label between steps.
-      var chartSize = 600;
+      // 2026-08-07 (usuario: "el sol, la luna y el ascendente chocan con el
+      // aro, están muy cerca y se contraponen"). Medido a tamaño real: entre
+      // el borde de la rueda y la fila SOL/LUNA/ASC había 40 px, y el glifo
+      // de signo que cae abajo del todo quedaba justo encima de "LUNA", así
+      // que los dos grupos se leían como uno. La rueda nueva lleva los glifos
+      // pegados al borde de su cuadro, sin margen interno, y por eso se notó
+      // ahora. Se le quitan 30 px a la rueda y se suben a la separación: 72 px
+      // de aire arriba y 76 hasta el pie. Los dos bloques ya respiran.
+      var chartSize = 570;
       var chartX = (W - chartSize) / 2;
-      var chartY = 310;
+      var chartY = 306;
 
       function paintBackground() {
         var bg = ctx.createLinearGradient(0, 0, 0, H);
@@ -218,7 +237,7 @@
       }
 
       function paintDetails() {
-        var badgeY = chartY + chartSize + 40;
+        var badgeY = chartY + chartSize + 72;   // ver la nota en chartSize
         var sun  = findPlanet(chartData, 'Sun');
         var moon = findPlanet(chartData, 'Moon');
         var asc  = chartData.ascendant && chartData.ascendant.sign
@@ -230,9 +249,31 @@
         drawBadge(ctx, W * 0.22, badgeY, t.sun,  sun  ? sun.sign  : null, '\u2609\uFE0E', lang);
         drawBadge(ctx, W * 0.50, badgeY, t.moon, moon ? moon.sign : null, '\u263D\uFE0E', lang);
         drawBadge(ctx, W * 0.78, badgeY, t.asc,  asc  ? asc.sign  : null, '\u2191\uFE0E', lang);
+        // \u2500\u2500 Pie de marca \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+        // 2026-08-07 (usuario): llevaba dos \u2726 gen\u00e9ricas, una a cada lado.
+        // La marca tiene isotipo propio \u2014la estrella dorada facetada de
+        // app_icon.png, la misma del login y del icono de la app\u2014 y va a la
+        // IZQUIERDA del nombre, como en la identidad. Ver [[brand-icon-store]]:
+        // donde va la marca va el isotipo, no un s\u00edmbolo cualquiera.
+        //
+        // Si la imagen no ha cargado NO se espera: esta tuber\u00eda se cuelga si
+        // algo bloquea, y ya cost\u00f3 varias sesiones estabilizarla. Se cae al
+        // \u2726 de antes, que es exactamente el comportamiento anterior.
         ctx.fillStyle = 'rgba(212,168,73,0.82)';
         ctx.font = '600 30px Georgia, "Times New Roman", serif';
-        ctx.fillText('\u2726  ' + t.brand + '  \u2726', W / 2, H - 110);
+        var marcaY = H - 110;
+        var listo = _logo && _logo.complete && _logo.naturalWidth > 0;
+        if (listo) {
+          var lado = 40, aire = 16;
+          var anchoTexto = ctx.measureText(t.brand).width;
+          var inicio = (W - (lado + aire + anchoTexto)) / 2;
+          ctx.drawImage(_logo, inicio, marcaY - 5, lado, lado);
+          ctx.textAlign = 'left';
+          ctx.fillText(t.brand, inicio + lado + aire, marcaY);
+          ctx.textAlign = 'center';
+        } else {
+          ctx.fillText('\u2726  ' + t.brand, W / 2, marcaY);
+        }
         ctx.fillStyle = 'rgba(224,220,232,0.55)';
         ctx.font = '400 19px "Helvetica Neue", Arial, sans-serif';
         ctx.fillText(t.url, W / 2, H - 65);
@@ -559,19 +600,22 @@
   }
 
   /**
-   * Guardar la imagen — 2026-08-07, reportado por el usuario: "no me sale la
-   * opción de guardar imagen, sí de compartir en muchas aplicaciones".
+   * VISTA PREVIA de la carta, con sus acciones — 2026-08-07.
    *
-   * Eso NO es un fallo nuestro: la hoja de compartir la dibuja el sistema
-   * operativo y en Android suele listar apps sin ofrecer "guardar en galería".
-   * Pero el usuario se queda sin salida, así que hay que darle una.
+   * Primera versión (misma mañana): un overlay que decía "mantén pulsada la
+   * imagen para guardarla". El usuario lo rechazó y con razón: "preferiría
+   * que este botón funcionase completamente como vista previa, así como
+   * cuando le damos a compartir — aparece la vista previa y ahora sí le damos
+   * a descargar o a compartir por WhatsApp". Pedir un gesto que el usuario
+   * tiene que adivinar no es una interfaz; es una excusa.
    *
-   * Por qué un overlay y no solo `<a download>`: el atributo download es
-   * irregular en móvil — en Android Chrome baja a Descargas, pero dentro de
-   * los navegadores embebidos (Instagram, Facebook) no hace nada, y en iOS
-   * guarda en Archivos, no en Fotos, que es donde la gente la busca. La
-   * pulsación larga sobre un <img> sí funciona en todas partes y es el gesto
-   * que ya conoce todo el mundo. Se ofrecen LOS DOS y que elija el que le sirva.
+   * Ahora: se ve la carta y debajo dos botones explícitos. "Compartir" abre
+   * la hoja del sistema (WhatsApp y demás) y "Descargar" baja el archivo.
+   *
+   * La URL del blob NO se revoca al cerrar de inmediato: si el navegador
+   * abrió la imagen en otra pestaña (pasa al descargar en algunos móviles),
+   * revocarla la deja rota — el usuario reportó justo eso, "esa imagen aquí
+   * al parecer no carga". Se revoca 60 s después, cuando ya nadie la mira.
    */
   function saveImage(blob, opts) {
     opts = opts || {};
@@ -580,56 +624,97 @@
     var fileName = esES ? 'luz-estelar-carta-natal.png' : 'luz-estelar-natal-chart.png';
     var url = URL.createObjectURL(blob);
 
-    var capa = document.createElement('div');
+    function el(tag, css, texto) {
+      var n = document.createElement(tag);
+      n.style.cssText = css;
+      if (texto) n.textContent = texto;
+      return n;
+    }
+    function boton(texto, principal) {
+      var b = el('button', 'flex:1;min-width:130px;padding:13px 20px;border-radius:999px;' +
+        'cursor:pointer;font-family:Inter,system-ui,sans-serif;font-size:.86rem;font-weight:600;' +
+        (principal
+          ? 'border:none;background:linear-gradient(135deg,#d4a849,#e8c67a);color:#1a1408;'
+          : 'border:1px solid rgba(212,168,73,.45);background:rgba(212,168,73,.1);color:#d4a849;'),
+        texto);
+      b.type = 'button';
+      return b;
+    }
+
+    var capa = el('div', 'position:fixed;inset:0;z-index:9999;background:rgba(8,6,18,.95);' +
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;' +
+      'padding:20px;overflow:auto;-webkit-backdrop-filter:blur(4px)');
     capa.setAttribute('role', 'dialog');
     capa.setAttribute('aria-modal', 'true');
-    capa.setAttribute('aria-label', esES ? 'Guardar tu carta' : 'Save your chart');
-    capa.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(8,6,18,.94);' +
-      'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-      'gap:14px;padding:20px;overflow:auto;-webkit-backdrop-filter:blur(4px)';
+    capa.setAttribute('aria-label', esES ? 'Vista previa de tu carta' : 'Preview of your chart');
 
     var img = document.createElement('img');
-    img.src = url;
     img.alt = esES ? 'Tu carta natal' : 'Your natal chart';
-    img.style.cssText = 'max-width:min(100%,340px);max-height:62vh;border-radius:12px;' +
-      'box-shadow:0 10px 40px rgba(0,0,0,.6)';
+    img.style.cssText = 'max-width:min(100%,330px);max-height:60vh;border-radius:12px;' +
+      'box-shadow:0 10px 40px rgba(0,0,0,.6);background:rgba(255,255,255,.03)';
+    // Si el blob no se puede pintar (visto en algún navegador embebido), se
+    // reintenta como data URL antes de dejar un hueco en blanco.
+    img.onerror = function () {
+      try {
+        var fr = new FileReader();
+        fr.onload = function () { img.onerror = null; img.src = fr.result; };
+        fr.readAsDataURL(blob);
+      } catch (e) {}
+    };
+    img.src = url;
 
-    var pista = document.createElement('p');
-    pista.textContent = esES
-      ? 'Mantén pulsada la imagen para guardarla en tus fotos'
-      : 'Press and hold the image to save it to your photos';
-    pista.style.cssText = 'margin:0;color:#e0dce8;font-size:.82rem;text-align:center;' +
-      'font-family:Inter,system-ui,sans-serif;line-height:1.5;max-width:320px';
+    var fila = el('div', 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;' +
+      'width:100%;max-width:330px');
+    var bCompartir = boton(esES ? 'Compartir' : 'Share', true);
+    var bBajar     = boton(esES ? 'Descargar' : 'Download', false);
+    fila.appendChild(bCompartir);
+    fila.appendChild(bBajar);
 
-    var bajar = document.createElement('a');
-    bajar.href = url; bajar.download = fileName;
-    bajar.textContent = esES ? 'o descargar el archivo' : 'or download the file';
-    bajar.style.cssText = 'color:#d4a849;font-size:.8rem;font-family:Inter,system-ui,sans-serif;' +
-      'text-decoration:underline;text-underline-offset:3px';
-
-    var cerrar = document.createElement('button');
+    var cerrar = el('button', 'padding:8px 24px;border:none;background:none;cursor:pointer;' +
+      'color:rgba(224,220,232,.65);font-family:Inter,system-ui,sans-serif;font-size:.82rem',
+      esES ? 'Cerrar' : 'Close');
     cerrar.type = 'button';
-    cerrar.textContent = esES ? 'Cerrar' : 'Close';
-    cerrar.style.cssText = 'margin-top:4px;padding:10px 26px;border-radius:999px;cursor:pointer;' +
-      'border:1px solid rgba(212,168,73,.4);background:rgba(212,168,73,.1);color:#d4a849;' +
-      'font-family:Inter,system-ui,sans-serif;font-size:.82rem;font-weight:600';
+
+    var aviso = el('p', 'margin:0;min-height:1.1em;color:#d4a849;font-size:.78rem;' +
+      'font-family:Inter,system-ui,sans-serif;text-align:center');
 
     function fuera() {
       try { document.body.removeChild(capa); } catch (e) {}
-      URL.revokeObjectURL(url);
       document.removeEventListener('keydown', porTecla);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
     }
     function porTecla(e) { if (e.key === 'Escape') fuera(); }
+
+    bCompartir.addEventListener('click', function () {
+      bCompartir.disabled = true;
+      share(blob, { lang: lang, name: opts.name || '' }).then(function (estado) {
+        bCompartir.disabled = false;
+        if (estado === 'shared') fuera();
+        else if (estado === 'downloaded') aviso.textContent = esES ? 'Descargada' : 'Downloaded';
+        // 'cancelled' → ni una palabra: no ha pasado nada.
+      }).catch(function () { bCompartir.disabled = false; });
+    });
+
+    bBajar.addEventListener('click', function () {
+      var a = document.createElement('a');
+      a.href = url; a.download = fileName;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { try { document.body.removeChild(a); } catch (e) {} }, 100);
+      aviso.textContent = esES ? 'Descargada' : 'Downloaded';
+    });
+
     cerrar.addEventListener('click', fuera);
     capa.addEventListener('click', function (e) { if (e.target === capa) fuera(); });
     document.addEventListener('keydown', porTecla);
 
     capa.appendChild(img);
-    capa.appendChild(pista);
-    capa.appendChild(bajar);
+    capa.appendChild(fila);
+    capa.appendChild(aviso);
     capa.appendChild(cerrar);
     document.body.appendChild(capa);
-    cerrar.focus();
+    bCompartir.focus();
     return capa;
   }
 

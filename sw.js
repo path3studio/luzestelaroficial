@@ -416,7 +416,27 @@
 // en movil (no hace nada en navegadores embebidos, y en iOS guarda en Archivos
 // y no en Fotos, que es donde la gente la busca).
 // share-card.js sube a ?v=11.
-const CACHE_NAME = 'luzestelar-v101';
+// v101 → v102 (Ago 7, tras probarlo el usuario). Cuatro cosas:
+// 1. El overlay de guardar pedia "manten pulsada la imagen". El usuario lo
+//    rechazo: "preferiria que funcionase como vista previa, aparece la vista
+//    previa y ahora si le damos a descargar o a compartir por WhatsApp".
+//    Tenia razon — pedir un gesto que hay que adivinar no es una interfaz.
+//    Ahora se ve la carta y debajo dos botones explicitos.
+// 2. "Esa imagen aqui al parecer no carga": la URL del blob se revocaba al
+//    cerrar, y si el navegador habia abierto la imagen en otra pestana (pasa
+//    al descargar en algunos moviles) la dejaba rota. Ahora se revoca 60 s
+//    despues. Ademas el <img> reintenta como data URL si el blob no pinta.
+// 3. El pie llevaba dos ✦ genericas. La marca tiene isotipo propio —la
+//    estrella dorada de app_icon— y va a la IZQUIERDA del nombre, como en la
+//    identidad. Si la imagen no ha cargado NO se espera: cae al ✦ de antes,
+//    porque esta tuberia se cuelga si algo bloquea.
+// 4. "El sol, la luna y el ascendente chocan con el aro": medido a tamano
+//    real habia 40 px entre la rueda y la fila SOL/LUNA/ASC, y el glifo de
+//    signo de abajo caia justo encima de "LUNA". La rueda nueva lleva los
+//    glifos pegados al borde de su cuadro y por eso se noto ahora. Rueda
+//    600→570 y separacion 40→72; queda 76 px hasta el pie.
+// share-card.js sube a ?v=12.
+const CACHE_NAME = 'luzestelar-v102';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
