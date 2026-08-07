@@ -1676,6 +1676,8 @@ function renderAll(){
       }
       ensureSkyMap(function(){
         var w = skyCanv.parentElement.offsetWidth;
+        var isPlus = false;
+        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
         window.LuzEstelar.SkyMap.render(skyCanv, {
           lat:p.lat, lng:p.lon, utc:d,
           stars: window.__skyCatalogs.stars.stars,
@@ -1685,26 +1687,17 @@ function renderAll(){
           showLabels: true,
           // The library defaults the west letter to "O" (Oeste); this page
           // is English, so it needs W.
-          cardinals: { N:'N', S:'S', E:'E', W:'W' }
+          cardinals: { N:'N', S:'S', E:'E', W:'W' },
+          // 2026-08-07: this page still painted the watermark OUTSIDE the
+          // renderer, which is the bug the Spanish page had fixed on Aug 5.
+          // sky-map.js leaves the context scaled by devicePixelRatio, so
+          // translating by canvas.width/2 lands at dpr² of the real centre.
+          // Measured: at dpr 2 it fell in the corner, half clipped; at dpr 3
+          // it painted ZERO pixels — free readers on most modern phones were
+          // getting the paid Star Map clean. The renderer draws it now.
+          watermark: (mode === 'birth' && !isPlus) ? 'LUZ ESTELAR' : null,
         });
         if (cmEl) cmEl.textContent = metaLabel;
-        // ── Watermark + upsell (birth sky only, non-Plus) ──
-        var isPlus = false;
-        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
-        if (mode === 'birth' && !isPlus) {
-          try {
-            var wmx = skyCanv.getContext('2d');
-            wmx.save();
-            wmx.translate(skyCanv.width/2, skyCanv.height/2);
-            wmx.rotate(-Math.PI/8);
-            wmx.font = '600 ' + Math.round(skyCanv.width/8.5) + 'px "Cormorant Garamond", Georgia, serif';
-            wmx.fillStyle = 'rgba(212,168,73,0.14)';
-            wmx.textAlign = 'center';
-            wmx.textBaseline = 'middle';
-            wmx.fillText('LUZ ESTELAR', 0, 0);
-            wmx.restore();
-          } catch(e){}
-        }
         var upsell = document.getElementById('sky-upsell');
         if (mode === 'birth' && !isPlus) {
           if (!upsell && cmEl) {

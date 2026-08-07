@@ -366,7 +366,21 @@
 //    pintada la banda habria salido vacia. natal-chart.js acepta ahora el
 //    catalogo crudo (`extraStarsEq`) y convierte el mismo, una sola vez.
 // natal-chart.js sube a ?v=29.
-const CACHE_NAME = 'luzestelar-v98';
+// v98 → v99 (Ago 7): FUGA DEL PRODUCTO DE PAGO en la version inglesa.
+// /en/my-day pintaba la marca de agua del Mapa Estelar de nacimiento FUERA
+// del renderizador — el mismo fallo que la pagina en espanol ya tenia
+// corregido desde el 5/ago y que aqui nadie habia migrado. sky-map.js deja el
+// contexto escalado por devicePixelRatio, asi que trasladar por canvas.width/2
+// cae en dpr² del centro real. Medido reproduciendo el codigo tal cual:
+//   dpr 1 → 4100 px pintados (bien, centrada)
+//   dpr 2 → 3208 px, en la esquina y medio recortada
+//   dpr 3 → 0 px. Invisible.
+// O sea: en la mayoria de telefonos modernos el lector gratuito se llevaba el
+// mapa limpio, que es justo lo que se vende. Ahora lo dibuja el renderizador
+// (opcion `watermark`), verificado a 3972 / 14209 / 30046 px en dpr 1/2/3.
+// Solo cambia HTML, que nunca se cachea; sky-map.js se queda en ?v=3 porque
+// no se toco.
+const CACHE_NAME = 'luzestelar-v99';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
