@@ -481,7 +481,7 @@
 // Estelar" (lo vio el usuario). Dos causas, medidas las dos: (a) se dibujaba
 // a marcaY-5 con 40px de alto, o sea centrada 5px por debajo del centro optico
 // del texto, que iba con la baseline .top. heredada de drawBadge; (b) el PNG
-// trae ~9%% de margen a cada lado —la estrella ocupa el 82%% del cuadro,
+// trae ~9% de margen a cada lado —la estrella ocupa el 82% del cuadro,
 // verificado midiendo el archivo— asi que 40px de cuadro daban 35px de
 // estrella, casi el doble de la altura de las mayusculas. Ahora el tamano y la
 // posicion salen de measureText().actualBoundingBoxAscent y se descuenta el
