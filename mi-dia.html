@@ -672,6 +672,14 @@ body.modal-open #le-tabs{display:none !important}
             <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
             Compartir mi carta
           </button>
+          <!-- 2026-08-07 (usuario): la hoja de compartir del sistema lista
+               apps pero no ofrece "guardar imagen", así que no había forma de
+               quedarse la carta. Este botón abre la imagen con la pulsación
+               larga y un enlace de descarga. -->
+          <button type="button" class="btn-share-chart" id="btn-save-chart" aria-label="Guardar carta como imagen">
+            <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+            Guardar
+          </button>
         </div>
         <!-- Transits-of-today panel — populated by JS from the
              current-moment ephemeris + aspects to the natal chart. -->
@@ -981,7 +989,7 @@ body.modal-open #le-tabs{display:none !important}
 <script src="/js/transits.js?v=3"></script>
 <script src="/js/astro-glyphs.js?v=2"></script>
 <script src="/js/natal-chart.js?v=30"></script>
-<script src="/js/share-card.js?v=10"></script>
+<script src="/js/share-card.js?v=11"></script>
 <script>
 // 2026-08-07: la carta de esta página se dibujaba con la disposición vieja
 // (planetas por niveles) mientras el video y el producto usaban la rueda
@@ -2046,13 +2054,13 @@ function renderAll(){
           chartData: window.__currentChartData,
           lang:      'es',
           progress:  function(stage){ btn.textContent = stage + '…'; },
-        }).then(function(sharedNatively){
+        }).then(function(){
           btn.innerHTML = origHTML;
           btn.disabled = false;
-          // toast is a FUNCTION (toast(msg, opts)), not toast.show().
-          if (sharedNatively === false && typeof window.LuzEstelar.toast === 'function') {
-            try { window.LuzEstelar.toast('Imagen descargada', { kind:'success', duration: 3000 }); } catch (e) {}
-          }
+          // 2026-08-07: aquí había un segundo "Imagen descargada" que se
+          // disparaba con el mismo `false` que devolvía una CANCELACIÓN. El
+          // usuario veía DOS avisos de descarga por una imagen que no existía.
+          // El mensaje lo decide ahora share-card.js, que sí sabe qué pasó.
         }).catch(function(e){
           console.error('[share-chart] failed:', e);
           var msg = (e && e.message) ? e.message : 'desconocido';
@@ -2066,6 +2074,47 @@ function renderAll(){
         flash('Error: ' + m, 6000);
       }
     });
+
+    // ── Guardar imagen (2026-08-07) ──────────────────────────────────
+    // Misma tubería de construcción que compartir; solo cambia el destino:
+    // en vez de la hoja del sistema —que no ofrece "guardar"— se muestra la
+    // imagen para pulsación larga, con enlace de descarga como alternativa.
+    var btnG = document.getElementById('btn-save-chart');
+    if (btnG && btnG.dataset.wired !== '1') {
+      btnG.dataset.wired = '1';
+      var gHTML = btnG.innerHTML;
+      btnG.addEventListener('click', function(){
+        if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+        if (!window.LuzEstelar || !window.LuzEstelar.ShareCard || !window.LuzEstelar.ShareCard.saveImage) {
+          return flash('Módulo no cargado — recarga la app', 3500);
+        }
+        if (!window.__currentChartData || !window.__currentProfile) {
+          return flash('La carta aún se está cargando', 2500);
+        }
+        btnG.disabled = true; btnG.textContent = 'Generando…';
+        try {
+          window.LuzEstelar.ShareCard.build({
+            profile:   window.__currentProfile,
+            chartData: window.__currentChartData,
+            lang:      'es',
+            progress:  function(stage){ btnG.textContent = stage + '…'; },
+          }).then(function(blob){
+            btnG.innerHTML = gHTML; btnG.disabled = false;
+            window.LuzEstelar.ShareCard.saveImage(blob, { lang: 'es' });
+          }).catch(function(e){
+            btnG.innerHTML = gHTML; btnG.disabled = false;
+            console.error('[save-chart] failed:', e);
+            var msg = (e && e.message) ? e.message : 'desconocido';
+            if (msg.length > 55) msg = msg.slice(0, 52) + '…';
+            flash('Error: ' + msg, 6000);
+          });
+        } catch (syncErr) {
+          btnG.innerHTML = gHTML; btnG.disabled = false;
+          console.error('[save-chart] sync throw:', syncErr);
+          flash('Error al guardar', 4000);
+        }
+      });
+    }
   })();
 
   // ── Chart toggle: Carta Natal ↔ Cielo real ──

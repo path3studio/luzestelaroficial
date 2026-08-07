@@ -534,6 +534,13 @@ body.modal-open #le-tabs{display:none !important}
             <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
             Share my chart
           </button>
+          <!-- 2026-08-07: the OS share sheet lists apps but offers no "save
+               image", so there was no way to keep the chart. Mirrors mi-dia.html
+               on purpose — both watermark bugs this project has had were ES/EN drift. -->
+          <button type="button" class="btn-share-chart" id="btn-save-chart" aria-label="Save chart as image">
+            <svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+            Save
+          </button>
         </div>
         <!-- Transits-of-today panel — populated by JS from the ephemeris
              + the user's natal chart. Hidden until the toggle is on. -->
@@ -792,7 +799,7 @@ window.__ruedaOpts = function(ancho){
   };
 };
 </script>
-<script src="/js/share-card.js?v=10"></script>
+<script src="/js/share-card.js?v=11"></script>
 <script>
 (function(){
 'use strict';
@@ -1595,12 +1602,12 @@ function renderAll(){
           chartData: window.__currentChartData,
           lang:      'en',
           progress:  function(stage){ btn.textContent = stage + '…'; },
-        }).then(function(sharedNatively){
+        }).then(function(){
           btn.innerHTML = origHTML;
           btn.disabled = false;
-          if (sharedNatively === false && typeof window.LuzEstelar.toast === 'function') {
-            try { window.LuzEstelar.toast('Image downloaded', { kind:'success', duration: 3000 }); } catch (e) {}
-          }
+          // 2026-08-07: a second "Image downloaded" fired on the same `false`
+          // that a CANCELLED share sheet returned — two notices for a file
+          // that never existed. share-card.js owns the message now.
         }).catch(function(e){
           console.error('[share-chart] failed:', e);
           var msg = (e && e.message) ? e.message : 'unknown';
@@ -1614,6 +1621,44 @@ function renderAll(){
         flash('Error: ' + m, 6000);
       }
     });
+
+    // ── Save image (2026-08-07) — mirrors the Spanish page ──
+    var btnG = document.getElementById('btn-save-chart');
+    if (btnG && btnG.dataset.wired !== '1') {
+      btnG.dataset.wired = '1';
+      var gHTML = btnG.innerHTML;
+      btnG.addEventListener('click', function(){
+        if (window.LuzEstelar && window.LuzEstelar.haptic) window.LuzEstelar.haptic('tap');
+        if (!window.LuzEstelar || !window.LuzEstelar.ShareCard || !window.LuzEstelar.ShareCard.saveImage) {
+          return flash('Module not loaded — reload the app', 3500);
+        }
+        if (!window.__currentChartData || !window.__currentProfile) {
+          return flash('Your chart is still loading', 2500);
+        }
+        btnG.disabled = true; btnG.textContent = 'Generating…';
+        try {
+          window.LuzEstelar.ShareCard.build({
+            profile:   window.__currentProfile,
+            chartData: window.__currentChartData,
+            lang:      'en',
+            progress:  function(stage){ btnG.textContent = stage + '…'; },
+          }).then(function(blob){
+            btnG.innerHTML = gHTML; btnG.disabled = false;
+            window.LuzEstelar.ShareCard.saveImage(blob, { lang: 'en' });
+          }).catch(function(e){
+            btnG.innerHTML = gHTML; btnG.disabled = false;
+            console.error('[save-chart] failed:', e);
+            var msg = (e && e.message) ? e.message : 'unknown';
+            if (msg.length > 55) msg = msg.slice(0, 52) + '…';
+            flash('Error: ' + msg, 6000);
+          });
+        } catch (syncErr2) {
+          btnG.innerHTML = gHTML; btnG.disabled = false;
+          console.error('[save-chart] sync throw:', syncErr2);
+          flash('Could not save', 4000);
+        }
+      });
+    }
   })();
 
   // ── Chart toggle (3 views) — EN ──

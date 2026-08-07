@@ -397,7 +397,26 @@
 // costo varias sesiones estabilizarlo. A cambio su formato "simple" —que
 // exporta el lienzo pelado y no llevaba ninguna marca— ahora gana una.
 // natal-chart.js sube a ?v=30.
-const CACHE_NAME = 'luzestelar-v100';
+// v100 → v101 (Ago 7): EL AVISO DE COMPARTIR MENTIA. share() devolvia un
+// BOOLEANO y devolvia `false` en dos casos que no tienen nada que ver: cuando
+// habia descargado el archivo Y cuando el usuario CANCELABA la hoja del
+// sistema (AbortError). Quien recibia ese false anunciaba "Imagen descargada"
+// — y ademas lo hacia DOS VECES, porque mi-dia.html y en/my-day.html tenian su
+// propio toast con la misma condicion. Lo que vivia el usuario: abria
+// compartir, no encontraba "guardar imagen" en la hoja, la cerraba, y la app
+// le decia dos veces que la imagen estaba descargada. Se iba a buscar un
+// archivo que no existia.
+// Ahora share() devuelve un ESTADO: 'shared' | 'cancelled' | 'downloaded'.
+// Cancelar no anuncia nada. Los toast duplicados de las paginas se quitaron.
+// Y COMO NO HABIA MANERA DE GUARDAR: la hoja de compartir la dibuja el sistema
+// operativo y no siempre ofrece "guardar en galeria" — eso no es fallo nuestro,
+// pero dejaba al usuario sin salida. Nuevo boton "Guardar" en las dos paginas:
+// abre la imagen para pulsacion larga (el gesto que funciona en todas partes)
+// con enlace de descarga como alternativa, porque `<a download>` es irregular
+// en movil (no hace nada en navegadores embebidos, y en iOS guarda en Archivos
+// y no en Fotos, que es donde la gente la busca).
+// share-card.js sube a ?v=11.
+const CACHE_NAME = 'luzestelar-v101';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

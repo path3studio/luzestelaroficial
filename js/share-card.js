@@ -340,21 +340,32 @@
     var fileName = lang === 'en' ? 'luz-estelar-natal-chart.png' : 'luz-estelar-carta-natal.png';
     var file = new File([blob], fileName, { type: 'image/png' });
 
+    // 2026-08-07 — BUG QUE MENTÍA AL USUARIO. Esto devolvía un BOOLEANO, y
+    // devolvía `false` en dos casos que no tienen nada que ver: cuando había
+    // descargado el archivo Y cuando el usuario CANCELABA la hoja de compartir
+    // (AbortError). Quien recibía ese `false` anunciaba "Imagen descargada".
+    // Resultado real, reportado por el usuario: abría compartir, no encontraba
+    // "guardar imagen" en la hoja del sistema, la cerraba, y la app le decía
+    // que la imagen estaba descargada. Se iba a buscar un archivo inexistente.
+    //
+    // Ahora devuelve un ESTADO, no un sí/no:
+    //   'shared'     → el sistema aceptó el compartir
+    //   'cancelled'  → el usuario cerró la hoja. NO se anuncia nada.
+    //   'downloaded' → de verdad se disparó una descarga
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       return navigator.share({
         files: [file],
         title: t.title,
         text:  opts.caption || t.caption(opts.name || ''),
-      }).then(function () { return true; })
+      }).then(function () { return 'shared'; })
         .catch(function (e) {
-          // User cancellation throws AbortError — not a real failure.
-          if (e && e.name === 'AbortError') return false;
+          if (e && e.name === 'AbortError') return 'cancelled';
           console.warn('[share-card] share failed, falling back to download', e);
-          return downloadBlob(blob, fileName).then(function () { return false; });
+          return downloadBlob(blob, fileName).then(function () { return 'downloaded'; });
         });
     }
     // No Web Share → download
-    return downloadBlob(blob, fileName).then(function () { return false; });
+    return downloadBlob(blob, fileName).then(function () { return 'downloaded'; });
   }
 
   /**
@@ -423,12 +434,16 @@
     return Promise.race([builder(opts), timeoutPromise]).then(function (blob) {
       try { if (pending && pending.dismiss) pending.dismiss(); } catch (e) {}
       return share(blob, { lang: lang, name: (opts.profile && opts.profile.nombre) || '' })
-        .then(function (sharedNatively) {
+        .then(function (estado) {
           try {
-            if (toastFn) toastFn(sharedNatively ? t.ready : t.downloaded,
-                                 { kind: 'success', duration: 3000 });
+            // Si canceló, NO se le dice nada: no ha pasado nada que anunciar.
+            if (toastFn && estado === 'shared') {
+              toastFn(t.ready, { kind: 'success', duration: 3000 });
+            } else if (toastFn && estado === 'downloaded') {
+              toastFn(t.downloaded, { kind: 'success', duration: 3000 });
+            }
           } catch (e) {}
-          return sharedNatively;
+          return estado;
         });
     }).catch(function (e) {
       try { if (pending && pending.dismiss) pending.dismiss(); } catch (ex) {}
@@ -543,10 +558,86 @@
     };
   }
 
+  /**
+   * Guardar la imagen — 2026-08-07, reportado por el usuario: "no me sale la
+   * opción de guardar imagen, sí de compartir en muchas aplicaciones".
+   *
+   * Eso NO es un fallo nuestro: la hoja de compartir la dibuja el sistema
+   * operativo y en Android suele listar apps sin ofrecer "guardar en galería".
+   * Pero el usuario se queda sin salida, así que hay que darle una.
+   *
+   * Por qué un overlay y no solo `<a download>`: el atributo download es
+   * irregular en móvil — en Android Chrome baja a Descargas, pero dentro de
+   * los navegadores embebidos (Instagram, Facebook) no hace nada, y en iOS
+   * guarda en Archivos, no en Fotos, que es donde la gente la busca. La
+   * pulsación larga sobre un <img> sí funciona en todas partes y es el gesto
+   * que ya conoce todo el mundo. Se ofrecen LOS DOS y que elija el que le sirva.
+   */
+  function saveImage(blob, opts) {
+    opts = opts || {};
+    var lang = opts.lang === 'en' ? 'en' : 'es';
+    var esES = lang === 'es';
+    var fileName = esES ? 'luz-estelar-carta-natal.png' : 'luz-estelar-natal-chart.png';
+    var url = URL.createObjectURL(blob);
+
+    var capa = document.createElement('div');
+    capa.setAttribute('role', 'dialog');
+    capa.setAttribute('aria-modal', 'true');
+    capa.setAttribute('aria-label', esES ? 'Guardar tu carta' : 'Save your chart');
+    capa.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(8,6,18,.94);' +
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+      'gap:14px;padding:20px;overflow:auto;-webkit-backdrop-filter:blur(4px)';
+
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = esES ? 'Tu carta natal' : 'Your natal chart';
+    img.style.cssText = 'max-width:min(100%,340px);max-height:62vh;border-radius:12px;' +
+      'box-shadow:0 10px 40px rgba(0,0,0,.6)';
+
+    var pista = document.createElement('p');
+    pista.textContent = esES
+      ? 'Mantén pulsada la imagen para guardarla en tus fotos'
+      : 'Press and hold the image to save it to your photos';
+    pista.style.cssText = 'margin:0;color:#e0dce8;font-size:.82rem;text-align:center;' +
+      'font-family:Inter,system-ui,sans-serif;line-height:1.5;max-width:320px';
+
+    var bajar = document.createElement('a');
+    bajar.href = url; bajar.download = fileName;
+    bajar.textContent = esES ? 'o descargar el archivo' : 'or download the file';
+    bajar.style.cssText = 'color:#d4a849;font-size:.8rem;font-family:Inter,system-ui,sans-serif;' +
+      'text-decoration:underline;text-underline-offset:3px';
+
+    var cerrar = document.createElement('button');
+    cerrar.type = 'button';
+    cerrar.textContent = esES ? 'Cerrar' : 'Close';
+    cerrar.style.cssText = 'margin-top:4px;padding:10px 26px;border-radius:999px;cursor:pointer;' +
+      'border:1px solid rgba(212,168,73,.4);background:rgba(212,168,73,.1);color:#d4a849;' +
+      'font-family:Inter,system-ui,sans-serif;font-size:.82rem;font-weight:600';
+
+    function fuera() {
+      try { document.body.removeChild(capa); } catch (e) {}
+      URL.revokeObjectURL(url);
+      document.removeEventListener('keydown', porTecla);
+    }
+    function porTecla(e) { if (e.key === 'Escape') fuera(); }
+    cerrar.addEventListener('click', fuera);
+    capa.addEventListener('click', function (e) { if (e.target === capa) fuera(); });
+    document.addEventListener('keydown', porTecla);
+
+    capa.appendChild(img);
+    capa.appendChild(pista);
+    capa.appendChild(bajar);
+    capa.appendChild(cerrar);
+    document.body.appendChild(capa);
+    cerrar.focus();
+    return capa;
+  }
+
   // Expose
   ns.ShareCard = {
     build: build,
     share: share,
     buildAndShare: buildAndShare,
+    saveImage: saveImage,
   };
 })();
