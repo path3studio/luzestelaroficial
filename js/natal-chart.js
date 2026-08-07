@@ -124,7 +124,73 @@
    * Uses a 6-stop radial gradient (light-to-shadow) plus an outer halo.
    * Falls back to a flat fill if the name isn't in the sphere table.
    */
-  function drawPlanetSphere(ctx, x, y, r, name) {
+  // ── Texturas reales de los astros (NASA/ESA) ────────────────────────
+  // 2026-08-06 (pedido del usuario, con boceto): los cuerpos se dibujaban
+  // con degradados procedurales. Con `opts.realPlanets` se usan las fotos
+  // de website/assets/planets/. Se cargan una sola vez y de forma perezosa;
+  // mientras no estén listas se dibuja el degradado de siempre, así que
+  // nunca hay un hueco: el primer render sale procedural y el siguiente ya
+  // con foto (el canvas se redibuja al interactuar o al cargar la imagen).
+  var TEXTURE_FILE = {
+    Sun:'Sol', Moon:'Luna', Mercury:'Mercurio', Venus:'Venus', Mars:'Marte',
+    Jupiter:'Jupiter', Saturn:'Saturno', Uranus:'Urano', Neptune:'Neptuno',
+    Pluto:'Pluton', Earth:'Tierra'
+  };
+  var _tex = {};           // nombre → HTMLImageElement
+  var _texBase = '/assets/planets/';
+  // Oyentes de "ya cargó una textura". El módulo NO se repinta solo: si lo
+  // hiciera tendría que reusar las opciones del render anterior, y esas
+  // caducan (basta que la ventana cambie de tamaño para que el lienzo se
+  // quede clavado al tamaño viejo — pasó al probarlo). Quien dibuja sabe
+  // sus medidas actuales, así que se le avisa y él redibuja.
+  var _texListeners = [];
+  function _notifyTex() {
+    for (var i = 0; i < _texListeners.length; i++) {
+      try { _texListeners[i](); } catch (e) {}
+    }
+  }
+
+  function planetTexture(name) {
+    var f = TEXTURE_FILE[name];
+    if (!f) return null;
+    if (!_tex[f]) {
+      var img = new Image();
+      img.src = _texBase + f + '.png';
+      img.onload = _notifyTex;
+      _tex[f] = img;
+    }
+    var im = _tex[f];
+    return (im.complete && im.naturalWidth > 0) ? im : null;
+  }
+
+  /**
+   * Dibuja la textura recortada en círculo. Las fotos vienen sobre fondo
+   * negro (no transparente), así que sin el recorte se vería el cuadro.
+   */
+  function drawTexturedBody(ctx, x, y, r, img) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, TAU);
+    ctx.clip();
+    ctx.drawImage(img, x - r, y - r, r * 2, r * 2);
+    ctx.restore();
+  }
+
+  function drawPlanetSphere(ctx, x, y, r, name, useReal) {
+    if (useReal) {
+      var tx = planetTexture(name);
+      if (tx) {
+        var hl = PLANET_HALOS[name];
+        if (hl) {
+          var g = ctx.createRadialGradient(x, y, r * 0.9, x, y, r * 2.1);
+          g.addColorStop(0, hl); g.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(x, y, r * 2.1, 0, TAU); ctx.fill();
+        }
+        drawTexturedBody(ctx, x, y, r, tx);
+        return;
+      }
+    }
     var stops = PLANET_SPHERES[name];
     var halo  = PLANET_HALOS[name];
     if (!stops) {
@@ -296,6 +362,16 @@
     // dentro, para que cada figura respire de verdad. Es OPCIONAL: la web
     // sigue con la proporción actual hasta que se apruebe.
     var WIDE_CONST = opts.wideConstellations === true;
+    // opts.realPlanets: fotos reales en vez de degradados. Al terminar de
+    // cargar una textura se repinta solo, así el primer render no se queda
+    // a medias.
+    var REAL_BODIES = opts.realPlanets === true;
+    // opts.onTextureLoad: se llama cuando termina de cargar una textura, para
+    // que quien dibuja vuelva a hacerlo con sus medidas de AHORA.
+    if (REAL_BODIES && typeof opts.onTextureLoad === 'function' &&
+        _texListeners.indexOf(opts.onTextureLoad) === -1) {
+      _texListeners.push(opts.onTextureLoad);
+    }
     if (WIDE_CONST) signR = size * 0.255;
     var innerR = size * 0.30;
     var planetR = size * 0.24;
@@ -1133,7 +1209,7 @@
           ctx.restore();
         }
 
-        drawPlanetSphere(ctx, px, py, sphereR, p.name);
+        drawPlanetSphere(ctx, px, py, sphereR, p.name, REAL_BODIES);
 
         // Planet glyph (drawn on top of the sphere with a subtle
         // shadow so it stays legible against the gradient).
@@ -1290,7 +1366,7 @@
         var tx = cx + Math.cos(tAng) * transitR;
         var ty = cy + Math.sin(tAng) * transitR;
         var sphereR = size * 0.018;
-        drawPlanetSphere(ctx, tx, ty, sphereR, t.name);
+        drawPlanetSphere(ctx, tx, ty, sphereR, t.name, REAL_BODIES);
         // Faint silvery rim to signal "transit, not natal"
         ctx.strokeStyle = 'rgba(220,220,240,0.55)';
         ctx.lineWidth = 1;
@@ -1400,6 +1476,13 @@
       ctx.fillStyle = earthGlow;
       ctx.beginPath(); ctx.arc(cx, cy, earthR * 2.2, 0, TAU); ctx.fill();
 
+      // 2026-08-06: con `realPlanets`, la Tierra usa la foto real de la NASA
+      // (Blue Marble). Si aún no cargó, cae al dibujo de siempre.
+      var _earthTex = REAL_BODIES ? planetTexture('Earth') : null;
+      if (_earthTex) {
+        drawTexturedBody(ctx, cx, cy, earthR, _earthTex);
+      } else {
+
       // Earth sphere — blue oceans with warm continents
       var earthG = ctx.createRadialGradient(
         cx - earthR * 0.35, cy - earthR * 0.4, earthR * 0.08,
@@ -1439,6 +1522,7 @@
       spec.addColorStop(1.0, 'rgba(255,255,255,0)');
       ctx.fillStyle = spec;
       ctx.beginPath(); ctx.arc(cx, cy, earthR, 0, TAU); ctx.fill();
+      }   // fin del dibujo procedural de la Tierra
 
       // Hairline gold outline so it reads against the dark background
       ctx.strokeStyle = 'rgba(212,168,73,0.55)';

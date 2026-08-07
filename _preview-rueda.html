@@ -39,6 +39,7 @@ no toca el pipeline ni genera archivos.</p>
   </label>
   <label><input type="checkbox" id="producto"> Ver como sale el PNG del producto</label>
   <label><input type="checkbox" id="ancha"> <b>Banda ancha</b> (tu boceto)</label>
+  <label><input type="checkbox" id="reales" checked> <b>Planetas reales</b> (fotos NASA)</label>
   <label>Signo resaltado
     <select id="focus">
       <option value="">— ninguno —</option>
@@ -106,6 +107,7 @@ const alphaOut = document.getElementById('alphaOut');
 const focusEl  = document.getElementById('focus');
 const prodEl   = document.getElementById('producto');
 const anchaEl  = document.getElementById('ancha');
+const realesEl = document.getElementById('reales');
 
 // Las constelaciones reales dentro de la banda salen solo si se pasan los
 // catálogos; el renderizador ya sabe proyectarlas (usa sky-map.js para la
@@ -133,6 +135,8 @@ function draw(){
     wedgeAlpha: a,
     signFocus: focusEl.value || null,
     wideConstellations: anchaEl.checked,
+    realPlanets: realesEl.checked,
+    onTextureLoad: draw,   // redibuja con las medidas de ahora
   };
   LuzEstelar.NatalChart.render(document.getElementById('w-page'), CHART, base);
 
@@ -155,7 +159,7 @@ function draw(){
   LuzEstelar.NatalChart.render(document.getElementById('w-video'), CHART, vid);
 }
 
-[wedgesEl, alphaEl, focusEl, prodEl, anchaEl].forEach(el => el.addEventListener('input', draw));
+[wedgesEl, alphaEl, focusEl, prodEl, anchaEl, realesEl].forEach(el => el.addEventListener('input', draw));
 window.addEventListener('resize', draw);
 </script>
 </body>

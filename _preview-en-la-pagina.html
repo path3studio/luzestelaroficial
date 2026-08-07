@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — La rueda dentro de la página</title>
+<link rel="icon" href="/app_icon_192.png">
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link rel="stylesheet" href="/css/icons.css">
+<style>
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font-body);margin:0;padding:20px 0 40px}
+h1{font-family:var(--font-display);color:var(--gold);text-align:center;font-size:1.3rem;margin:0 0 4px}
+.nota{text-align:center;color:var(--text-dim);font-size:.74rem;margin:0 auto 18px;max-width:460px;line-height:1.5;padding:0 14px}
+.marco{max-width:390px;margin:0 auto;border:1px solid var(--glass-b);border-radius:26px;
+  padding:10px 0 18px;background:rgba(255,255,255,.015)}
+/* ── Reglas reales copiadas de mi-dia.html ── */
+main{max-width:520px;margin:0 auto;padding:0 14px 90px}
+.slbl{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:600;color:rgba(212,168,73,.78);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 6px}
+.slbl .ic{font-size:.82rem;opacity:.85}
+.slbl .badge-new{margin-left:auto;font-size:.58rem;padding:1px 6px;border-radius:6px;background:rgba(124,92,191,.18);color:var(--purple);letter-spacing:.04em;font-weight:600}
+.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(212,168,73,.06),0 1px 14px rgba(0,0,0,.2)}
+.card-tight{padding:11px 13px}
+.chart-wrap{display:flex;justify-content:center;padding:4px 0}
+.chart-meta{text-align:center;font-size:.7rem;color:var(--text-mute);margin-top:4px}
+.chart-toggle{display:flex;justify-content:center;gap:4px;margin-top:14px;padding:4px;background:rgba(255,255,255,.03);border:1px solid var(--glass-b);border-radius:999px;max-width:280px;margin-left:auto;margin-right:auto}
+.chart-toggle .ch-tab{flex:1;padding:8px 14px;border:none;background:transparent;color:var(--text-dim);font-family:inherit;font-size:.76rem;font-weight:500;cursor:pointer;border-radius:999px;transition:color .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.chart-toggle .ch-tab.is-on{background:linear-gradient(135deg,var(--gold-dim),rgba(124,92,191,.12));color:var(--gold);font-weight:600;box-shadow:inset 0 1px 0 rgba(212,168,73,.15)}
+.chart-toggle .ch-tab:active{transform:scale(.97)}
+.chart-info{margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,168,73,.05),rgba(124,92,191,.03));border:1px solid var(--glass-b);border-radius:var(--r-lg);animation:fadeInUp .28s ease-out}
+.chart-info .ci-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.chart-info .ci-glyph{font-family:'Noto Sans Symbols 2',serif;font-size:1.7rem;line-height:1;color:var(--gold);font-variant-emoji:text}
+.chart-info .ci-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text);font-weight:600}
+.chart-info .ci-pos{font-size:.75rem;color:var(--gold);letter-spacing:.04em;font-weight:500;margin-left:auto;padding:4px 10px;border-radius:999px;background:var(--gold-dim)}
+.chart-info .ci-desc{font-size:.82rem;color:var(--text-dim);line-height:1.55}
+.chart-info .ci-close{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text-mute);font-size:1rem;cursor:pointer;padding:4px 6px}
+.chart-info{position:relative}
+</style></head><body>
+<h1>La rueda dentro de la página</h1>
+<p class="nota">Reproducción del contexto de <b>mi-día</b> con sus propios estilos y el tamaño
+real de teléfono (la carta se dibuja a 320&nbsp;px como en la app).</p>
+
+<div class="marco">
+  <main>
+    <div class="card">
+      <div class="slbl"><span class="le-ic" data-icon="luna-astro"></span> Carta natal</div>
+      <div class="chart-wrap">
+        <canvas id="natal" style="cursor:pointer"></canvas>
+      </div>
+      <p class="chart-meta" id="chart-meta">Ernesto · 1993-09-09 14:33</p>
+      <div class="chart-toggle" role="tablist">
+        <button type="button" class="ch-tab is-on" role="tab" aria-selected="true">Carta natal</button>
+        <button type="button" class="ch-tab" role="tab" aria-selected="false">Cielo al nacer</button>
+        <button type="button" class="ch-tab" role="tab" aria-selected="false">Cielo hoy</button>
+      </div>
+      <details style="margin-top:12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:12px 16px">
+        <summary style="cursor:pointer;font-size:.8rem;color:var(--gold);font-weight:600;list-style:none">✦ ¿Qué estoy viendo?</summary>
+        <ul style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;font-size:.76rem;line-height:1.55;color:var(--text-dim);text-align:left">
+          <li><b style="color:var(--text)">El aro exterior</b> — los 12 signos, cada uno con el color de su elemento, y dentro la constelación que le da nombre.</li>
+          <li><b style="color:var(--text)">Las líneas que cruzan</b> — los aspectos: ángulos notables entre dos planetas.</li>
+          <li><b style="color:var(--text)">ASC y MC</b> — dependen de tu hora exacta: son lo que hace tu carta única.</li>
+        </ul>
+      </details>
+    </div>
+  </main>
+</div>
+
+<script>
+const _v='?nc='+Date.now();
+function loadJS(src){return new Promise((ok,err)=>{const e=document.createElement('script');
+  e.src=src+_v;e.onload=ok;e.onerror=err;document.head.appendChild(e);});}
+const CHART={
+  planets:[{name:'Sun',longitude:167.25},{name:'Moon',longitude:84.14},{name:'Mercury',longitude:177.32},
+    {name:'Venus',longitude:135.87},{name:'Mars',longitude:198.61},{name:'Jupiter',longitude:196.97},
+    {name:'Saturn',longitude:325.52},{name:'Uranus',longitude:292.4},{name:'Neptune',longitude:288.9},
+    {name:'Pluto',longitude:232.1}],
+  aspects:[{planet1:'Sun',planet2:'Mercury',aspect:'conjunction',orb:10.1},
+    {planet1:'Moon',planet2:'Saturn',aspect:'square',orb:2.4},
+    {planet1:'Venus',planet2:'Mars',aspect:'opposition',orb:1.3},
+    {planet1:'Jupiter',planet2:'Pluto',aspect:'trine',orb:3.1}],
+  ascendant:{sign:'Cáncer',longitude:104.2}, midheaven:{sign:'Aries',longitude:14.8},
+  ascendantVerified:true,
+};
+Promise.all([
+  loadJS('/js/astro-glyphs.js').then(()=>loadJS('/js/sky-map.js')).then(()=>loadJS('/js/natal-chart.js')),
+  loadJS('/js/icons.js'),
+  fetch('/data/constellations_zodiac.json').then(r=>r.json()),
+  fetch('/data/stars_zodiac.json').then(r=>r.json()),
+]).then(([,,zc,zs])=>{
+  CHART.zodiacFigures={constellations:zc.constellations,stars:zs.stars};
+  const c=document.getElementById('natal');
+  const w=c.parentElement.offsetWidth;
+  // EXACTAMENTE lo que hace mi-dia.html: size = min(ancho, 320)
+  LuzEstelar.NatalChart.render(c,CHART,{size: w>0?Math.min(w,320):280});
+  if(window.LuzEstelarIcons) LuzEstelarIcons.hydrate(document);
+});
+</script></body></html>
