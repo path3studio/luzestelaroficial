@@ -794,6 +794,30 @@
           if (Math.abs(dLon) > maxDLon) maxDLon = Math.abs(dLon);
           if (Math.abs(dLat) > maxDLat) maxDLat = Math.abs(dLat);
         }
+        // 2026-08-06 (user: "a Cáncer y Libra, darles la vuelta para que se
+        // vean más grandes y aprovechen el espacio"): el sector es mucho más
+        // ancho que alto, así que una figura cuyo eje largo cae en vertical
+        // desperdicia todo el arco. Se calcula su eje principal y se gira
+        // para acostarlo sobre el arco. Al ser un EMBLEMA —no una posición
+        // del cielo— girarlo es legítimo, y beneficia a las doce.
+        var Sxx = 0, Syy = 0, Sxy = 0;
+        for (var vi = 0; vi < order.length; vi++) {
+          var o0 = off[order[vi]];
+          Sxx += o0.dLon * o0.dLon; Syy += o0.dLat * o0.dLat;
+          Sxy += o0.dLon * o0.dLat;
+        }
+        var giro = 0.5 * Math.atan2(2 * Sxy, Sxx - Syy);
+        var cg = Math.cos(giro), sg = Math.sin(giro);
+        maxDLon = 0.001; maxDLat = 0.001;
+        for (var ri = 0; ri < order.length; ri++) {
+          var o1 = off[order[ri]];
+          var nl =  o1.dLon * cg + o1.dLat * sg;
+          var nb = -o1.dLon * sg + o1.dLat * cg;
+          o1.dLon = nl; o1.dLat = nb;
+          if (Math.abs(nl) > maxDLon) maxDLon = Math.abs(nl);
+          if (Math.abs(nb) > maxDLat) maxDLat = Math.abs(nb);
+        }
+
         // 2026-08-06 (user: "Aries está demasiado larga, Tauro muy pequeña"):
         // con una sola escala isotrópica, una figura ancha y plana como Aries
         // se estira por el arco y queda larguísima, mientras que una compacta
@@ -842,10 +866,17 @@
           var ex = chartData.zodiacFigures.extraStars;
           for (var xi = 0; xi < ex.length; xi++) {
             var e = ex[xi];
-            var eLon = ((e[0] - cLon + 540) % 360) - 180;
-            var eLat = e[1] - cLat;
-            if (Math.abs(eLon * kx) > MAX_ARC / 2 + size * 0.012) continue;
-            if (Math.abs(eLat * ky) > MAX_RAD / 2 + size * 0.006) continue;
+            var eL0 = ((e[0] - cLon + 540) % 360) - 180;
+            var eB0 = e[1] - cLat;
+            // mismo giro que la figura, para que acompañen
+            var eLon =  eL0 * cg + eB0 * sg;
+            var eLat = -eL0 * sg + eB0 * cg;
+            // 2026-08-06 (user): el campo de estrellas ya no se corta en la
+            // banda — se extiende hasta el borde del disco, donde está el
+            // glifo del signo, y hacia dentro un poco.
+            if (Math.abs(eLon * kx) > MAX_ARC / 2 + size * 0.030) continue;
+            var _rr = bC + eLat * ky;
+            if (_rr < signR - size * 0.012 || _rr > outerR + size * 0.052) continue;
             var er = bC + eLat * ky;
             var epx = cx + rx * er + ux * eLon * kx;
             var epy = cy + ry * er + uy * eLon * kx;

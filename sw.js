@@ -185,7 +185,7 @@
 // Add Profile sheet 400ms after hydrate — Compat's "Agregar otro
 // perfil" CTA now uses it, collapsing a 3-tap flow (Compat → Inicio
 // → scroll → + Agregar perfil) to 1 tap. (3) Scripts bumped:
-// transits.js?v=2, natal-chart.js?v=22.
+// transits.js?v=2, natal-chart.js?v=23.
 // v58 → v59 (Apr 19 p15.1): ROOT CAUSE of "no puedo guardar perfil"
 // finally found. #le-tabs (the PWA bottom-tabs bar) is fixed-positioned
 // at z-index 9999 — the Add Profile modal sheet was at z-index 81.
@@ -331,7 +331,7 @@
 // v82 → v83 (Ago 6): nueva /en/offline.html. La pagina de respaldo sin
 // conexion era unica y estaba en espanol, asi que un lector bajo /en/ veia
 // "Sin conexion". Ahora la rama de navegacion elige segun la ruta.
-const CACHE_NAME = 'luzestelar-v91';
+const CACHE_NAME = 'luzestelar-v92';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
