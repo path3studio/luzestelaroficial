@@ -136,6 +136,23 @@
     Jupiter:'Jupiter', Saturn:'Saturno', Uranus:'Urano', Neptune:'Neptuno',
     Pluto:'Pluton', Earth:'Tierra'
   };
+  // 2026-08-06 (pedido del usuario: "que tenga algo de realismo, aunque sea
+  // lo mínimo"): el radio real va de 1.188 km (Plutón) a 696.000 (Sol) —
+  // 586 veces. A escala directa el Sol tapaba la rueda y Plutón sería
+  // invisible. Con escala logarítmica el orden es el de verdad —Júpiter
+  // mayor que la Tierra, la Tierra mayor que Marte— dentro de un rango
+  // dibujable. Fracción de `size`.
+  var BODY_R = {
+    Sun:0.0275, Jupiter:0.0228, Saturn:0.0224, Uranus:0.0207, Neptune:0.0207,
+    Earth:0.0179, Venus:0.0178, Mars:0.0166, Mercury:0.0160, Moon:0.0153,
+    Pluto:0.0145
+  };
+  // Saturno se dibuja en un recuadro MAYOR que su disco: en la foto los
+  // anillos ocupan el ancho y el cuerpo solo ~1/3 del alto, así que al
+  // encajarlo como los demás el planeta salía diminuto. Con 2.8 el CUERPO
+  // mide como el resto y los anillos sobresalen, que es lo correcto.
+  var TEX_BOX = { Saturn: 2.8 };
+
   var _tex = {};           // nombre → HTMLImageElement
   var _texBase = '/assets/planets/';
   // Oyentes de "ya cargó una textura". El módulo NO se repinta solo: si lo
@@ -167,13 +184,12 @@
    * Dibuja la textura recortada en círculo. Las fotos vienen sobre fondo
    * negro (no transparente), así que sin el recorte se vería el cuadro.
    */
-  function drawTexturedBody(ctx, x, y, r, img) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, TAU);
-    ctx.clip();
-    ctx.drawImage(img, x - r, y - r, r * 2, r * 2);
-    ctx.restore();
+  function drawTexturedBody(ctx, x, y, r, img, name) {
+    // Las texturas vienen con fondo transparente, así que no hace falta
+    // recortarlas en círculo — y recortar estropeaba a Saturno, cuyos
+    // anillos deben salirse del disco.
+    var box = r * (TEX_BOX[name] || 1);
+    ctx.drawImage(img, x - box, y - box, box * 2, box * 2);
   }
 
   function drawPlanetSphere(ctx, x, y, r, name, useReal) {
@@ -187,7 +203,7 @@
           ctx.fillStyle = g;
           ctx.beginPath(); ctx.arc(x, y, r * 2.1, 0, TAU); ctx.fill();
         }
-        drawTexturedBody(ctx, x, y, r, tx);
+        drawTexturedBody(ctx, x, y, r, tx, name);
         return;
       }
     }
@@ -467,7 +483,7 @@
       // opts.wedgeAlpha ajusta la intensidad de la franja "par"; la impar y
       // la del signo enfocado se derivan de ella para que la relación entre
       // las tres se mantenga al subir o bajar el tono.
-      var wA = (typeof opts.wedgeAlpha === 'number') ? opts.wedgeAlpha : 0.045;
+      var wA = (typeof opts.wedgeAlpha === 'number') ? opts.wedgeAlpha : 0.069;
       var wAodd   = wA / 3;
       var wAfocus = Math.min(wA * 2.2, 0.30);
       for (var fw = 0; fw < 12; fw++) {
@@ -817,6 +833,30 @@
           ctx.lineTo(pb.x, pb.y);
           ctx.stroke();
         }
+        // 2026-08-06 (pedido del usuario: "me gustaría verlas con más
+        // estrellas"): además de la figura, se salpican las estrellas REALES
+        // del entorno tomadas del catálogo Hipparcos (opts.denseStars), sin
+        // unirlas: la figura sigue leyéndose y el sector deja de verse vacío.
+        // No se inventan líneas — eso es justo lo que no se puede hacer a ojo.
+        if (opts.denseStars && chartData.zodiacFigures.extraStars) {
+          var ex = chartData.zodiacFigures.extraStars;
+          for (var xi = 0; xi < ex.length; xi++) {
+            var e = ex[xi];
+            var eLon = ((e[0] - cLon + 540) % 360) - 180;
+            var eLat = e[1] - cLat;
+            if (Math.abs(eLon * kx) > MAX_ARC / 2 + size * 0.012) continue;
+            if (Math.abs(eLat * ky) > MAX_RAD / 2 + size * 0.006) continue;
+            var er = bC + eLat * ky;
+            var epx = cx + rx * er + ux * eLon * kx;
+            var epy = cy + ry * er + uy * eLon * kx;
+            var erad = Math.max(0.5, (5.6 - e[2]) * (size / 1500));
+            ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.55)' : 'rgba(255,250,235,0.3)';
+            ctx.beginPath();
+            ctx.arc(epx, epy, erad, 0, TAU);
+            ctx.fill();
+          }
+        }
+
         // Estrellas: el tamaño sigue la magnitud, como en el cielo
         for (var sj = 0; sj < order.length; sj++) {
           var pp = place(order[sj]);
@@ -1186,9 +1226,11 @@
 
         // Realistic planet sphere (radial gradient + halo + optional rings).
         // Sol/Luna get bigger radii because they're the attention anchors.
-        var sphereR = size * (p.name === 'Sun' ? 0.024
-                            : p.name === 'Moon' ? 0.022
-                            : 0.019);
+        var sphereR = size * (REAL_BODIES && BODY_R[p.name] !== undefined
+                            ? BODY_R[p.name]
+                            : (p.name === 'Sun' ? 0.024
+                             : p.name === 'Moon' ? 0.022
+                             : 0.019));
 
         // 2026-04-29 sign-focus: ruler planet of the focused sign gets a
         // bright outer halo ring before the sphere is drawn — viewer's
@@ -1480,7 +1522,7 @@
       // (Blue Marble). Si aún no cargó, cae al dibujo de siempre.
       var _earthTex = REAL_BODIES ? planetTexture('Earth') : null;
       if (_earthTex) {
-        drawTexturedBody(ctx, cx, cy, earthR, _earthTex);
+        drawTexturedBody(ctx, cx, cy, earthR, _earthTex, 'Earth');
       } else {
 
       // Earth sphere — blue oceans with warm continents

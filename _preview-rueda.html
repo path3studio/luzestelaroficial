@@ -34,12 +34,13 @@ no toca el pipeline ni genera archivos.</p>
 <div class="controls">
   <label><input type="checkbox" id="wedges" checked> Franjas hasta la Tierra</label>
   <label>Intensidad
-    <input type="range" id="alpha" min="0" max="120" value="28">
+    <input type="range" id="alpha" min="0" max="120" value="69">
     <output id="alphaOut">0.045</output>
   </label>
   <label><input type="checkbox" id="producto"> Ver como sale el PNG del producto</label>
   <label><input type="checkbox" id="ancha"> <b>Banda ancha</b> (tu boceto)</label>
   <label><input type="checkbox" id="reales" checked> <b>Planetas reales</b> (fotos NASA)</label>
+  <label><input type="checkbox" id="densas" checked> <b>Más estrellas</b> (Hipparcos)</label>
   <label>Signo resaltado
     <select id="focus">
       <option value="">— ninguno —</option>
@@ -108,6 +109,7 @@ const focusEl  = document.getElementById('focus');
 const prodEl   = document.getElementById('producto');
 const anchaEl  = document.getElementById('ancha');
 const realesEl = document.getElementById('reales');
+const densasEl = document.getElementById('densas');
 
 // Las constelaciones reales dentro de la banda salen solo si se pasan los
 // catálogos; el renderizador ya sabe proyectarlas (usa sky-map.js para la
@@ -116,10 +118,20 @@ Promise.all([
   libsReady,
   fetch('/data/constellations_zodiac.json').then(r => r.json()),
   fetch('/data/stars_zodiac.json').then(r => r.json()),
-]).then(([, zc, zs]) => {
+  fetch('/data/stars-full.json').then(r => r.json()).catch(() => ({stars:[]})),
+]).then(([, zc, zs, full]) => {
   // Las 12 figuras curadas (las mismas del video), normalizadas por el
   // renderizador para que las doce ocupen lo mismo.
-  CHART.zodiacFigures = { constellations: zc.constellations, stars: zs.stars };
+  // Estrellas de relleno: se convierten UNA vez a coordenadas eclípticas
+  // [lon, lat, magnitud] — el renderizador solo las coloca.
+  const e2e = LuzEstelar.SkyMap.equatorialToEcliptic;
+  const extra = (full.stars || [])
+    .map(st => { const e = e2e(st[2], st[3]); return [e.lon, e.lat, st[4]]; })
+    .filter(e => Math.abs(e[1]) < 22);
+  CHART.zodiacFigures = {
+    constellations: zc.constellations, stars: zs.stars, extraStars: extra,
+  };
+  console.log('estrellas de relleno cerca de la eclíptica:', extra.length);
   draw();
 });
 
@@ -136,6 +148,7 @@ function draw(){
     signFocus: focusEl.value || null,
     wideConstellations: anchaEl.checked,
     realPlanets: realesEl.checked,
+    denseStars: densasEl.checked,
     onTextureLoad: draw,   // redibuja con las medidas de ahora
   };
   LuzEstelar.NatalChart.render(document.getElementById('w-page'), CHART, base);
@@ -159,7 +172,7 @@ function draw(){
   LuzEstelar.NatalChart.render(document.getElementById('w-video'), CHART, vid);
 }
 
-[wedgesEl, alphaEl, focusEl, prodEl, anchaEl, realesEl].forEach(el => el.addEventListener('input', draw));
+[wedgesEl, alphaEl, focusEl, prodEl, anchaEl, realesEl, densasEl].forEach(el => el.addEventListener('input', draw));
 window.addEventListener('resize', draw);
 </script>
 </body>
