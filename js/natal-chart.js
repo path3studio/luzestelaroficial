@@ -143,7 +143,7 @@
   // mayor que la Tierra, la Tierra mayor que Marte— dentro de un rango
   // dibujable. Fracción de `size`.
   var BODY_R = {
-    Sun:0.0275, Jupiter:0.0228, Saturn:0.0224, Uranus:0.0207, Neptune:0.0207,
+    Sun:0.0440, Jupiter:0.0228, Saturn:0.0224, Uranus:0.0207, Neptune:0.0207,
     Earth:0.0179, Venus:0.0178, Mars:0.0166, Mercury:0.0160, Moon:0.0153,
     Pluto:0.0145
   };
@@ -151,7 +151,12 @@
   // anillos ocupan el ancho y el cuerpo solo ~1/3 del alto, así que al
   // encajarlo como los demás el planeta salía diminuto. Con 2.8 el CUERPO
   // mide como el resto y los anillos sobresalen, que es lo correcto.
-  var TEX_BOX = { Saturn: 2.8 };
+  // 2026-08-06 (user: "¿Saturno no está más grande que el Sol?" — lo estaba,
+  // 24px de anillos contra 11,6 del Sol). Dos correcciones: la textura web de
+  // Saturno se recortó a 1.75x su cuerpo (anillos visibles, sin las puntas) y
+  // el Sol subió a 0.044. En escala logarítmica el Sol quedaba a solo 1.23x
+  // del cuerpo de Saturno, así que CUALQUIER anillo visible lo superaba.
+  var TEX_BOX = { Saturn: 1.75 };
 
   var _tex = {};           // nombre → HTMLImageElement
   var _texBase = '/assets/planets/';
