@@ -380,7 +380,24 @@
 // (opcion `watermark`), verificado a 3972 / 14209 / 30046 px en dpr 1/2/3.
 // Solo cambia HTML, que nunca se cachea; sky-map.js se queda en ?v=3 porque
 // no se toco.
-const CACHE_NAME = 'luzestelar-v99';
+// v99 → v100 (Ago 7): firma de marca en la rueda de /mi-dia. NO es marca de
+// agua — no busca estropear nada. La rueda es lo que la gente fotografia con
+// la captura del telefono, y esa imagen viajaba sin decir de donde salio; el
+// boton de compartir ya marca lo suyo, esto cubre la captura manual.
+// Es OPCION del renderizador (`brandMark`), no algo fijo: la pasan solo
+// mi-dia.html y en/my-day.html. daily_chart_template.html NO la pasa, asi que
+// el video y el PNG del producto no la heredan — ni ahora ni cuando se
+// descongele el renderizador (el pinned ni siquiera conoce la opcion).
+// Va en la esquina inferior derecha, fuera del disco (outerR = 0.42·size), asi
+// que no puede tapar glifos, nombres de signo ni planetas salga la carta que
+// salga. Verificada legible a 320 px (telefono) y 420 px (escritorio).
+// EFECTO CONOCIDO Y ACEPTADO: share-card.js copia el lienzo con drawImage, asi
+// que en su formato "full" el dominio sale dos veces (aqui y en el pie). No se
+// toca share-card: tiene historial de colgarse en el telefono del usuario y
+// costo varias sesiones estabilizarlo. A cambio su formato "simple" —que
+// exporta el lienzo pelado y no llevaba ninguna marca— ahora gana una.
+// natal-chart.js sube a ?v=30.
+const CACHE_NAME = 'luzestelar-v100';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

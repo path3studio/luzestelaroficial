@@ -1740,6 +1740,36 @@
       ctx.arc(cx, cy, size * 0.005, 0, TAU);
       ctx.fill();
     }
+
+    // ── Firma de marca (2026-08-07, pedido del usuario) ─────────────────
+    // NO es una marca de agua: no busca estropear nada. La rueda es lo que
+    // la gente fotografía con la captura del teléfono, y esa imagen viajaba
+    // sin decir de dónde salió. El botón de compartir ya marca lo suyo
+    // (share-card.js); esto cubre la captura manual.
+    //
+    // Es OPCIONAL a propósito. El video y el PNG del producto NO la pasan
+    // —el usuario la quiso solo en /mi-dia—, así que no la heredarán ni
+    // siquiera cuando se descongele el renderizador del video.
+    //
+    // Va en la esquina, fuera del disco (outerR = 0.42·size, así que las
+    // cuatro esquinas están libres): no puede tapar ningún glifo, ningún
+    // nombre de signo ni ningún planeta, salga la carta que salga.
+    // OJO: share-card.js copia este lienzo tal cual (drawImage), así que en
+    // su formato "full" el dominio sale DOS veces — aquí y en el pie de la
+    // tarjeta. Se deja a propósito: ese archivo tiene historial de colgarse
+    // en el teléfono del usuario y no se toca por un detalle estético. A
+    // cambio, el formato "simple" —que exporta el lienzo pelado y hoy no
+    // lleva ninguna marca— gana una. Por eso va discreta (alpha 0.32).
+    if (opts.brandMark) {
+      ctx.save();
+      var bmPx = Math.max(8, Math.round(size * 0.023));
+      ctx.font = '500 ' + bmPx + 'px Inter, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillStyle = 'rgba(212,168,73,0.32)';
+      ctx.fillText(opts.brandMark, size - bmPx * 0.8, size - bmPx * 0.6);
+      ctx.restore();
+    }
   }
 
   /**
