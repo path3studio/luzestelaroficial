@@ -846,7 +846,9 @@
           Sxx += o0.dLon * o0.dLon; Syy += o0.dLat * o0.dLat;
           Sxy += o0.dLon * o0.dLat;
         }
-        var giro = 0.5 * Math.atan2(2 * Sxy, Sxx - Syy);
+        // opts.rotateFigures === false → se respeta la orientación real
+        var giro = (opts.rotateFigures === false)
+          ? 0 : 0.5 * Math.atan2(2 * Sxy, Sxx - Syy);
         var cg = Math.cos(giro), sg = Math.sin(giro);
         maxDLon = 0.001; maxDLat = 0.001;
         for (var ri = 0; ri < order.length; ri++) {
