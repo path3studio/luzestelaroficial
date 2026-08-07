@@ -750,6 +750,27 @@
           };
         })();
 
+    // 2026-08-07: el relleno de estrellas de la banda (`extraStars`) venía
+    // ya convertido a coordenadas eclípticas, así que cada página tenía que
+    // repetir la trigonometría — y encima apoyándose en sky-map.js, que se
+    // carga TARDE (solo cuando el usuario abre la vista del cielo). En la
+    // primera pintada no existía y la banda salía vacía.
+    //
+    // Ahora se acepta también el catálogo CRUDO en `extraStarsEq`, con las
+    // filas tal cual vienen de stars-full.json ([·, ·, AR, dec, magnitud]).
+    // La conversión ocurre aquí, una sola vez, con la función de arriba, y
+    // se guarda en el propio objeto para no rehacerla en cada repintado.
+    if (chartData.zodiacFigures && !chartData.zodiacFigures.extraStars &&
+        chartData.zodiacFigures.extraStarsEq) {
+      var _crudas = chartData.zodiacFigures.extraStarsEq, _conv = [];
+      for (var _ci = 0; _ci < _crudas.length; _ci++) {
+        var _e = _eq2ecl(_crudas[_ci][2], _crudas[_ci][3]);
+        // solo lo que cae cerca de la eclíptica: el resto no entra en la banda
+        if (Math.abs(_e.lat) < 22) _conv.push([_e.lon, _e.lat, _crudas[_ci][4]]);
+      }
+      chartData.zodiacFigures.extraStars = _conv;
+    }
+
     // ── Polvo de estrellas del interior (2026-08-06) ───────────────────
     // Pedido del usuario: que el centro tenga el mismo cielo de fondo que la
     // banda, pero con la opacidad ANTERIOR (más discreta) — dentro viven los

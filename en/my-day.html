@@ -770,7 +770,25 @@ body.modal-open #le-tabs{display:none !important}
 <script src="/js/cross-cultural.js"></script>
 <script src="/js/transits.js?v=3"></script>
 <script src="/js/astro-glyphs.js?v=2"></script>
-<script src="/js/natal-chart.js?v=28"></script>
+<script src="/js/natal-chart.js?v=29"></script>
+<script>
+// Ver la nota en mi-dia.html: mismo acomodo geocéntrico en la página, el
+// video y el producto. Aquí se añaden las abreviaturas de signo en inglés,
+// que es lo único que cambia respecto a la versión en español.
+// Ver la nota de tamaño en mi-dia.html.
+window.__ruedaOpts = function(ancho){
+  return {
+    size: ancho > 0 ? Math.min(ancho, 420) : 300,
+    geocentricOrbits: true,
+    realPlanets: true,
+    denseStars: true,
+    rotateFigures: true,
+    fullWedges: true,
+    wedgeAlpha: 0.033,
+    signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS'],
+  };
+};
+</script>
 <script src="/js/share-card.js?v=10"></script>
 <script>
 (function(){
@@ -1076,7 +1094,7 @@ function renderAll(){
     var natalCanvas=document.getElementById('natal');
     // Compute size from available width; fallback to 280px if parent isn't laid out yet.
     var parentW=natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
-    var size=parentW>0 ? Math.min(parentW, 320) : 280;
+    var size=parentW;   // __ruedaOpts decide el tope
     // Stash for the toggle + tap-to-identify handlers below.
     window.__currentChartData = chartData;
     window.__currentProfile = currentProfile;
@@ -1085,6 +1103,8 @@ function renderAll(){
     if (window.__skyCatalogs) {
       chartData.starCatalog = window.__skyCatalogs.stars;
       chartData.constellationCatalog = window.__skyCatalogs.constellations;
+      if (window.__skyCatalogs.zodiacFigures)
+        chartData.zodiacFigures = window.__skyCatalogs.zodiacFigures;
     }
 
     // Today's transits (parity with ES). Computed eagerly so the panel
@@ -1122,7 +1142,7 @@ function renderAll(){
       }
     } catch (e) { console.warn('[transits EN]', e); }
 
-    LuzEstelar.NatalChart.render(natalCanvas, chartData, {size:size, signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS']});
+    LuzEstelar.NatalChart.render(natalCanvas, chartData, window.__ruedaOpts(size));
     // Panel visibility mirrors the toggle
     if (window.__transitsVisible && window.populateTransitsPanelEN) {
       window.populateTransitsPanelEN(window.__currentTransitAspects);
@@ -1187,17 +1207,36 @@ function renderAll(){
     Promise.all([
       fetch('/data/stars.json').then(function(r){ return r.json(); }),
       fetch('/data/constellations.json').then(function(r){ return r.json(); }),
+      // 2026-08-07: la página EN se quedó atrás — cargaba solo el catálogo
+      // base, así que la rueda geocéntrica habría salido sin las 12 figuras
+      // zodiacales ni el relleno de la banda. Ahora pide lo mismo que la ES.
+      fetch('/data/stars-full.json').then(function(r){ return r.json(); })
+        .catch(function(){ return { stars: [] }; }),
+      fetch('/data/constellations_zodiac.json').then(function(r){ return r.json(); })
+        .catch(function(){ return null; }),
+      fetch('/data/stars_zodiac.json').then(function(r){ return r.json(); })
+        .catch(function(){ return null; }),
     ]).then(function(results){
-      window.__skyCatalogs = { stars: results[0], constellations: results[1] };
+      window.__skyCatalogs = {
+        stars: results[0],
+        constellations: results[1],
+        starsFull: results[0].stars.concat((results[2] && results[2].stars) || []),
+        zodiacFigures: (results[3] && results[4])
+          ? { constellations: results[3].constellations, stars: results[4].stars,
+              extraStarsEq: (results[2] && results[2].stars) || [] }
+          : null,
+      };
       try {
         if (window.__currentChartData) {
           window.__currentChartData.starCatalog = results[0];
           window.__currentChartData.constellationCatalog = results[1];
+          if (window.__skyCatalogs.zodiacFigures)
+            window.__currentChartData.zodiacFigures = window.__skyCatalogs.zodiacFigures;
           var canv = document.getElementById('natal');
           if (canv) {
             var w = canv.parentElement.offsetWidth;
             LuzEstelar.NatalChart.render(canv, window.__currentChartData,
-              { size: w > 0 ? Math.min(w, 320) : 280, signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS'] });
+              window.__ruedaOpts(w));
           }
         }
       } catch(e){ console.warn('[sky reload]', e); }
@@ -1508,8 +1547,7 @@ function renderAll(){
       }
       try {
         var w = canv.parentElement.offsetWidth;
-        LuzEstelar.NatalChart.render(canv, data, { size: w > 0 ? Math.min(w, 320) : 280,
-          signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS'] });
+        LuzEstelar.NatalChart.render(canv, data, window.__ruedaOpts(w));
       } catch(e) { console.warn('[transit-toggle EN]', e); }
       if (window.__transitsVisible && window.populateTransitsPanelEN) {
         window.populateTransitsPanelEN(window.__currentTransitAspects);

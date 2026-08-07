@@ -980,8 +980,31 @@ body.modal-open #le-tabs{display:none !important}
      device instead of waiting for the cache window to expire. -->
 <script src="/js/transits.js?v=3"></script>
 <script src="/js/astro-glyphs.js?v=2"></script>
-<script src="/js/natal-chart.js?v=28"></script>
+<script src="/js/natal-chart.js?v=29"></script>
 <script src="/js/share-card.js?v=10"></script>
+<script>
+// 2026-08-07: la carta de esta página se dibujaba con la disposición vieja
+// (planetas por niveles) mientras el video y el producto usaban la rueda
+// geocéntrica. El usuario pidió el MISMO acomodo en los tres sitios, así que
+// las opciones viven aquí, en un único lugar, y las tres llamadas de la
+// página las piden. Son las mismas que se aprobaron en /_preview-rueda.
+// Recibe el ANCHO DEL CONTENEDOR y decide el tamaño. El tope era 320 px,
+// heredado de la disposición vieja (planetas por niveles, sin figuras ni
+// relleno de estrellas). La rueda geocéntrica lleva doce constelaciones,
+// 925 estrellas y diez fotos: a 320 px dentro de una tarjeta de 462 los
+// nombres de los signos apenas se leían y sobraba espacio a los lados.
+window.__ruedaOpts = function(ancho){
+  return {
+    size: ancho > 0 ? Math.min(ancho, 420) : 300,
+    geocentricOrbits: true,   // Tierra al centro, cada planeta en su órbita
+    realPlanets: true,        // fotos de la NASA en vez de esferas pintadas
+    denseStars: true,         // relleno de estrellas dentro de la banda
+    rotateFigures: true,      // las figuras giran para aprovechar el arco
+    fullWedges: true,
+    wedgeAlpha: 0.033,
+  };
+};
+</script>
 <script>
 (function(){
 'use strict';
@@ -1500,7 +1523,7 @@ function renderAll(){
     var natalCanvas = document.getElementById('natal');
     if (natalCanvas && chartData) {
       var parentW = natalCanvas.parentElement && natalCanvas.parentElement.offsetWidth;
-      var size = parentW > 0 ? Math.min(parentW, 320) : 280;
+      var size = parentW;   // __ruedaOpts decide el tope
       // Attach the lazy-loaded sky catalogs so natal-chart overlays the
       // real zodiacal constellations + earth at center when available.
       if (window.__skyCatalogs) {
@@ -1552,7 +1575,7 @@ function renderAll(){
         }
       } catch (e) { console.warn('[transits]', e); }
 
-      LuzEstelar.NatalChart.render(natalCanvas, chartData, { size: size });
+      LuzEstelar.NatalChart.render(natalCanvas, chartData, window.__ruedaOpts(size));
       // Traduce la rueda a áreas de vida. Se llama DESPUÉS de pintar y
       // después del bloque de tránsitos, para que pueda resaltar las casas
       // que el cielo toca hoy. Si algo falta, se oculta sola.
@@ -1626,7 +1649,12 @@ function renderAll(){
         // relleno débil). La carta natal sigue usando .stars (objeto).
         starsFull: results[0].stars.concat(results[2].stars || []),
         zodiacFigures: (results[3] && results[4])
-          ? { constellations: results[3].constellations, stars: results[4].stars }
+          ? { constellations: results[3].constellations, stars: results[4].stars,
+              // Relleno de la banda. Se pasa el Hipparcos CRUDO: natal-chart.js
+              // lo convierte a coordenadas eclípticas por su cuenta. Sin esto
+              // la banda sale con las 12 figuras sobre un fondo vacío, que es
+              // como estaba la página y no como se aprobó en el banco.
+              extraStarsEq: (results[2] && results[2].stars) || [] }
           : null,
       };
       // Re-render current view with the catalogs
@@ -1640,7 +1668,7 @@ function renderAll(){
           if (canv) {
             var w = canv.parentElement.offsetWidth;
             LuzEstelar.NatalChart.render(canv, window.__currentChartData,
-              { size: w > 0 ? Math.min(w, 320) : 280 });
+              window.__ruedaOpts(w));
           }
         }
       } catch(e){ console.warn('[sky reload]', e); }
@@ -1945,7 +1973,7 @@ function renderAll(){
       }
       try {
         var w = canv.parentElement.offsetWidth;
-        LuzEstelar.NatalChart.render(canv, data, { size: w > 0 ? Math.min(w, 320) : 280 });
+        LuzEstelar.NatalChart.render(canv, data, window.__ruedaOpts(w));
       } catch(e) { console.warn('[transit-toggle]', e); }
       if (window.__transitsVisible && window.populateTransitsPanel) {
         window.populateTransitsPanel(window.__currentTransitAspects);

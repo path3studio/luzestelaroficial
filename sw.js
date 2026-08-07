@@ -350,7 +350,23 @@
 // ninguno puede taparlos. El reparto anticolision entre etiquetas no cambia.
 // Verificado hasta el extremo imposible (los diez cuerpos en 10°): las diez
 // etiquetas se leen. natal-chart.js sube a ?v=28.
-const CACHE_NAME = 'luzestelar-v97';
+// v97 → v98 (Ago 7): la carta de /mi-dia pasa al MISMO acomodo que el video y
+// el producto — rueda geocentrica, Tierra al centro, fotos de la NASA, figuras
+// zodiacales y relleno de estrellas. Las opciones viven en un unico sitio
+// (window.__ruedaOpts) en vez de repetirse en las tres llamadas de cada pagina.
+// Tres cosas salieron al hacerlo:
+//  · El lienzo estaba topado a 320 px dentro de una tarjeta de 462 — tope
+//    heredado de la disposicion vieja, mucho menos densa. Sube a 420.
+//  · La pagina /en/my-day cargaba solo el catalogo base de estrellas: la rueda
+//    habria salido sin las 12 figuras ni el relleno. Ahora pide lo mismo que la
+//    version en espanol.
+//  · El relleno de la banda se pasaba ya convertido a coordenadas ecliptricas,
+//    asi que cada pagina repetia la trigonometria apoyandose en sky-map.js —
+//    que se carga TARDE (solo al abrir la vista del cielo), y en la primera
+//    pintada la banda habria salido vacia. natal-chart.js acepta ahora el
+//    catalogo crudo (`extraStarsEq`) y convierte el mismo, una sola vez.
+// natal-chart.js sube a ?v=29.
+const CACHE_NAME = 'luzestelar-v98';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

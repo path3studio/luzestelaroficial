@@ -124,17 +124,16 @@ Promise.all([
 ]).then(([, zc, zs, full]) => {
   // Las 12 figuras curadas (las mismas del video), normalizadas por el
   // renderizador para que las doce ocupen lo mismo.
-  // Estrellas de relleno: se convierten UNA vez a coordenadas eclípticas
-  // [lon, lat, magnitud] — el renderizador solo las coloca.
-  const e2e = LuzEstelar.SkyMap.equatorialToEcliptic;
-  const extra = (full.stars || [])
-    .map(st => { const e = e2e(st[2], st[3]); return [e.lon, e.lat, st[4]]; })
-    .filter(e => Math.abs(e[1]) < 22);
+  // Las estrellas de relleno se pasan CRUDAS (ecuatoriales), igual que lo
+  // hace mi-dia.html: el renderizador las convierte. Antes esta página las
+  // convertía por su cuenta, y por eso no probaba el camino de producción.
   CHART.zodiacFigures = {
-    constellations: zc.constellations, stars: zs.stars, extraStars: extra,
+    constellations: zc.constellations, stars: zs.stars,
+    extraStarsEq: full.stars || [],
   };
-  console.log('estrellas de relleno cerca de la eclíptica:', extra.length);
   draw();
+  console.log('relleno tras la conversión del renderizador:',
+              (CHART.zodiacFigures.extraStars || []).length);
 });
 
 function draw(){
