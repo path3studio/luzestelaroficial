@@ -46,9 +46,14 @@
   // porque lo necesitan DOS pasadas: las líneas de aspecto (que se dibujan
   // antes) y los planetas. Antes vivía solo dentro del bloque de planetas y
   // las líneas se trazaban a un radio fijo, sin tocar los cuerpos que unen.
+  // 2026-08-06 (user: "que cada uno tenga su órbita sin toparse"): las
+  // separaciones eran uniformes (~0.025) y con los cuerpos ya dibujados a
+  // tamaño los grandes se rozaban. Ahora el hueco es proporcional a quién
+  // vive ahí: más aire alrededor del Sol, Júpiter y Saturno —los tres
+  // mayores— y menos entre los pequeños del final.
   var ORBIT_R = {
-    Moon:    0.115, Mercury: 0.140, Venus:   0.165, Sun:     0.190, Mars:    0.215,
-    Jupiter: 0.240, Saturn:  0.265, Uranus:  0.290, Neptune: 0.310, Pluto:   0.330,
+    Moon:    0.098, Mercury: 0.126, Venus:   0.154, Sun:     0.187, Mars:    0.216,
+    Jupiter: 0.245, Saturn:  0.281, Uranus:  0.307, Neptune: 0.322, Pluto:   0.336,
   };
 
   var PLANET_COLORS = {
@@ -143,7 +148,7 @@
   // mayor que la Tierra, la Tierra mayor que Marte— dentro de un rango
   // dibujable. Fracción de `size`.
   var BODY_R = {
-    Sun:0.0440, Jupiter:0.0228, Saturn:0.0224, Uranus:0.0207, Neptune:0.0207,
+    Sun:0.0340, Jupiter:0.0228, Saturn:0.0224, Uranus:0.0207, Neptune:0.0207,
     Earth:0.0179, Venus:0.0178, Mars:0.0166, Mercury:0.0160, Moon:0.0153,
     Pluto:0.0145
   };
@@ -488,7 +493,7 @@
       // opts.wedgeAlpha ajusta la intensidad de la franja "par"; la impar y
       // la del signo enfocado se derivan de ella para que la relación entre
       // las tres se mantenga al subir o bajar el tono.
-      var wA = (typeof opts.wedgeAlpha === 'number') ? opts.wedgeAlpha : 0.069;
+      var wA = (typeof opts.wedgeAlpha === 'number') ? opts.wedgeAlpha : 0.033;
       var wAodd   = wA / 3;
       var wAfocus = Math.min(wA * 2.2, 0.30);
       for (var fw = 0; fw < 12; fw++) {
@@ -728,6 +733,34 @@
           };
         })();
 
+    // ── Polvo de estrellas del interior (2026-08-06) ───────────────────
+    // Pedido del usuario: que el centro tenga el mismo cielo de fondo que la
+    // banda, pero con la opacidad ANTERIOR (más discreta) — dentro viven los
+    // planetas y no deben competir. Dentro del aro no hay cielo real que
+    // proyectar (la eclíptica es la banda), así que es una siembra
+    // decorativa: determinista a partir del índice, para que no parpadee
+    // entre repintados.
+    if (opts.denseStars) {
+      var semilla = 20260806;
+      function _rnd() {          // generador simple y estable
+        semilla = (semilla * 1103515245 + 12345) & 0x7fffffff;
+        return semilla / 0x7fffffff;
+      }
+      var nPolvo = 190;
+      for (var dp = 0; dp < nPolvo; dp++) {
+        var da = _rnd() * TAU;
+        // raíz para repartir parejo por área, no acumulado en el centro
+        var dr = Math.sqrt(_rnd()) * (signR - size * 0.018);
+        var dxp = cx + Math.cos(da) * dr;
+        var dyp = cy + Math.sin(da) * dr;
+        var dmag = 0.5 + _rnd() * 1.1;
+        ctx.fillStyle = 'rgba(255,250,235,0.3)';   // la opacidad de antes
+        ctx.beginPath();
+        ctx.arc(dxp, dyp, dmag, 0, TAU);
+        ctx.fill();
+      }
+    }
+
     // ── Emblemas zodiacales normalizados (2026-08-06) ──────────────────
     // Pedido del usuario: "poner solamente la principal y en grande, más o
     // menos del mismo tamaño las doce, para que se vean parejas". Con el
@@ -758,7 +791,9 @@
       // Centro de la figura: por debajo del nombre, que va pegado al aro.
       var bC = signR + (outerR - signR) * 0.38;
       var _bandT = outerR - signR;
-      var MAX_ARC = size * (WIDE_CONST ? 0.235 : 0.186);
+      // 2026-08-06 (user: "que haya aire entre Géminis, Cáncer y Tauro"):
+      // 0.186 era el 92% del arco y las figuras vecinas se tocaban.
+      var MAX_ARC = size * (WIDE_CONST ? 0.210 : 0.158);
       var MAX_RAD = _bandT * (WIDE_CONST ? 0.72 : 0.61);
 
       ctx.save();
@@ -850,7 +885,7 @@
 
         var esFoco = (idx === focusIdx);
         // Trazos de la figura
-        ctx.strokeStyle = esFoco ? 'rgba(255,245,220,0.75)' : 'rgba(255,245,220,0.34)';
+        ctx.strokeStyle = esFoco ? 'rgba(255,247,228,0.92)' : 'rgba(255,247,228,0.52)';
         ctx.lineWidth = (esFoco ? 1.2 : 0.85) * (size / 320);
         ctx.lineCap = 'round';
         for (var lj = 0; lj < zc.lines.length; lj++) {
@@ -886,7 +921,7 @@
             var epx = cx + rx * er + ux * eLon * kx;
             var epy = cy + ry * er + uy * eLon * kx;
             var erad = Math.max(0.5, (5.6 - e[2]) * (size / 1500));
-            ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.55)' : 'rgba(255,250,235,0.3)';
+            ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.75)' : 'rgba(255,250,235,0.48)';
             ctx.beginPath();
             ctx.arc(epx, epy, erad, 0, TAU);
             ctx.fill();
@@ -898,7 +933,7 @@
           var pp = place(order[sj]);
           var mg = zStar[order[sj]].mag;
           var rad = Math.max(0.9, (4.2 - (typeof mg === 'number' ? mg : 3)) * (size / 900));
-          ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.95)' : 'rgba(255,250,235,0.6)';
+          ctx.fillStyle = esFoco ? 'rgba(255,252,242,1)' : 'rgba(255,252,242,0.82)';
           ctx.beginPath();
           ctx.arc(pp.x, pp.y, rad, 0, TAU);
           ctx.fill();
@@ -1289,9 +1324,11 @@
 
         drawPlanetSphere(ctx, px, py, sphereR, p.name, REAL_BODIES);
 
-        // Planet glyph (drawn on top of the sphere with a subtle
-        // shadow so it stays legible against the gradient).
-        if (!SKIP_LABELS) {
+        // 2026-08-06 (user: "que el planeta se vea limpio, el ícono al lado
+        // del nombre"): con fotos reales, encimar el glifo tapaba la textura.
+        // Ahora el glifo va DELANTE del nombre, en la etiqueta. Sin fotos se
+        // mantiene sobre la esfera, que si no el cuerpo queda sin identificar.
+        if (!SKIP_LABELS && !REAL_BODIES) {
           ctx.shadowColor = 'rgba(0,0,0,0.6)';
           ctx.shadowBlur = 3;
           ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
@@ -1329,12 +1366,19 @@
           ctx.save();
           ctx.shadowColor = 'rgba(0,0,0,0.85)';
           ctx.shadowBlur = 3;
-          ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)';
-          ctx.font = (GEOCENTRIC ? '600 ' : '') + Math.round(size * (GEOCENTRIC ? 0.0155 : 0.018)) + 'px Inter, sans-serif';
+          ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.68)';
+          ctx.font = (GEOCENTRIC ? '600 ' : '') + Math.round(size * (GEOCENTRIC ? 0.0168 : 0.019)) + 'px Inter, sans-serif';
           // Default spot first, then above / further below / further above.
           // If every option is taken the default is used anyway, so a label
           // is never lost — the worst case is exactly today's behavior.
-          var lblW = ctx.measureText(degStr).width;
+          // Glifo delante del texto cuando el planeta va con foto.
+          var glyR = size * 0.021;                 // algo mayor que el texto
+          var glyKey = REAL_BODIES && window.LuzEstelar &&
+                       window.LuzEstelar.AstroGlyphs &&
+                       window.LuzEstelar.AstroGlyphs.planet(p.name);
+          var glyW = glyKey ? glyR * 2.1 : 0;      // ancho + separación
+          var txtW = ctx.measureText(degStr).width;
+          var lblW = txtW + glyW;
           var lblH = size * 0.026;
           var lblYs = [py + size * 0.038, py - size * 0.042,
                        py + size * 0.066, py - size * 0.070];
@@ -1347,7 +1391,17 @@
           }
           if (lblY === null) lblY = lblYs[0];
           placedLabels.push(boxAt(lblY));
-          ctx.fillText(degStr, px, lblY);
+          if (glyKey) {
+            // el conjunto glifo+texto se centra en px
+            var gx = px - lblW / 2 + glyR;
+            window.LuzEstelar.AstroGlyphs.draw(
+              ctx, glyKey, gx, lblY, glyR * 2, color);
+            ctx.textAlign = 'left';
+            ctx.fillText(degStr, px - lblW / 2 + glyW, lblY);
+            ctx.textAlign = 'center';
+          } else {
+            ctx.fillText(degStr, px, lblY);
+          }
           ctx.restore();
         }
 
