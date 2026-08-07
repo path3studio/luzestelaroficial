@@ -369,7 +369,7 @@ body.modal-open #le-tabs{display:none !important}
 /* Animations */
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .fade{animation:fadeUp .35s ease-out both}
-.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}.d6{animation-delay:.24s}
+.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}.d6{animation-delay:.24s}.d7{animation-delay:.28s}
 
 /* Streak pill (habit reinforcement) */
 .streak{display:none;align-items:center;gap:4px;margin-left:8px;padding:3px 9px;border-radius:999px;background:rgba(231,122,59,.12);border:1px solid rgba(231,122,59,.3);color:#e79a3b;font-size:.6rem;font-weight:600;letter-spacing:.04em;vertical-align:middle;font-family:inherit}
@@ -463,10 +463,41 @@ body.modal-open #le-tabs{display:none !important}
       <div class="greet-sub" id="greet-sub" style="display:none"></div>
     </section>
 
+    <!-- 1. Daily reading -->
+    <section class="fade d1">
+      <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+        <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Your reading today</span></span>
+        <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
+          <button type="button" class="day-nav-btn" id="day-prev" aria-label="Previous day">&#8249;</button>
+          <span id="day-label" style="font-size:.64rem;color:var(--text-mute);min-width:42px;text-align:center">today</span>
+          <button type="button" class="day-nav-btn" id="day-next" aria-label="Next day" disabled>&#8250;</button>
+        </span>
+      </div>
+      <div class="card" id="rdg-card">
+        <div class="energy">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="50"/>
+              <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
+              <text class="ring-num" x="60" y="50" id="ring-n">—</text>
+              <text class="ring-lbl" x="60" y="79">Energy</text>
+            </svg>
+          </div>
+          <div class="bars" id="bars"></div>
+        </div>
+        <p id="rdg-text" class="rdg-text" style="margin-top:12px">
+          <span class="sk sk-line w-full"></span>
+          <span class="sk sk-line w-90"></span>
+          <span class="sk sk-line w-75"></span>
+        </p>
+        <div class="cosm" id="cosm" style="margin-top:10px"></div>
+      </div>
+    </section>
+
     <!-- 1. Natal chart — EN parity with ES (Apr 18). Three-view toggle
          (chart / sky at birth / sky now), tap-to-identify on planets,
          stars, and constellations. -->
-    <section class="fade d1">
+    <section class="fade d2">
       <div class="slbl"><span class="ic le-ic" data-icon="moon"></span> Natal Chart</div>
       <div class="card">
         <div class="slma">
@@ -532,45 +563,35 @@ body.modal-open #le-tabs{display:none !important}
       </div>
     </section>
 
-    <!-- 2. Daily reading -->
-    <section class="fade d2">
-      <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-        <span><span class="ic" id="sign-sym">&#9788;</span> <span id="rdg-title">Your reading today</span></span>
-        <span class="day-nav" style="display:inline-flex;gap:6px;align-items:center">
-          <button type="button" class="day-nav-btn" id="day-prev" aria-label="Previous day">&#8249;</button>
-          <span id="day-label" style="font-size:.64rem;color:var(--text-mute);min-width:42px;text-align:center">today</span>
-          <button type="button" class="day-nav-btn" id="day-next" aria-label="Next day" disabled>&#8250;</button>
-        </span>
-      </div>
-      <div class="card" id="rdg-card">
-        <div class="energy">
-          <div class="ring-wrap">
-            <svg viewBox="0 0 120 120">
-              <circle class="ring-bg" cx="60" cy="60" r="50"/>
-              <circle class="ring-val" id="ring" cx="60" cy="60" r="50"/>
-              <text class="ring-num" x="60" y="50" id="ring-n">—</text>
-              <text class="ring-lbl" x="60" y="79">Energy</text>
-            </svg>
-          </div>
-          <div class="bars" id="bars"></div>
-        </div>
-        <p id="rdg-text" class="rdg-text" style="margin-top:12px">
-          <span class="sk sk-line w-full"></span>
-          <span class="sk sk-line w-90"></span>
-          <span class="sk sk-line w-75"></span>
-        </p>
-        <div class="cosm" id="cosm" style="margin-top:10px"></div>
+    <!-- 3. 8 systems -->
+    <section class="fade d3">
+      <!-- 2026-08-06: same words as the homepage promise ("Discover Your
+           Cosmic Profile · 8 ancient traditions") — whoever arrives from
+           there must RECOGNISE this as the thing they were promised. -->
+      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Your Cosmic Profile · 8 ancient traditions</div>
+      <div class="sys-grid" id="sys-grid"></div>
+      <div class="share-row">
+        <button class="btn-share" id="btn-share" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg> Share</button>
       </div>
     </section>
 
-    <!-- 2. System-level insights -->
-    <section class="fade d2" id="ins-sec" style="display:none">
+    <!-- 4. System-level insights -->
+    <section class="fade d3" id="ins-sec" style="display:none">
       <div class="slbl"><span class="ic le-ic" data-icon="sparkles"></span> Insights by system</div>
       <div id="ins-box" class="ins-grid"></div>
     </section>
 
-    <!-- 3. CROSS-CULTURAL (depth — upsell for Free, reflection for Plus) -->
-    <section class="fade d3">
+    <!-- 5. Elemental synthesis -->
+    <section class="fade d4">
+      <div class="slbl"><span class="ic le-ic" data-icon="globe"></span> Elemental Synthesis</div>
+      <div class="card">
+        <div class="synth-grid" id="synth-grid"></div>
+        <div class="synth-insight" id="synth-text">—</div>
+      </div>
+    </section>
+
+    <!-- 6. CROSS-CULTURAL (depth — upsell for Free, reflection for Plus) -->
+    <section class="fade d4">
       <div class="slbl"><span class="ic le-ic" data-icon="star"></span> Your Cross-Cultural Report <span class="badge-new" id="cc-badge">Plus</span></div>
       <div class="cc-hero" id="cc-hero">
         <div class="cc-head">
@@ -585,26 +606,8 @@ body.modal-open #le-tabs{display:none !important}
       </div>
     </section>
 
-    <!-- 4. 8 systems -->
-    <section class="fade d4">
-      <div class="slbl"><span class="ic le-ic" data-icon="user"></span> Your Multi-System Profile</div>
-      <div class="sys-grid" id="sys-grid"></div>
-      <div class="share-row">
-        <button class="btn-share" id="btn-share" type="button"><svg class="ic-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg> Share</button>
-      </div>
-    </section>
-
-    <!-- 5. Elemental synthesis -->
-    <section class="fade d5">
-      <div class="slbl"><span class="ic le-ic" data-icon="globe"></span> Elemental Synthesis</div>
-      <div class="card">
-        <div class="synth-grid" id="synth-grid"></div>
-        <div class="synth-insight" id="synth-text">—</div>
-      </div>
-    </section>
-
     <!-- 7. My profiles -->
-    <section class="fade d6">
+    <section class="fade d5">
       <div class="slbl"><span class="ic le-ic" data-icon="users"></span> My Profiles</div>
       <div class="card">
         <div id="pf-list"></div>
@@ -613,8 +616,8 @@ body.modal-open #le-tabs{display:none !important}
       </div>
     </section>
 
-    <!-- 7.5 Star Map — giftable product -->
-    <section class="fade d6" style="margin-top:6px">
+    <!-- 8. Star Map — giftable product -->
+    <section class="fade d5" style="margin-top:6px">
       <div class="slbl" style="justify-content:center;text-align:center"><span class="ic le-ic" data-icon="sparkles"></span> Star Map</div>
       <div class="card mapa-card">
         <div class="mapa-body">
@@ -652,7 +655,7 @@ body.modal-open #le-tabs{display:none !important}
     })();
     </script>
 
-    <!-- 7.5 Newsletter -->
+    <!-- 9. Newsletter -->
     <section class="fade d6" style="margin-top:6px">
       <div class="slbl"><span class="ic le-ic" data-icon="mail"></span> Weekly Digest</div>
       <div class="card news-card">
@@ -669,7 +672,7 @@ body.modal-open #le-tabs{display:none !important}
       </div>
     </section>
 
-    <!-- 8. Follow us -->
+    <!-- 10. Follow us -->
     <section class="fade d6" style="margin-top:6px">
       <div class="slbl"><span class="ic le-ic" data-icon="heart"></span> Follow us</div>
       <div class="card" style="padding:12px">
@@ -694,6 +697,20 @@ body.modal-open #le-tabs{display:none !important}
           </a>
         </div>
       </div>
+    </section>
+
+    <!-- Coffee (2026-08-06, EN parity): asked for only where value has already
+         been given — whoever reads us daily is the likeliest to chip in. -->
+    <section class="fade d7">
+      <a href="https://ko-fi.com/luzestelaroficial" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;gap:12px;padding:13px 16px;
+                border:1px dashed rgba(212,168,73,.35);border-radius:13px;
+                text-decoration:none;color:var(--tx-dim,rgba(255,255,255,.6));
+                font-size:.85rem">
+        <span style="font-size:1.3rem">☕</span>
+        <span><b style="color:var(--gold)">Buy us a coffee</b> —
+        if our readings keep you company, help us keep going.</span>
+      </a>
     </section>
   </main>
 </div>
@@ -753,7 +770,7 @@ body.modal-open #le-tabs{display:none !important}
 <script src="/js/cross-cultural.js"></script>
 <script src="/js/transits.js?v=3"></script>
 <script src="/js/astro-glyphs.js?v=2"></script>
-<script src="/js/natal-chart.js?v=19"></script>
+<script src="/js/natal-chart.js?v=20"></script>
 <script src="/js/share-card.js?v=10"></script>
 <script>
 (function(){

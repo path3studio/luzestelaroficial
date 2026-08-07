@@ -291,6 +291,12 @@
     // diminutas por más que llenaran el arco. Ensanchada a 0.085·size,
     // comiendo del hueco muerto que había entre innerR y la banda.
     var signR  = size * 0.335;
+    // 2026-08-06 — opts.wideConstellations (boceto del usuario): la banda se
+    // lleva el tercio exterior del disco y las órbitas se comprimen hacia
+    // dentro, para que cada figura respire de verdad. Es OPCIONAL: la web
+    // sigue con la proporción actual hasta que se apruebe.
+    var WIDE_CONST = opts.wideConstellations === true;
+    if (WIDE_CONST) signR = size * 0.255;
     var innerR = size * 0.30;
     var planetR = size * 0.24;
     var aspectR = size * 0.20;
@@ -654,8 +660,9 @@
                        Lib:6, Sco:7, Sgr:8, Cap:9, Aqr:10, Psc:11 };
       // Centro de la figura: por debajo del nombre, que va pegado al aro.
       var bC = signR + (outerR - signR) * 0.38;
-      var MAX_ARC = size * 0.186;   // ~92% del arco del sector
-      var MAX_RAD = size * 0.052;   // la franja bajo el nombre, ya más ancha
+      var _bandT = outerR - signR;
+      var MAX_ARC = size * (WIDE_CONST ? 0.235 : 0.186);
+      var MAX_RAD = _bandT * (WIDE_CONST ? 0.72 : 0.61);
 
       ctx.save();
       for (var ci = 0; ci < zf.constellations.length; ci++) {
@@ -944,8 +951,9 @@
         // cada cuerpo. En modo por niveles se conserva el radio común.
         var r1 = aspectR, r2 = aspectR;
         if (GEOCENTRIC) {
-          if (ORBIT_R[asp.planet1] !== undefined) r1 = ORBIT_R[asp.planet1] * size;
-          if (ORBIT_R[asp.planet2] !== undefined) r2 = ORBIT_R[asp.planet2] * size;
+          var _of = WIDE_CONST ? (signR - size * 0.022) / (size * 0.330) : 1;
+          if (ORBIT_R[asp.planet1] !== undefined) r1 = ORBIT_R[asp.planet1] * size * _of;
+          if (ORBIT_R[asp.planet2] !== undefined) r2 = ORBIT_R[asp.planet2] * size * _of;
         }
         var x1 = cx + Math.cos(a1) * r1, y1 = cy + Math.sin(a1) * r1;
         var x2 = cx + Math.cos(a2) * r2, y2 = cy + Math.sin(a2) * r2;
@@ -1001,6 +1009,14 @@
       // Order: Moon (closest), Mercury, Venus, Sun, Mars, Jupiter, Saturn,
       // Uranus, Neptune, Pluto (farthest). Multipliers × size.
       var PLANET_ORBIT_R = ORBIT_R;
+      if (WIDE_CONST) {
+        // Reescalado proporcional: la órbita más lejana (Plutón, 0.330) cae
+        // justo por dentro de la banda nueva, conservando el orden y las
+        // distancias relativas entre planetas.
+        PLANET_ORBIT_R = {};
+        var _f = (signR - size * 0.022) / (size * 0.330);
+        for (var _k in ORBIT_R) PLANET_ORBIT_R[_k] = ORBIT_R[_k] * _f;
+      }
 
       // Draw faint orbit rings + Earth marker BEFORE planets if in
       // geocentric mode. Drawn here (inside the planet block) so the
