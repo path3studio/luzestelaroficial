@@ -266,22 +266,50 @@
         // \u2726 de antes, que es exactamente el comportamiento anterior.
         ctx.fillStyle = 'rgba(212,168,73,0.82)';
         ctx.font = '600 30px Georgia, "Times New Roman", serif';
-        var marcaY = H - 110;
         var listo = _logo && _logo.complete && _logo.naturalWidth > 0;
+        // L\u00ednea de base del nombre. Se fija expl\u00edcitamente en vez de heredar
+        // el 'top' que deja drawBadge: alinear a ojo contra una baseline que
+        // viene de otra funci\u00f3n es justo como se torci\u00f3 esto.
+        ctx.textBaseline = 'alphabetic';
+        var baseY = H - 84;
+
         if (listo) {
-          var lado = 40, aire = 16;
-          var anchoTexto = ctx.measureText(t.brand).width;
-          var inicio = (W - (lado + aire + anchoTexto)) / 2;
-          ctx.drawImage(_logo, inicio, marcaY - 5, lado, lado);
+          // 2026-08-07 (usuario: "la estrella no est\u00e1 alineada con el logo de
+          // Luz Estelar"). Dos causas, las dos medidas:
+          //
+          //  \u00b7 Vertical: la estrella se dibujaba a `marcaY - 5` con 40 px de
+          //    alto, o sea centrada en marcaY+15, mientras el texto iba con
+          //    baseline 'top' y su centro \u00f3ptico ca\u00eda unos 5 px m\u00e1s arriba.
+          //    Ahora se centra sobre el centro \u00d3PTICO real del texto, medido
+          //    con actualBoundingBoxAscent, no supuesto.
+          //  \u00b7 Tama\u00f1o: app_icon_192.png trae ~9% de margen a cada lado (la
+          //    estrella ocupa el 82% del cuadro, verificado midiendo el PNG).
+          //    Pedir 40 px de cuadro daba 35 px de estrella visible, casi el
+          //    doble de la altura de las may\u00fasculas. Ahora se pide el cuadro
+          //    que hace falta para que la estrella MEDIA 1.32x la altura de
+          //    las may\u00fasculas, que es la proporci\u00f3n de un logotipo compuesto.
+          var VISIBLE = 0.82;                       // fracci\u00f3n \u00fatil del PNG
+          var m = ctx.measureText(t.brand);
+          var alto = m.actualBoundingBoxAscent || 21;   // alto real de las may\u00fasculas
+          var estrella = alto * 1.32;               // lo que debe MEDIRSE
+          var lado = estrella / VISIBLE;            // el cuadro que hay que pedir
+          var aire = alto * 0.42;                   // aire \u00f3ptico, no del cuadro
+          var anchoTexto = m.width;
+          var total = estrella + aire + anchoTexto;
+          var inicio = (W - total) / 2;
+          var centro = baseY - alto / 2;            // centro \u00f3ptico del texto
+          // se descuenta el margen del PNG para que lo VISIBLE quede donde toca
+          var margen = (lado - estrella) / 2;
+          ctx.drawImage(_logo, inicio - margen, centro - lado / 2, lado, lado);
           ctx.textAlign = 'left';
-          ctx.fillText(t.brand, inicio + lado + aire, marcaY);
+          ctx.fillText(t.brand, inicio + estrella + aire, baseY);
           ctx.textAlign = 'center';
         } else {
-          ctx.fillText('\u2726  ' + t.brand, W / 2, marcaY);
+          ctx.fillText('\u2726  ' + t.brand, W / 2, baseY);
         }
         ctx.fillStyle = 'rgba(224,220,232,0.55)';
         ctx.font = '400 19px "Helvetica Neue", Arial, sans-serif';
-        ctx.fillText(t.url, W / 2, H - 65);
+        ctx.fillText(t.url, W / 2, H - 48);
       }
 
       // Ordered pipeline. Each entry: [progress label, sync function].
