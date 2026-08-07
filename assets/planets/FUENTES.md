@@ -10,8 +10,22 @@ Fotografías reales usadas para dibujar los cuerpos en la rueda
   **dominio público**; se agradece la atribución y aquí queda constancia.
 
 Las de esta carpeta son copias a 256×256 optimizadas para la web (4,7 MB →
-0,9 MB en total). Los originales a 600×600 siguen en `../../../assets/planets/`,
-que es lo que consume el pipeline de Python.
+0,9 MB en total). Los originales a 600×600 siguen en `../../../assets/planets/`.
+
+## Hay TRES copias, y no son la misma cosa
+
+Corregido el 7/ago: la versión anterior de esta nota decía que los originales
+eran "lo que consume el pipeline de Python". Es falso — nada de Python los lee.
+
+| carpeta | cuántas | quién la usa |
+|---|---|---|
+| `assets/planets/` | 11 (600px) | originales; solo los lee `scripts/preparar_texturas_web.py` |
+| `website/assets/planets/` | 11 (256px) | **esta carpeta** — `natal-chart.js` en el navegador |
+| `remotion/public/planets/` | **3** (Júpiter, Luna, Saturno) | el **video**, vía `staticFile()` en `CelestialObjects.tsx` |
+
+Tocar esta carpeta **no** afecta al video: son archivos distintos. Y al revés,
+el video no tiene Tierra — su rueda está congelada a propósito
+(`scripts/pinned/`).
 
 Vienen con **fondo transparente**, no negro: `drawTexturedBody` las pinta tal
 cual, sin recorte circular.
