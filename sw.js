@@ -340,7 +340,17 @@
 // Las texturas se regeneran con scripts/preparar_texturas_web.py y por primera
 // vez llevan version en la URL (?v=2) — antes eran inmortales 4h en el borde.
 // natal-chart.js sube a ?v=27.
-const CACHE_NAME = 'luzestelar-v96';
+// v96 → v97 (Ago 7): el usuario pregunto que pasa cuando dos planetas caen en
+// el mismo grado. Probado con Sol, Venus y Marte en 100°: los discos se montan
+// (inevitable, y ademas eso ES una conjuncion), pero salio un fallo aparte —
+// el bucle pintaba esfera-y-etiqueta planeta por planeta, asi que el disco de
+// cada uno borraba el TEXTO del anterior. Se perdia la palabra "Sol" bajo el
+// disco de Marte y media etiqueta de la Luna bajo Venus. Ahora los textos se
+// apuntan y se pintan todos en una segunda pasada, con los cuerpos ya puestos:
+// ninguno puede taparlos. El reparto anticolision entre etiquetas no cambia.
+// Verificado hasta el extremo imposible (los diez cuerpos en 10°): las diez
+// etiquetas se leen. natal-chart.js sube a ?v=28.
+const CACHE_NAME = 'luzestelar-v97';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

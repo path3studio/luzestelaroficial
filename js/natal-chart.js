@@ -1290,6 +1290,18 @@
         }
         return false;
       }
+      // 2026-08-07 (el usuario preguntó: "¿qué pasa si el Sol queda encima de
+      // Marte?"). Probado con Sol, Venus y Marte en el mismo grado: los discos
+      // se montan —eso es inevitable y además SIGNIFICA algo, es una
+      // conjunción— pero además el disco de cada planeta borraba la ETIQUETA
+      // del anterior, porque este bucle pintaba esfera-y-texto planeta por
+      // planeta. Se perdía la palabra "Sol" bajo el disco de Marte.
+      //
+      // Los textos se apuntan aquí y se pintan TODOS al final, en una segunda
+      // pasada: ningún cuerpo puede ya taparlos. El reparto anticolisión entre
+      // etiquetas no cambia —se sigue calculando en este mismo orden—, solo se
+      // aplaza el trazo.
+      var pendingLabels = [];
       sorted.forEach(function(p) {
         var angle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
         // Nudge if too close to previous (SAME tier only — different-tier
@@ -1350,23 +1362,25 @@
         // Ahora el glifo va DELANTE del nombre, en la etiqueta. Sin fotos se
         // mantiene sobre la esfera, que si no el cuerpo queda sin identificar.
         if (!SKIP_LABELS && !REAL_BODIES) {
-          ctx.shadowColor = 'rgba(0,0,0,0.6)';
-          ctx.shadowBlur = 3;
-          ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
-                           p.name === 'Venus' || p.name === 'Saturn' ||
-                           p.name === 'Uranus')
-            ? 'rgba(20,12,6,0.85)'
-            : 'rgba(255,248,230,0.92)';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          var AGp = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
-          var pKey = AGp && AGp.planet(p.name);
-          if (!(pKey && AGp.draw(ctx, pKey, px, py, size * 0.030, ctx.fillStyle))) {
-            ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
-            ctx.fillText(p.name === 'Moon' ? '\u263D' : glyph, px, py);
-          }
-          ctx.shadowColor = 'transparent';
-          ctx.shadowBlur = 0;
+          pendingLabels.push(function() {
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.6)';
+            ctx.shadowBlur = 3;
+            ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
+                             p.name === 'Venus' || p.name === 'Saturn' ||
+                             p.name === 'Uranus')
+              ? 'rgba(20,12,6,0.85)'
+              : 'rgba(255,248,230,0.92)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            var AGp = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
+            var pKey = AGp && AGp.planet(p.name);
+            if (!(pKey && AGp.draw(ctx, pKey, px, py, size * 0.030, ctx.fillStyle))) {
+              ctx.font = 'bold ' + Math.round(size * 0.024) + 'px "Noto Sans Symbols 2", serif';
+              ctx.fillText(p.name === 'Moon' ? '\u263D' : glyph, px, py);
+            }
+            ctx.restore();
+          });
         }
 
         // Degree label — in geocentric mode, prepend planet abbreviation
@@ -1385,11 +1399,9 @@
         }
         if (!SKIP_LABELS) {
           ctx.save();
-          ctx.shadowColor = 'rgba(0,0,0,0.85)';
-          ctx.shadowBlur = 3;
-          ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.68)';
           var fontPx = Math.round(size * (GEOCENTRIC ? 0.0168 : 0.019));
-          ctx.font = (GEOCENTRIC ? '600 ' : '') + fontPx + 'px Inter, sans-serif';
+          var labelFont = (GEOCENTRIC ? '600 ' : '') + fontPx + 'px Inter, sans-serif';
+          ctx.font = labelFont;   // hace falta ya para medir el ancho
           // Default spot first, then above / further below / further above.
           // If every option is taken the default is used anyway, so a label
           // is never lost — the worst case is exactly today's behavior.
@@ -1418,18 +1430,28 @@
           }
           if (lblY === null) lblY = lblYs[0];
           placedLabels.push(boxAt(lblY));
-          if (glyKey) {
-            // el conjunto glifo+texto se centra en px
-            var gx = px - lblW / 2 + glyR;
-            window.LuzEstelar.AstroGlyphs.draw(
-              ctx, glyKey, gx, lblY, glyR * 2, color);
-            ctx.textAlign = 'left';
-            ctx.fillText(degStr, px - lblW / 2 + glyW, lblY);
-            ctx.textAlign = 'center';
-          } else {
-            ctx.fillText(degStr, px, lblY);
-          }
           ctx.restore();
+
+          pendingLabels.push(function() {
+            ctx.save();
+            ctx.font = labelFont;
+            ctx.shadowColor = 'rgba(0,0,0,0.85)';
+            ctx.shadowBlur = 3;
+            ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.95)'
+                                       : 'rgba(255,255,255,0.68)';
+            if (glyKey) {
+              // el conjunto glifo+texto se centra en px
+              var gx = px - lblW / 2 + glyR;
+              window.LuzEstelar.AstroGlyphs.draw(
+                ctx, glyKey, gx, lblY, glyR * 2, color);
+              ctx.textAlign = 'left';
+              ctx.fillText(degStr, px - lblW / 2 + glyW, lblY);
+            } else {
+              ctx.textAlign = 'center';
+              ctx.fillText(degStr, px, lblY);
+            }
+            ctx.restore();
+          });
         }
 
         // Tick line from planet to zodiac ring (starts at the *actual*
@@ -1454,6 +1476,9 @@
           x: px, y: py, r: sphereR * 1.6,
         });
       });
+
+      // Segunda pasada: los textos, ya con todos los cuerpos puestos.
+      for (var plb = 0; plb < pendingLabels.length; plb++) pendingLabels[plb]();
     }
 
     // ── Transits overlay ─────────────────────────────────────────
