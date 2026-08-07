@@ -334,7 +334,10 @@ body{
 .sy-h-ic{color:#d4a849}
 .sy-caption{font-size:.78rem;color:rgba(224,220,232,.6);text-align:center;margin:0 0 12px}
 .sy-chart-wrap{display:flex;justify-content:center;padding:4px 0}
-#synastry-chart{max-width:100%;width:280px;height:280px}
+/* 2026-08-07: 280px was too small once this page got the new finish
+   (twelve constellations, star fill and photo planets over the two
+   rings). The renderer picks the real size from the container. */
+#synastry-chart{max-width:100%}
 .sy-info{margin-top:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(212,168,73,.06),rgba(124,92,191,.04));border:1px solid rgba(255,255,255,.08);border-radius:10px;position:relative}
 .sy-info .ci-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
 .sy-info .ci-gly{font-family:'Noto Sans Symbols 2',serif;font-size:1.3rem;color:#f0d078;font-variant-emoji:text}
@@ -851,9 +854,58 @@ body{
   // Uses the same natal-chart.js as Mi Día, passing person B's
   // planets in the `transits` slot so they render as the outer ring,
   // and computing cross-aspects via Transits.findAspects().
+  // Catálogos del cielo — se piden UNA vez, en cuanto hace falta la rueda.
+  // Son los mismos archivos que usa /mi-dia. Fail-soft: si no llegan, la
+  // rueda se pinta igual, solo que sin figuras ni relleno de estrellas.
+  function cargarCatalogosCielo(despues){
+    if (window.__syCatalogs) return despues();
+    if (window.__syCargando) return;   // ya hay una petición en vuelo
+    window.__syCargando = true;
+    Promise.all([
+      fetch('/data/stars.json').then(function(r){ return r.json(); }),
+      fetch('/data/constellations.json').then(function(r){ return r.json(); }),
+      fetch('/data/stars-full.json').then(function(r){ return r.json(); })
+        .catch(function(){ return { stars: [] }; }),
+      fetch('/data/constellations_zodiac.json').then(function(r){ return r.json(); })
+        .catch(function(){ return null; }),
+      fetch('/data/stars_zodiac.json').then(function(r){ return r.json(); })
+        .catch(function(){ return null; }),
+    ]).then(function(r){
+      window.__syCatalogs = {
+        stars: r[0], constellations: r[1],
+        zodiacFigures: (r[3] && r[4])
+          ? { constellations: r[3].constellations, stars: r[4].stars,
+              // crudo: natal-chart.js lo convierte por su cuenta
+              extraStarsEq: (r[2] && r[2].stars) || [] }
+          : null,
+      };
+      window.__syCargando = false;
+      despues();
+    }).catch(function(e){
+      // NO REINTENTAR. La primera versión dejaba __syCatalogs sin poner y
+      // volvía a dibujar; el dibujado veía que faltaban catálogos y los
+      // volvía a pedir → bucle infinito de peticiones fallidas, con la
+      // página congelada. Se marca el intento como hecho (aunque venga
+      // vacío) para que el guardián de arriba no vuelva a entrar.
+      window.__syCatalogs = { stars: null, constellations: null, zodiacFigures: null };
+      window.__syCargando = false;
+      console.warn('[synastry] catálogos no disponibles, se dibuja sin ellos', e);
+      despues();
+    });
+  }
+
   function renderSynastryBiwheel(profileA, profileB){
     var canvas = document.getElementById('synastry-chart');
     if (!canvas || !profileA || !profileB) return;
+    // Repintar cuando lleguen las fotos de los planetas y cuando cambie el
+    // tamaño de la ventana. Guardado en window porque el renderizador avisa
+    // por callback y necesita las medidas de ESE momento, no las de antes.
+    window.__syRedraw = function(){ renderSynastryBiwheel(profileA, profileB); };
+    window.__syTexHook = window.__syTexHook ||
+      function(){ if (window.__syRedraw) window.__syRedraw(); };
+    if (!window.__syCatalogs && !window.__syCargando) {
+      return cargarCatalogosCielo(function(){ renderSynastryBiwheel(profileA, profileB); });
+    }
     if (!window.LuzEstelar || !window.LuzEstelar.NatalChart || !window.LuzEstelar.Transits) {
       console.warn('[synastry] modules not loaded yet');
       return;
@@ -918,10 +970,42 @@ body{
     // Ascendant marker: chartA already carries it. Keep its natal
     // aspects visible too (those were finally fixed in v55).
 
-    // Size roughly matches Mi Día (260–320 depending on viewport).
+    // 2026-08-07: esta página se quedó con el acabado viejo cuando /mi-dia
+    // pasó al nuevo — planetas dibujados, sin constelaciones ni estrellas.
+    // Ahora lleva el MISMO acabado, pero NO `geocentricOrbits`: en la rueda
+    // geocéntrica la distancia al centro dice QUÉ PLANETA es, y aquí tiene
+    // que seguir diciendo DE QUIÉN es (dentro tú, fuera la otra persona),
+    // que es lo único que esta página tiene que comunicar.
+    //
+    // Efecto secundario bienvenido: los planetas de dentro salen con foto y
+    // los de fuera como medallón de glifo, así que "quién es quién" se
+    // distingue mejor que antes, sin tocar la disposición.
+    if (window.__syCatalogs) {
+      data.starCatalog = window.__syCatalogs.stars;
+      data.constellationCatalog = window.__syCatalogs.constellations;
+      if (window.__syCatalogs.zodiacFigures) data.zodiacFigures = window.__syCatalogs.zodiacFigures;
+    }
     var parentW = canvas.parentElement && canvas.parentElement.offsetWidth;
-    var size = parentW > 0 ? Math.min(parentW, 320) : 280;
-    window.LuzEstelar.NatalChart.render(canvas, data, { size: size });
+    window.LuzEstelar.NatalChart.render(canvas, data, {
+      size: parentW > 0 ? Math.min(parentW, 420) : 300,
+      realPlanets: true,
+      denseStars: true,
+      fullWedges: true,
+      wedgeAlpha: 0.033,
+      rotateFigures: true,
+      // 2026-08-07: esta página nunca había pasado `signLabels`, así que la
+      // rueda inglesa mostraba GÉM / CÁN / ESC — las abreviaturas españolas
+      // por defecto del renderizador. /en/my-day sí las pasaba; aquí no.
+      signLabels: ['ARI','TAU','GEM','CAN','LEO','VIR','LIB','SCO','SAG','CAP','AQU','PIS'],
+      // OJO: tiene que ser SIEMPRE LA MISMA función. natal-chart.js guarda
+      // los avisos de "textura cargada" en una lista y deduplica POR
+      // REFERENCIA (indexOf). Si aquí se pasa una closure nueva en cada
+      // dibujado, cada render añade un oyente más, y la siguiente textura
+      // que cargue los dispara todos → cada uno vuelve a dibujar → cuelgue.
+      // Pasó, con la página congelada. Por eso el gancho vive en window y
+      // solo se crea una vez; lo que cambia es __syRedraw, no el gancho.
+      onTextureLoad: window.__syTexHook,
+    });
 
     // Caption: who is inside, who is outside.
     var cap = document.getElementById('sy-caption');
@@ -1057,7 +1141,7 @@ body{
      .findAspects inside renderResults(). -->
 <script src="/js/transits.js?v=3"></script>
 <script src="/js/astro-glyphs.js?v=2"></script>
-<script src="/js/natal-chart.js?v=30"></script>
+<script src="/js/natal-chart.js?v=31"></script>
 <script src="/js/icons.js" defer></script>
 <script src="/js/toast.js" defer></script>
 <script src="/js/sw-update.js" defer></script>

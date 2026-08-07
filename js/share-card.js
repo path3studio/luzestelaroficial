@@ -157,10 +157,15 @@
       // que los dos grupos se leían como uno. La rueda nueva lleva los glifos
       // pegados al borde de su cuadro, sin margen interno, y por eso se notó
       // ahora. Se le quitan 30 px a la rueda y se suben a la separación: 72 px
-      // de aire arriba y 76 hasta el pie. Los dos bloques ya respiran.
-      var chartSize = 570;
+      // de aire arriba y 76 hasta el pie.
+      //
+      // 7/ago, segunda pasada: el solape de verdad era otro (las palabras contra
+      // su propio aro, arreglado en drawBadge), asi que este ajuste era solo
+      // cosmetico. El usuario prefiere la rueda grande: 570 -> 590, con 60 px
+      // de separacion. Quedan 20 px bajo el lugar de nacimiento y 54 hasta el pie.
+      var chartSize = 590;
       var chartX = (W - chartSize) / 2;
-      var chartY = 306;
+      var chartY = 300;
 
       function paintBackground() {
         var bg = ctx.createLinearGradient(0, 0, 0, H);
@@ -237,7 +242,7 @@
       }
 
       function paintDetails() {
-        var badgeY = chartY + chartSize + 72;   // ver la nota en chartSize
+        var badgeY = chartY + chartSize + 60;   // ver la nota en chartSize
         var sun  = findPlanet(chartData, 'Sun');
         var moon = findPlanet(chartData, 'Moon');
         var asc  = chartData.ascendant && chartData.ascendant.sign

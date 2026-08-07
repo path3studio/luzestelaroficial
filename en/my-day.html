@@ -777,7 +777,7 @@ body.modal-open #le-tabs{display:none !important}
 <script src="/js/cross-cultural.js"></script>
 <script src="/js/transits.js?v=3"></script>
 <script src="/js/astro-glyphs.js?v=2"></script>
-<script src="/js/natal-chart.js?v=30"></script>
+<script src="/js/natal-chart.js?v=31"></script>
 <script>
 // Ver la nota en mi-dia.html: mismo acomodo geocéntrico en la página, el
 // video y el producto. Aquí se añaden las abreviaturas de signo en inglés,
@@ -796,10 +796,28 @@ window.__ruedaOpts = function(ancho){
     // Same as the Spanish page — see the note there. Kept in sync on purpose:
     // the two watermark bugs this project has had were both ES/EN drift.
     brandMark: 'luzestelaroficial.com',
+    // Repintar cuando lleguen las fotos de los planetas. Sin esto había una
+    // carrera real: las fotos pesan 956 KB y los catálogos 136 KB, así que en
+    // una visita nueva los catálogos llegan primero, disparan su repintado, y
+    // las fotos aterrizan DESPUÉS sin que nadie vuelva a dibujar — la rueda se
+    // quedaba con los planetas pintados a mano en vez de las de la NASA.
+    //
+    // OJO: tiene que ser SIEMPRE LA MISMA función. natal-chart.js guarda estos
+    // avisos en una lista y deduplica POR REFERENCIA; una closure nueva en cada
+    // dibujado añade un oyente más y la siguiente foto los dispara todos, cada
+    // uno redibujando → cuelgue. Pasó al hacer esto mismo en compatibilidad.
+    onTextureLoad: window.__ruedaTexHook,
   };
 };
+window.__ruedaTexHook = function(){
+  var c = document.getElementById('natal');
+  if (!c || !c.parentElement || !window.__currentChartData) return;
+  if (!window.LuzEstelar || !window.LuzEstelar.NatalChart) return;
+  window.LuzEstelar.NatalChart.render(
+    c, window.__currentChartData, window.__ruedaOpts(c.parentElement.offsetWidth));
+};
 </script>
-<script src="/js/share-card.js?v=13"></script>
+<script src="/js/share-card.js?v=14"></script>
 <script>
 (function(){
 'use strict';

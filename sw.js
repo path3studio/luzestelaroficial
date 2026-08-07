@@ -449,7 +449,35 @@
 //    "Guardar", y guardar es descargar. Queda vista previa + Descargar +
 //    Cerrar. Compartir sigue con su propio boton fuera.
 // share-card.js sube a ?v=13.
-const CACHE_NAME = 'luzestelar-v103';
+// v103 → v104 (Ago 7). La rueda de la tarjeta vuelve a 590 px (el usuario
+// prefiere la grande; el ajuste anterior a 570 era cosmetico y no arreglaba
+// nada), con 60 px de separacion. Y /compatibilidad-personal se pone al dia:
+// se habia quedado con el acabado viejo cuando /mi-dia paso al nuevo. Ahora
+// lleva planetas con foto, las doce constelaciones y el relleno de estrellas,
+// pero SIN `geocentricOrbits`: ahi la distancia al centro tiene que seguir
+// diciendo DE QUIEN es el planeta (dentro tu, fuera la otra persona), no que
+// planeta es. Efecto util: los de dentro salen con foto y los de fuera como
+// medallon, asi que quien-es-quien se lee mejor que antes.
+//
+// DOS TRAMPAS que costaron un cuelgue de la pagina y quedan documentadas:
+//  1. `onTextureLoad` DEBE ser siempre la misma funcion. natal-chart.js guarda
+//     esos avisos en una lista y deduplica POR REFERENCIA; una closure nueva
+//     en cada dibujado suma un oyente, y la siguiente foto los dispara todos,
+//     cada uno redibujando → crecimiento exponencial. El gancho vive ahora en
+//     window y se crea una sola vez.
+//  2. Si los catalogos fallaban, el catch volvia a dibujar, el dibujado veia
+//     que faltaban y los volvia a pedir → bucle infinito de peticiones. Ahora
+//     el fallo marca los catalogos como "intentados" y se dibuja sin ellos.
+//
+// De paso, un fallo real en /mi-dia: nunca registraba `onTextureLoad`, y las
+// fotos pesan 956 KB contra 136 KB de los catalogos. En una visita nueva los
+// catalogos llegan primero, disparan su repintado, y las fotos aterrizan
+// despues sin que nadie vuelva a dibujar — la rueda se quedaba con los
+// planetas pintados a mano. Verificado: 13 dibujados y se estabiliza.
+// Tambien: la rueda inglesa de compatibilidad mostraba GEM/CAN/ESC porque esa
+// pagina nunca paso `signLabels`.
+// natal-chart.js ?v=31, share-card.js ?v=14.
+const CACHE_NAME = 'luzestelar-v104';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
