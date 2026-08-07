@@ -144,27 +144,44 @@
   // 2026-08-06 (pedido del usuario: "que tenga algo de realismo, aunque sea
   // lo mínimo"): el radio real va de 1.188 km (Plutón) a 696.000 (Sol) —
   // 586 veces. A escala directa el Sol tapaba la rueda y Plutón sería
-  // invisible. Con escala logarítmica el orden es el de verdad —Júpiter
-  // mayor que la Tierra, la Tierra mayor que Marte— dentro de un rango
-  // dibujable. Fracción de `size`.
+  // invisible, así que hay que comprimir.
+  //
+  // 2026-08-07: era logarítmica y el usuario notó lo que fallaba — "¿Saturno
+  // es más pequeño que Urano?". Medido: salía 1.09x cuando de verdad es 2.30x.
+  // El logaritmo convierte CUALQUIER proporción en la misma diferencia de
+  // píxeles, y con un rango dibujable tan estrecho esa diferencia era de dos
+  // píxeles. Ahora es potencia 0.7 del radio real, repartida entre 0.0148 y
+  // 0.0300: mantiene el orden verdadero, da aire arriba (los gigantes se
+  // distinguen) y junta abajo, que es lo honesto — Plutón, la Luna y Mercurio
+  // sí son casi iguales de chicos. Saturno queda 1.30x Urano. Fracción de `size`.
   var BODY_R = {
-    Sun:0.0340, Jupiter:0.0228, Saturn:0.0224, Uranus:0.0207, Neptune:0.0207,
-    Earth:0.0179, Venus:0.0178, Mars:0.0166, Mercury:0.0160, Moon:0.0153,
-    Pluto:0.0145
+    Sun:0.0380, Jupiter:0.0300, Saturn:0.0281, Uranus:0.0218, Neptune:0.0216,
+    Earth:0.0169, Venus:0.0168, Mars:0.0158, Mercury:0.0154, Moon:0.0151,
+    Pluto:0.0148
   };
-  // Saturno se dibuja en un recuadro MAYOR que su disco: en la foto los
-  // anillos ocupan el ancho y el cuerpo solo ~1/3 del alto, así que al
-  // encajarlo como los demás el planeta salía diminuto. Con 2.8 el CUERPO
-  // mide como el resto y los anillos sobresalen, que es lo correcto.
-  // 2026-08-06 (user: "¿Saturno no está más grande que el Sol?" — lo estaba,
-  // 24px de anillos contra 11,6 del Sol). Dos correcciones: la textura web de
-  // Saturno se recortó a 1.75x su cuerpo (anillos visibles, sin las puntas) y
-  // el Sol subió a 0.044. En escala logarítmica el Sol quedaba a solo 1.23x
-  // del cuerpo de Saturno, así que CUALQUIER anillo visible lo superaba.
-  var TEX_BOX = { Saturn: 1.75 };
+  // Cuántos DIÁMETROS DE CUERPO mide el cuadro de la foto. Sirve para dos
+  // cosas, y las dos importan:
+  //
+  //  · Saturno: los anillos se salen del disco. Con 1.35 el cuerpo mide
+  //    exactamente su BODY_R y el anillo asoma un tercio de radio a cada lado,
+  //    sin que el conjunto (0.0379) supere al Sol (0.0380). Antes era 1.75,
+  //    pero con Saturno ya más grande eso obligaba a subir el Sol a 0.0425 —
+  //    casi el 0.044 que el usuario ya había rechazado por enorme. Se recorta
+  //    el anillo en vez de inflar el Sol.
+  //  · Tierra: la Blue Marble trae 11% de margen alrededor del globo. Nadie
+  //    lo había medido, así que la Tierra se dibujaba a 0.891 de lo pedido —
+  //    salía MÁS CHICA QUE VENUS siendo mayor. 1.122 lo compensa.
+  //
+  // Los valores salen de scripts/preparar_texturas_web.py, que los imprime.
+  // Si se regenera una textura con otro recorte, hay que actualizarlos aquí.
+  var TEX_BOX = { Saturn: 1.35, Earth: 1.122 };
 
   var _tex = {};           // nombre → HTMLImageElement
   var _texBase = '/assets/planets/';
+  // Cloudflare guarda los assets 4 horas en el borde. Sin una marca en la URL
+  // se puede regenerar una textura, desplegarla, y seguir viendo la vieja
+  // media tarde. SÚBELO cada vez que cambie cualquier PNG de esa carpeta.
+  var _texVer = '?v=2';   // v2 = 7/ago: Tierra +sat, Luna +luz, Saturno 1.35x
   // Oyentes de "ya cargó una textura". El módulo NO se repinta solo: si lo
   // hiciera tendría que reusar las opciones del render anterior, y esas
   // caducan (basta que la ventana cambie de tamaño para que el lienzo se
@@ -182,7 +199,7 @@
     if (!f) return null;
     if (!_tex[f]) {
       var img = new Image();
-      img.src = _texBase + f + '.png';
+      img.src = _texBase + f + '.png' + _texVer;
       img.onload = _notifyTex;
       _tex[f] = img;
     }
@@ -754,7 +771,9 @@
         var dxp = cx + Math.cos(da) * dr;
         var dyp = cy + Math.sin(da) * dr;
         var dmag = 0.5 + _rnd() * 1.1;
-        ctx.fillStyle = 'rgba(255,250,235,0.3)';   // la opacidad de antes
+        // 2026-08-07: iban a 0.3 y competían con los planetas. El usuario
+        // pidió "un cincuenta por ciento, algo así" — de ahí 0.15.
+        ctx.fillStyle = 'rgba(255,250,235,0.15)';
         ctx.beginPath();
         ctx.arc(dxp, dyp, dmag, 0, TAU);
         ctx.fill();
@@ -1369,16 +1388,22 @@
           ctx.shadowColor = 'rgba(0,0,0,0.85)';
           ctx.shadowBlur = 3;
           ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.68)';
-          ctx.font = (GEOCENTRIC ? '600 ' : '') + Math.round(size * (GEOCENTRIC ? 0.0168 : 0.019)) + 'px Inter, sans-serif';
+          var fontPx = Math.round(size * (GEOCENTRIC ? 0.0168 : 0.019));
+          ctx.font = (GEOCENTRIC ? '600 ' : '') + fontPx + 'px Inter, sans-serif';
           // Default spot first, then above / further below / further above.
           // If every option is taken the default is used anyway, so a label
           // is never lost — the worst case is exactly today's behavior.
           // Glifo delante del texto cuando el planeta va con foto.
-          var glyR = size * 0.021;                 // algo mayor que el texto
+          // 2026-08-07: iba atado a `size` (0.021), o sea 2.5 veces el alto de
+          // la letra — el usuario dijo que los glifos salían "muy grandes".
+          // Ahora va atado a la TIPOGRAFÍA: 1.25 del cuerpo de letra, que es
+          // como se compone un símbolo junto a texto. Si el tamaño de fuente
+          // cambia, el glifo lo sigue solo.
+          var glyR = fontPx * 0.625;
           var glyKey = REAL_BODIES && window.LuzEstelar &&
                        window.LuzEstelar.AstroGlyphs &&
                        window.LuzEstelar.AstroGlyphs.planet(p.name);
-          var glyW = glyKey ? glyR * 2.1 : 0;      // ancho + separación
+          var glyW = glyKey ? glyR * 2 + fontPx * 0.28 : 0;   // ancho + aire
           var txtW = ctx.measureText(degStr).width;
           var lblW = txtW + glyW;
           var lblH = size * 0.026;

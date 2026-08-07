@@ -331,7 +331,16 @@
 // v82 → v83 (Ago 6): nueva /en/offline.html. La pagina de respaldo sin
 // conexion era unica y estaba en espanol, asi que un lector bajo /en/ veia
 // "Sin conexion". Ahora la rama de navegacion elige segun la ruta.
-const CACHE_NAME = 'luzestelar-v95';
+// v95 → v96 (Ago 7): los cuerpos de la rueda dejan la escala logaritmica por
+// una potencia 0.7 del radio real. El logaritmo convertia cualquier proporcion
+// en la misma diferencia de pixeles, asi que Saturno salia 1.09x Uranus cuando
+// de verdad es 2.30x — el usuario lo noto a ojo. Ahora es 1.29x. De paso se
+// corrigio que la Tierra se dibujaba al 0.891 de su tamano (la foto Blue Marble
+// trae margen que nadie habia medido): salia mas chica que Venus siendo mayor.
+// Las texturas se regeneran con scripts/preparar_texturas_web.py y por primera
+// vez llevan version en la URL (?v=2) — antes eran inmortales 4h en el borde.
+// natal-chart.js sube a ?v=27.
+const CACHE_NAME = 'luzestelar-v96';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
