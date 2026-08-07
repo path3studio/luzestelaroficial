@@ -33,6 +33,12 @@
       .btn-muestra{display:block;width:100%;max-height:110px;object-fit:cover;
        object-position:center 30%;border-radius:10px;margin-top:10px;
        border:1px solid rgba(212,168,73,.25)}
+      /* 2026-08-07: la muestra del póster es apaisada y `cover` a 110px le
+         sienta bien. La carta natal es CUADRADA: con esas mismas reglas se
+         recortaba a una franja que cortaba la rueda por arriba y por abajo.
+         Esta variante la enseña entera. */
+      .btn-muestra.cuadrada{max-height:none;aspect-ratio:1/1;object-fit:contain;
+       background:rgba(255,255,255,.02)}
 </style>
     <link rel="stylesheet" href="/css/icons.css">
 </head>
@@ -44,8 +50,13 @@
 
         <a class="btn primary" href="/aprende/compatibilidad"><span class="le-ic" data-icon="heart"></span> Calculadora de compatibilidad
             <span class="sub">Elige dos signos y descubre su química</span></a>
+        <!-- 2026-08-07: este enlace es el primero del embudo —el que recibe el
+             tráfico de Instagram— y estaba desnudo, sin una sola imagen. Ahora
+             enseña la rueda de verdad, que es el argumento. `.btn-muestra` es
+             la misma clase que ya usa el póster más abajo. -->
         <a class="btn primary" href="/mi-dia.html"><span class="le-ic" data-icon="sparkles"></span> Descubre tu Perfil Cósmico
-            <span class="sub">Gratis · tu carta natal y los 8 sistemas ancestrales</span></a>
+            <span class="sub">Gratis · tu carta natal y los 8 sistemas ancestrales</span>
+            <img class="btn-muestra cuadrada" src="/assets/mapa-ejemplos/carta-natal.webp" alt="Tu carta natal, con los planetas en sus órbitas" loading="lazy"></a>
         <a class="btn" href="/hoy"><span class="le-ic" data-icon="moon"></span> Tu horóscopo de hoy
             <span class="sub">Los 12 signos, gratis, actualizado cada mañana</span></a>
         <p class="section-label"><span class="le-ic" data-icon="sparkles"></span> Hecho para TU carta natal</p>
