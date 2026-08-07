@@ -522,8 +522,16 @@
 
     // Glyph disc — 2026-06-28: dropped from y+40 → y+58 so the SOL/LUNA/ASC
     // label above it no longer grazes the sign glyph (user feedback).
+    //
+    // 2026-08-07: NO ERA SUFICIENTE, y el usuario lo señaló con una captura
+    // marcada. Medido: la etiqueta se pinta con textBaseline 'top' a 20 px de
+    // cuerpo, así que ocupa de y a y+20; el borde de arriba del aro caía en
+    // y+58-46 = y+12. Ocho píxeles DENTRO de las letras — el aro cruzaba por
+    // debajo de "SOL", "LUNA" y "ASC". Con y+82 el aro empieza en y+36 y deja
+    // 16 px de hueco limpio. Si algún día cambia el cuerpo de la etiqueta,
+    // este número tiene que subir con él.
     var discR = 46;
-    var discY = y + 58;
+    var discY = y + 82;
     var g = ctx.createRadialGradient(x, discY, 0, x, discY, discR);
     g.addColorStop(0, 'rgba(212,168,73,0.24)');
     g.addColorStop(1, 'rgba(212,168,73,0.02)');
@@ -663,11 +671,14 @@
     };
     img.src = url;
 
-    var fila = el('div', 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;' +
+    // 2026-08-07, segunda pasada: aquí había también un botón "Compartir",
+    // idéntico al que ya vive en la pantalla anterior. El usuario lo mandó
+    // quitar: "es exactamente el mismo que teníamos en la pantalla anterior,
+    // entonces ese lo quitamos". Tiene razón — este botón es "Guardar", y
+    // guardar es descargar. Compartir tiene su propio botón fuera.
+    var fila = el('div', 'display:flex;gap:10px;justify-content:center;' +
       'width:100%;max-width:330px');
-    var bCompartir = boton(esES ? 'Compartir' : 'Share', true);
-    var bBajar     = boton(esES ? 'Descargar' : 'Download', false);
-    fila.appendChild(bCompartir);
+    var bBajar = boton(esES ? 'Descargar' : 'Download', true);
     fila.appendChild(bBajar);
 
     var cerrar = el('button', 'padding:8px 24px;border:none;background:none;cursor:pointer;' +
@@ -684,16 +695,6 @@
       setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
     }
     function porTecla(e) { if (e.key === 'Escape') fuera(); }
-
-    bCompartir.addEventListener('click', function () {
-      bCompartir.disabled = true;
-      share(blob, { lang: lang, name: opts.name || '' }).then(function (estado) {
-        bCompartir.disabled = false;
-        if (estado === 'shared') fuera();
-        else if (estado === 'downloaded') aviso.textContent = esES ? 'Descargada' : 'Downloaded';
-        // 'cancelled' → ni una palabra: no ha pasado nada.
-      }).catch(function () { bCompartir.disabled = false; });
-    });
 
     bBajar.addEventListener('click', function () {
       var a = document.createElement('a');
@@ -714,7 +715,7 @@
     capa.appendChild(aviso);
     capa.appendChild(cerrar);
     document.body.appendChild(capa);
-    bCompartir.focus();
+    bBajar.focus();
     return capa;
   }
 

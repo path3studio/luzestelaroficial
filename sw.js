@@ -436,7 +436,20 @@
 //    glifos pegados al borde de su cuadro y por eso se noto ahora. Rueda
 //    600→570 y separacion 40→72; queda 76 px hasta el pie.
 // share-card.js sube a ?v=12.
-const CACHE_NAME = 'luzestelar-v102';
+// v102 → v103 (Ago 7, con captura marcada del usuario). Dos cosas:
+// 1. EL SOLAPE ERA OTRO. Yo habia entendido que chocaban la rueda y la fila
+//    de badges, y lo separe; pero lo que se cruzaba eran las PALABRAS
+//    "SOL"/"LUNA"/"ASC" con el aro de su PROPIO circulo. Medido: la etiqueta
+//    se pinta con textBaseline 'top' a 20 px de cuerpo (ocupa y..y+20) y el
+//    borde de arriba del aro caia en y+58-46 = y+12 → OCHO PIXELES DENTRO de
+//    las letras. Ya se habia tocado en junio (y+40 → y+58) por la misma queja
+//    y no bastaba. Ahora y+82: el aro empieza en y+36 y deja 16 px limpios.
+// 2. La vista previa tenia un boton "Compartir" identico al de la pantalla
+//    anterior. El usuario lo mando quitar y tiene razon: ese boton es
+//    "Guardar", y guardar es descargar. Queda vista previa + Descargar +
+//    Cerrar. Compartir sigue con su propio boton fuera.
+// share-card.js sube a ?v=13.
+const CACHE_NAME = 'luzestelar-v103';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
