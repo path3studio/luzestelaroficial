@@ -42,8 +42,18 @@
   const chartData = {{CHART_DATA_JSON}};
 
   const canvas = document.getElementById('chart');
-  // 1000px chart inside a 1080 frame leaves room for brand + date
-  LuzEstelar.NatalChart.render(canvas, chartData, {
+  // 2026-08-07: estas opciones son LAS MISMAS que window.__ruedaOpts de
+  // mi-dia.html, para que el video y la web dibujen la misma rueda. Solo
+  // quedan fuera a propósito `brandMark` (la firma es para capturas manuales
+  // de la web) y `size` (aquí 1000, allí ≤420).
+  //
+  // Van en una variable porque onTextureLoad tiene que repintar con
+  // EXACTAMENTE las mismas: las fotos de los planetas pesan ~956 KB y llegan
+  // después del primer dibujado. Sin repintar, la rueda se queda con los
+  // planetas de degradado y nadie se entera — falla en silencio.
+  // Y tiene que ser SIEMPRE LA MISMA función: natal-chart.js deduplica los
+  // avisos POR REFERENCIA, y una closure nueva por dibujado los acumula.
+  const opts = {
     size: 1000,
     dpr: 1,
     signLabels: ['ARI','TAU','GÉM','CÁN','LEO','VIR','LIB','ESC','SAG','CAP','ACU','PIS'],
@@ -51,14 +61,24 @@
     // concentric ring + Earth at center. Daily chart only; PWA stays
     // on tier mode by default.
     geocentricOrbits: true,
+    // 2026-08-07: las cuatro que faltaban para igualar a mi-dia.
+    realPlanets: true,        // fotos reales de la NASA
+    denseStars: true,         // relleno de estrellas de fondo
+    rotateFigures: true,      // las figuras giran para aprovechar el arco
+    fullWedges: true,
+    wedgeAlpha: 0.033,
     // 2026-04-29 sign-focus: highlights the sign's band + glows ruler.
     // Injected by chart_renderer.py via {{SIGN_FOCUS}} (null = global view).
     signFocus: {{SIGN_FOCUS}},
     // 2026-04-29: transparent bg + skip labels (Remotion overlays them
     // upright over a rotating geom layer for plumb-line readability).
     transparent: {{TRANSPARENT}},
-    skipLabels: {{SKIP_LABELS}}
-  });
+    skipLabels: {{SKIP_LABELS}},
+    onTextureLoad: function () {
+      LuzEstelar.NatalChart.render(canvas, chartData, opts);
+    }
+  };
+  LuzEstelar.NatalChart.render(canvas, chartData, opts);
 </script>
 </body>
 </html>

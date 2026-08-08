@@ -488,7 +488,24 @@
 // margen del PNG. Verificado sobre los pixeles de la tarjeta: 0.5px de
 // desviacion entre centros y estrella 1.30x la altura del texto.
 // share-card.js sube a ?v=15.
-const CACHE_NAME = 'luzestelar-v105';
+// v106 (Ago 7, tercera vuelta sobre los tamanos). Dos sesiones recibimos
+// instrucciones distintas: a mi "Saturno debe verse mayor que Urano", a la del
+// video "el Sol se come a los demas planetas". No se contradicen — el problema
+// era el Sol, no la separacion entre planetas. Comprimir todo hacia Neptuno
+// (lo que se probo primero) devolvia Saturno a 1.06x Urano, justo el defecto
+// que el usuario habia cazado a ojo, y dejaba los once cuerpos en un rango de
+// 1.21x. Ahora se conserva la potencia 0.7 y solo baja el Sol.
+//
+// Y una trampa que se me escapo y cazo la otra sesion: TEX_BOX multiplica
+// ENCIMA de BODY_R. Con el Sol bajado, Saturno se dibujaba a 0.0281x1.35 =
+// 0.0379 contra 0.0315 del Sol — pasaba a ser el cuerpo mayor de la rueda, la
+// queja de "dos planetas grandes". Mi propio comentario explicaba esa
+// condicion y la rompi al bajar el Sol sin volver a mirarla.
+// Cerrado con Sol 0.0340 y anillos a 1.20: Saturno total 0.0337, el Sol sigue
+// siendo el mayor, no aplasta a Jupiter (1.13x) y Saturno mantiene 1.29x sobre
+// Urano. El recorte del PNG va emparejado en preparar_texturas_web.py, por eso
+// las texturas suben a ?v=3.
+const CACHE_NAME = 'luzestelar-v106';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

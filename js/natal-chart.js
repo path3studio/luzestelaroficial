@@ -154,8 +154,23 @@
   // 0.0300: mantiene el orden verdadero, da aire arriba (los gigantes se
   // distinguen) y junta abajo, que es lo honesto — Plutón, la Luna y Mercurio
   // sí son casi iguales de chicos. Saturno queda 1.30x Urano. Fracción de `size`.
+  // 2026-08-07: escala comprimida hacia Neptuno (factor 0.18). El Sol pasa
+  // de 2.57x Plutón a 1.21x: se conserva el ORDEN real de tamaños, pero deja
+  // de aplastar al resto. Motivo del usuario: "el sol se come a los demás
+  // planetas, no se ven". Los valores anteriores quedan en el .bak-ago07.
+  // 2026-08-07, tercera vuelta. La sesión del video comprimió todo hacia
+  // Neptuno para resolver "el Sol se come a los demás planetas" — queja legítima
+  // del usuario en el video a 1000 px. Pero el remedio deshizo lo que él mismo
+  // había pedido antes mirando la web: Saturno volvía a 1.06x Urano, justo el
+  // defecto que detectó a ojo ("¿Saturno es más pequeño que Urano?"). Los once
+  // cuerpos quedaban en un rango de 1.21x — todos del mismo tamaño.
+  //
+  // Las dos peticiones no se contradicen: el problema era EL SOL, no la
+  // separación entre planetas. Se conserva la potencia 0.7 para los planetas y
+  // se baja el Sol hasta rozar a Júpiter (1.05x en vez de 1.27x). Sigue siendo
+  // el mayor, deja de aplastar al resto, y Saturno vuelve a 1.29x Urano.
   var BODY_R = {
-    Sun:0.0380, Jupiter:0.0300, Saturn:0.0281, Uranus:0.0218, Neptune:0.0216,
+    Sun:0.0340, Jupiter:0.0300, Saturn:0.0281, Uranus:0.0218, Neptune:0.0216,
     Earth:0.0169, Venus:0.0168, Mars:0.0158, Mercury:0.0154, Moon:0.0151,
     Pluto:0.0148
   };
@@ -174,14 +189,23 @@
   //
   // Los valores salen de scripts/preparar_texturas_web.py, que los imprime.
   // Si se regenera una textura con otro recorte, hay que actualizarlos aquí.
-  var TEX_BOX = { Saturn: 1.35, Earth: 1.122 };
+    // 7/ago, tercera vuelta. La sesión del video vio lo que a mí se me escapó:
+  // TEX_BOX multiplica ENCIMA de BODY_R, así que Saturno se dibujaba a
+  // 0.0281 x 1.35 = 0.0379 y, con el Sol bajado a 0.0315, pasaba a ser el
+  // cuerpo MAYOR de la rueda — justo la queja de "dos planetas grandes".
+  // Es la misma trampa que yo mismo había anotado aquí en sentido contrario.
+  // Ahora Sol 0.0340 y anillos a 1.20: Saturno total 0.0337, el Sol sigue
+  // siendo el mayor por poco, no aplasta a Júpiter (1.13x) y el cuerpo de
+  // Saturno conserva su 1.29x sobre Urano. El recorte del PNG va emparejado
+  // en scripts/preparar_texturas_web.py — si cambia uno, cambia el otro.
+  var TEX_BOX = { Saturn: 1.20, Earth: 1.122 };
 
   var _tex = {};           // nombre → HTMLImageElement
   var _texBase = '/assets/planets/';
   // Cloudflare guarda los assets 4 horas en el borde. Sin una marca en la URL
   // se puede regenerar una textura, desplegarla, y seguir viendo la vieja
   // media tarde. SÚBELO cada vez que cambie cualquier PNG de esa carpeta.
-  var _texVer = '?v=2';   // v2 = 7/ago: Tierra +sat, Luna +luz, Saturno 1.35x
+  var _texVer = '?v=3';   // v3 = 7/ago: Saturno recortado a 1.20x (antes 1.35)
   // Oyentes de "ya cargó una textura". El módulo NO se repinta solo: si lo
   // hiciera tendría que reusar las opciones del render anterior, y esas
   // caducan (basta que la ventana cambie de tamaño para que el lienzo se
@@ -589,7 +613,7 @@
         ctx.fillStyle = fg;
         ctx.fill();
         // Filo fino en los bordes del sector, sin arco a media banda
-        ctx.lineWidth = 0.75;
+        ctx.lineWidth = 0.75 * (size/420);
         ctx.strokeStyle = elemColor + '99';
         ctx.beginPath();
         ctx.moveTo(cx + Math.cos(startAngle) * signR, cy + Math.sin(startAngle) * signR);
@@ -601,7 +625,7 @@
       }
       // Thin divider stroke
       ctx.strokeStyle = 'rgba(212,168,73,0.12)';
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.5 * (size/420);
       ctx.beginPath();
       ctx.moveTo(cx + Math.cos(startAngle) * signR, cy + Math.sin(startAngle) * signR);
       ctx.lineTo(cx + Math.cos(startAngle) * outerR, cy + Math.sin(startAngle) * outerR);
@@ -650,14 +674,14 @@
 
       // Gold rim
       ctx.strokeStyle = 'rgba(212,168,73,0.42)';
-      ctx.lineWidth = 0.8;
+      ctx.lineWidth = 0.8 * (size/420);
       ctx.beginPath(); ctx.arc(gx, gy, discR - 1, 0, TAU); ctx.stroke();
 
       // Glyph itself — contorno exacto de la fuente (astro-glyphs.js);
       // el carácter Unicode queda como alternativa si el módulo no cargó.
       if (!SKIP_LABELS) {
         ctx.shadowColor = elemColor;
-        ctx.shadowBlur = 6;
+        ctx.shadowBlur = 6 * (size/420);
         ctx.fillStyle = '#fff8e7';
         var AG = window.LuzEstelar && window.LuzEstelar.AstroGlyphs;
         if (!(AG && AG.draw(ctx, AG.sign(i), gx, gy, size * 0.042, '#fff8e7'))) {
@@ -665,13 +689,13 @@
           ctx.fillText(SIGN_GLYPHS[i], gx, gy);
         }
         ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = 0 * (size/420);
       }
     }
 
     // ── Tick marks every 5 degrees on the outer ring ──
     ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-    ctx.lineWidth = 0.5;
+    ctx.lineWidth = 0.5 * (size/420);
     for (var t = 0; t < 360; t += 5) {
       var tickAngle = ((t + ascOffset) * DEG) - Math.PI / 2;
       var tickInner = outerR - 2;
@@ -692,10 +716,10 @@
 
     // ── Outer and inner circles ──
     ctx.strokeStyle = 'rgba(212,168,73,0.35)';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.5 * (size/420);
     ctx.beginPath(); ctx.arc(cx, cy, outerR, 0, TAU); ctx.stroke();
     ctx.strokeStyle = 'rgba(212,168,73,0.20)';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1 * (size/420);
     ctx.beginPath(); ctx.arc(cx, cy, signR, 0, TAU); ctx.stroke();
     ctx.strokeStyle = 'rgba(212,168,73,0.15)';
     ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, TAU); ctx.stroke();
@@ -703,7 +727,7 @@
     // ── House cusps (only if full house data provided) ──
     if (chartData.houses && chartData.houses.length === 12) {
       ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.5 * (size/420);
       for (var h = 0; h < 12; h++) {
         var hAngle = ((chartData.houses[h] + ascOffset) * DEG) - Math.PI / 2;
         ctx.beginPath();
@@ -784,17 +808,20 @@
         semilla = (semilla * 1103515245 + 12345) & 0x7fffffff;
         return semilla / 0x7fffffff;
       }
-      var nPolvo = 190;
+      // 2026-08-07: la cantidad y el radio iban en PÍXELES FIJOS, afinados
+        // mirando el preview a 420px. En el video (1000px) las mismas
+        // estrellas salían 2.4x más pequeñas y el cielo parecía vacío.
+        var nPolvo = 620;
       for (var dp = 0; dp < nPolvo; dp++) {
         var da = _rnd() * TAU;
         // raíz para repartir parejo por área, no acumulado en el centro
         var dr = Math.sqrt(_rnd()) * (signR - size * 0.018);
         var dxp = cx + Math.cos(da) * dr;
         var dyp = cy + Math.sin(da) * dr;
-        var dmag = 0.5 + _rnd() * 1.1;
+        var dmag = (0.5 + _rnd() * 0.9) * (size / 1000);
         // 2026-08-07: iban a 0.3 y competían con los planetas. El usuario
         // pidió "un cincuenta por ciento, algo así" — de ahí 0.15.
-        ctx.fillStyle = 'rgba(255,250,235,0.15)';
+        ctx.fillStyle = 'rgba(255,250,235,0.11)';
         ctx.beginPath();
         ctx.arc(dxp, dyp, dmag, 0, TAU);
         ctx.fill();
@@ -963,7 +990,7 @@
             var epx = cx + rx * er + ux * eLon * kx;
             var epy = cy + ry * er + uy * eLon * kx;
             var erad = Math.max(0.5, (5.6 - e[2]) * (size / 1500));
-            ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.75)' : 'rgba(255,250,235,0.48)';
+            ctx.fillStyle = esFoco ? 'rgba(255,250,235,0.88)' : 'rgba(255,250,235,0.64)';
             ctx.beginPath();
             ctx.arc(epx, epy, erad, 0, TAU);
             ctx.fill();
@@ -1077,7 +1104,7 @@
     if (hasVerifiedAsc) {
       var ascAngle = ((ascLongitude + ascOffset) * DEG) - Math.PI / 2;
       ctx.strokeStyle = '#d4a849';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 * (size/420);
       ctx.beginPath();
       // 2026-08-05 (user): la línea llegaba hasta fuera del aro y cruzaba la
       // banda del zodiaco, tapando el nombre de 3 letras y el glifo del signo
@@ -1114,7 +1141,7 @@
     if (typeof mcLongitude === 'number' && !isNaN(mcLongitude) && hasVerifiedAsc) {
       var mcAngle = ((mcLongitude + ascOffset) * DEG) - Math.PI / 2;
       ctx.strokeStyle = 'rgba(212,168,73,0.5)';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.5 * (size/420);
       ctx.beginPath();
       // Mismo criterio que el ASC: la línea se detiene antes de la banda.
       ctx.moveTo(cx + Math.cos(mcAngle) * (innerR - 5), cy + Math.sin(mcAngle) * (innerR - 5));
@@ -1275,7 +1302,7 @@
         ctx.arc(cx, cy, earthR, 0, TAU);
         ctx.fill();
         ctx.strokeStyle = 'rgba(127,179,213,0.5)';
-        ctx.lineWidth = 0.8;
+        ctx.lineWidth = 0.8 * (size/420);
         ctx.stroke();
         // Earth glyph (⊕ — Earth symbol)
         if (!SKIP_LABELS) {
@@ -1294,6 +1321,49 @@
       // Spread overlapping planets
       var sorted = chartData.planets.slice().sort(function(a,b) { return a.longitude - b.longitude; });
       var positions = [];
+
+      // 2026-08-07 — antichoque RADIAL, solo en modo geocéntrico.
+      //
+      // El reparto de más abajo salta los planetas de distinto nivel porque
+      // "ya están separados radialmente". Eso vale en el modo por niveles de
+      // la web, pero NO aquí: las órbitas van a 0.028 unas de otras y los
+      // cuerpos miden 0.042 de ancho, así que dos anillos vecinos SÍ se
+      // solapan. Medido sobre 365 días: 197 días con algún solape, y
+      // Júpiter+Marte chocando 120 de ellos.
+      //
+      // Se empuja el RADIO, nunca el ángulo. El ángulo es la longitud real
+      // del planeta —el dato astrológico— y moverlo haría que la carta
+      // mintiera sobre dónde está el cuerpo; el anillo en que se dibuja es
+      // decorativo. Con esto los 197 días bajan a 0, con un desplazamiento
+      // medio de 0.0067 (máximo 0.032, un 9.5% del radio exterior).
+      var radioAjustado = {};
+      if (GEOCENTRIC) {
+        var _orbes = chartData.planets.slice().filter(function(p) {
+          return PLANET_ORBIT_R[p.name] !== undefined;
+        }).sort(function(a, b) {
+          return PLANET_ORBIT_R[a.name] - PLANET_ORBIT_R[b.name];   // dentro → fuera
+        });
+        _orbes.forEach(function(p) { radioAjustado[p.name] = PLANET_ORBIT_R[p.name]; });
+        for (var _vuelta = 0; _vuelta < 12; _vuelta++) {
+          var _movio = false;
+          for (var _i = 0; _i < _orbes.length; _i++) {
+            for (var _j = _i + 1; _j < _orbes.length; _j++) {
+              var _A = _orbes[_i], _B = _orbes[_j];
+              var _aA = ((_A.longitude + ascOffset) * DEG) - Math.PI / 2;
+              var _aB = ((_B.longitude + ascOffset) * DEG) - Math.PI / 2;
+              var _rA = radioAjustado[_A.name], _rB = radioAjustado[_B.name];
+              var _dx = Math.cos(_aA) * _rA - Math.cos(_aB) * _rB;
+              var _dy = Math.sin(_aA) * _rA - Math.sin(_aB) * _rB;
+              var _suma = (BODY_R[_A.name] || 0.021) + (BODY_R[_B.name] || 0.021);
+              if (Math.sqrt(_dx * _dx + _dy * _dy) < _suma) {
+                radioAjustado[_B.name] += 0.004;   // el de fuera se aparta hacia fuera
+                _movio = true;
+              }
+            }
+          }
+          if (!_movio) break;
+        }
+      }
       // Degree labels ("Nep 18°") used to be drawn at a fixed offset below
       // each planet, so two bodies close in longitude — on different orbit
       // rings, where the spheres themselves never touch — printed their
@@ -1340,7 +1410,11 @@
         // not in geocentric mode (preserves existing PWA behavior).
         var myR;
         if (GEOCENTRIC && PLANET_ORBIT_R[p.name] !== undefined) {
-          myR = PLANET_ORBIT_R[p.name] * size;
+          // radioAjustado sale del antichoque radial de más arriba; si por lo
+          // que sea no trae este planeta, se cae al anillo nominal de siempre.
+          myR = (radioAjustado[p.name] !== undefined
+                 ? radioAjustado[p.name]
+                 : PLANET_ORBIT_R[p.name]) * size;
         } else {
           myR = planetR + (TIER_OFFSETS[tier] || 0) * size;
         }
@@ -1371,7 +1445,7 @@
           ctx.beginPath(); ctx.arc(px, py, sphereR * 3.2, 0, TAU); ctx.fill();
           // Halo ring
           ctx.strokeStyle = ringElem + 'CC';
-          ctx.lineWidth = 1.4;
+          ctx.lineWidth = 1.4 * (size/420);
           ctx.beginPath(); ctx.arc(px, py, sphereR * 1.9, 0, TAU); ctx.stroke();
           ctx.restore();
         }
@@ -1386,7 +1460,7 @@
           pendingLabels.push(function() {
             ctx.save();
             ctx.shadowColor = 'rgba(0,0,0,0.6)';
-            ctx.shadowBlur = 3;
+            ctx.shadowBlur = 3 * (size/420);
             ctx.fillStyle = (p.name === 'Sun' || p.name === 'Moon' ||
                              p.name === 'Venus' || p.name === 'Saturn' ||
                              p.name === 'Uranus')
@@ -1457,7 +1531,7 @@
             ctx.save();
             ctx.font = labelFont;
             ctx.shadowColor = 'rgba(0,0,0,0.85)';
-            ctx.shadowBlur = 3;
+            ctx.shadowBlur = 3 * (size/420);
             ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.95)'
                                        : 'rgba(255,255,255,0.68)';
             if (glyKey) {
@@ -1480,7 +1554,7 @@
         // rings get clean short lines and the outer ones longer).
         var tickAngle = ((p.longitude + ascOffset) * DEG) - Math.PI / 2;
         ctx.strokeStyle = color + '33';
-        ctx.lineWidth = 0.5;
+        ctx.lineWidth = 0.5 * (size/420);
         ctx.beginPath();
         ctx.moveTo(cx + Math.cos(tickAngle) * (myR + size * 0.025), cy + Math.sin(tickAngle) * (myR + size * 0.025));
         ctx.lineTo(cx + Math.cos(tickAngle) * signR, cy + Math.sin(tickAngle) * signR);
@@ -1574,7 +1648,7 @@
         drawPlanetSphere(ctx, tx, ty, sphereR, t.name, REAL_BODIES);
         // Faint silvery rim to signal "transit, not natal"
         ctx.strokeStyle = 'rgba(220,220,240,0.55)';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1 * (size/420);
         ctx.setLineDash([2, 2]);
         ctx.beginPath();
         ctx.arc(tx, ty, sphereR + 2.5, 0, TAU);
@@ -1583,7 +1657,7 @@
         // Glyph on top
         var tGlyph = PLANET_GLYPHS[t.name] || '?';
         ctx.shadowColor = 'rgba(0,0,0,0.7)';
-        ctx.shadowBlur = 3;
+        ctx.shadowBlur = 3 * (size/420);
         ctx.fillStyle = (t.name === 'Sun' || t.name === 'Moon' ||
                          t.name === 'Venus' || t.name === 'Saturn' ||
                          t.name === 'Uranus')
@@ -1598,7 +1672,7 @@
           ctx.fillText(t.name === 'Moon' ? '\u263D' : tGlyph, tx, ty);
         }
         ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = 0 * (size/420);
 
         // Hit region for tap-identify
         hitRegions.push({
@@ -1630,14 +1704,14 @@
 
     // Center circle
     ctx.strokeStyle = 'rgba(212,168,73,0.25)';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1 * (size/420);
     ctx.beginPath();
     ctx.arc(cx, cy, size * 0.035, 0, TAU);
     ctx.stroke();
 
     // Inner circle
     ctx.strokeStyle = 'rgba(212,168,73,0.15)';
-    ctx.lineWidth = 0.5;
+    ctx.lineWidth = 0.5 * (size/420);
     ctx.beginPath();
     ctx.arc(cx, cy, size * 0.018, 0, TAU);
     ctx.stroke();
