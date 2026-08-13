@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Wed, 12 Aug 2026 03:29:00 -0600</lastBuildDate>
+    <lastBuildDate>Thu, 13 Aug 2026 03:26:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 12 de agosto de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 12 de agosto de 2026
+      <title>Horóscopo del 13 de agosto de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 13 de agosto de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (6.9/10)
-Tauro: ★★★★☆ (9.7/10)
-Géminis: ★★★★☆ (9.1/10)
-Cáncer: ★★★★☆ (9.1/10)
-Leo: ★★★★★ (10.0/10)
+Aries: ★★★☆☆ (6.5/10)
+Tauro: ★★★★☆ (9.3/10)
+Géminis: ★★★★★ (10.0/10)
+Cáncer: ★★★☆☆ (6.8/10)
+Leo: ★★★☆☆ (7.7/10)
 Virgo: ★★★★☆ (9.1/10)
-Libra: ★★★★☆ (9.7/10)
-Escorpio: ★★★★☆ (9.2/10)
-Sagitario: ★★★★☆ (9.5/10)
-Capricornio: ★★★★☆ (8.7/10)
+Libra: ★★★★☆ (9.2/10)
+Escorpio: ★★★★☆ (8.9/10)
+Sagitario: ★★★★☆ (9.0/10)
+Capricornio: ★★★☆☆ (7.8/10)
 Acuario: ★★★★☆ (9.9/10)
-Piscis: ★★★★☆ (9.7/10)
+Piscis: ★★★★☆ (9.1/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-13.mp3" length="23067116" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-13.mp3</guid>
+      <pubDate>Thu, 13 Aug 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-13.jpg"/>
+      <itunes:duration>00:16:01</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 12 de agosto de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 12 de agosto de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-12.mp3" length="22775084" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-12.mp3</guid>
       <pubDate>Wed, 12 Aug 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Fri, 31 Jul 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-07-31.jpg"/>
       <itunes:duration>00:15:34</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 30 de julio de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 30 de julio de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-07-30.mp3" length="21280940" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-07-30.mp3</guid>
-      <pubDate>Thu, 30 Jul 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-07-30.jpg"/>
-      <itunes:duration>00:14:46</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
