@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Wed, 19 Aug 2026 03:16:00 -0600</lastBuildDate>
+    <lastBuildDate>Thu, 20 Aug 2026 03:41:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 19 de agosto de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 19 de agosto de 2026
+      <title>Horóscopo del 20 de agosto de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 20 de agosto de 2026
 
 Biorritmo Astral:
-Aries: ★★☆☆☆ (4.4/10)
-Tauro: ★★☆☆☆ (5.7/10)
-Géminis: ★★★☆☆ (7.8/10)
-Cáncer: ★★☆☆☆ (4.3/10)
-Leo: ★★☆☆☆ (5.8/10)
-Virgo: ★★☆☆☆ (5.8/10)
-Libra: ★★☆☆☆ (5.6/10)
-Escorpio: ★★★☆☆ (7.1/10)
-Sagitario: ★★★☆☆ (6.7/10)
-Capricornio: ★★★☆☆ (6.3/10)
-Acuario: ★★★☆☆ (7.8/10)
-Piscis: ★★★☆☆ (6.4/10)
+Aries: ★★☆☆☆ (5.6/10)
+Tauro: ★★★☆☆ (6.3/10)
+Géminis: ★★★☆☆ (6.8/10)
+Cáncer: ★★★☆☆ (7.1/10)
+Leo: ★★★☆☆ (6.7/10)
+Virgo: ★★★☆☆ (6.8/10)
+Libra: ★★★☆☆ (6.3/10)
+Escorpio: ★★★★☆ (8.8/10)
+Sagitario: ★★★★☆ (8.9/10)
+Capricornio: ★★★☆☆ (6.8/10)
+Acuario: ★★★☆☆ (8.0/10)
+Piscis: ★★★★☆ (8.2/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-20.mp3" length="23311916" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-20.mp3</guid>
+      <pubDate>Thu, 20 Aug 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-20.jpg"/>
+      <itunes:duration>00:16:11</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 19 de agosto de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 19 de agosto de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-19.mp3" length="23521004" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-19.mp3</guid>
       <pubDate>Wed, 19 Aug 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Fri, 07 Aug 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-07.jpg"/>
       <itunes:duration>00:16:25</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 6 de agosto de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 6 de agosto de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-06.mp3" length="22337900" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-06.mp3</guid>
-      <pubDate>Thu, 06 Aug 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-06.jpg"/>
-      <itunes:duration>00:15:30</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
