@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Fri, 21 Aug 2026 03:33:00 -0600</lastBuildDate>
+    <lastBuildDate>Sat, 22 Aug 2026 04:04:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 21 de agosto de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 21 de agosto de 2026
+      <title>Horóscopo del 22 de agosto de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 22 de agosto de 2026
 
 Biorritmo Astral:
-Aries: ★★☆☆☆ (5.8/10)
-Tauro: ★★★☆☆ (6.7/10)
-Géminis: ★★★☆☆ (6.9/10)
-Cáncer: ★★★☆☆ (7.8/10)
-Leo: ★★★★☆ (8.9/10)
+Aries: ★★☆☆☆ (5.9/10)
+Tauro: ★★★☆☆ (6.4/10)
+Géminis: ★★★☆☆ (7.1/10)
+Cáncer: ★★★☆☆ (7.3/10)
+Leo: ★★★☆☆ (6.9/10)
 Virgo: ★★★☆☆ (6.9/10)
-Libra: ★★★☆☆ (6.8/10)
-Escorpio: ★★★★☆ (8.7/10)
-Sagitario: ★★★★☆ (8.7/10)
+Libra: ★★★☆☆ (6.7/10)
+Escorpio: ★★★★☆ (8.3/10)
+Sagitario: ★★★☆☆ (7.5/10)
 Capricornio: ★★★☆☆ (6.9/10)
 Acuario: ★★★★☆ (8.4/10)
-Piscis: ★★★★☆ (8.3/10)
+Piscis: ★★★☆☆ (7.8/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-22.mp3" length="22753196" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-22.mp3</guid>
+      <pubDate>Sat, 22 Aug 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-22.jpg"/>
+      <itunes:duration>00:15:47</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 21 de agosto de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 21 de agosto de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-21.mp3" length="22279148" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-21.mp3</guid>
       <pubDate>Fri, 21 Aug 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Sun, 09 Aug 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-09.jpg"/>
       <itunes:duration>00:16:37</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 8 de agosto de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 8 de agosto de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-08.mp3" length="24995564" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-08.mp3</guid>
-      <pubDate>Sat, 08 Aug 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-08.jpg"/>
-      <itunes:duration>00:17:21</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
