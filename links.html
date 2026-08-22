@@ -48,6 +48,16 @@
         <h1>Luz Estelar</h1>
         <p class="tag">Astrología real, todos los días ✦</p>
 
+        <!-- ── Eclipse 27/ago (campaña 19–29/ago): PRIMERO de la lista mientras
+             dure — es el evento. Quitar después del 29 (o dejar para el
+             siguiente eclipse cambiando textos). ── -->
+        <a class="btn primary" id="btn-eclipse" href="/eclipse" style="border-color:var(--gold);background:linear-gradient(135deg,rgba(212,168,73,0.14),rgba(30,30,80,0.25));">🌒 ¿En qué área de TU vida cae el eclipse del 27?
+            <span class="sub">Eclipse parcial de Luna · tu carta natal tiene la respuesta — gratis</span></a>
+        <script>
+        // autoapagado fuera de la ventana de campaña
+        (function(){var h=new Date().toISOString().slice(0,10);
+        if(h<'2026-08-19'||h>'2026-08-29'){var b=document.getElementById('btn-eclipse');if(b)b.style.display='none';}})();
+        </script>
         <a class="btn primary" href="/aprende/compatibilidad"><span class="le-ic" data-icon="heart"></span> Calculadora de compatibilidad
             <span class="sub">Elige dos signos y descubre su química</span></a>
         <!-- 2026-08-07: este enlace es el primero del embudo —el que recibe el

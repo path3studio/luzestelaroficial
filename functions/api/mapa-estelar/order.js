@@ -48,7 +48,15 @@ export async function onRequestPost(context) {
   try { body = await context.request.json(); }
   catch { body = {}; }
 
-  const titulo = str(body.titulo, 300);
+  // 2026-08-08: 300 caracteres eran demasiados. El generador parte el título
+  // en DOS líneas como mucho y encoge la tipografía para que quepa, pero
+  // pasando de ~70 el resultado sale apretado y feo en un póster impreso.
+  // Antes ni siquiera se partía: a partir de 40 caracteres el título se salía
+  // del lienzo y el cliente recibía su dedicatoria sin la primera ni la última
+  // palabra. Ahora el generador ya no puede desbordarse, y este tope es para
+  // que además se vea bien. Mantener en sintonía con TITULO_MAX_CARACTERES de
+  // scripts/starmap_generator.py.
+  const titulo = str(body.titulo, 70);
   const fecha = str(body.fecha, 20);
   const lugar = str(body.lugar, 300);
   const email = str(body.email, 200);

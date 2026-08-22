@@ -1203,6 +1203,11 @@ function renderAll(){
           if(_k&&window.LuzEstelarIcons){
             icEl.innerHTML='<span class="le-ic" data-icon="'+_k+'"></span>';
             LuzEstelarIcons.hydrate(icEl);
+            // 2026-08-11: icons.js has no zodiac glyphs — hydrate left the
+            // circle EMPTY (seen on Android). Fall back to the character.
+            if(!icEl.querySelector('svg')){
+              icEl.textContent=symbol;
+            }
           } else {
             icEl.textContent=symbol;
           }
@@ -2225,10 +2230,26 @@ async function generateShareCard(){
   ctx.font='400 20px Inter, sans-serif';
   ctx.fillText(fmtDate(null),540,735);
 
-  // Brand footer
-  ctx.fillStyle='#d4a849';
-  ctx.font='700 34px "Cormorant Garamond", serif';
-  ctx.fillText('\u2726 Luz Estelar \u2726',540,990);
+  // Brand footer \u2014 official logotype (2026-08-11), mirrors mi-dia.html.
+  await new Promise(function(res){
+    var ico=new Image();
+    ico.onload=function(){
+      ctx.drawImage(ico,540-118,962,44,44);
+      ctx.textAlign='left';
+      ctx.fillStyle='#d4a849';
+      ctx.font='700 36px "Cormorant Garamond", serif';
+      ctx.fillText('Luz Estelar',540-62,984);
+      ctx.textAlign='center';
+      res();
+    };
+    ico.onerror=function(){
+      ctx.fillStyle='#d4a849';
+      ctx.font='700 34px "Cormorant Garamond", serif';
+      ctx.fillText('Luz Estelar',540,990);
+      res();
+    };
+    ico.src='/app_icon_192.png';
+  });
   ctx.fillStyle='#9890a8';
   ctx.font='400 18px Inter, sans-serif';
   ctx.fillText('luzestelaroficial.com',540,1030);

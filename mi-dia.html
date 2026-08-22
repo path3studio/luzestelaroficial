@@ -468,6 +468,19 @@ body.modal-open #le-tabs{display:none !important}
 .fade{animation:fadeUp .35s ease-out both}
 .d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}.d6{animation-delay:.24s}.d7{animation-delay:.28s}
 
+
+/* ── Eclipse 27/ago (campaña 20–29/ago; el JS lo apaga solo fuera de
+   fechas — para el próximo eclipse solo cambiar ECLIPSE_LON y VENTANA) ── */
+.eclipse-banner{margin:14px 0;padding:14px 16px;border:1px solid rgba(212,168,73,.45);
+  border-radius:14px;background:linear-gradient(135deg,rgba(212,168,73,.10),rgba(30,30,80,.25));
+  cursor:pointer}
+.eclipse-banner .eb-head{display:flex;align-items:center;gap:10px;font-weight:600}
+.eclipse-banner .eb-luna{font-size:1.3em}
+.eclipse-banner .eb-casa{color:var(--gold,#d4a849)}
+.eclipse-banner .eb-body{margin-top:10px;font-size:.95em;line-height:1.55;display:none}
+.eclipse-banner.abierto .eb-body{display:block}
+.eclipse-banner .eb-hint{margin-left:auto;font-size:.8em;opacity:.65}
+
 /* ── Tus áreas de vida (casas) — 2026-08-03 ─────────────────────────── */
 .houses-panel{margin-top:14px;padding-top:12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}
 .hp-title{display:flex;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.08em;
@@ -698,6 +711,7 @@ body.modal-open #le-tabs{display:none !important}
              ubicar todo en un mismo lugar"). La rueda ya estaba en pantalla
              pero era ilegible; esto la traduce. Las casas YA vienen guardadas
              en natal_chart.houses — no se calcula nada nuevo. -->
+        <div class="eclipse-banner" id="eclipse-banner" hidden role="button" tabindex="0" aria-expanded="false"></div>
         <div class="tres-claves" id="tres-claves" hidden>
           <!-- 2026-08-05: desplegable y CERRADO por defecto (pedido del
                usuario) — la carta ya es densa; esto es profundidad opcional,
@@ -1520,6 +1534,13 @@ function renderAll(){
           if(_k&&window.LuzEstelarIcons){
             ic.innerHTML='<span class="le-ic" data-icon="'+_k+'"></span>';
             LuzEstelarIcons.hydrate(ic);
+            // 2026-08-11: el registro de icons.js NO trae los glifos del
+            // zodiaco → hydrate dejaba el círculo VACÍO (el usuario lo vio
+            // en su Android; en escritorio salvaba el camino de respaldo).
+            // Si no se dibujó un <svg>, caemos al carácter de siempre.
+            if(!ic.querySelector('svg')){
+              ic.textContent=signSym[planet.sign]||ic.textContent;
+            }
           } else {
             ic.textContent=signSym[planet.sign]||ic.textContent;
           }
@@ -1609,6 +1630,7 @@ function renderAll(){
       // después del bloque de tránsitos, para que pueda resaltar las casas
       // que el cielo toca hoy. Si algo falta, se oculta sola.
       if (typeof renderHouses === 'function') renderHouses(chartData);
+      if (typeof renderEclipse === 'function') renderEclipse(chartData);
       // Bienvenida post-pago (2026-08-03). Stripe devolvía al usuario a
       // /dashboard, que ni siquiera leía el parámetro: pagabas y nadie te
       // decía nada. Ahora el checkout regresa AQUÍ y se confirma en persona.
@@ -2968,10 +2990,29 @@ async function generateShareCard(){
   ctx.font='400 20px Inter, sans-serif';
   ctx.fillText(fmtDate(null),540,735);
 
-  // Brand footer
-  ctx.fillStyle='#d4a849';
-  ctx.font='700 34px "Cormorant Garamond", serif';
-  ctx.fillText('\u2726 Luz Estelar \u2726',540,990);
+  // Brand footer \u2014 logotipo oficial (2026-08-11). Antes dec\u00eda
+  // '\u2726 Luz Estelar \u2726' en texto plano: era anterior a la identidad
+  // visual de julio y el usuario lo caz\u00f3 al revisar los carruseles. Si el
+  // isotipo no cargara, cae a solo el nombre \u2014 nunca a las estrellitas.
+  await new Promise(function(res){
+    var ico=new Image();
+    ico.onload=function(){
+      ctx.drawImage(ico,540-118,962,44,44);
+      ctx.textAlign='left';
+      ctx.fillStyle='#d4a849';
+      ctx.font='700 36px "Cormorant Garamond", serif';
+      ctx.fillText('Luz Estelar',540-62,984);
+      ctx.textAlign='center';
+      res();
+    };
+    ico.onerror=function(){
+      ctx.fillStyle='#d4a849';
+      ctx.font='700 34px "Cormorant Garamond", serif';
+      ctx.fillText('Luz Estelar',540,990);
+      res();
+    };
+    ico.src='/app_icon_192.png';
+  });
   ctx.fillStyle='#9890a8';
   ctx.font='400 18px Inter, sans-serif';
   ctx.fillText('luzestelaroficial.com',540,1030);
@@ -3552,6 +3593,71 @@ function cargarCasasSignos(){
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){ if (j) CASAS_SIGNOS = j; })
     .catch(function(){ /* se queda el texto genérico */ });
+}
+
+
+// ── Eclipse lunar 27/ago/2026 (Luna llena 4,9° Piscis · campaña 20–29/ago).
+// El eclipse cae en UNA casa de cada carta: ese es el gancho. Usa las mismas
+// cúspides que renderHouses (se llama después de asegurarlas). ──
+var ECLIPSE_LON = 334.9;
+var ECLIPSE_VENTANA = ['2026-08-19', '2026-08-29'];
+var ECLIPSE_CASA = {
+  1:  'Culmina una versión de ti que ya te queda chica. Este eclipse cierra un capítulo de cómo te presentas al mundo — lo que sigue se parece más a quien eres hoy. Esa noche, di en voz alta qué te llevas y qué dejas.',
+  2:  'Algo en tu relación con el dinero y la seguridad llega a su cierre: un gasto, una deuda emocional con lo material, una forma de aferrarte. Suelta UNA cosa que pagas — con dinero o con paz — y ya no usas.',
+  3:  'Una conversación que diste por perdida pide su punto final — o su punto y aparte. El eclipse ilumina lo que callaste con alguien cercano. Escribe el mensaje aunque no lo mandes: el cierre es tuyo.',
+  4:  'El eclipse toca tus raíces: algo de tu casa, tu familia o el lugar del que vienes termina de soltarse. No es pérdida, es espacio. Esa noche, cambia UNA cosa de lugar en tu casa — el gesto es más grande de lo que parece.',
+  5:  'Culmina un ciclo en lo que haces por puro gusto: un proyecto creativo, un romance, una forma de jugar. El eclipse te pregunta qué brillo abandonaste por ser «responsable». Retómalo esa noche, aunque sea diez minutos.',
+  6:  'Tu cuerpo lleva semanas hablándote de una rutina que ya no te sostiene. Este eclipse la pone en evidencia — el cansancio también es información. Elige UN hábito que termina esa noche. Uno solo, pero de verdad.',
+  7:  'El eclipse cae en tu casa del amor y los vínculos de tú a tú: una relación — de pareja, de socios, de años — muestra exactamente dónde está parada. Lo que veas esa noche, créelo. Y dilo con una frase honesta.',
+  8:  'Es tu casa de las transformaciones profundas: lo compartido, lo íntimo, lo que no se cuenta. Algo que cargabas en silencio pide ser soltado con este eclipse. No lo resuelvas: nómbralo. Con eso empieza.',
+  9:  'Culmina una creencia: algo que dabas por verdad ya no te alcanza para explicar tu vida. El eclipse abre la pregunta nueva. Esa noche, apunta la pregunta — no la respuesta — y déjala dormir contigo.',
+  10: 'El eclipse ilumina tu carrera y tu nombre: un ciclo profesional llega a su culminación — un logro que cerrar o un rumbo que ya no es el tuyo. Esa noche decide UNA cosa de tu trabajo en tus términos, no en los de nadie.',
+  11: 'Toca tu casa de la comunidad: un grupo, una amistad o un sueño de largo plazo muestra si sigue siendo tuyo o solo es costumbre. El eclipse separa lo vivo de lo heredado. Escribe qué sueño sigue en pie — ese se queda.',
+  12: 'Cae en tu mundo interno, la casa de lo que no se ve: los miedos silenciosos, lo que sueltas a solas. Es el cierre más íntimo de todos. Esa noche date silencio: sin pantalla, quince minutos. Lo que aparezca, eso era.'
+};
+
+function casaDeLongitud(chart, lon){
+  try{
+    var cusps = (chart.houses || []).slice().sort(function(a,b){ return a.house-b.house; })
+                  .map(function(h){ return h.cusp_degree; });
+    if(cusps.length !== 12) return null;
+    lon = ((lon % 360) + 360) % 360;
+    for(var i=0;i<12;i++){
+      var ini=cusps[i], fin=cusps[(i+1)%12];
+      if((ini<=fin) ? (lon>=ini && lon<fin) : (lon>=ini || lon<fin)) return i+1;
+    }
+  }catch(e){}
+  return null;
+}
+
+function renderEclipse(chart){
+  try{
+    var hoy = new Date().toISOString().slice(0,10);
+    if(hoy < ECLIPSE_VENTANA[0] || hoy > ECLIPSE_VENTANA[1]) return;
+    var el = document.getElementById('eclipse-banner');
+    if(!el) return;
+    var casa = casaDeLongitud(chart, ECLIPSE_LON);
+    if(!casa || !ECLIPSE_CASA[casa]) return;
+    var area = (HOUSE_AREAS[casa] || {}).area || '';
+    var cuando = (hoy > '2026-08-27') ? 'cay\u00f3' : 'cae';
+    el.innerHTML =
+      '<div class="eb-head"><span class="eb-luna">\uD83C\uDF12</span>' +
+      '<span>El eclipse del 27 ' + cuando + ' en tu <span class="eb-casa">Casa ' +
+      casa + ' \u2014 ' + area + '</span></span>' +
+      '<span class="eb-hint">toca para leer \u25BE</span></div>' +
+      '<div class="eb-body">' + ECLIPSE_CASA[casa] +
+      '<br><br><em>Luna llena y eclipse parcial a 4,9\u00B0 de Piscis (la ' +
+      'sombra cubre el 93 % de la Luna), ' +
+      'visible en toda Am\u00E9rica la noche del 27.</em></div>';
+    el.hidden = false;
+    if(!el.dataset.wired){
+      el.dataset.wired = '1';
+      el.addEventListener('click', function(){
+        el.classList.toggle('abierto');
+        el.setAttribute('aria-expanded', el.classList.contains('abierto'));
+      });
+    }
+  }catch(e){}
 }
 
 function renderHouses(chart){
