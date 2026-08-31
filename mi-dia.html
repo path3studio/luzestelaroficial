@@ -2514,11 +2514,25 @@ function renderProfiles(){
     h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
     if(active) h+='<span class="pf-star" style="background:rgba(93,208,122,.18);color:#8edca0">Viendo</span>';
     else if(pri) h+='<span class="pf-star">Principal</span>';
+    h+='<button type="button" class="pf-edit" data-edit-id="'+p.id+'" title="Corregir datos" '
+      +'style="margin-left:8px;background:none;border:1px solid rgba(212,168,73,.35);'
+      +'border-radius:8px;color:var(--gold,#d4a849);font-size:.72rem;padding:3px 8px;cursor:pointer">✎</button>';
     h+='</div>';
   });
   box.innerHTML=h;
   // Wire row clicks to profile-switching. Rows switch currentProfile
   // and re-render the dashboard; greeting stays on the account owner.
+  // Lápiz de edición: abre el MISMO modal precargado (caso Sara: hora mal
+  // guardada e imposible de corregir). stopPropagation para no disparar
+  // el switch de perfil de la fila.
+  box.querySelectorAll('.pf-edit').forEach(function(b){
+    b.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      var id=b.getAttribute('data-edit-id');
+      var prof=profilesList.filter(function(p){return String(p.id)===String(id);})[0];
+      if(prof) openModalEdit(prof);
+    });
+  });
   box.querySelectorAll('.pf-row').forEach(function(row){
     row.addEventListener('click', function(){
       var id = row.getAttribute('data-profile-id');
@@ -3122,6 +3136,24 @@ function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms||8);}catch(e){}}
 
 // ── Add Profile Modal ──
 var apLabel='Pareja', apLat=null, apLng=null, apSTO=null;
+// 2026-08-31: MODO EDICIÓN del perfil. El caso Sara: la hora quedó mal
+// guardada al registrarse (el selector del teléfono confunde am/pm) y NO
+// existía forma de corregirla — los endpoints PATCH existían sin UI.
+var apEditId=null;
+function openModalEdit(prof){
+  openModal();
+  apEditId=prof.id;
+  document.getElementById('ap-name').value=prof.nombre||'';
+  document.getElementById('ap-date').value=(prof.fecha_nacimiento||'').slice(0,10);
+  document.getElementById('ap-time').value=prof.hora_nacimiento||'';
+  document.getElementById('ap-place').value=prof.lugar_nacimiento||'';
+  apLat=prof.lat||null; apLng=prof.lon||null;
+  apLabel=prof.label||'Mi Perfil'; buildLabelChips();
+  var t=document.querySelector('#mdl-sheet .mdl-title');
+  if(t) t.textContent='Corregir datos del perfil';
+  document.getElementById('ap-submit').textContent='Guardar cambios';
+  apUpdateSubmit();
+}
 function buildLabelChips(){
   var box=document.getElementById('ap-chips');
   box.innerHTML=LABEL_OPTS.map(function(o){
@@ -3225,7 +3257,10 @@ function closeModal(){
   document.getElementById('ap-sugs').style.display='none';
   document.getElementById('ap-meta').style.display='none';
   document.getElementById('ap-err').style.display='none';
-  apLat=null;apLng=null;apLabel='Pareja';
+  apLat=null;apLng=null;apLabel='Pareja';apEditId=null;
+  var t=document.querySelector('#mdl-sheet .mdl-title');
+  if(t) t.textContent='Añadir perfil';
+  document.getElementById('ap-submit').textContent='Guardar Perfil';
   apUpdateSubmit();
 }
 document.getElementById('btn-add-profile').addEventListener('click',openModal);
@@ -3312,7 +3347,9 @@ document.getElementById('ap-form').addEventListener('submit',async function(e){
       lat:apLat, lon:apLng,
       label:apLabel
     };
-    var r=await api('/api/profile/birth-profiles',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    var _url = apEditId ? ('/api/profile/'+apEditId) : '/api/profile/birth-profiles';
+    var _met = apEditId ? 'PATCH' : 'POST';
+    var r=await api(_url,{method:_met,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var d=await r.json();
     if(!r.ok||!d.ok){throw new Error(d.error||'No se pudo crear el perfil');}
     // Refresh list
