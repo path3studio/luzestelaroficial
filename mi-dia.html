@@ -3270,6 +3270,19 @@ document.getElementById('btn-add-profile').addEventListener('click',openModal);
 // the user doesn't have to scroll down to the "Mis Perfiles" section
 // to find the + button. Waits a tick so the rest of the dashboard has
 // hydrated first.
+// 2026-08-31: enlace mágico de CORRECCIÓN — mi-dia#corregir abre el
+// modal de edición del perfil visible, precargado. Nació con el caso
+// Sara: decirle «busca el lápiz» fallaba (ni el dueño lo encontraba);
+// un enlace que aterriza directo no falla.
+if (window.location.hash === '#corregir') {
+  setTimeout(function(){
+    try {
+      var prof = currentProfile || profilesList[0];
+      if (prof) openModalEdit(prof);
+    } catch (e) {}
+    try { history.replaceState(null, '', window.location.pathname); } catch(e){}
+  }, 900);
+}
 if (window.location.hash === '#add-profile') {
   setTimeout(function(){
     try { openModal(); } catch (e) { /* modal may not be ready yet */ }

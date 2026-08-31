@@ -507,7 +507,8 @@
 // las texturas suben a ?v=3.
 // v106 → v107 (Ago 31): edicion de perfil (lapiz ✎) en mi-dia — sin
 // bump, el SW servia la version vieja y el boton era invisible.
-const CACHE_NAME = 'luzestelar-v107';
+// v107 → v108 (Ago 31): enlace magico #corregir
+const CACHE_NAME = 'luzestelar-v108';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
