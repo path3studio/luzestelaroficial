@@ -82,6 +82,29 @@ export async function onRequestPatch(context) {
 
   const body = await context.request.json();
 
+  // ── Tope anti-granja (2026-08-31) ──────────────────────────────────
+  // La edición nació hoy (caso Sara: hora mal capturada, sin forma de
+  // corregirla) y el dueño detectó el abuso al minuto: sin tope, cambiar
+  // los datos una y otra vez regenera cartas/lecturas infinitas y burla
+  // el límite de perfiles. 5 ediciones por perfil cada 30 días: de sobra
+  // para corregir, inútil para farmear.
+  try {
+    const { DB } = context.env;
+    const cnt = await DB.prepare(
+      "SELECT COUNT(*) AS n FROM profile_edits WHERE profile_id = ? AND edited_at > datetime('now','-30 days')"
+    ).bind(profileId).first();
+    if (cnt && cnt.n >= 5) {
+      return Response.json({
+        ok: false,
+        error: 'edit_limit',
+        message: 'Has alcanzado el límite de correcciones de este perfil (5 cada 30 días). Escríbenos si necesitas ayuda.'
+      }, { status: 429 });
+    }
+    context.data._registrarEdicion = () => DB.prepare(
+      'INSERT INTO profile_edits (profile_id, user_id) VALUES (?, ?)'
+    ).bind(profileId, String(user.sub)).run().catch(() => {});
+  } catch (e) { /* auditoría fail-open: nunca bloquear por fallo propio */ }
+
   // Accept both camelCase (client-side convention) and snake_case
   // (DB column names) for the birth-data fields. This keeps the
   // endpoint flexible whether the caller is the built-in PWA or any
@@ -192,6 +215,8 @@ export async function onRequestPatch(context) {
     } catch { /* table may not exist yet on some envs — silent */ }
   }
 
+  // registrar la edición para el tope anti-granja (solo tras éxito real)
+  if (context.data._registrarEdicion) await context.data._registrarEdicion();
   return Response.json({ ok: true, recomputed: shouldRecompute });
 }
 

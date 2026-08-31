@@ -92,3 +92,15 @@ CREATE INDEX IF NOT EXISTS idx_cached_reports_key ON cached_reports(cache_key);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_google_id ON users(google_id);
 CREATE INDEX IF NOT EXISTS idx_users_stripe ON users(stripe_customer_id);
+
+-- 2026-08-31: auditoría de EDICIONES de perfil. La edición nació hoy (caso
+-- Sara) y el dueño detectó el vector al minuto: editar sin límite permite
+-- farmear cartas/lecturas cambiando los datos una y otra vez, saltándose
+-- el límite de perfiles. Tope: 5 ediciones por perfil cada 30 días.
+CREATE TABLE IF NOT EXISTS profile_edits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  edited_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_profile_edits_pid ON profile_edits(profile_id, edited_at);
