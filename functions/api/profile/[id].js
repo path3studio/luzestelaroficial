@@ -11,7 +11,13 @@ import { buildNatalChart } from '../../_shared/ephemeris.js';
 // canonical list moves to _shared. Returns a UTC offset number for
 // a given IANA timezone. Falls back to -6 (Mexico) for anything
 // unrecognised, since the active user base is MX-first.
-function inferTzOffset(timezone) {
+function inferTzOffset(timezone, lon) {
+  // 2026-08-31: copia local de birth-profiles.js (⚠️ duplicada — la
+  // lección del Asc de junio: parchar TODAS las copias). Sin timezone
+  // pero con longitud → huso geográfico round(lon/15).
+  if ((!timezone || typeof timezone !== 'string') && typeof lon === 'number') {
+    return Math.max(-12, Math.min(14, Math.round(lon / 15)));
+  }
   if (!timezone || typeof timezone !== 'string') return -6;
   if (timezone.startsWith('UTC')) {
     const m = timezone.match(/^UTC([+-]\d+)/);
@@ -172,7 +178,7 @@ export async function onRequestPatch(context) {
         minute: Number.isFinite(mm) ? mm : null,
         lat:    typeof merged.lat === 'number' ? merged.lat : null,
         lon:    typeof merged.lon === 'number' ? merged.lon : null,
-        tzOffsetHours: inferTzOffset(merged.timezone),
+        tzOffsetHours: inferTzOffset(merged.timezone, typeof merged.lon === 'number' ? merged.lon : null),
       });
       newChartJson = JSON.stringify(chart);
     } catch (e) {

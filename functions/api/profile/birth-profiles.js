@@ -16,7 +16,15 @@ import { buildNatalChart } from '../../_shared/ephemeris.js';
 // still better than skipping the angle entirely. A more accurate
 // solution (e.g. `Intl.DateTimeFormat` with resolvedOptions) can
 // replace this when the user base goes beyond these regions.
-function inferTzOffset(timezone) {
+function inferTzOffset(timezone, lon) {
+  // 2026-08-31 (caso Sara, Toledo): timezone NULL caía a -6 «México para
+  // todo el mundo» — 100 perfiles calculados con reloj ajeno (Asc corrido
+  // hasta 4 signos). Sin timezone pero CON longitud: el huso geográfico
+  // real es round(lon/15) — imperfecto (husos políticos) pero el error
+  // máximo baja de 7h a ~1h.
+  if ((!timezone || typeof timezone !== 'string') && typeof lon === 'number') {
+    return Math.max(-12, Math.min(14, Math.round(lon / 15)));
+  }
   if (!timezone || typeof timezone !== 'string') return -6;
   if (timezone.startsWith('UTC')) {
     const m = timezone.match(/^UTC([+-]\d+)/);
@@ -243,7 +251,7 @@ export async function onRequestPost(context) {
   let natalChartJson = null;
   try {
     const [hh, mm] = (horaNacimiento || '').split(':').map(Number);
-    const tzOffsetHours = inferTzOffset(timezone);
+    const tzOffsetHours = inferTzOffset(timezone, typeof lon === 'number' ? lon : null);
     const chart = buildNatalChart({
       year, month, day,
       hour:   Number.isFinite(hh) ? hh : null,
