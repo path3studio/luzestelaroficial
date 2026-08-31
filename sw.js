@@ -505,7 +505,9 @@
 // siendo el mayor, no aplasta a Jupiter (1.13x) y Saturno mantiene 1.29x sobre
 // Urano. El recorte del PNG va emparejado en preparar_texturas_web.py, por eso
 // las texturas suben a ?v=3.
-const CACHE_NAME = 'luzestelar-v106';
+// v106 → v107 (Ago 31): edicion de perfil (lapiz ✎) en mi-dia — sin
+// bump, el SW servia la version vieja y el boton era invisible.
+const CACHE_NAME = 'luzestelar-v107';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
