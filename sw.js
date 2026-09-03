@@ -507,7 +507,7 @@
 // las texturas suben a ?v=3.
 // v106 → v107 (Ago 31): edicion de perfil (lapiz ✎) en mi-dia — sin
 // bump, el SW servia la version vieja y el boton era invisible.
-// v107 → v108 (Ago 31): enlace magico #corregir
+// v107 → v109 (Ago 31): enlace magico #corregir
 const CACHE_NAME = 'luzestelar-v108';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the

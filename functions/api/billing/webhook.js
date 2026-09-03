@@ -196,10 +196,12 @@ export async function onRequestPost(context) {
         // nuevas del API de Stripe los mueven a subscription.items) —
         // new Date(undefined).toISOString() lanza "Invalid time value" y el
         // catch exterior devolvía 500 (11 reintentos desde el 12/jul).
-        const _ps = sub.current_period_start
-          ? new Date(sub.current_period_start * 1000).toISOString() : null;
-        const _pe = sub.current_period_end
-          ? new Date(sub.current_period_end * 1000).toISOString() : null;
+        // 2026-09-03: en API ≥2025-03-31.basil los periodos viven en el item.
+        const _item0 = sub.items?.data?.[0] || {};
+        const _cps = sub.current_period_start || _item0.current_period_start;
+        const _cpe = sub.current_period_end || _item0.current_period_end;
+        const _ps = _cps ? new Date(_cps * 1000).toISOString() : null;
+        const _pe = _cpe ? new Date(_cpe * 1000).toISOString() : null;
         await DB.prepare(
           'UPDATE subscriptions SET status = ?, ' +
           'current_period_start = COALESCE(?, current_period_start), ' +
@@ -252,11 +254,17 @@ export async function onRequestPost(context) {
         if (amountCents > 0) {
           const email = invoice.customer_email || '';
           let plan = 'premium';
+          // 2026-09-03: desde la API 2025-03-31.basil `invoice.subscription` ya no
+          // existe; vive en `invoice.parent.subscription_details.subscription`.
+          // El webhook nuevo (cuenta Luz Estelar) usa 2026-08-26.dahlia.
+          const invoiceSubId = invoice.subscription
+            || invoice.parent?.subscription_details?.subscription
+            || null;
           try {
-            if (invoice.subscription) {
+            if (invoiceSubId) {
               const subRow = await DB.prepare(
                 'SELECT plan FROM subscriptions WHERE stripe_subscription_id = ?'
-              ).bind(invoice.subscription).first();
+              ).bind(invoiceSubId).first();
               if (subRow?.plan) plan = subRow.plan;
             }
           } catch (e) { /* non-fatal — fall back to 'premium' */ }

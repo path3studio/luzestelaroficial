@@ -198,14 +198,14 @@
   // siendo el mayor por poco, no aplasta a Júpiter (1.13x) y el cuerpo de
   // Saturno conserva su 1.29x sobre Urano. El recorte del PNG va emparejado
   // en scripts/preparar_texturas_web.py — si cambia uno, cambia el otro.
-  var TEX_BOX = { Saturn: 1.20, Earth: 1.122 };
+  var TEX_BOX = { Saturn: 2.05, Earth: 1.122 };
 
   var _tex = {};           // nombre → HTMLImageElement
   var _texBase = '/assets/planets/';
   // Cloudflare guarda los assets 4 horas en el borde. Sin una marca en la URL
   // se puede regenerar una textura, desplegarla, y seguir viendo la vieja
   // media tarde. SÚBELO cada vez que cambie cualquier PNG de esa carpeta.
-  var _texVer = '?v=3';   // v3 = 7/ago: Saturno recortado a 1.20x (antes 1.35)
+  var _texVer = '?v=4';   // v4 = 2/sep: Saturno 2.05x con pluma (anillos sin corte)   // v3 = 7/ago: Saturno recortado a 1.20x (antes 1.35)
   // Oyentes de "ya cargó una textura". El módulo NO se repinta solo: si lo
   // hiciera tendría que reusar las opciones del render anterior, y esas
   // caducan (basta que la ventana cambie de tamaño para que el lienzo se
@@ -478,6 +478,12 @@
     // chart export que se layerea sobre cosmic bg del short.
     var TRANSPARENT_MODE = opts.transparent === true;
     var SKIP_LABELS = opts.skipLabels === true;
+    // 2026-09-02 — estilo sinastría: mejoras nacidas en los Estudios
+    // Especiales (rueda de dos cartas), encendidas SOLO con
+    // chartData.synastryStyle. Mi Día y el video no pasan la bandera y
+    // quedan pixel-idénticos. Vivieron como parches en
+    // scripts/sinastria_rueda_oficial.py (v4–v8) antes de graduarse aquí.
+    var SYN = chartData.synastryStyle === true;
     var bgOuter = outerR + size * 0.075;
     if (!TRANSPARENT_MODE) {
       var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, bgOuter);
@@ -1426,7 +1432,7 @@
         // Realistic planet sphere (radial gradient + halo + optional rings).
         // Sol/Luna get bigger radii because they're the attention anchors.
         var sphereR = size * (REAL_BODIES && BODY_R[p.name] !== undefined
-                            ? BODY_R[p.name]
+                            ? BODY_R[p.name] * (SYN ? 0.82 : 1)
                             : (p.name === 'Sun' ? 0.024
                              : p.name === 'Moon' ? 0.022
                              : 0.019));
@@ -1530,6 +1536,17 @@
           pendingLabels.push(function() {
             ctx.save();
             ctx.font = labelFont;
+            if (SYN && Math.abs(lblY - py) > size * 0.05) {
+              // hilo guía cuando el anticolisión mandó la etiqueta lejos
+              // (caso real: «Mer 25°» flotando y su Mercurio gris leído
+              // como «una tercera luna»)
+              ctx.strokeStyle = 'rgba(255,255,255,0.38)';
+              ctx.lineWidth = 0.8 * (size/420);
+              ctx.beginPath();
+              ctx.moveTo(px, py + (lblY > py ? size*0.022 : -size*0.022));
+              ctx.lineTo(px, lblY + (lblY > py ? -size*0.017 : size*0.017));
+              ctx.stroke();
+            }
             ctx.shadowColor = 'rgba(0,0,0,0.85)';
             ctx.shadowBlur = 3 * (size/420);
             ctx.fillStyle = GEOCENTRIC ? 'rgba(255,255,255,0.95)'
@@ -1589,6 +1606,32 @@
       // they're sky-of-today visiting your chart).
       var transitR = size * 0.265;
 
+      // Estilo sinastría: cada visitante en la órbita de SU planeta (la
+      // doctrina del motor: se empuja el RADIO, nunca el ángulo). Si el
+      // caller no manda transitOrbit hecho, se calcula aquí a partir de
+      // ORBIT_R + el radioAjustado natal (apartando al visitante cuando su
+      // MISMO planeta natal queda casi encimado).
+      var transitOrbit = chartData.transitOrbit || null;
+      if (SYN && !transitOrbit && GEOCENTRIC && typeof ORBIT_R !== 'undefined') {
+        transitOrbit = {};
+        chartData.transits.forEach(function (t) {
+          if (ORBIT_R[t.name] !== undefined) transitOrbit[t.name] = ORBIT_R[t.name];
+        });
+        chartData.transits.forEach(function (t) {
+          var rB = transitOrbit[t.name];
+          var rA = (typeof radioAjustado !== 'undefined' && radioAjustado)
+                   ? radioAjustado[t.name] : undefined;
+          var lonA = null;
+          (chartData.planets || []).forEach(function (p) {
+            if (p.name === t.name) lonA = p.longitude;
+          });
+          if (rB === undefined || rA === undefined || lonA === null) return;
+          var d = Math.abs(lonA - t.longitude) % 360;
+          if (d > 180) d = 360 - d;
+          if (d < 16 && Math.abs(rB - rA) < 0.02) transitOrbit[t.name] = rB + 0.016;
+        });
+      }
+
       // Aspect lines first (behind the transit glyphs). Use distinct
       // colours per aspect type so the chart reads like a traditional
       // transit biwheel.
@@ -1614,18 +1657,43 @@
           var tAngle = ((tAsp.transitLon + ascOffset) * DEG) - Math.PI / 2;
           var nAngle = natalAngleByName[tAsp.natal];
           if (nAngle === undefined) continue;
-          ctx.strokeStyle = style.color + (tAsp.exact ? 'AA' : '66');
-          ctx.lineWidth = tAsp.exact ? 1.1 : 0.7;
+          ctx.strokeStyle = style.color + (tAsp.exact ? (SYN ? 'FF' : 'AA')
+                                                      : (SYN ? 'CC' : '66'));
+          ctx.lineWidth = SYN ? (tAsp.exact ? 2.8 : 1.8)
+                              : (tAsp.exact ? 1.1 : 0.7);
           ctx.setLineDash(style.dash);
           ctx.beginPath();
-          ctx.moveTo(cx + Math.cos(tAngle) * transitR, cy + Math.sin(tAngle) * transitR);
-          // Aim at the natal planet's tier'd radius — use base planetR
-          // as a good-enough endpoint since we don't have that planet's
-          // tier handy here.
-          ctx.lineTo(cx + Math.cos(nAngle) * (planetR - size * 0.02),
-                     cy + Math.sin(nAngle) * (planetR - size * 0.02));
+          var tAR = (transitOrbit && tAsp.transitName &&
+                     transitOrbit[tAsp.transitName] !== undefined)
+            ? size * transitOrbit[tAsp.transitName] : transitR;
+          ctx.moveTo(cx + Math.cos(tAngle) * tAR, cy + Math.sin(tAngle) * tAR);
+          // Extremo natal: en estilo sinastría, EXACTO sobre el planeta
+          // (v7 del estudio: el «good-enough endpoint» hacía que dos
+          // líneas distintas parecieran una sola cambiando de color).
+          var _nMul = (typeof radioAjustado !== 'undefined' && radioAjustado &&
+                       radioAjustado[tAsp.natal] !== undefined)
+            ? radioAjustado[tAsp.natal]
+            : (typeof PLANET_ORBIT_R !== 'undefined' &&
+               PLANET_ORBIT_R[tAsp.natal] !== undefined
+               ? PLANET_ORBIT_R[tAsp.natal] : null);
+          var _nR = (SYN && _nMul !== null) ? _nMul * size
+                                            : (planetR - size * 0.02);
+          var _nx = cx + Math.cos(nAngle) * _nR;
+          var _ny = cy + Math.sin(nAngle) * _nR;
+          ctx.lineTo(_nx, _ny);
           ctx.stroke();
           ctx.setLineDash([]);
+          if (SYN) {
+            // punto de color en cada punta: dónde nace y muere la línea
+            ctx.fillStyle = style.color;
+            ctx.beginPath();
+            ctx.arc(_nx, _ny, size * 0.006, 0, TAU);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(cx + Math.cos(tAngle) * tAR,
+                    cy + Math.sin(tAngle) * tAR, size * 0.006, 0, TAU);
+            ctx.fill();
+          }
         }
       }
 
@@ -1637,18 +1705,23 @@
         var t = chartData.transits[ti];
         if (typeof t.longitude !== 'number') continue;
         var tAng = ((t.longitude + ascOffset) * DEG) - Math.PI / 2;
-        // Small nudge if overlapping
+        // Small nudge if overlapping (NO en estilo sinastría: ahí la
+        // separación es RADIAL — el ángulo es el dato y no se miente)
         for (var tj = 0; tj < transitPositions.length; tj++) {
-          if (Math.abs(tAng - transitPositions[tj]) < 0.09) tAng += 0.095;
+          if (!SYN && Math.abs(tAng - transitPositions[tj]) < 0.09) tAng += 0.095;
         }
         transitPositions.push(tAng);
-        var tx = cx + Math.cos(tAng) * transitR;
-        var ty = cy + Math.sin(tAng) * transitR;
-        var sphereR = size * 0.018;
+        var tR = (transitOrbit && transitOrbit[t.name] !== undefined)
+          ? size * transitOrbit[t.name] : transitR;
+        var tx = cx + Math.cos(tAng) * tR;
+        var ty = cy + Math.sin(tAng) * tR;
+        var sphereR = size * (SYN && BODY_R[t.name] !== undefined
+                              ? BODY_R[t.name] * 0.82 * 0.85 : 0.018);
         drawPlanetSphere(ctx, tx, ty, sphereR, t.name, REAL_BODIES);
         // Faint silvery rim to signal "transit, not natal"
-        ctx.strokeStyle = 'rgba(220,220,240,0.55)';
-        ctx.lineWidth = 1 * (size/420);
+        ctx.strokeStyle = SYN ? 'rgba(150,205,255,0.95)'
+                              : 'rgba(220,220,240,0.55)';
+        ctx.lineWidth = (SYN ? 2.2 : 1) * (size/420);
         ctx.setLineDash([2, 2]);
         ctx.beginPath();
         ctx.arc(tx, ty, sphereR + 2.5, 0, TAU);
@@ -1675,6 +1748,20 @@
         ctx.shadowBlur = 0 * (size/420);
 
         // Hit region for tap-identify
+        if (SYN) {
+          // nombre del visitante bajo su esfera, en su color celeste
+          var tEs = {Sun:'Sol',Moon:'Luna',Mercury:'Merc',Venus:'Venus',
+                     Mars:'Marte',Jupiter:'Júp',Saturn:'Sat',
+                     Uranus:'Urano',Neptune:'Nep',Pluto:'Plutón'}[t.name]
+                    || t.name;
+          ctx.font = 'bold ' + Math.round(size * 0.0155) + 'px Inter, Arial';
+          ctx.shadowColor = 'rgba(0,0,0,0.85)';
+          ctx.shadowBlur = 4;
+          ctx.fillStyle = 'rgba(160,210,255,0.98)';
+          ctx.fillText(tEs, tx, ty + sphereR + size * 0.016);
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+        }
         hitRegions.push({
           type: 'transit',
           name: t.name,

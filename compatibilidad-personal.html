@@ -972,15 +972,16 @@ body{
     // aspects visible too (those were finally fixed in v55).
 
     // 2026-08-07: esta página se quedó con el acabado viejo cuando /mi-dia
-    // pasó al nuevo — planetas dibujados, sin constelaciones ni estrellas.
-    // Ahora lleva el MISMO acabado, pero NO `geocentricOrbits`: en la rueda
-    // geocéntrica la distancia al centro dice QUÉ PLANETA es, y aquí tiene
-    // que seguir diciendo DE QUIÉN es (dentro tú, fuera la otra persona),
-    // que es lo único que esta página tiene que comunicar.
-    //
-    // Efecto secundario bienvenido: los planetas de dentro salen con foto y
-    // los de fuera como medallón de glifo, así que "quién es quién" se
-    // distingue mejor que antes, sin tocar la disposición.
+    // pasó al nuevo. 2026-09-02 — REVISIÓN de la doctrina «dentro tú, fuera
+    // la otra persona»: al construir la rueda de los Estudios Especiales se
+    // comparó lado a lado esta vista contra la de órbitas geocéntricas con
+    // estilo sinastría (cada visitante en la órbita de SU planeta, con
+    // nombre celeste y aro punteado) y el usuario dictaminó que la nueva
+    // «gana claramente cuando se muestran los dos mapas juntos»: el
+    // quién-es-quién ahora lo dicen el color y el nombre, no el anillo.
+    // synastryStyle enciende ese modo en natal-chart.js (mi-dia y el video
+    // no pasan la bandera y quedan intactos).
+    data.synastryStyle = true;
     if (window.__syCatalogs) {
       data.starCatalog = window.__syCatalogs.stars;
       data.constellationCatalog = window.__syCatalogs.constellations;
@@ -994,6 +995,9 @@ body{
       fullWedges: true,
       wedgeAlpha: 0.033,
       rotateFigures: true,
+      // 2026-09-02: órbitas geocéntricas también aquí — requisito del
+      // estilo sinastría (cada planeta en su órbita; ver nota de arriba)
+      geocentricOrbits: true,
       // OJO: tiene que ser SIEMPRE LA MISMA función. natal-chart.js guarda
       // los avisos de "textura cargada" en una lista y deduplica POR
       // REFERENCIA (indexOf). Si aquí se pasa una closure nueva en cada
