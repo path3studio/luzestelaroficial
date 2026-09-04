@@ -127,6 +127,14 @@
 
         /* Included items */
         .included-list { list-style: none; padding: 0; }
+        .compare-wrap { overflow-x: auto; }
+        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.93em; }
+        .compare-table th, .compare-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; vertical-align: middle; }
+        .compare-table th { color: var(--gold-light); font-weight: 600; }
+        .compare-table td:first-child, .compare-table th:first-child { text-align: left; }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .cmp-price { font-weight: 400; color: var(--text-dim); font-size: 0.85em; }
+        .compare-hint { margin-top: 14px; color: var(--text-dim); font-size: 0.92em; }
         .included-list li {
             display: flex; align-items: flex-start; gap: 16px;
             padding: 16px 0; border-bottom: 1px solid var(--glass-border);
@@ -434,7 +442,7 @@
                     Completa<span class="tab-price">$29.99</span>
                 </button>
             </div>
-            <p class="plan-switcher-hint"><a href="planes.html">Comparar planes en detalle &rarr;</a></p>
+            <p class="plan-switcher-hint"><a href="#comparativa">Comparar Esencial y Completa &rarr;</a></p>
         </div>
 
         <!-- What's Included -->
@@ -448,6 +456,31 @@
                     <div class="delivery-note" id="deliveryNote">
                         <!-- Populated dynamically by switchPlan() -->
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparativa Esencial vs Completa (2026-09-03: sustituye el enlace a planes.html, que es de suscripciones) -->
+        <section id="comparativa" style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Esencial o Completa: ¿cuál es para ti?</h2>
+                    <div class="compare-wrap">
+                    <table class="compare-table">
+                        <thead><tr><th>Qué recibes</th><th>Esencial<br><span class="cmp-price">$9.99</span></th><th>Completa<br><span class="cmp-price">$29.99</span></th></tr></thead>
+                        <tbody>
+                            <tr><td>Carta natal calculada (10 planetas, Ascendente, Medio Cielo, aspectos)</td><td>&#10003;</td><td>&#10003;</td></tr>
+                            <tr><td>Secciones interpretadas</td><td>4 (Sol, Luna, Ascendente, Consejo)</td><td>10 (amor, carrera, salud, espiritualidad y m&aacute;s)</td></tr>
+                            <tr><td>An&aacute;lisis de tu nombre (numerolog&iacute;a, fon&eacute;tica, etimolog&iacute;a)</td><td>&mdash;</td><td>&#10003;</td></tr>
+                            <tr><td>Pron&oacute;stico personal de 6 meses</td><td>&mdash;</td><td>&#10003;</td></tr>
+                            <tr><td>Mapa estelar de tu nacimiento (arte digital)</td><td>&mdash;</td><td>&#10003;</td></tr>
+                            <tr><td>Audio narrado</td><td>Breve (2&ndash;3 min)</td><td>Extendido (6&ndash;8 min)</td></tr>
+                            <tr><td>PDF profesional con sello</td><td>4&ndash;6 p&aacute;ginas</td><td>6&ndash;11 p&aacute;ginas</td></tr>
+                            <tr><td>Entrega por correo</td><td>24&ndash;48 h</td><td>24&ndash;48 h</td></tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <p class="compare-hint">Si es tu primera carta natal, Esencial te da lo central. Si quieres el a&ntilde;o que viene por delante y todas las &aacute;reas de tu vida, Completa.</p>
                 </div>
             </div>
         </section>
@@ -551,7 +584,7 @@
                             Cuánto tarda en llegar mi análisis?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Tu análisis será entregado en un plazo de 24 a 48 horas hábiles a la dirección de correo electrónico que indiques en el formulario. Recibirás tanto el PDF como el audio MP3 en un mismo correo.</p></div>
+                        <div class="faq-answer"><p>Tu análisis será entregado en un plazo de 24 a 48 horas a la dirección de correo electrónico que indiques en el formulario. Recibirás tanto el PDF como el audio MP3 en un mismo correo.</p></div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
@@ -579,7 +612,7 @@
                             Puedo pedir un reembolso?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Dado que se trata de un producto digital personalizado que requiere trabajo individual de investigación y producción, no ofrecemos reembolsos una vez entregado el análisis. Si tienes alguna duda antes de comprar, escríbenos a contacto@luzestelaroficial.com.</p></div>
+                        <div class="faq-answer"><p>Como es un producto digital hecho a tu medida, en lugar de reembolsos ofrecemos <strong>garantía de revisión</strong>: si algo de tu análisis no cumple lo prometido, lo corregimos y te lo reentregamos sin costo. Si tienes dudas antes de comprar, escríbenos a contacto@luzestelaroficial.com.</p></div>
                     </div>
                 </div>
             </div>
@@ -591,7 +624,7 @@
                 <div class="disclaimer">
                     <p>Este es un producto interpretativo basado en cálculos astronómicos y tradición astrológica. No constituye asesoramiento profesional en salud, finanzas ni relaciones.</p>
                     <p>Las interpretaciones se basan en posiciones planetarias reales y tradición astrológica milenaria. Lo que resuena contigo es lo que necesitas en este momento.</p>
-                    <p>No se ofrecen reembolsos una vez entregado el producto digital.</p>
+                    <p>Producto digital personalizado: aplica garantía de revisión y reentrega en lugar de reembolso (ver Términos).</p>
                     <p>Al realizar tu compra, aceptas nuestros <a href="terms-of-service.html">Términos de Servicio</a> y <a href="privacy-policy.html">Política de Privacidad</a>.</p>
                 </div>
             </div>
@@ -710,7 +743,7 @@
                 title: 'Consulta Completa Personalizada',
                 subtitle: 'Tu carta natal profunda, pronóstico de 6 meses, mapa estelar personalizado y audio narrado por Luz Estelar — entregado como PDF profesional.',
                 priceNote: 'Pago único. Incluye carta natal profunda, pronóstico de 6 meses, mapa estelar personalizado, PDF profesional y audio narrado extendido.',
-                delivery: '<strong>Formato de entrega:</strong> PDF profesional completo + audio MP3 + mapa estelar personalizado, enviados a tu correo electrónico en 24 horas.',
+                delivery: '<strong>Formato de entrega:</strong> PDF profesional completo + audio MP3 + mapa estelar personalizado, enviados a tu correo electrónico en 24-48 horas.',
                 items: [
                     { icon: '\u2609\uFE0E', title: 'Carta Natal Profunda', desc: 'Sol, Luna, Ascendente y los 10 planetas en sus signos y casas. Aspectos natales interpretados en detalle.' },
                     { icon: '\u2728', title: 'Análisis de tu Nombre', desc: 'Numerología, fonética, etimología y compatibilidad entre tu nombre y tu carta astral.' },

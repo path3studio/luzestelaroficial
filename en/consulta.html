@@ -129,6 +129,14 @@
 
         /* Included items */
         .included-list { list-style: none; padding: 0; }
+        .compare-wrap { overflow-x: auto; }
+        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.93em; }
+        .compare-table th, .compare-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; vertical-align: middle; }
+        .compare-table th { color: var(--gold-light); font-weight: 600; }
+        .compare-table td:first-child, .compare-table th:first-child { text-align: left; }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .cmp-price { font-weight: 400; color: var(--text-dim); font-size: 0.85em; }
+        .compare-hint { margin-top: 14px; color: var(--text-dim); font-size: 0.92em; }
         .included-list li {
             display: flex; align-items: flex-start; gap: 16px;
             padding: 16px 0; border-bottom: 1px solid var(--glass-border);
@@ -412,7 +420,7 @@
                     Complete<span class="tab-price">$29.99</span>
                 </button>
             </div>
-            <p class="plan-switcher-hint"><a href="planes.html">Compare plans in detail &rarr;</a></p>
+            <p class="plan-switcher-hint"><a href="#comparativa">Compare Essential and Complete &rarr;</a></p>
         </div>
 
         <!-- What's Included -->
@@ -426,6 +434,31 @@
                     <div class="delivery-note" id="deliveryNote">
                         <!-- Populated dynamically by switchPlan() -->
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Essential vs Complete comparison (2026-09-03: replaces the link to planes.html, which is about subscriptions) -->
+        <section id="comparativa" style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Essential or Complete: which one is for you?</h2>
+                    <div class="compare-wrap">
+                    <table class="compare-table">
+                        <thead><tr><th>What you get</th><th>Essential<br><span class="cmp-price">$9.99</span></th><th>Complete<br><span class="cmp-price">$29.99</span></th></tr></thead>
+                        <tbody>
+                            <tr><td>Calculated birth chart (10 planets, Ascendant, Midheaven, aspects)</td><td>&#10003;</td><td>&#10003;</td></tr>
+                            <tr><td>Interpreted sections</td><td>4 (Sun, Moon, Ascendant, Advice)</td><td>10 (love, career, health, spirituality and more)</td></tr>
+                            <tr><td>Name analysis (numerology, phonetics, etymology)</td><td>&mdash;</td><td>&#10003;</td></tr>
+                            <tr><td>6-month personal forecast</td><td>&mdash;</td><td>&#10003;</td></tr>
+                            <tr><td>Star map of your birth (digital art)</td><td>&mdash;</td><td>&#10003;</td></tr>
+                            <tr><td>Narrated audio</td><td>Short (2&ndash;3 min)</td><td>Extended (6&ndash;8 min)</td></tr>
+                            <tr><td>Professional sealed PDF</td><td>4&ndash;6 pages</td><td>6&ndash;11 pages</td></tr>
+                            <tr><td>Email delivery</td><td>24&ndash;48 h</td><td>24&ndash;48 h</td></tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <p class="compare-hint">If this is your first birth chart, Essential gives you the core. If you want the year ahead and every area of your life, Complete.</p>
                 </div>
             </div>
         </section>
@@ -529,7 +562,7 @@
                             How long does it take to receive my analysis?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Your analysis will be delivered within 24 to 48 business hours to the email address you provide in the form. You will receive both the PDF and the MP3 audio in a single email.</p></div>
+                        <div class="faq-answer"><p>Your analysis will be delivered within 24 to 48 hours to the email address you provide in the form. You will receive both the PDF and the MP3 audio in a single email.</p></div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-question" type="button">
@@ -557,7 +590,7 @@
                             Can I request a refund?
                             <span class="arrow">&#9660;</span>
                         </button>
-                        <div class="faq-answer"><p>Since this is a personalized digital product that requires individual research and production work, we do not offer refunds once the analysis has been delivered. If you have any questions before purchasing, write to us at contacto@luzestelaroficial.com.</p></div>
+                        <div class="faq-answer"><p>Because this is a digital product made to measure for you, instead of refunds we offer a <strong>revision guarantee</strong>: if anything in your analysis falls short of what was promised, we correct it and deliver it again at no cost. If you have questions before purchasing, write to us at contacto@luzestelaroficial.com.</p></div>
                     </div>
                 </div>
             </div>
@@ -569,7 +602,7 @@
                 <div class="disclaimer">
                     <p>This is an interpretive product based on astronomical calculations and astrological tradition. It does not constitute professional advice on health, finances or relationships.</p>
                     <p>Interpretations are based on real planetary positions and millennia-old astrological tradition. What resonates with you is what you need at this moment.</p>
-                    <p>No refunds are offered once the digital product has been delivered.</p>
+                    <p>Personalized digital product: a revision-and-redelivery guarantee applies instead of refunds (see Terms).</p>
                     <p>By making your purchase, you agree to our <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p>
                 </div>
             </div>
@@ -688,7 +721,7 @@
                 title: 'Complete Personalized Reading',
                 subtitle: 'Your deep birth chart, 6-month forecast, personalized star map and audio narrated by Luz Estelar — delivered as a professional PDF.',
                 priceNote: 'One-time payment. Includes deep birth chart, 6-month forecast, personalized star map, professional PDF and extended narrated audio.',
-                delivery: '<strong>Delivery format:</strong> Complete professional PDF + MP3 audio + personalized star map, sent to your email within 24 hours.',
+                delivery: '<strong>Delivery format:</strong> Complete professional PDF + MP3 audio + personalized star map, sent to your email within 24-48 hours.',
                 items: [
                     { icon: '\u2609\uFE0E', title: 'Deep Birth Chart', desc: 'Sun, Moon, Ascendant and all 10 planets in their signs and houses. Natal aspects interpreted in detail.' },
                     { icon: '\u2728', title: 'Name Analysis', desc: 'Numerology, phonetics, etymology and compatibility between your name and your birth chart.' },
