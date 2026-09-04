@@ -130,6 +130,19 @@
         /* Included items */
         .included-list { list-style: none; padding: 0; }
         .compare-wrap { overflow-x: auto; }
+        .estudio-intro { color: var(--text-dim); margin-bottom: 16px; }
+        .estudio-launch { color: var(--gold-light); font-weight: 600; }
+        .estudio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+        @media (max-width: 720px) { .estudio-grid { grid-template-columns: 1fr; } }
+        .estudio-card { display: block; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; cursor: pointer; background: rgba(255,255,255,0.02); }
+        .estudio-card input { position: absolute; opacity: 0; pointer-events: none; }
+        .estudio-card.is-on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+        .estudio-name { display: block; color: #fff; font-weight: 600; margin-bottom: 4px; }
+        .estudio-price { display: block; color: var(--gold-light); font-weight: 700; margin-bottom: 6px; }
+        .estudio-price s { color: var(--text-dim); font-weight: 400; font-size: 0.85em; margin-left: 6px; }
+        .estudio-desc { display: block; color: var(--text-dim); font-size: 0.9em; line-height: 1.45; }
+        .estudio-sub { color: var(--gold-light); font-weight: 600; margin: 14px 0 6px; }
+        .estudio-fine { color: var(--text-dim); font-size: 0.85em; margin-top: 10px; }
         .compare-table { width: 100%; border-collapse: collapse; font-size: 0.93em; }
         .compare-table th, .compare-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; vertical-align: middle; }
         .compare-table th { color: var(--gold-light); font-weight: 600; }
@@ -209,6 +222,8 @@
 
         /* Form */
         .form-group { margin-bottom: 22px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+        @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
         .form-group label {
             display: block; font-size: 0.88em; font-weight: 500;
             color: var(--text); margin-bottom: 8px;
@@ -553,7 +568,95 @@
         </section>
 
         <!-- FAQ -->
-        <section style="padding-top: 0;">
+                <!-- Custom studies (2026-09-03): synastry / solar return / bundle. Paid here (worker create-checkout,
+             plans sinastria|retorno_solar|pack_estudios); consultation_checker routes them to the MANUAL lane. -->
+        <section id="estudios" style="padding-top: 0;">
+            <div class="section-inner">
+                <div class="card">
+                    <h2>Custom studies</h2>
+                    <p class="estudio-intro">Two studies that are not generated automatically: we build them with the official wheel and review each one before delivering it as a PDF (1&ndash;3 days). <span class="estudio-launch">Launch price until October 5.</span></p>
+                    <div class="estudio-grid" role="radiogroup" aria-label="Choose your study">
+                        <label class="estudio-card"><input type="radio" name="estudio_plan" value="sinastria" checked>
+                            <span class="estudio-name">Couple synastry</span>
+                            <span class="estudio-price">$19.99 <s>$24.99</s></span>
+                            <span class="estudio-desc">Both birth charts together: the real aspects between them, the houses each of you activates in the other, and the double wheel with both sets of planets.</span></label>
+                        <label class="estudio-card"><input type="radio" name="estudio_plan" value="retorno_solar">
+                            <span class="estudio-name">Solar Return</span>
+                            <span class="estudio-price">$14.99 <s>$19.99</s></span>
+                            <span class="estudio-desc">The map of your year: the exact instant the Sun returns to its natal place, your birthday chart and its dialogue with your birth chart.</span></label>
+                        <label class="estudio-card"><input type="radio" name="estudio_plan" value="pack_estudios">
+                            <span class="estudio-name">Both together</span>
+                            <span class="estudio-price">$29.99 <s>$39.99</s></span>
+                            <span class="estudio-desc">Synastry + Solar Return. Two PDFs with the official wheel.</span></label>
+                    </div>
+                    <form id="estudioForm" novalidate>
+                        <p class="estudio-sub">Your details</p>
+                        <div class="form-row">
+                            <div class="form-group"><label for="e_nombre">Full name *</label><input type="text" id="e_nombre" name="nombre" required maxlength="80" placeholder="Your full name"></div>
+                            <div class="form-group"><label for="e_fecha">Date of birth *</label><input type="date" id="e_fecha" name="fecha" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="e_hora">Time of birth *</label><input type="time" id="e_hora" name="hora" required><small>If unknown, enter 12:00.</small></div>
+                            <div class="form-group"><label for="e_lugar">Place of birth *</label><input type="text" id="e_lugar" name="lugar" required maxlength="80" placeholder="City, country"></div>
+                        </div>
+                        <div id="estudioB">
+                            <p class="estudio-sub">Your partner's details</p>
+                            <div class="form-row">
+                                <div class="form-group"><label for="e_b_nombre">Name *</label><input type="text" id="e_b_nombre" name="b_nombre" maxlength="80" placeholder="The other person's name"></div>
+                                <div class="form-group"><label for="e_b_fecha">Date of birth *</label><input type="date" id="e_b_fecha" name="b_fecha"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label for="e_b_hora">Time of birth *</label><input type="time" id="e_b_hora" name="b_hora"><small>If unknown, 12:00.</small></div>
+                                <div class="form-group"><label for="e_b_lugar">Place of birth *</label><input type="text" id="e_b_lugar" name="b_lugar" maxlength="80" placeholder="City, country"></div>
+                            </div>
+                        </div>
+                        <div id="estudioR">
+                            <p class="estudio-sub">Your next birthday</p>
+                            <div class="form-group"><label for="e_ciudad">Which city will you be in? *</label><input type="text" id="e_ciudad" name="cumple_ciudad" maxlength="80" placeholder="City, country"><small>The Solar Return is calculated for the place where you are that day.</small></div>
+                        </div>
+                        <div class="form-group"><label for="e_correo">Email *</label><input type="email" id="e_correo" name="correo" required maxlength="120" placeholder="Where you will receive your PDF"></div>
+                        <div class="form-group"><label for="e_notas">Anything you want to tell us (optional)</label><textarea id="e_notas" name="notas" rows="2" maxlength="160"></textarea></div>
+                        <div class="form-error" id="estudioError"></div>
+                        <button type="submit" class="btn-submit">Continue to payment</button>
+                        <p class="estudio-fine">Secure payment by Stripe. PDF delivered by email in 1&ndash;3 days, with human review. The same revision guarantee applies.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <script>
+        (function(){
+          var f=document.getElementById('estudioForm'); if(!f) return;
+          var radios=document.querySelectorAll('input[name=estudio_plan]'), bB=document.getElementById('estudioB'), bR=document.getElementById('estudioR');
+          function plan(){ var r=document.querySelector('input[name=estudio_plan]:checked'); return r?r.value:'sinastria'; }
+          function refresh(){ var p=plan(); bB.hidden=!(p==='sinastria'||p==='pack_estudios'); bR.hidden=!(p==='retorno_solar'||p==='pack_estudios');
+            document.querySelectorAll('.estudio-card').forEach(function(c){ c.classList.toggle('is-on', c.querySelector('input').checked); }); }
+          radios.forEach(function(r){ r.addEventListener('change', refresh); }); refresh();
+          f.addEventListener('submit', async function(e){
+            e.preventDefault(); var p=plan(), err=document.getElementById('estudioError'), btn=f.querySelector('.btn-submit'); err.classList.remove('visible'); err.textContent='';
+            var req=['nombre','fecha','hora','lugar','correo']; if(p!=='retorno_solar') req=req.concat(['b_nombre','b_fecha','b_hora','b_lugar']); if(p!=='sinastria') req.push('cumple_ciudad');
+            var ok=true; req.forEach(function(n){ var el=f.elements[n]; el.classList.remove('invalid'); if(!el.value.trim()){ el.classList.add('invalid'); ok=false; } });
+            if(f.correo.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.value.trim())){ f.correo.classList.add('invalid'); ok=false; }
+            if(!ok){ err.textContent='Please complete all required fields correctly.'; err.classList.add('visible'); return; }
+            var partes=['ESTUDIO '+p];
+            if(p!=='retorno_solar'){ partes.push('B_nombre: '+f.b_nombre.value.trim(),'B_fecha: '+f.b_fecha.value,'B_hora: '+f.b_hora.value,'B_lugar: '+f.b_lugar.value.trim()); }
+            if(p!=='sinastria'){ partes.push('Cumple_ciudad: '+f.cumple_ciudad.value.trim()); }
+            if(f.notas.value.trim()){ partes.push('Notas: '+f.notas.value.trim().slice(0,120)); }
+            partes.push('Lang: en');
+            var t=btn.textContent; btn.textContent='Processing...'; btn.disabled=true;
+            try{
+              var r=await fetch(API_URL+'/create-checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+                nombre:f.nombre.value.trim(), fecha_nacimiento:f.fecha.value, hora_nacimiento:f.hora.value||'12:00', lugar_nacimiento:f.lugar.value.trim(),
+                email:f.correo.value.trim(), mensaje:partes.join(' | ').slice(0,490), plan:p, lang:'en' })});
+              var d=await r.json();
+              if(r.ok&&(d.url||d.checkout_url)){ window.location.href=d.url||d.checkout_url; return; }
+              err.textContent=d.error||'There was an error processing your request. Please try again.'; err.classList.add('visible');
+            }catch(x){ err.textContent='Connection error. Check your internet and try again.'; err.classList.add('visible'); }
+            btn.textContent=t; btn.disabled=false;
+          });
+        })();
+        </script>
+
+<section style="padding-top: 0;">
             <div class="section-inner">
                 <div class="card">
                     <h2>Frequently Asked Questions</h2>
