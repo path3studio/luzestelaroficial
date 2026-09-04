@@ -643,6 +643,29 @@ body.modal-open #le-tabs{display:none !important}
             <a href="/en/mapa-estelar.html#example" class="mapa-cta mapa-cta-sec">See example</a>
           </div>
           <p class="mapa-gift-note"><span class="le-ic" data-icon="sparkles"></span> Included with <b>Plus</b> &middot; also available as a gift</p>
+          <!-- 2026-09-03: cumple la promesa «incluido con Plus» (auditoría del catálogo). Solo aparece si /api/auth/me dice tier premium. -->
+          <div id="plusMapaGift" hidden style="margin-top:10px">
+            <button type="button" id="plusMapaGiftBtn" class="mapa-cta mapa-cta-primary tap-feedback" style="width:100%">Generate my birth star map &middot; included with Plus</button>
+            <p id="plusMapaGiftMsg" class="mapa-gift-note" hidden></p>
+          </div>
+          <script>
+          (function(){
+            var box=document.getElementById('plusMapaGift'), btn=document.getElementById('plusMapaGiftBtn'), msg=document.getElementById('plusMapaGiftMsg');
+            if(!box||!btn) return;
+            fetch('/api/auth/me',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(d){
+              var u=d&&(d.user||d); if(u&&u.tier==='premium') box.hidden=false;
+            }).catch(function(){});
+            btn.addEventListener('click',function(){
+              btn.disabled=true; msg.hidden=false; msg.textContent='Preparing your map…';
+              fetch('/api/mapa-estelar/plus-gift',{method:'POST',credentials:'same-origin'}).then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})}).then(function(o){
+                if(o.j&&o.j.ok&&o.j.url){ window.location.href=o.j.url; return; }
+                var e=(o.j&&o.j.error)||'';
+                msg.textContent = e==='already_claimed' ? 'You already claimed your included map. Check your email (24–48 h).' : e==='profile_incomplete' ? 'Complete your birth profile (date and place) to generate your map.' : 'Could not start. Please try again in a moment.';
+                btn.disabled=false;
+              }).catch(function(){ msg.textContent='Could not start. Please try again in a moment.'; btn.disabled=false; });
+            });
+          })();
+          </script>
         </div>
       </div>
       <!-- 2026-09-03: door to Consultations from the PWA hub (parity with mi-dia.html). -->

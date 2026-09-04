@@ -835,6 +835,29 @@ body.modal-open #le-tabs{display:none !important}
             <a href="/mapa-estelar.html#ejemplo" class="mapa-cta mapa-cta-sec tap-feedback">Ver ejemplo</a>
           </div>
           <p class="mapa-gift-note"><span class="le-ic" data-icon="sparkles"></span> Incluido con <b>Plus</b> &middot; tambi&eacute;n disponible como regalo</p>
+          <!-- 2026-09-03: cumple la promesa «incluido con Plus» (auditoría del catálogo). Solo aparece si /api/auth/me dice tier premium. -->
+          <div id="plusMapaGift" hidden style="margin-top:10px">
+            <button type="button" id="plusMapaGiftBtn" class="mapa-cta mapa-cta-primary tap-feedback" style="width:100%">Generar mi mapa de nacimiento &middot; incluido con Plus</button>
+            <p id="plusMapaGiftMsg" class="mapa-gift-note" hidden></p>
+          </div>
+          <script>
+          (function(){
+            var box=document.getElementById('plusMapaGift'), btn=document.getElementById('plusMapaGiftBtn'), msg=document.getElementById('plusMapaGiftMsg');
+            if(!box||!btn) return;
+            fetch('/api/auth/me',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(d){
+              var u=d&&(d.user||d); if(u&&u.tier==='premium') box.hidden=false;
+            }).catch(function(){});
+            btn.addEventListener('click',function(){
+              btn.disabled=true; msg.hidden=false; msg.textContent='Preparando tu mapa…';
+              fetch('/api/mapa-estelar/plus-gift',{method:'POST',credentials:'same-origin'}).then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})}).then(function(o){
+                if(o.j&&o.j.ok&&o.j.url){ window.location.href=o.j.url; return; }
+                var e=(o.j&&o.j.error)||'';
+                msg.textContent = e==='already_claimed' ? 'Ya reclamaste tu mapa incluido. Revisa tu correo (24–48 h).' : e==='profile_incomplete' ? 'Completa tu perfil de nacimiento (fecha y lugar) para generar tu mapa.' : 'No se pudo iniciar. Intenta de nuevo en un momento.';
+                btn.disabled=false;
+              }).catch(function(){ msg.textContent='No se pudo iniciar. Intenta de nuevo en un momento.'; btn.disabled=false; });
+            });
+          })();
+          </script>
         </div>
       </div>
       <!-- 2026-09-03: puerta a Consultas desde el hub del PWA (antes solo se
