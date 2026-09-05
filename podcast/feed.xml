@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Fri, 04 Sep 2026 04:14:00 -0600</lastBuildDate>
+    <lastBuildDate>Sat, 05 Sep 2026 03:50:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 4 de septiembre de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 4 de septiembre de 2026
+      <title>Horóscopo del 5 de septiembre de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 5 de septiembre de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (6.8/10)
-Tauro: ★★★☆☆ (6.6/10)
-Géminis: ★★★☆☆ (7.0/10)
-Cáncer: ★★★☆☆ (7.5/10)
-Leo: ★★★☆☆ (6.4/10)
-Virgo: ★★★☆☆ (7.6/10)
-Libra: ★★★☆☆ (6.5/10)
-Escorpio: ★★★★☆ (9.1/10)
-Sagitario: ★★★☆☆ (7.8/10)
-Capricornio: ★★★☆☆ (7.1/10)
-Acuario: ★★★★☆ (9.2/10)
-Piscis: ★★★★☆ (9.0/10)
+Aries: ★★★☆☆ (6.0/10)
+Tauro: ★★★☆☆ (6.4/10)
+Géminis: ★★☆☆☆ (5.9/10)
+Cáncer: ★★☆☆☆ (5.8/10)
+Leo: ★★★★☆ (8.3/10)
+Virgo: ★★★☆☆ (6.4/10)
+Libra: ★★★☆☆ (6.3/10)
+Escorpio: ★★★★☆ (8.2/10)
+Sagitario: ★★★☆☆ (6.9/10)
+Capricornio: ★★★☆☆ (6.6/10)
+Acuario: ★★★☆☆ (7.7/10)
+Piscis: ★★★☆☆ (7.9/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-09-05.mp3" length="22503212" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-09-05.mp3</guid>
+      <pubDate>Sat, 05 Sep 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-09-05.jpg"/>
+      <itunes:duration>00:15:37</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 4 de septiembre de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 4 de septiembre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-09-04.mp3" length="23738732" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-09-04.mp3</guid>
       <pubDate>Fri, 04 Sep 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Sun, 23 Aug 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-23.jpg"/>
       <itunes:duration>00:16:13</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 22 de agosto de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 22 de agosto de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-08-22.mp3" length="22753196" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-08-22.mp3</guid>
-      <pubDate>Sat, 22 Aug 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-08-22.jpg"/>
-      <itunes:duration>00:15:47</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
