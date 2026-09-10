@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Luz Estelar — Message Console</title>
+<link rel="icon" type="image/png" href="app_icon.png">
+<style>
+  :root { --ink:#06061a; --ink2:#0e0e2a; --gold:#d4a849; --gold2:#f0d078; --cream:#e8dcc4; --white:#f5f3fa; --muted:#a8a4ba; --ok:#5fc48c; --err:#e06a6a; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ink); color:var(--cream); font:15px/1.5 Inter, -apple-system, system-ui, sans-serif; }
+  header { display:flex; align-items:center; gap:14px; padding:18px 28px; border-bottom:1px solid #1c1c3a; }
+  header img { width:44px; height:44px; }
+  header h1 { margin:0; font:600 20px/1.2 "Cormorant Garamond", Georgia, serif; color:var(--gold2); letter-spacing:.02em; }
+  header small { display:block; color:var(--muted); font-size:12px; }
+  main { max-width:1180px; margin:0 auto; padding:24px 28px 60px; }
+  .steps { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:22px; }
+  .step { padding:10px 12px; border:1px solid #23234a; border-radius:10px; color:var(--muted); font-size:13px; }
+  .step.on { border-color:var(--gold); color:var(--gold2); }
+  .step b { display:block; font-size:11px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:2px; }
+  .card { background:var(--ink2); border:1px solid #23234a; border-radius:14px; padding:18px 20px; margin-bottom:18px; }
+  .card h2 { margin:0 0 10px; font:600 17px/1.3 "Cormorant Garamond", Georgia, serif; color:var(--gold2); }
+  button { background:var(--gold); color:var(--ink); border:0; border-radius:10px; padding:11px 18px; font:600 14px Inter, system-ui, sans-serif; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--cream); border:1px solid #33335e; }
+  button:disabled { opacity:.45; cursor:default; }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .asset { display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid #23234a; border-radius:10px; cursor:pointer; }
+  .asset.sel { border-color:var(--gold); }
+  .asset img { width:40px; height:40px; border-radius:50%; object-fit:cover; background:#22224a; }
+  .asset .n { font-weight:600; color:var(--white); }
+  .asset .s { font-size:12px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:320px 1fr; gap:18px; }
+  .conv { padding:10px 12px; border:1px solid #23234a; border-radius:10px; cursor:pointer; margin-bottom:8px; display:flex; gap:10px; align-items:center; }
+  .conv.sel { border-color:var(--gold); }
+  .conv img { width:36px; height:36px; border-radius:50%; object-fit:cover; background:#22224a; }
+  .conv .u { font-weight:600; color:var(--white); }
+  .conv .p { font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px; }
+  .profile { display:flex; gap:14px; align-items:center; margin-bottom:12px; padding:12px; border:1px dashed #33335e; border-radius:12px; }
+  .profile img { width:56px; height:56px; border-radius:50%; object-fit:cover; background:#22224a; }
+  .profile .n { font-weight:700; color:var(--white); font-size:16px; }
+  .profile .s { color:var(--muted); font-size:13px; }
+  .thread { max-height:320px; overflow:auto; padding:6px 2px; }
+  .msg { max-width:78%; margin:6px 0; padding:9px 12px; border-radius:12px; font-size:14px; }
+  .msg.in { background:#1a1a3d; color:var(--cream); }
+  .msg.out { background:var(--gold); color:var(--ink); margin-left:auto; }
+  .msg time { display:block; font-size:11px; opacity:.7; margin-top:3px; }
+  textarea { width:100%; min-height:84px; border-radius:10px; border:1px solid #33335e; background:#0a0a22; color:var(--white); padding:10px 12px; font:14px Inter, system-ui, sans-serif; resize:vertical; }
+  .status { font-size:13px; margin-top:8px; min-height:18px; }
+  .status.ok { color:var(--ok); } .status.err { color:var(--err); }
+  .hint { color:var(--muted); font-size:13px; }
+  code { background:#0a0a22; padding:1px 6px; border-radius:6px; font-size:12px; color:var(--gold2); }
+  @media (max-width:820px){ .grid{ grid-template-columns:1fr; } .steps{ grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <img src="app_icon.png" alt="Luz Estelar">
+  <div>
+    <h1>Luz Estelar — Message Console</h1>
+    <small>Internal tool: our team reads and answers Instagram Direct messages sent to the Luz Estelar business account.</small>
+  </div>
+</header>
+
+<main>
+  <div class="steps">
+    <div class="step on" id="st1"><b>Step 1</b>Log in with Meta</div>
+    <div class="step" id="st2"><b>Step 2</b>Select the business asset</div>
+    <div class="step" id="st3"><b>Step 3</b>Open a conversation (sender profile)</div>
+    <div class="step" id="st4"><b>Step 4</b>Reply from this console</div>
+  </div>
+
+  <section class="card" id="cardLogin">
+    <h2>1. Log in with Meta</h2>
+    <p class="hint">Uses Facebook Login. The console requests: <code>pages_show_list</code>, <code>pages_messaging</code>, <code>pages_manage_metadata</code>, <code>instagram_basic</code>, <code>instagram_manage_messages</code>.</p>
+    <div class="row">
+      <button id="btnLogin">Log in with Facebook</button>
+      <button class="ghost" id="btnLogout" disabled>Log out</button>
+      <span id="who" class="hint"></span>
+    </div>
+  </section>
+
+  <section class="card" id="cardAssets" hidden>
+    <h2>2. Select the business asset (Facebook Page ↔ Instagram account)</h2>
+    <p class="hint">Only Pages you manage are listed. Selecting one loads its connected Instagram professional account.</p>
+    <div id="assets" class="row"></div>
+  </section>
+
+  <section class="card" id="cardInbox" hidden>
+    <h2>3. Instagram conversations</h2>
+    <div class="grid">
+      <div>
+        <div class="row" style="margin-bottom:10px"><button class="ghost" id="btnRefresh">Refresh inbox</button><span class="hint" id="inboxInfo"></span></div>
+        <div id="convs"></div>
+      </div>
+      <div>
+        <div id="profile" class="profile" hidden>
+          <img id="pPic" alt="">
+          <div><div class="n" id="pName"></div><div class="s" id="pUser"></div><div class="s" id="pMeta"></div></div>
+        </div>
+        <div class="thread" id="thread"></div>
+        <h2 style="margin-top:14px">4. Reply from this console</h2>
+        <textarea id="reply" placeholder="Type the reply that will be sent to this person on Instagram…"></textarea>
+        <div class="row" style="margin-top:8px"><button id="btnSend" disabled>Send reply</button><span class="status" id="sendStatus"></span></div>
+        <p class="hint">After sending, the same message appears in the Instagram app of the person you replied to. Production replies run server-to-server with the same Page permissions; this console is the human-operated version of that flow.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const APP_ID = '1533772171438474';
+const API = 'v21.0';
+const SCOPES = 'public_profile,pages_show_list,pages_messaging,pages_manage_metadata,instagram_basic,instagram_manage_messages,business_management';
+let userToken = null, pages = [], page = null, igId = null, convs = [], conv = null;
+
+function step(n){ for (let i=1;i<=4;i++) document.getElementById('st'+i).classList.toggle('on', i<=n); }
+function api(path, params={}, method='GET'){ return new Promise((res, rej) => FB.api(path, method, params, r => (!r || r.error) ? rej(r ? r.error : new Error('no response')) : res(r))); }
+
+window.fbAsyncInit = function(){ FB.init({ appId: APP_ID, cookie:true, xfbml:false, version: API }); };
+(function(d,s,id){ const js=d.createElement(s); js.id=id; js.src='https://connect.facebook.net/en_US/sdk.js'; d.head.appendChild(js); })(document,'script','facebook-jssdk');
+
+document.getElementById('btnLogin').onclick = () => FB.login(r => {
+  if (!r.authResponse) return;
+  userToken = r.authResponse.accessToken;
+  api('/me', {fields:'name'}).then(me => { document.getElementById('who').textContent = 'Signed in as ' + me.name; });
+  document.getElementById('btnLogout').disabled = false;
+  step(2); loadAssets();
+}, { scope: SCOPES });
+
+document.getElementById('btnLogout').onclick = () => FB.logout(() => location.reload());
+
+async function loadAssets(){
+  const card = document.getElementById('cardAssets'); card.hidden = false;
+  const box = document.getElementById('assets'); box.innerHTML = '<span class="hint">Loading your Pages…</span>';
+  const r = await api('/me/accounts', {fields:'id,name,access_token,picture{url},instagram_business_account{id,username,profile_picture_url}'});
+  pages = r.data || []; box.innerHTML = '';
+  pages.forEach(p => {
+    const ig = p.instagram_business_account;
+    const el = document.createElement('div'); el.className = 'asset';
+    el.innerHTML = `<img src="${(ig && ig.profile_picture_url) || (p.picture && p.picture.data.url) || ''}"><div><div class="n">${p.name}</div><div class="s">${ig ? '@'+ig.username+' · Instagram professional account' : 'No Instagram account connected'}</div></div>`;
+    el.onclick = () => { document.querySelectorAll('.asset').forEach(a=>a.classList.remove('sel')); el.classList.add('sel'); page = p; igId = ig ? ig.id : null; step(3); loadInbox(); };
+    box.appendChild(el);
+  });
+}
+
+async function loadInbox(){
+  document.getElementById('cardInbox').hidden = false;
+  const box = document.getElementById('convs'); box.innerHTML = '<span class="hint">Loading conversations…</span>';
+  const r = await api(`/${page.id}/conversations`, { platform:'instagram', fields:'participants,updated_time,messages.limit(20){id,from,to,message,created_time}', access_token: page.access_token });
+  convs = r.data || []; box.innerHTML = '';
+  document.getElementById('inboxInfo').textContent = convs.length + ' conversation(s)';
+  for (const c of convs) {
+    const msgs = (c.messages && c.messages.data) || [];
+    const other = (c.participants.data || []).find(p => p.id !== igId) || {};
+    const el = document.createElement('div'); el.className = 'conv';
+    el.innerHTML = `<img data-pic="${other.id}" alt=""><div><div class="u">@${other.username || other.id}</div><div class="p">${msgs[0] ? (msgs[0].message || '[attachment]') : ''}</div></div>`;
+    el.onclick = () => { document.querySelectorAll('.conv').forEach(a=>a.classList.remove('sel')); el.classList.add('sel'); conv = c; openConv(other, msgs); };
+    box.appendChild(el);
+    api(`/${other.id}`, {fields:'profile_pic', access_token: page.access_token}).then(p => { el.querySelector('img').src = p.profile_pic || ''; }).catch(()=>{});
+  }
+}
+
+async function openConv(other, msgs){
+  const prof = document.getElementById('profile'); prof.hidden = false;
+  document.getElementById('pName').textContent = '…'; document.getElementById('pUser').textContent = '@' + (other.username || other.id); document.getElementById('pMeta').textContent = '';
+  try {
+    const p = await api(`/${other.id}`, {fields:'name,username,profile_pic,follower_count,is_user_follow_business', access_token: page.access_token});
+    document.getElementById('pName').textContent = p.name || '';
+    document.getElementById('pPic').src = p.profile_pic || '';
+    document.getElementById('pMeta').textContent = `${p.follower_count ?? '?'} followers · ${p.is_user_follow_business ? 'follows Luz Estelar' : 'does not follow yet'}`;
+  } catch(e) { document.getElementById('pName').textContent = other.username || other.id; document.getElementById('pMeta').textContent = 'Profile: ' + (e.message || 'unavailable'); }
+  const t = document.getElementById('thread'); t.innerHTML = '';
+  msgs.slice().reverse().forEach(m => {
+    const mine = m.from && m.from.id === igId;
+    const el = document.createElement('div'); el.className = 'msg ' + (mine ? 'out' : 'in');
+    el.innerHTML = `${(m.message || '[attachment]').replace(/</g,'&lt;')}<time>${new Date(m.created_time).toLocaleString()}</time>`;
+    t.appendChild(el);
+  });
+  t.scrollTop = t.scrollHeight;
+  document.getElementById('btnSend').disabled = false; step(4);
+  conv._other = other;
+}
+
+document.getElementById('btnSend').onclick = async () => {
+  const text = document.getElementById('reply').value.trim(); if (!text || !conv) return;
+  const st = document.getElementById('sendStatus'); st.className = 'status'; st.textContent = 'Sending…';
+  try {
+    const r = await api(`/${page.id}/messages`, { recipient: JSON.stringify({id: conv._other.id}), message: JSON.stringify({text}), messaging_type: 'RESPONSE', access_token: page.access_token }, 'POST');
+    st.className = 'status ok'; st.textContent = 'Sent ✓ message_id ' + (r.message_id || '').slice(0, 24) + '…';
+    const t = document.getElementById('thread'); const el = document.createElement('div'); el.className = 'msg out';
+    el.innerHTML = `${text.replace(/</g,'&lt;')}<time>${new Date().toLocaleString()}</time>`; t.appendChild(el); t.scrollTop = t.scrollHeight;
+    document.getElementById('reply').value = '';
+  } catch(e) { st.className = 'status err'; st.textContent = 'Error: ' + (e.message || JSON.stringify(e)); }
+};
+</script>
+</body>
+</html>
