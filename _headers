@@ -49,3 +49,12 @@
 
 /en/my-day.html
   Cache-Control: no-cache, must-revalidate
+
+# 2026-09-10: consola de mensajes (screencast App Review) — necesita el SDK de Meta.
+# Solo en esta ruta; el resto del sitio conserva la CSP estricta.
+/message-console
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.fbcdn.net https://*.cdninstagram.com https://*.facebook.com https://graph.facebook.com; connect-src 'self' https://graph.facebook.com https://*.facebook.com; frame-src https://www.facebook.com https://*.facebook.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.facebook.com
+/message-console.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.fbcdn.net https://*.cdninstagram.com https://*.facebook.com https://graph.facebook.com; connect-src 'self' https://graph.facebook.com https://*.facebook.com; frame-src https://www.facebook.com https://*.facebook.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.facebook.com
