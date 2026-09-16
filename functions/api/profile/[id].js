@@ -5,17 +5,33 @@
  * PUT    /api/profile/:id — Set this profile as primary
  */
 
+import { tzFromLatLon, ianaFromLatLon, offsetHoursAt } from '../../_shared/tz.js';
 import { buildNatalChart } from '../../_shared/ephemeris.js';
 
 // Same mapping as birth-profiles.js POST — keep in sync if the
 // canonical list moves to _shared. Returns a UTC offset number for
 // a given IANA timezone. Falls back to -6 (Mexico) for anything
 // unrecognised, since the active user base is MX-first.
-function inferTzOffset(timezone, lon) {
+function inferTzOffset(timezone, lon, lat, birth) {
+  // 2026-09-16: desfase HISTÓRICO real (horario de verano incluido) vía Intl.
+  // `birth` = { year, month, day, hour, minute } en hora local. Zona IANA del
+  // perfil si la trae; si no, por lat/lon (tz.js). El mapa fijo de abajo
+  // queda solo como último recurso.
+  if (birth && birth.year) {
+    const iana = (timezone && typeof timezone === 'string' && timezone.includes('/')) ? timezone
+               : ianaFromLatLon(typeof lat === 'number' ? lat : null, typeof lon === 'number' ? lon : null);
+    if (iana) {
+      const off = offsetHoursAt(iana, birth.year, birth.month, birth.day, birth.hour, birth.minute);
+      if (off !== null) return off;
+    }
+  }
   // 2026-08-31: copia local de birth-profiles.js (⚠️ duplicada — la
   // lección del Asc de junio: parchar TODAS las copias). Sin timezone
   // pero con longitud → huso geográfico round(lon/15).
   if ((!timezone || typeof timezone !== 'string') && typeof lon === 'number') {
+    // 2026-09-16: husos políticos por país (tz.js); round(lon/15) daba -7 a CDMX y -4 a Argentina
+    const t = tzFromLatLon(typeof lat === 'number' ? lat : null, lon);
+    if (t !== null) return t;
     return Math.max(-12, Math.min(14, Math.round(lon / 15)));
   }
   if (!timezone || typeof timezone !== 'string') return -6;
@@ -178,7 +194,7 @@ export async function onRequestPatch(context) {
         minute: Number.isFinite(mm) ? mm : null,
         lat:    typeof merged.lat === 'number' ? merged.lat : null,
         lon:    typeof merged.lon === 'number' ? merged.lon : null,
-        tzOffsetHours: inferTzOffset(merged.timezone, typeof merged.lon === 'number' ? merged.lon : null),
+        tzOffsetHours: inferTzOffset(merged.timezone, typeof merged.lon === 'number' ? merged.lon : null, typeof merged.lat === 'number' ? merged.lat : null, { year: y, month: m, day: d, hour: Number.isFinite(hh) ? hh : 12, minute: Number.isFinite(mm) ? mm : 0 }),
       });
       newChartJson = JSON.stringify(chart);
     } catch (e) {

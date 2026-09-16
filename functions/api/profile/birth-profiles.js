@@ -8,6 +8,7 @@
  * full wheel immediately — not after tomorrow's pipeline.
  */
 
+import { tzFromLatLon, ianaFromLatLon, offsetHoursAt } from '../../_shared/tz.js';
 import { buildNatalChart } from '../../_shared/ephemeris.js';
 
 // Rough IANA timezone → UTC-offset (hours) lookup for the regions that
@@ -16,13 +17,28 @@ import { buildNatalChart } from '../../_shared/ephemeris.js';
 // still better than skipping the angle entirely. A more accurate
 // solution (e.g. `Intl.DateTimeFormat` with resolvedOptions) can
 // replace this when the user base goes beyond these regions.
-function inferTzOffset(timezone, lon) {
+function inferTzOffset(timezone, lon, lat, birth) {
+  // 2026-09-16: desfase HISTÓRICO real (horario de verano incluido) vía Intl.
+  // `birth` = { year, month, day, hour, minute } en hora local. Zona IANA del
+  // perfil si la trae; si no, por lat/lon (tz.js). El mapa fijo de abajo
+  // queda solo como último recurso.
+  if (birth && birth.year) {
+    const iana = (timezone && typeof timezone === 'string' && timezone.includes('/')) ? timezone
+               : ianaFromLatLon(typeof lat === 'number' ? lat : null, typeof lon === 'number' ? lon : null);
+    if (iana) {
+      const off = offsetHoursAt(iana, birth.year, birth.month, birth.day, birth.hour, birth.minute);
+      if (off !== null) return off;
+    }
+  }
   // 2026-08-31 (caso Sara, Toledo): timezone NULL caía a -6 «México para
   // todo el mundo» — 100 perfiles calculados con reloj ajeno (Asc corrido
   // hasta 4 signos). Sin timezone pero CON longitud: el huso geográfico
   // real es round(lon/15) — imperfecto (husos políticos) pero el error
   // máximo baja de 7h a ~1h.
   if ((!timezone || typeof timezone !== 'string') && typeof lon === 'number') {
+    // 2026-09-16: husos políticos por país (tz.js); round(lon/15) daba -7 a CDMX y -4 a Argentina
+    const t = tzFromLatLon(typeof lat === 'number' ? lat : null, lon);
+    if (t !== null) return t;
     return Math.max(-12, Math.min(14, Math.round(lon / 15)));
   }
   if (!timezone || typeof timezone !== 'string') return -6;
@@ -251,7 +267,7 @@ export async function onRequestPost(context) {
   let natalChartJson = null;
   try {
     const [hh, mm] = (horaNacimiento || '').split(':').map(Number);
-    const tzOffsetHours = inferTzOffset(timezone, typeof lon === 'number' ? lon : null);
+    const tzOffsetHours = inferTzOffset(timezone, typeof lon === 'number' ? lon : null, typeof lat === 'number' ? lat : null, { year, month, day, hour: Number.isFinite(hh) ? hh : 12, minute: Number.isFinite(mm) ? mm : 0 });
     const chart = buildNatalChart({
       year, month, day,
       hour:   Number.isFinite(hh) ? hh : null,
