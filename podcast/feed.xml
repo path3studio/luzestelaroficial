@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Mon, 02 Nov 2026 06:21:00 -0600</lastBuildDate>
+    <lastBuildDate>Tue, 03 Nov 2026 07:11:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 2 de noviembre de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 2 de noviembre de 2026
+      <title>Horóscopo del 3 de noviembre de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 3 de noviembre de 2026
 
 Biorritmo Astral:
-Aries: ★★★☆☆ (6.5/10)
-Tauro: ★★☆☆☆ (5.2/10)
-Géminis: ★★★☆☆ (6.1/10)
-Cáncer: ★★☆☆☆ (5.6/10)
-Leo: ★★★☆☆ (6.5/10)
-Virgo: ★★☆☆☆ (5.4/10)
-Libra: ★★★☆☆ (7.2/10)
-Escorpio: ★★☆☆☆ (5.3/10)
-Sagitario: ★★★☆☆ (7.1/10)
-Capricornio: ★★☆☆☆ (5.7/10)
-Acuario: ★★☆☆☆ (5.1/10)
-Piscis: ★★☆☆☆ (5.7/10)
+Aries: ★★★☆☆ (6.2/10)
+Tauro: ★★★☆☆ (7.5/10)
+Géminis: ★★☆☆☆ (5.0/10)
+Cáncer: ★★★☆☆ (6.3/10)
+Leo: ★★☆☆☆ (5.9/10)
+Virgo: ★★★☆☆ (6.9/10)
+Libra: ★★★☆☆ (6.6/10)
+Escorpio: ★★★☆☆ (7.4/10)
+Sagitario: ★★☆☆☆ (5.6/10)
+Capricornio: ★★★☆☆ (7.2/10)
+Acuario: ★★★☆☆ (7.6/10)
+Piscis: ★★☆☆☆ (5.3/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-03.mp3" length="19598444" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-03.mp3</guid>
+      <pubDate>Tue, 03 Nov 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-03.jpg"/>
+      <itunes:duration>00:13:36</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 2 de noviembre de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 2 de noviembre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-02.mp3" length="20101292" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-02.mp3</guid>
       <pubDate>Mon, 02 Nov 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Wed, 21 Oct 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-10-21.jpg"/>
       <itunes:duration>00:15:32</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 20 de octubre de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 20 de octubre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-10-20.mp3" length="22242860" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-10-20.mp3</guid>
-      <pubDate>Tue, 20 Oct 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-10-20.jpg"/>
-      <itunes:duration>00:15:26</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
