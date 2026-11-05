@@ -512,7 +512,9 @@
 // nuevo, hoja de Plus con modo Play y shells que dejan de ocultar Plus (html.twa-pay).
 // v110 → v111 (Nov 5): play-billing.js solo ofrece Plus si el servidor puede verificar
 // (GET /api/billing/google-play/verify → ready) y Play devuelve los productos.
-const CACHE_NAME = 'luzestelar-v111';
+// v111 → v112 (Nov 5): la CSP cambió (connect-src https://play.google.com); el caché previo guardaba
+// la cabecera vieja y PaymentRequest fallaba dentro de la app.
+const CACHE_NAME = 'luzestelar-v112';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

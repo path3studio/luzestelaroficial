@@ -38,8 +38,15 @@ export async function onRequestPost(context) {
   const expectedPkg = env.GOOGLE_PLAY_PACKAGE || 'com.luzestelaroficial.app';
   if (note.packageName && note.packageName !== expectedPkg) return new Response('other app', { status: 200 });
 
+  // Marca en KV de la última notificación (los logs de Pages no se conservan):
+  //   npx wrangler kv key get google_play:rtdn_last --binding AUTH_KV
+  const marca = (tipo, extra) => env.AUTH_KV
+    ? env.AUTH_KV.put('google_play:rtdn_last', JSON.stringify({ at: new Date().toISOString(), tipo, ...extra }), { expirationTtl: 30 * 86400 }).catch(() => {})
+    : Promise.resolve();
+
   if (note.testNotification) {
     console.log(JSON.stringify({ event: 'google_play_rtdn_test', version: note.testNotification.version }));
+    await marca('test', { version: note.testNotification.version });
     return new Response('ok', { status: 200 });
   }
 
@@ -52,6 +59,7 @@ export async function onRequestPost(context) {
         event: 'google_play_rtdn', type: sn.notificationType, product: sn.subscriptionId,
         known: r.known, status: r.summary?.status, entitled: r.summary?.entitled,
       }));
+      await marca('subscription', { notificationType: sn.notificationType, product: sn.subscriptionId, known: r.known, status: r.summary?.status });
       // 3 cancelada · 12 revocada · 13 expirada → aviso corto al dueño (sin PII)
       if (r.known && [3, 12, 13].includes(Number(sn.notificationType))) {
         const label = { 3: 'canceló la renovación', 12: 'fue revocada/reembolsada', 13: 'expiró' }[sn.notificationType];
