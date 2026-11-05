@@ -510,7 +510,9 @@
 // v107 → v109 (Ago 31): enlace magico #corregir
 // v109 → v110 (Nov 5): Plus por Google Play dentro de la app Android — js/play-billing.js
 // nuevo, hoja de Plus con modo Play y shells que dejan de ocultar Plus (html.twa-pay).
-const CACHE_NAME = 'luzestelar-v110';
+// v110 → v111 (Nov 5): play-billing.js solo ofrece Plus si el servidor puede verificar
+// (GET /api/billing/google-play/verify → ready) y Play devuelve los productos.
+const CACHE_NAME = 'luzestelar-v111';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

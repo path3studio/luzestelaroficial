@@ -13,6 +13,16 @@ import {
   findByToken, notifyTelegram,
 } from '../../../_shared/google-play.js';
 
+/**
+ * GET /api/billing/google-play/verify — ¿puede el servidor verificar compras de Play?
+ * La web (js/play-billing.js) lo consulta antes de ofrecer Plus dentro de la app: sin la
+ * cuenta de servicio configurada no se vende nada, para que nadie pague sin recibir Plus.
+ */
+export async function onRequestGet(context) {
+  const ready = !!context.env.GOOGLE_PLAY_SERVICE_ACCOUNT;
+  return Response.json({ ok: true, ready }, { headers: { 'Cache-Control': 'no-store' } });
+}
+
 export async function onRequestPost(context) {
   const user = context.data.user;
   if (!user) return Response.json({ ok: false, error: 'Not authenticated' }, { status: 401 });

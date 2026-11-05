@@ -41,11 +41,22 @@
     try { document.dispatchEvent(new CustomEvent('le:playbilling', { detail: { disponible: disponible } })); } catch (e) {}
   }
 
+  // Tres condiciones para vender dentro de la app: (1) la caja de Play responde,
+  // (2) el servidor puede verificar compras (cuenta de servicio configurada) y
+  // (3) Play conoce al menos uno de los dos productos. Si falla cualquiera, Plus
+  // sigue oculto: nadie debe pagar sin que el servidor pueda darle Plus.
   var ready = (async function(){
     if (!esTwa() || !('getDigitalGoodsService' in window) || !window.PaymentRequest) { fin(false); return false; }
     try {
       service = await window.getDigitalGoodsService(METODO);
-      fin(!!service);
+      if (!service) { fin(false); return false; }
+      var r = await fetch('/api/billing/google-play/verify', { credentials: 'same-origin', cache: 'no-store' });
+      var j = await r.json().catch(function(){ return {}; });
+      if (!j || !j.ready) { service = null; fin(false); return false; }
+      var d = await detalles();
+      var hay = !!(d && ((d.monthly && d.monthly.price) || (d.annual && d.annual.price)));
+      if (!hay) { service = null; }
+      fin(hay);
     } catch (e) {
       service = null;
       fin(false);
@@ -76,7 +87,7 @@
 
   // Detalles de los dos productos; cacheados mientras dure la página.
   async function detalles(){
-    await ready;
+    if (listo) await ready;
     if (!service) return null;
     if (detallesCache) return detallesCache;
     var items = await service.getDetails([SKUS.monthly, SKUS.annual]);
