@@ -49,7 +49,10 @@
      android-app://<paquete>/ al abrirla y el launchUrl lleva ?app=android; la bandera vive en sessionStorage
      (solo esta pestaña, no se cuela al Chrome normal). html.is-twa oculta todo lo que lleve a pagar: Play no
      permite llevar a cobrar fuera. -->
-<script>(function(){try{var k='le_twa',ss=window.sessionStorage,q=/[?&]app=android(&|$)/.test(location.search),r=(document.referrer||'').indexOf('android-app://')===0;if(q||r){ss.setItem(k,'1');}if(q||r||ss.getItem(k)==='1'){document.documentElement.classList.add('is-twa');}}catch(e){}})();</script>
+<script>(function(){try{var k='le_twa',ss=window.sessionStorage,q=/[?&]app=android(&|$)/.test(location.search),r=(document.referrer||'').indexOf('android-app://')===0;if(q||r){ss.setItem(k,'1');}if(q||r||ss.getItem(k)==='1'){document.documentElement.classList.add('is-twa');}}catch(e){}})();
+/* 2026-11-05: globales a propósito — los bloques de script de la página (áreas de vida, etc.) no ven las funciones de la IIFE principal. */
+function isTwa(){return document.documentElement.classList.contains('is-twa');}
+function twaSinPago(){return isTwa() && !document.documentElement.classList.contains('twa-pay');}</script>
 <style>
 /* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
 html.is-twa .twa-hide{display:none !important}
