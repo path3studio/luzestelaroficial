@@ -508,7 +508,9 @@
 // v106 → v107 (Ago 31): edicion de perfil (lapiz ✎) en mi-dia — sin
 // bump, el SW servia la version vieja y el boton era invisible.
 // v107 → v109 (Ago 31): enlace magico #corregir
-const CACHE_NAME = 'luzestelar-v109';
+// v109 → v110 (Nov 5): Plus por Google Play dentro de la app Android — js/play-billing.js
+// nuevo, hoja de Plus con modo Play y shells que dejan de ocultar Plus (html.twa-pay).
+const CACHE_NAME = 'luzestelar-v110';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
@@ -539,6 +541,7 @@ const PRECACHE_URLS = [
   '/js/haptic.js',
   '/js/bottom-tabs.js',
   '/js/upgrade-sheet.js',
+  '/js/play-billing.js',
   '/js/install-prompt.js',
   '/js/hero-install.js',
   '/js/sky-map.js?v=3',

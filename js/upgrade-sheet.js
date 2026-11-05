@@ -13,6 +13,10 @@
  * Copy: bilingual (es / en). Pricing: $2.50/mes annual · $3.99/mes monthly
  * (7-day free trial on both). Kept in sync with /planes.html — update here
  * when prices change.
+ *
+ * 2026-11-05: dentro de la app Android (html.is-twa + html.twa-pay) la misma hoja
+ * cobra con la caja de Google Play (js/play-billing.js): precios reales de Play,
+ * botón «Continuar con Google Play», verificación en /api/billing/google-play/verify.
  */
 (function(){
   'use strict';
@@ -40,7 +44,16 @@
       cta: 'Empezar 7 días gratis',
       loading: 'Abriendo Stripe…',
       close: 'Cerrar',
-      fail: 'No se pudo iniciar la suscripción. Intenta de nuevo.'
+      fail: 'No se pudo iniciar la suscripción. Intenta de nuevo.',
+      // Dentro de la app Android: cobra Google Play
+      playCta: 'Continuar con Google Play',
+      playCtaSinPrueba: 'Suscribirme con Google Play',
+      playLoading: 'Abriendo Google Play…',
+      playVerifying: 'Confirmando tu compra…',
+      playTrial: 'Primeros 7 días gratis. Cancela cuando quieras desde Google Play.',
+      playNoTrial: 'El cobro lo hace Google Play. Cancela cuando quieras desde tu cuenta de Play.',
+      playAnnualNote: 'Se cobra una vez al año',
+      playFail: 'No se pudo completar la compra en Google Play. Intenta de nuevo.'
     },
     en: {
       title: 'Plus — 7 days free',
@@ -62,12 +75,24 @@
       cta: 'Start 7-day free trial',
       loading: 'Opening Stripe…',
       close: 'Close',
-      fail: 'Could not start the subscription. Please try again.'
+      fail: 'Could not start the subscription. Please try again.',
+      playCta: 'Continue with Google Play',
+      playCtaSinPrueba: 'Subscribe with Google Play',
+      playLoading: 'Opening Google Play…',
+      playVerifying: 'Confirming your purchase…',
+      playTrial: 'First 7 days free. Cancel anytime from Google Play.',
+      playNoTrial: 'Google Play handles the charge. Cancel anytime from your Play account.',
+      playAnnualNote: 'Billed once a year',
+      playFail: 'The Google Play purchase could not be completed. Please try again.'
     }
   };
 
   var injected = false;
-  var state = { cadence: 'annual', lang: 'es' };
+  var state = { cadence: 'annual', lang: 'es', play: false, playDetalles: null };
+
+  // Dentro de la app Android (html.is-twa) la caja es Google Play; sin ella no hay compra.
+  function enApp(){ return document.documentElement.classList.contains('is-twa'); }
+  function playListo(){ return !!(ns.PlayBilling && ns.PlayBilling.disponible()); }
 
   function getToken(){ try { return localStorage.getItem('le_token'); } catch(e){ return null; } }
 
@@ -168,6 +193,21 @@
       {id:'annual',  lbl:c.annual,  price:c.annualPrice,  note:c.annualNote,  save:'-37%'},
       {id:'monthly', lbl:c.monthly, price:c.monthlyPrice, note:c.monthlyNote, save:null}
     ];
+    var hayPrueba = true;
+    if (state.play) {
+      // Precios REALES de Google Play (moneda de la cuenta de Play de la persona).
+      var d = state.playDetalles || {};
+      var pb = ns.PlayBilling;
+      var an = d.annual, me = d.monthly;
+      var anMes = an && an.price ? { currency: an.price.currency, value: (Number(an.price.value) / 12).toFixed(2) } : null;
+      opts = [
+        {id:'annual',  lbl:c.annual,  price: anMes ? pb.formatear(anMes) : '…',
+         note: an && an.price ? (c.playAnnualNote + ' · ' + pb.formatear(an.price)) : c.playAnnualNote, save:'-37%'},
+        {id:'monthly', lbl:c.monthly, price: me && me.price ? pb.formatear(me.price) : '…', note:c.monthlyNote, save:null}
+      ];
+      var sel = state.cadence === 'monthly' ? me : an;
+      hayPrueba = !!(sel && sel.freeTrialPeriod);
+    }
     opts.forEach(function(o){
       var d = document.createElement('div');
       d.className = 'le-up-opt' + (state.cadence===o.id ? ' on' : '');
@@ -186,9 +226,9 @@
       tog.appendChild(d);
     });
 
-    document.getElementById('le-up-trial').textContent = c.trial;
+    document.getElementById('le-up-trial').textContent = state.play ? (hayPrueba ? c.playTrial : c.playNoTrial) : c.trial;
     var cta = document.getElementById('le-up-cta');
-    cta.textContent = c.cta;
+    cta.textContent = state.play ? (hayPrueba ? c.playCta : c.playCtaSinPrueba) : c.cta;
     cta.disabled = false;
     var err = document.getElementById('le-up-err');
     err.classList.remove('on');
@@ -201,6 +241,7 @@
     var err = document.getElementById('le-up-err');
     err.classList.remove('on');
     btn.disabled = true;
+    if (state.play) return onCtaPlay(btn, c, err);
     btn.textContent = c.loading;
     try {
       var res = await authFetch('/api/billing/create-subscription', {
@@ -228,9 +269,41 @@
     }
   }
 
+  // Compra dentro de la app Android: hoja de Google Play → verificación en el servidor → recarga como Plus.
+  async function onCtaPlay(btn, c, err){
+    btn.textContent = c.playLoading;
+    try {
+      var r = await ns.PlayBilling.comprar(state.cadence);
+      if (r.status === 401) {
+        var back = encodeURIComponent(location.pathname + location.search);
+        location.assign('/login.html?redirect=' + back);
+        return;
+      }
+      if (r && r.ok && r.entitled) {
+        btn.textContent = c.playVerifying;
+        var dest = location.pathname + '?subscription=success&cadence=' + state.cadence + '&app=android';
+        location.assign(dest);
+        return;
+      }
+      throw new Error((r && r.error) || c.playFail);
+    } catch (e) {
+      if (e && e.name === 'AbortError') {
+        // La persona cerró la hoja de Play sin comprar: no es un error.
+        render();
+        return;
+      }
+      err.textContent = (e && e.message) || c.playFail;
+      err.classList.add('on');
+      btn.disabled = false;
+      btn.textContent = c.playCta;
+    }
+  }
+
   function open(opts){
-    // Dentro de la app de Google Play (html.is-twa) no se ofrece el pago: Play no permite cobrar fuera.
-    if (document.documentElement.classList.contains('is-twa')) return;
+    // Dentro de la app Android solo se vende si la caja de Google Play respondió (html.twa-pay);
+    // Play no permite cobrar con Stripe desde la app.
+    state.play = enApp();
+    if (state.play && !playListo()) return;
     opts = opts || {};
     state.lang = (opts.lang === 'en') ? 'en'
               : (opts.lang === 'es') ? 'es'
@@ -238,6 +311,13 @@
     state.cadence = opts.cadence === 'monthly' ? 'monthly' : 'annual';
     inject();
     render();
+    if (state.play) {
+      state.playDetalles = null;
+      ns.PlayBilling.detalles().then(function(d){
+        state.playDetalles = d || {};
+        if (state.play && document.getElementById('le-up-sheet')) render();
+      }).catch(function(){});
+    }
     var bg = document.getElementById('le-up-bg');
     var sh = document.getElementById('le-up-sheet');
     // Next tick so transition fires

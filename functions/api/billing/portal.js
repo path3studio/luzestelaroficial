@@ -13,6 +13,22 @@ export async function onRequestPost(context) {
   const dbUser = await DB.prepare('SELECT stripe_customer_id FROM users WHERE id = ?')
     .bind(user.sub).first();
 
+  // 2026-11-05: suscripción comprada por Google Play (app Android) → se gestiona en Play,
+  // no en el portal de Stripe.
+  try {
+    const gp = await DB.prepare(
+      "SELECT google_product_id FROM subscriptions WHERE user_id = ? AND provider = 'google_play' " +
+      "AND status IN ('active','past_due','canceled','on_hold','paused') ORDER BY created_at DESC LIMIT 1"
+    ).bind(user.sub).first();
+    if (gp) {
+      const sku = encodeURIComponent(gp.google_product_id || 'plus_mensual');
+      return Response.json({
+        ok: true, provider: 'google_play',
+        url: `https://play.google.com/store/account/subscriptions?sku=${sku}&package=com.luzestelaroficial.app`,
+      });
+    }
+  } catch (_) { /* columnas sin migrar → solo Stripe */ }
+
   if (!dbUser || !dbUser.stripe_customer_id) {
     return Response.json({ ok: false, error: 'No active subscription found' }, { status: 404 });
   }

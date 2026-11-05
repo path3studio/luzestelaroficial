@@ -30,6 +30,8 @@
 <style>
 /* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
 html.is-twa .twa-hide{display:none !important}
+/* Plus sí se vende dentro de la app cuando la caja de Google Play responde (html.twa-pay, js/play-billing.js) */
+html.is-twa:not(.twa-pay) .twa-plus{display:none !important}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   font-family:'Inter',-apple-system,sans-serif;
@@ -420,7 +422,7 @@ body{
       <span class="lock-icon text-gold"><span class="le-ic" data-icon="lock"></span></span>
       <h3>Compatibilidad Cross-Cultural</h3>
       <p style="margin-bottom:10px;">Análisis profundo entre dos perfiles en 7 sistemas ancestrales: panorama, fortalezas, tensiones, crecimiento y un ritual compartido personalizado.</p>
-      <p class="twa-hide" style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 días gratis</strong> · Después desde <strong style="color:#f0d078;">$2,50/mes</strong> (plan anual).</p>
+      <p class="twa-plus" style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 días gratis</strong> · Después desde <strong style="color:#f0d078;">$2,50/mes</strong> (plan anual).</p>
       <button type="button" class="btn-upgrade" id="btn-upgrade-open">Empezar 7 días gratis</button>
     </div>
 
@@ -1119,7 +1121,8 @@ body{
 
   // Upgrade button — open inline Plus sheet (stays inside PWA shell)
   var btnUpgrade = document.getElementById('btn-upgrade-open');
-  if (btnUpgrade && document.documentElement.classList.contains('is-twa')) { btnUpgrade.classList.add('twa-hide'); btnUpgrade = null; }
+  // Dentro de la app: visible solo si la caja de Google Play responde (html.twa-pay); la hoja cobra por Play.
+  if (btnUpgrade) btnUpgrade.classList.add('twa-plus');
   if (btnUpgrade) {
     btnUpgrade.addEventListener('click', function(){
       if (window.LuzEstelar && LuzEstelar.UpgradeSheet) {
@@ -1156,6 +1159,7 @@ body{
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
 <script src="/js/stars.js" defer></script>
+<script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
 </body>

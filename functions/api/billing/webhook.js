@@ -16,6 +16,19 @@
  * alert if TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID are configured,
  * and writes to AUTH_KV:sale_notification:last for the admin panel.
  */
+import { hasActiveGooglePlay } from '../../_shared/google-play.js';
+
+// 2026-11-05: la misma persona puede tener Plus por Google Play (app Android). Una baja
+// en Stripe no debe quitarle el tier si su suscripción de Play sigue viva.
+async function tierTrasBajaStripe(DB, stripeCustomerId, tierPropuesto) {
+  if (tierPropuesto === 'premium' || !stripeCustomerId) return tierPropuesto;
+  try {
+    const u = await DB.prepare('SELECT id FROM users WHERE stripe_customer_id = ?').bind(stripeCustomerId).first();
+    if (u && await hasActiveGooglePlay(DB, u.id)) return 'premium';
+  } catch (_) { /* no fatal */ }
+  return tierPropuesto;
+}
+
 export async function onRequestPost(context) {
   const { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, DB, AUTH_KV } = context.env;
 
@@ -212,7 +225,7 @@ export async function onRequestPost(context) {
         // Update user tier
         await DB.prepare(
           'UPDATE users SET tier = ?, updated_at = ? WHERE stripe_customer_id = ?'
-        ).bind(tier, now, sub.customer).run();
+        ).bind(await tierTrasBajaStripe(DB, sub.customer, tier), now, sub.customer).run();
         break;
       }
 
@@ -235,7 +248,7 @@ export async function onRequestPost(context) {
 
         await DB.prepare(
           'UPDATE users SET tier = ?, updated_at = ? WHERE stripe_customer_id = ?'
-        ).bind('free', now, sub.customer).run();
+        ).bind(await tierTrasBajaStripe(DB, sub.customer, 'free'), now, sub.customer).run();
         break;
       }
 

@@ -30,6 +30,8 @@
 <style>
 /* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
 html.is-twa .twa-hide{display:none !important}
+/* Plus sí se vende dentro de la app cuando la caja de Google Play responde (html.twa-pay, js/play-billing.js) */
+html.is-twa:not(.twa-pay) .twa-plus{display:none !important}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   font-family:'Inter',-apple-system,sans-serif;
@@ -419,7 +421,7 @@ body{
       <span class="lock-icon text-gold"><span class="le-ic" data-icon="lock"></span></span>
       <h3>Cross-Cultural Compatibility</h3>
       <p style="margin-bottom:10px;">Deep analysis between two profiles across 7 ancestral systems: overview, strengths, tensions, growth, and a personalized shared ritual.</p>
-      <p class="twa-hide" style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 days free</strong> · Then from <strong style="color:#f0d078;">$2.50/month</strong> (annual plan).</p>
+      <p class="twa-plus" style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 days free</strong> · Then from <strong style="color:#f0d078;">$2.50/month</strong> (annual plan).</p>
       <button type="button" class="btn-upgrade" id="btn-upgrade-open">Start 7-day free trial</button>
     </div>
 
@@ -1118,7 +1120,8 @@ body{
 
   // Upgrade button — open inline Plus sheet (stays inside PWA shell)
   var btnUpgrade = document.getElementById('btn-upgrade-open');
-  if (btnUpgrade && document.documentElement.classList.contains('is-twa')) { btnUpgrade.classList.add('twa-hide'); btnUpgrade = null; }
+  // Dentro de la app: visible solo si la caja de Google Play responde (html.twa-pay); la hoja cobra por Play.
+  if (btnUpgrade) btnUpgrade.classList.add('twa-plus');
   if (btnUpgrade) {
     btnUpgrade.addEventListener('click', function(){
       if (window.LuzEstelar && LuzEstelar.UpgradeSheet) {
@@ -1155,6 +1158,7 @@ body{
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
 <script src="/js/stars.js" defer></script>
+<script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
 </body>

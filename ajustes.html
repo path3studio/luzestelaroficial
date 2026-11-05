@@ -29,6 +29,8 @@
 <style>
 /* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
 html.is-twa .twa-hide{display:none !important}
+/* Plus sí se vende dentro de la app cuando la caja de Google Play responde (html.twa-pay, js/play-billing.js) */
+html.is-twa:not(.twa-pay) .twa-plus{display:none !important}
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
 body{
@@ -601,18 +603,35 @@ function renderSettings(user){
   /* Billing actions */
   var actions = document.getElementById('billing-actions');
 
-  // Dentro de la app de Google Play no se cobra ni se gestiona el pago (política de Play):
-  // quien ya es suscriptor solo entra; el plan se maneja en la web.
+  // Dentro de la app Android (html.is-twa) se cobra con la caja de Google Play (js/play-billing.js):
+  // el botón de Plus aparece solo si la caja responde (html.twa-pay). Quien pagó por Play gestiona
+  // su suscripción en Google Play (/api/billing/portal devuelve ese enlace); quien pagó por Stripe, en el portal.
   var enApp = document.documentElement.classList.contains('is-twa');
-  if(enApp){
-    /* sin botones de pago */
-  }else if(isPremium){
+  if(isPremium){
     var manageBtn = document.createElement('button');
     manageBtn.className = 'btn-outline';
     manageBtn.textContent = 'Gestionar suscripcion';
     manageBtn.addEventListener('click', handlePortal);
     actions.appendChild(manageBtn);
-    loadRenewal();
+    loadRenewal(manageBtn);
+  }else if(enApp){
+    var pintaPlay = function(){
+      if(!document.documentElement.classList.contains('twa-pay')) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn-gold';
+      b.textContent = 'Hazte Plus \u2014 7 d\u00EDas gratis';
+      b.addEventListener('click', function(){
+        if (window.LuzEstelar && LuzEstelar.UpgradeSheet) LuzEstelar.UpgradeSheet.open({ lang: 'es' });
+      });
+      actions.appendChild(b);
+      var nota = document.createElement('div');
+      nota.className = 'renewal-text';
+      nota.textContent = 'El cobro lo hace Google Play.';
+      actions.appendChild(nota);
+    };
+    if(window.LuzEstelar && LuzEstelar.PlayBilling && LuzEstelar.PlayBilling.listo()) pintaPlay();
+    else document.addEventListener('le:playbilling', pintaPlay, {once:true});
   }else{
     var upgradeBtn = document.createElement('button');
     upgradeBtn.type = 'button';
@@ -677,15 +696,22 @@ async function handlePortal(){
   this.textContent = 'Gestionar suscripcion';
 }
 
-async function loadRenewal(){
+async function loadRenewal(manageBtn){
   try{
     var res = await authFetch('/api/billing/status',{cache:'no-store'});
     var data = await res.json();
-    if(data.ok && data.subscription && data.subscription.currentPeriodEnd){
-      var wrap = document.getElementById('renewal-wrap');
+    var sub = data.ok && data.subscription;
+    if(!sub) return;
+    var wrap = document.getElementById('renewal-wrap');
+    var porPlay = sub.provider === 'google_play';
+    if(porPlay && manageBtn) manageBtn.textContent = 'Gestionar en Google Play';
+    if(sub.currentPeriodEnd){
       var p = document.createElement('div');
       p.className = 'renewal-text';
-      p.textContent = 'Renueva: ' + fmtDateES(data.subscription.currentPeriodEnd);
+      var fecha = fmtDateES(sub.currentPeriodEnd);
+      p.textContent = (sub.status === 'canceled' || sub.status === 'expired')
+        ? 'Acceso hasta: ' + fecha + (porPlay ? ' (renovaci\u00F3n cancelada en Google Play)' : '')
+        : 'Renueva: ' + fecha + (porPlay ? ' \u00B7 cobra Google Play' : '');
       wrap.appendChild(p);
     }
   }catch(e){/* silent */}
@@ -1017,6 +1043,7 @@ init();
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
 <script src="/js/stars.js" defer></script>
+<script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
 </body>

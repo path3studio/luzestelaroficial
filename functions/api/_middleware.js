@@ -99,7 +99,9 @@ async function verifyJWT(token, secret) {
 
 export async function onRequest(context) {
   const url = new URL(context.request.url);
-  const isStripeWebhook = url.pathname === '/api/billing/webhook';
+  // Webhooks servidor-a-servidor (sin Origin): Stripe y las notificaciones de Google Play (Pub/Sub).
+  const isStripeWebhook = url.pathname === '/api/billing/webhook'
+    || url.pathname === '/api/billing/google-play/rtdn';
 
   // Handle CORS preflight — only echo origin if allowed
   if (context.request.method === 'OPTIONS') {
