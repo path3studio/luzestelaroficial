@@ -21,7 +21,14 @@
 <link rel="stylesheet" href="/css/icons.css">
 <link rel="stylesheet" href="/css/components.css">
 <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
+<!-- 2026-11-04: ¿corre dentro de la app de Google Play (Trusted Web Activity)? Chrome manda el referrer
+     android-app://<paquete>/ al abrirla y el launchUrl lleva ?app=android; la bandera vive en sessionStorage
+     (solo esta pestaña, no se cuela al Chrome normal). html.is-twa oculta todo lo que lleve a pagar: Play no
+     permite llevar a cobrar fuera. -->
+<script>(function(){try{var k='le_twa',ss=window.sessionStorage,q=/[?&]app=android(&|$)/.test(location.search),r=(document.referrer||'').indexOf('android-app://')===0;if(q||r){ss.setItem(k,'1');}if(q||r||ss.getItem(k)==='1'){document.documentElement.classList.add('is-twa');}}catch(e){}})();</script>
 <style>
+/* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
+html.is-twa .twa-hide{display:none !important}
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
 body{
@@ -594,7 +601,12 @@ function renderSettings(user){
   /* Billing actions */
   var actions = document.getElementById('billing-actions');
 
-  if(isPremium){
+  // Dentro de la app de Google Play no se cobra ni se gestiona el pago (política de Play):
+  // quien ya es suscriptor solo entra; el plan se maneja en la web.
+  var enApp = document.documentElement.classList.contains('is-twa');
+  if(enApp){
+    /* sin botones de pago */
+  }else if(isPremium){
     var manageBtn = document.createElement('button');
     manageBtn.className = 'btn-outline';
     manageBtn.textContent = 'Gestionar suscripcion';

@@ -45,7 +45,14 @@
      display-mode:standalone. We set .is-standalone on <html> so
      CSS can differentiate PWA-specific patterns instantly. -->
 <script>(function(){try{var s=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(s||window.navigator.standalone){document.documentElement.classList.add('is-standalone');}}catch(e){}})();</script>
+<!-- 2026-11-04: ¿corre dentro de la app de Google Play (Trusted Web Activity)? Chrome manda el referrer
+     android-app://<paquete>/ al abrirla y el launchUrl lleva ?app=android; la bandera vive en sessionStorage
+     (solo esta pestaña, no se cuela al Chrome normal). html.is-twa oculta todo lo que lleve a pagar: Play no
+     permite llevar a cobrar fuera. -->
+<script>(function(){try{var k='le_twa',ss=window.sessionStorage,q=/[?&]app=android(&|$)/.test(location.search),r=(document.referrer||'').indexOf('android-app://')===0;if(q||r){ss.setItem(k,'1');}if(q||r||ss.getItem(k)==='1'){document.documentElement.classList.add('is-twa');}}catch(e){}})();</script>
 <style>
+/* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
+html.is-twa .twa-hide{display:none !important}
 /* :root tokens moved to /css/design-tokens.css (Phase 3.5 cleanup) */
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
@@ -830,11 +837,11 @@ body.modal-open #le-tabs{display:none !important}
             <img src="/assets/mapa-ejemplos/ejemplo-2.webp" alt="Mapa estelar de la noche en que se conocieron" loading="lazy" width="900" height="1125">
           </div>
           <p class="mapa-carrusel-hint">&larr; Desliza para ver ejemplos &rarr;</p>
-          <div class="mapa-actions">
+          <div class="mapa-actions twa-hide">
             <a href="/mapa-estelar.html" class="mapa-cta mapa-cta-primary tap-feedback">Regalar Mapa Estelar</a>
             <a href="/mapa-estelar.html#ejemplo" class="mapa-cta mapa-cta-sec tap-feedback">Ver ejemplo</a>
           </div>
-          <p class="mapa-gift-note"><span class="le-ic" data-icon="sparkles"></span> Incluido con <b>Plus</b> &middot; tambi&eacute;n disponible como regalo</p>
+          <p class="mapa-gift-note twa-hide"><span class="le-ic" data-icon="sparkles"></span> Incluido con <b>Plus</b> &middot; tambi&eacute;n disponible como regalo</p>
           <!-- 2026-09-03: cumple la promesa «incluido con Plus» (auditoría del catálogo). Solo aparece si /api/auth/me dice tier premium. -->
           <div id="plusMapaGift" hidden style="margin-top:10px">
             <button type="button" id="plusMapaGiftBtn" class="mapa-cta mapa-cta-primary tap-feedback" style="width:100%">Generar mi mapa de nacimiento &middot; incluido con Plus</button>
@@ -862,7 +869,7 @@ body.modal-open #le-tabs{display:none !important}
       </div>
       <!-- 2026-09-03: puerta a Consultas desde el hub del PWA (antes solo se
            llegaba desde links.html y mapa-estelar). -->
-      <div class="card mapa-card consulta-card">
+      <div class="card mapa-card consulta-card twa-hide">
         <span class="mapa-badge" aria-label="Informe">Informe</span>
         <div class="mapa-body">
           <p class="mapa-hd">Tu carta natal, explicada a fondo</p>
@@ -1149,9 +1156,12 @@ function sysIcon(key){
   return '\u2726';
 }
 
+// Dentro de la app de Google Play no se ofrece nada de pago (política de Play).
+function isTwa(){return document.documentElement.classList.contains('is-twa');}
 // Inline Plus upgrade — keeps the user inside the PWA shell.
 // Falls back to /planes.html only if the module failed to load.
 function openUpgrade(){
+  if(isTwa()) return;
   if(window.LuzEstelar&&LuzEstelar.UpgradeSheet){
     LuzEstelar.UpgradeSheet.open({lang:'es'});
   }else{
@@ -2349,7 +2359,7 @@ function renderAll(){
         });
         if (cmEl) cmEl.textContent = metaLabel;
         var upsell = document.getElementById('sky-upsell');
-        if (mode === 'birth' && !isPlus) {
+        if (mode === 'birth' && !isPlus && !isTwa()) {
           if (!upsell && cmEl) {
             upsell = document.createElement('div');
             upsell.id = 'sky-upsell';
@@ -2763,7 +2773,7 @@ async function loadDaily(offset){
         var txt=locked?'Disponible con Plus.':ins.text;
         ih+='<div class="ins-card'+(locked?' ins-lock':'')+'"><div class="ins-hd"><span>'+ic+'</span><span class="ins-sys">'+ins.label+'</span><span class="ins-arch">· '+ins.archetype+'</span></div><p class="ins-txt">'+txt+'</p></div>';
       });
-      if(hasLock) ih+='<button type="button" class="up-cta" id="ins-upgrade-btn" style="border:none;cursor:pointer;font-family:inherit;width:100%">✦ Desbloquea todos los sistemas con Plus</button>';
+      if(hasLock && !isTwa()) ih+='<button type="button" class="up-cta" id="ins-upgrade-btn" style="border:none;cursor:pointer;font-family:inherit;width:100%">✦ Desbloquea todos los sistemas con Plus</button>';
       document.getElementById('ins-box').innerHTML=ih;
       document.getElementById('ins-sec').style.display='block';
       var insBtn=document.getElementById('ins-upgrade-btn');
@@ -2883,7 +2893,7 @@ async function loadUnified(){
         '<div class="lc-ic">✦</div>'+
         '<h3>Análisis completo de 8 sistemas</h3>'+
         '<p>Identidad central, balance elemental, camino del alma y mecánica interna — una síntesis única que solo Luz Estelar construye.</p>'+
-        '<button type="button" class="btn-gold" id="cc-upgrade-btn">Desbloquear Plus</button>'+
+        (isTwa()?'':'<button type="button" class="btn-gold" id="cc-upgrade-btn">Desbloquear Plus</button>')+
       '</div>';
     var ccBtn=document.getElementById('cc-upgrade-btn');
     if(ccBtn) ccBtn.addEventListener('click',openUpgrade);
@@ -3882,7 +3892,7 @@ function renderHouses(chart){
                       (areaReg ? ', la de ' + areaReg.area.toLowerCase() : '') +
                       '. Si esta \u00e1rea no avanza, lo que necesita atenci\u00f3n ' +
                       'probablemente est\u00e1 all\u00e1: empieza por ah\u00ed.');
-        } else if(!esPlus && reg){
+        } else if(!esPlus && reg && !isTwa()){
           partes.push('<span class="hp-lock">\u2726 Con <b>Plus</b>: el planeta que ' +
                       'gu\u00eda esta \u00e1rea, d\u00f3nde vive en tu carta y desde ' +
                       'd\u00f3nde se destraba.</span>');

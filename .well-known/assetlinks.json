@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.luzestelaroficial.app",
+      "sha256_cert_fingerprints": [
+        "1A:D4:FE:48:EE:30:1F:7F:C1:1F:33:44:15:5F:13:D7:E3:25:DA:A2:82:79:D3:3E:F7:F5:EA:A0:FD:12:BA:25",
+        "28:79:0A:2E:7F:6D:E1:3D:2A:F1:61:3D:54:62:17:A1:82:A3:6F:C5:25:21:E7:68:90:DA:B7:F5:94:90:0E:FF"
+      ]
+    }
+  }
+]

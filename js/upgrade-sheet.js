@@ -229,6 +229,8 @@
   }
 
   function open(opts){
+    // Dentro de la app de Google Play (html.is-twa) no se ofrece el pago: Play no permite cobrar fuera.
+    if (document.documentElement.classList.contains('is-twa')) return;
     opts = opts || {};
     state.lang = (opts.lang === 'en') ? 'en'
               : (opts.lang === 'es') ? 'es'
