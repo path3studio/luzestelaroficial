@@ -529,7 +529,8 @@
 // v119 → v120 (Nov 6): compatibilidad con amigos (Compatibilidad + /amigo), planes sin promesas que no existen.
 // v120 → v121 (Nov 6): imagen de perfil (criatura/neutro, js/avatar.js), Ajustes reordenado, Compatibilidad sin «agregar perfil» grande.
 // v121 → v122 (Nov 6): mapa estelar Plus por perfil (botón en Mis perfiles, sin Stripe).
-const CACHE_NAME = 'luzestelar-v122';
+// v122 → v123 (Nov 6): selector de imagen con las 12 criaturas y 8 colores, idioma en Ajustes, amigos como franja pequeña.
+const CACHE_NAME = 'luzestelar-v123';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

@@ -9,7 +9,11 @@ export async function onRequestPost(context) {
   let body = {}; try { body = await context.request.json(); } catch { body = {}; }
   const pid = String(body.profile_id || '');
   const av = String(body.avatar || '');
+  const CRIATURAS = ['aries','tauro','geminis','cancer','leo','virgo','libra','escorpio','sagitario','capricornio','acuario','piscis'];
+  const COLORES = ['oro','lila','azul','verde','rosa','coral','plata','noche'];
   const valido = av === 'criatura' || av === 'neutro' ||
+    (av.startsWith('criatura:') && CRIATURAS.includes(av.slice(9))) ||
+    (av.startsWith('color:') && COLORES.includes(av.slice(6))) ||
     (/^data:image\/(jpeg|webp|png);base64,[A-Za-z0-9+/=]+$/.test(av) && av.length <= MAX);
   if (!pid || !valido) return Response.json({ ok: false, error: 'Imagen no válida (máx. 60 KB)' }, { status: 400 });
   try {

@@ -16,6 +16,13 @@
     escorpio: 'escorpio', sagittarius: 'sagitario', sagitario: 'sagitario', capricorn: 'capricornio',
     capricornio: 'capricornio', aquarius: 'acuario', acuario: 'acuario', pisces: 'piscis', piscis: 'piscis'
   };
+  var CRIATURAS = ['aries','tauro','geminis','cancer','leo','virgo','libra','escorpio','sagitario','capricornio','acuario','piscis'];
+  var NOMBRE_SIG = { aries:'Aries', tauro:'Tauro', geminis:'Géminis', cancer:'Cáncer', leo:'Leo', virgo:'Virgo', libra:'Libra',
+    escorpio:'Escorpio', sagitario:'Sagitario', capricornio:'Capricornio', acuario:'Acuario', piscis:'Piscis' };
+  var COLORES = { oro:'linear-gradient(135deg,#e2bd62,#b8862e)', lila:'linear-gradient(135deg,#a98ae8,#6a4fbf)',
+    azul:'linear-gradient(135deg,#6fb3ef,#2f6fb8)', verde:'linear-gradient(135deg,#7fd6a6,#2f8f68)',
+    rosa:'linear-gradient(135deg,#f0a6c8,#c45a8f)', coral:'linear-gradient(135deg,#f7a07a,#d1553a)',
+    plata:'linear-gradient(135deg,#dfe3ea,#8a93a6)', noche:'linear-gradient(135deg,#3b3a78,#15142e)' };
   function slugDe(p) {
     var s = String((p && (p.western_sign || p.westernSign || p.sol || p.sign)) || '').toLowerCase().trim();
     return SLUG[s] || null;
@@ -32,8 +39,11 @@
       return '<span class="le-avatar" style="' + base + '"><img src="' + esc(av) + '" alt="" style="width:100%;height:100%;object-fit:cover"></span>';
     }
     var slug = slugDe(p);
-    if (av === 'neutro' || !slug) {
-      return '<span class="le-avatar" style="' + base + 'background:linear-gradient(135deg,#d4a849,#8f74d6);color:#14102a;' +
+    if (av && av.indexOf('criatura:') === 0 && CRIATURAS.indexOf(av.slice(9)) >= 0) slug = av.slice(9);
+    var color = (av && av.indexOf('color:') === 0 && COLORES[av.slice(6)]) ? COLORES[av.slice(6)] : null;
+    if (av === 'neutro' || color || !slug) {
+      var tinta = (av === 'color:noche' || av === 'color:lila' || av === 'color:azul') ? '#f4f0fb' : '#14102a';
+      return '<span class="le-avatar" style="' + base + 'background:' + (color || 'linear-gradient(135deg,#d4a849,#8f74d6)') + ';color:' + tinta + ';' +
         'font:700 ' + Math.round(px * 0.45) + 'px \'Cormorant Garamond\',Georgia,serif">' + inicial(p) + '</span>';
     }
     return '<span class="le-avatar" style="' + base + '"><img src="/assets/criaturas/' + slug + '.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover"></span>';
@@ -66,21 +76,31 @@
     ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Elegir imagen');
     ov.style.cssText = 'position:fixed;inset:0;z-index:3000;background:rgba(4,4,18,.78);display:flex;align-items:flex-end;justify-content:center';
     var nombre = esc((p.nombre || p.name || p.label || '').split(' ')[0]);
-    var op = function (val, etiqueta, muestra) {
-      return '<button type="button" data-av="' + val + '" style="background:none;border:1px solid rgba(212,168,73,.25);border-radius:14px;padding:12px 8px;' +
-        'display:flex;flex-direction:column;align-items:center;gap:8px;color:#ece8f4;font:500 .82rem Inter,sans-serif;cursor:pointer;flex:1">' +
-        muestra + '<span>' + etiqueta + '</span></button>';
+    var mio = slugDe(p);
+    var celda = function (val, muestra, titulo, marcado) {
+      return '<button type="button" data-av="' + val + '" title="' + esc(titulo) + '" aria-label="' + esc(titulo) + '" style="background:none;border:2px solid ' +
+        (marcado ? '#d4a849' : 'transparent') + ';border-radius:50%;padding:2px;cursor:pointer;line-height:0">' + muestra + '</button>';
     };
-    var crit = Object.assign({}, p, { avatar: 'criatura' }), neu = Object.assign({}, p, { avatar: 'neutro' });
-    ov.innerHTML = '<div style="width:100%;max-width:440px;background:#0d0d26;border:1px solid rgba(212,168,73,.25);border-bottom:none;' +
+    var actual = p.avatar || 'criatura';
+    var crits = CRIATURAS.slice().sort(function (x, y) { return (x === mio ? -1 : 0) - (y === mio ? -1 : 0); }).map(function (c) {
+      var val = (c === mio) ? 'criatura' : 'criatura:' + c;
+      return celda(val, html({ avatar: 'criatura:' + c, western_sign: c }, 52), NOMBRE_SIG[c] + (c === mio ? ' (tu signo)' : ''), actual === val || actual === 'criatura:' + c && c !== mio);
+    }).join('');
+    var cols = Object.keys(COLORES).map(function (k) {
+      return celda('color:' + k, html(Object.assign({}, p, { avatar: 'color:' + k }), 44), 'Color ' + k, actual === 'color:' + k);
+    }).join('');
+    var tit = function (t) { return '<p style="font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(212,168,73,.85);margin:14px 0 8px">' + t + '</p>'; };
+    ov.innerHTML = '<div style="width:100%;max-width:460px;max-height:86vh;overflow-y:auto;background:#0d0d26;border:1px solid rgba(212,168,73,.25);border-bottom:none;' +
       'border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0));text-align:center">' +
       '<p style="font:600 1.2rem \'Cormorant Garamond\',Georgia,serif;color:#f0d078;margin:0 0 4px">Imagen de ' + (nombre || 'tu perfil') + '</p>' +
-      '<p style="font-size:.8rem;color:rgba(236,232,244,.6);margin:0 0 14px">Se ve en tu perfil y, si compartes tu perfil, también tus amigos la verán.</p>' +
-      '<div style="display:flex;gap:10px">' + op('criatura', 'Criatura de su signo', html(crit, 64)) + op('neutro', 'Color neutro', html(neu, 64)) +
-      (FOTO_PERFIL ? op('foto', 'Subir una foto', '<span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;border:1px dashed rgba(212,168,73,.5);font-size:1.6rem">＋</span>') : '') +
-      '</div><input type="file" accept="image/*" id="le-av-file" hidden>' +
-      '<p id="le-av-msg" style="font-size:.8rem;color:#f0d078;min-height:1.1em;margin:10px 0 0"></p>' +
-      '<button type="button" data-av="cerrar" style="margin-top:6px;background:none;border:none;color:rgba(236,232,244,.6);font:500 .9rem Inter,sans-serif;padding:8px 16px;cursor:pointer">Cancelar</button></div>';
+      '<p style="font-size:.8rem;color:rgba(236,232,244,.6);margin:0">Se ve en tu perfil y, si compartes tu perfil, también tus amigos la verán.</p>' +
+      (FOTO_PERFIL ? tit('Tu foto') + '<button type="button" data-av="foto" style="background:none;border:1px dashed rgba(212,168,73,.55);border-radius:14px;color:#f0d078;' +
+        'font:600 .9rem Inter,sans-serif;padding:12px 18px;cursor:pointer">＋ Subir una foto</button>' : '') +
+      tit('Criaturas') + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center">' + crits + '</div>' +
+      tit('Colores') + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center">' + cols + '</div>' +
+      '<input type="file" accept="image/*" id="le-av-file" hidden>' +
+      '<p id="le-av-msg" style="font-size:.8rem;color:#f0d078;min-height:1.1em;margin:12px 0 0"></p>' +
+      '<button type="button" data-av="cerrar" style="margin-top:4px;background:none;border:none;color:rgba(236,232,244,.6);font:500 .9rem Inter,sans-serif;padding:8px 16px;cursor:pointer">Cancelar</button></div>';
     var cerrar = function () { try { ov.remove(); } catch (e) {} };
     var msg = function (t) { var m = ov.querySelector('#le-av-msg'); if (m) m.textContent = t; };
     var aplicar = function (val) {

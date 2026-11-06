@@ -192,7 +192,10 @@ body{
   margin-bottom:8px;
 }
 /* 2026-11-06: amigos */
-.amigos-card{padding:18px 16px;margin-bottom:16px;text-align:center}
+.amigos-card{padding:18px 16px;margin:22px 0 16px;text-align:center}
+.am-compacta{padding:12px 14px}
+.am-compacta h2{font-size:1.05rem}
+.am-compacta .am-sub{font-size:.78rem;margin:0}
 .amigos-card h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;color:#f0d078;margin:0 0 4px;font-weight:600}
 .amigos-card .am-sub{font-size:.85rem;color:rgba(224,220,232,.7);margin:0 0 12px}
 .am-it{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;text-align:left;padding:9px 6px;border-top:1px solid rgba(212,168,73,.12)}
@@ -389,23 +392,12 @@ body{
 <div class="page">
   <h1 class="page-title">Compatibilidad</h1>
 
-  <!-- 2026-11-06: compatibilidad con amigos — solo por invitación (maqueta aprobada por el dueño) -->
-  <section id="amigos-card" class="glass amigos-card">
-    <h2>Tus amigos</h2>
-    <p class="am-sub">Comparte tu perfil y comparen sus cielos en 8 sistemas.</p>
-    <div id="am-lista"></div>
-    <button type="button" class="btn-cta" id="btn-compartir-perfil" style="margin-top:12px">Compartir mi perfil</button>
-    <p class="am-priv">Quien acepte verá tu primer nombre, tu imagen de perfil, tus signos y su compatibilidad contigo. Nunca tu fecha, hora ni lugar de nacimiento.</p>
-    <p class="am-nota" id="am-nota"></p>
-    <p class="am-msg" id="am-msg" role="status" aria-live="polite"></p>
-  </section>
 
   <!-- Empty state: fewer than 2 profiles -->
   <div id="empty-profiles" class="glass empty-state hidden">
     <span class="empty-icon text-gold"><span class="le-ic" data-icon="sparkles"></span></span>
-    <p><strong>Compara tu cielo con tus amigos</strong><br><span style="font-size:.85em;opacity:.75">Toca «Compartir mi perfil» arriba: cada quien crea su carta y aparece aquí.</span></p>
-    <!-- 2026-11-06 (dueño): agregar perfiles a mano queda como opción pequeña; lo principal es compartir -->
-    <a href="/mi-dia.html#add-profile" style="font-size:.78rem;color:rgba(224,220,232,.6);text-decoration:underline">o agrega un perfil a mano (tu mamá, tu bebé…)</a>
+    <p><strong>Agrega a alguien con quien compararte</strong><br><span style="font-size:.85em;opacity:.75">tu pareja, tu mamá, tu bebé… con Plus guardas hasta 5 perfiles</span></p>
+    <a href="/mi-dia.html#add-profile" class="btn-cta">Agregar otro perfil</a>
   </div>
 
   <!-- Profile selectors -->
@@ -508,6 +500,16 @@ body{
       </div>
     </div>
   </div>
+  <!-- 2026-11-06: compatibilidad con amigos — solo por invitación (maqueta aprobada por el dueño) -->
+  <section id="amigos-card" class="glass amigos-card am-compacta">
+    <h2>👥 Tus amigos</h2>
+    <p class="am-sub" id="am-sub">¿Tus amigos tienen la app? Comparte tu perfil y comparen sus cielos.</p>
+    <div id="am-lista"></div>
+    <button type="button" class="am-b" id="btn-compartir-perfil" style="margin-top:8px;padding:8px 16px">Compartir mi perfil</button>
+    <p class="am-priv">Quien acepte verá tu primer nombre, tu imagen de perfil, tus signos y su compatibilidad contigo. Nunca tu fecha, hora ni lugar de nacimiento.</p>
+    <p class="am-nota" id="am-nota"></p>
+    <p class="am-msg" id="am-msg" role="status" aria-live="polite"></p>
+  </section>
 </div>
 
 <script>
@@ -655,7 +657,7 @@ body{
     var box = document.getElementById('am-lista'), nota = document.getElementById('am-nota');
     if(!box) return;
     if(!amigos.length){
-      box.innerHTML = '<p class="am-sub" style="margin:0">Todavía no tienes amigos aquí. Comparte tu perfil y aparecerán en cuanto acepten.</p>';
+      box.innerHTML = '';   // sin amigos: la franja queda pequeña (solo la invitación a compartir)
       nota.textContent = '';
       return;
     }

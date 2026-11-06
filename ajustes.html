@@ -502,8 +502,11 @@ main{
 <details class="card fade fade-d3 pref-plegable">
   <summary class="card-label" style="cursor:pointer;list-style:none;margin:0">Preferencias <span aria-hidden="true">&#x25BE;</span></summary>
   <div class="pref-row" style="margin-top:10px">
-    <span class="pref-label">Idioma</span>
-    <span class="pref-value">Español</span>
+    <label class="pref-label" for="sel-idioma">Idioma</label>
+    <select class="hour-sel" id="sel-idioma" aria-label="Idioma">
+      <option value="es" selected>Español</option>
+      <option value="en">English</option>
+    </select>
   </div>
 </details>
 
@@ -582,6 +585,16 @@ main{
 <script>
 (function(){
 'use strict';
+
+/* --- Idioma (2026-11-06): misma preferencia que usan /mi-dia y /en/my-day (localStorage le_lang) --- */
+(function(){
+  var s = document.getElementById('sel-idioma'); if(!s) return;
+  try{ if(localStorage.getItem('le_lang') === 'en') s.value = 'en'; }catch(e){}
+  s.addEventListener('change', function(){
+    try{ localStorage.setItem('le_lang', s.value); sessionStorage.removeItem('le_lang_redirected'); }catch(e){}
+    window.location.href = s.value === 'en' ? '/en/my-day.html' : '/mi-dia.html';
+  });
+})();
 
 /* --- Compartir la app (2026-11-06) --- */
 var APP_COMPARTIR_URL = 'https://luzestelaroficial.com/probar';
