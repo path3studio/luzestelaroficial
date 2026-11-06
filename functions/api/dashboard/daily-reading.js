@@ -179,7 +179,8 @@ export async function onRequestGet(context) {
     career:  bio.career  || 5,
     health:  bio.health  || 5,
     energy:  bio.energy  || 5,
-    overall: Math.round(((bio.love || 5) + (bio.career || 5) + (bio.health || 5) + (bio.energy || 5)) / 4),
+    // 2026-11-06: con un decimal, igual que el ranking de la historia (antes 7.9 salía «8» aquí y «7.9» allá)
+    overall: Math.round(((bio.love || 5) + (bio.career || 5) + (bio.health || 5) + (bio.energy || 5)) / 4 * 10) / 10,
   };
 
   // Moon phase — use the resolved date, not `today`, so swipe-to-yesterday

@@ -532,7 +532,9 @@
 // v122 → v123 (Nov 6): selector de imagen con las 12 criaturas y 8 colores, idioma en Ajustes, amigos como franja pequeña.
 // v123 → v124 (Nov 6): iconos propios (estrella, sinastría, constelación, astrolabio), amigos arriba en Compatibilidad,
 // perfil principal sin «relación», corrección de datos de nacimiento 1 vez al mes, avatar.js?v=3.
-const CACHE_NAME = 'luzestelar-v124';
+// v124 → v125 (Nov 6): botón «ranking de hoy», energía con decimal, Síguenos plegado, foto propia en la web,
+// icons.js y bottom-tabs.js con ?v= (antes el teléfono seguía con los viejos).
+const CACHE_NAME = 'luzestelar-v125';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

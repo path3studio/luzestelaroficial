@@ -9,7 +9,12 @@
  */
 (function () {
   'use strict';
-  var FOTO_PERFIL = false;
+  // 2026-11-06: foto propia ENCENDIDA en la web; dentro de la app Android (html.is-twa) sigue apagada hasta que
+  // la sesión de Play la declare en «Seguridad de los datos» (subir = recopilar desde la app). Mostrar fotos subidas
+  // desde la web sí se permite en la app.
+  var EN_APP = document.documentElement.classList.contains('is-twa');
+  var FOTO_SUBIR = !EN_APP;
+  var FOTO_PERFIL = true;      // mostrar fotos ya guardadas
   var SLUG = {
     aries: 'aries', taurus: 'tauro', tauro: 'tauro', gemini: 'geminis', 'géminis': 'geminis', geminis: 'geminis',
     cancer: 'cancer', 'cáncer': 'cancer', leo: 'leo', virgo: 'virgo', libra: 'libra', scorpio: 'escorpio',
@@ -94,7 +99,7 @@
       'border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0));text-align:center">' +
       '<p style="font:600 1.2rem \'Cormorant Garamond\',Georgia,serif;color:#f0d078;margin:0 0 4px">Imagen de ' + (nombre || 'tu perfil') + '</p>' +
       '<p style="font-size:.8rem;color:rgba(236,232,244,.6);margin:0">Se ve en tu perfil y, si compartes tu perfil, también tus amigos la verán.</p>' +
-      (FOTO_PERFIL ? tit('Tu foto') + '<button type="button" data-av="foto" style="background:none;border:1px dashed rgba(212,168,73,.55);border-radius:14px;color:#f0d078;' +
+      (FOTO_SUBIR ? tit('Tu foto') + '<button type="button" data-av="foto" style="background:none;border:1px dashed rgba(212,168,73,.55);border-radius:14px;color:#f0d078;' +
         'font:600 .9rem Inter,sans-serif;padding:12px 18px;cursor:pointer">＋ Subir una foto</button>' : '') +
       tit('Criaturas') + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center">' + crits + '</div>' +
       tit('Colores') + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center">' + cols + '</div>' +

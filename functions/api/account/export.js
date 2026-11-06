@@ -51,7 +51,7 @@ export async function onRequestGet(context) {
               western_sign, chinese_animal, numerology_number, celtic_tree,
               mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra,
               human_design_gate, enneagram_type, enneagram_wing,
-              is_primary, created_at
+              is_primary, avatar, created_at
          FROM birth_profiles WHERE user_id = ? ORDER BY created_at ASC`
     ).bind(user.sub).all();
 
