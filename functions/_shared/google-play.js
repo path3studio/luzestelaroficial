@@ -191,7 +191,7 @@ export async function findByToken(DB, purchaseToken) {
 }
 
 // 2026-11-06: accesos a Plus que no pasan por Play ni por Stripe.
-//   'semillas' = suscriptores de Instagram (semillas_plus.py renueva la fila cada mañana, +35 d)
+//   'semillas' = suscriptores de Instagram (semillas_plus.py renueva la fila en cada pasada, +7 d)
 //   'regalo'   = probadores de la app (3 meses)
 // Cuentan como vivos si status = 'active' y current_period_end no ha pasado. Ningún
 // cambio de Play o Stripe debe quitarle Plus a quien tenga uno de estos vivo.
