@@ -526,7 +526,8 @@
 // v117 → v118 (Nov 6): plegables centrados, sin «Cielo al nacer/hoy» por ahora, referidos (?ref=) y
 // «Comparte Luz Estelar» con enlace propio + conteo de amigos.
 // v118 → v119 (Nov 6): Ajustes con Compartir centrado y Síguenos en tarjeta; Mapa Estelar fuera de la app.
-const CACHE_NAME = 'luzestelar-v119';
+// v119 → v120 (Nov 6): compatibilidad con amigos (Compatibilidad + /amigo), planes sin promesas que no existen.
+const CACHE_NAME = 'luzestelar-v120';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

@@ -84,6 +84,15 @@ export async function onRequestGet(context) {
       report_json: safeParseJson(r.report_json),
     }));
 
+    // 2026-11-06: amigos (con quién compartes tu perfil), tu código para compartir y referidos.
+    const opt = async (sql, n) => {
+      try { return (await DB.prepare(sql).bind(...Array(n).fill(user.sub)).all()).results || []; }
+      catch (e) { return []; }
+    };
+    const amigos = await opt('SELECT amigo_id, creado FROM amistades WHERE user_id = ?', 1);
+    const amigoCodigo = await opt('SELECT codigo, creado FROM amigo_codigos WHERE user_id = ?', 1);
+    const referidos = await opt('SELECT referido_id, referente_id, premiado, creado FROM referidos WHERE referido_id = ? OR referente_id = ?', 2);
+
     const payload = {
       export_format_version: 1,
       exported_at: exportedAt,
@@ -95,6 +104,9 @@ export async function onRequestGet(context) {
       orders: orders.results || [],
       subscriptions: subscriptions.results || [],
       cached_reports: reports,
+      friends: amigos,
+      friend_share_code: amigoCodigo[0] || null,
+      referrals: referidos,
     };
 
     const filename = `luzestelar-export-${exportedAt.slice(0, 10)}.json`;

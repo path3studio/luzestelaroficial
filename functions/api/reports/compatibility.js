@@ -335,11 +335,25 @@ function translateElement(el, lang) {
 }
 
 // ───────── Handler ─────────
+import { puedeComparar } from '../../_shared/amigos.js';
+
 export async function onRequestGet(context) {
   const user = context.data.user;
   if (!user) return Response.json({ ok: false, error: 'Not authenticated' }, { status: 401 });
 
-  if (user.tier === 'free') {
+  const url = new URL(context.request.url);
+  const profileAId = url.searchParams.get('profile_a');
+  const profileBId = url.searchParams.get('profile_b');
+  const amigoId = url.searchParams.get('amigo');       // 2026-11-06: comparar con un amigo que aceptó
+  const lang = (url.searchParams.get('lang') || 'es').toLowerCase();
+  const { DB } = context.env;
+
+  if (!profileAId || (!profileBId && !amigoId)) {
+    return Response.json({ ok: false, error: 'Two profile IDs required' }, { status: 400 });
+  }
+
+  // Plus: todo. Gratis: solo con su primer amigo (entre perfiles propios sigue siendo Plus).
+  if (!amigoId && user.tier === 'free') {
     return Response.json({
       ok: false,
       error: 'Premium subscription required for compatibility reports',
@@ -347,28 +361,36 @@ export async function onRequestGet(context) {
     }, { status: 403 });
   }
 
-  const url = new URL(context.request.url);
-  const profileAId = url.searchParams.get('profile_a');
-  const profileBId = url.searchParams.get('profile_b');
-  const lang = (url.searchParams.get('lang') || 'es').toLowerCase();
-  const { DB } = context.env;
-
-  if (!profileAId || !profileBId) {
-    return Response.json({ ok: false, error: 'Two profile IDs required' }, { status: 400 });
-  }
-
   const profileA = await DB.prepare(
     'SELECT * FROM birth_profiles WHERE id = ? AND user_id = ?'
   ).bind(profileAId, user.sub).first();
 
-  const profileB = await DB.prepare(
-    'SELECT * FROM birth_profiles WHERE id = ? AND user_id = ?'
-  ).bind(profileBId, user.sub).first();
+  let profileB = null;
+  if (amigoId) {
+    let permiso;
+    try { permiso = await puedeComparar(DB, user.sub, user.tier, amigoId); }
+    catch (e) { permiso = { ok: false, motivo: 'no_amigo' }; }
+    if (!permiso.ok) {
+      return permiso.motivo === 'plus'
+        ? Response.json({ ok: false, error: 'Plus required for more friends', upgrade: true, amigos: true }, { status: 403 })
+        : Response.json({ ok: false, error: 'Not your friend' }, { status: 404 });
+    }
+    profileB = await DB.prepare(
+      'SELECT * FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC LIMIT 1'
+    ).bind(amigoId).first();
+    if (profileB) profileB = { ...profileB, nombre: String(profileB.nombre || '').trim().split(/\s+/)[0] || 'Tu amigo' };
+  } else {
+    profileB = await DB.prepare(
+      'SELECT * FROM birth_profiles WHERE id = ? AND user_id = ?'
+    ).bind(profileBId, user.sub).first();
+  }
 
   if (!profileA || !profileB) {
     return Response.json({ ok: false, error: 'Profile(s) not found' }, { status: 404 });
   }
 
   const report = buildReport(profileA, profileB, lang);
+  // Del amigo nunca sale su fecha de nacimiento (solo nombre y resultado).
+  if (amigoId && report && report.profileB) report.profileB = { name: profileB.nombre, amigo: true };
   return Response.json({ ok: true, report });
 }

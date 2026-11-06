@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compara tu cielo — Luz Estelar</title>
+<meta name="description" content="Te invitaron a comparar sus cielos en Luz Estelar: compatibilidad en 8 sistemas.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="¿Comparamos nuestros cielos?">
+<meta property="og:description" content="Compatibilidad en 8 sistemas: occidental, chino, maya, numerología y más.">
+<meta property="og:image" content="https://luzestelaroficial.com/app_icon.png">
+<link rel="icon" type="image/png" href="/app_icon.png">
+<link rel="stylesheet" href="/css/design-tokens.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- 2026-11-06: compatibilidad con amigos (solo por invitación). Sin nada de compra: sirve igual dentro de la app. -->
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg,#06061a);color:var(--text,#ece8f4);min-height:100vh;line-height:1.55}
+  main{max-width:480px;margin:0 auto;padding:40px 18px 60px;display:flex;flex-direction:column;gap:14px}
+  .card{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,73,.22);border-radius:16px;padding:22px 18px;text-align:center}
+  .dos{display:flex;justify-content:center;margin-bottom:10px}
+  .av{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6rem;font-weight:700;color:#14102a;border:3px solid var(--bg,#06061a)}
+  .av+.av{margin-left:-14px}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.7rem;line-height:1.2;color:var(--gold,#d4a849);text-wrap:balance}
+  .sub{font-size:.92rem;color:rgba(236,232,244,.75);margin-top:8px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+  .chip{font-size:.78rem;border:1px solid rgba(212,168,73,.3);border-radius:20px;padding:3px 10px}
+  .btn{display:block;width:100%;text-align:center;border:none;cursor:pointer;font:700 1rem 'Inter',sans-serif;border-radius:12px;padding:13px 14px;text-decoration:none}
+  .oro{background:linear-gradient(135deg,#e2bd62,#c8963a);color:#14102a}
+  .linea{background:none;border:1px solid rgba(212,168,73,.35);color:var(--gold,#d4a849);font-weight:600}
+  .btn:disabled{opacity:.6}
+  .priv{font-size:.82rem;color:rgba(236,232,244,.62);text-align:center;line-height:1.5}
+  .msg{font-size:.9rem;text-align:center;min-height:1.2em;color:rgba(236,232,244,.85)}
+  [hidden]{display:none !important}
+</style>
+<script>/* referidos: si la invitación trae ?ref= también cuenta para el premio de quien comparte */(function(){try{var m=location.search.match(/[?&]ref=([0-9a-fA-F]{8})(?:&|$)/);if(m)localStorage.setItem('le_ref',JSON.stringify({c:m[1].toLowerCase(),t:Date.now()}));}catch(e){}})();</script>
+</head>
+<body>
+<main>
+  <div class="card" id="inv" hidden>
+    <div class="dos"><div class="av" id="av-el" style="background:#d4a849">·</div><div class="av" style="background:#8f74d6">Tú</div></div>
+    <h1 id="titulo">Quieren comparar sus cielos contigo</h1>
+    <p class="sub">Verán cómo se llevan en 8 sistemas: occidental, chino, maya, numerología y más.</p>
+    <div class="chips" id="chips"></div>
+  </div>
+  <button class="btn oro" id="si" type="button" hidden>Aceptar y comparar</button>
+  <a class="btn linea" id="no" href="/" hidden>Ahora no</a>
+  <p class="priv" id="priv" hidden>Al aceptar, <span class="quien">esta persona</span> verá tu primer nombre, tus signos y el resultado de su compatibilidad. Nunca tu fecha, hora ni lugar de nacimiento. Pueden dejar de compartir cuando quieran desde Compatibilidad.</p>
+  <p class="msg" id="msg">Cargando invitación…</p>
+</main>
+<script>
+(function(){
+  var c=(new URLSearchParams(location.search).get('c')||'').toLowerCase();
+  var $=function(id){return document.getElementById(id);};
+  var msg=function(t){$('msg').textContent=t||'';};
+  var tk=null; try{tk=localStorage.getItem('le_token');}catch(e){}
+  var H=function(){var h={'Content-Type':'application/json'}; if(tk) h['Authorization']='Bearer '+tk; return h;};
+  var SIG={Aries:'Aries',Taurus:'Tauro',Gemini:'Géminis',Cancer:'Cáncer',Leo:'Leo',Virgo:'Virgo',Libra:'Libra',Scorpio:'Escorpio',Sagittarius:'Sagitario',Capricorn:'Capricornio',Aquarius:'Acuario',Pisces:'Piscis'};
+  var CH={Rat:'Rata',Ox:'Buey',Tiger:'Tigre',Rabbit:'Conejo',Dragon:'Dragón',Snake:'Serpiente',Horse:'Caballo',Goat:'Cabra',Sheep:'Cabra',Monkey:'Mono',Rooster:'Gallo',Dog:'Perro',Pig:'Cerdo'};
+  var esc=function(t){return String(t).replace(/[&<>"]/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x];});};
+  if(!/^[a-z0-9]{10}$/.test(c)){ msg('Este enlace de invitación no es válido. Pídele a tu amigo que te lo vuelva a mandar.'); return; }
+
+  async function sesion(){
+    try{ var r=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store',headers:H()}); if(!r.ok) return null; var d=await r.json(); return d&&d.ok?d:null; }catch(e){ return null; }
+  }
+  async function aceptarYa(){
+    var r=await fetch('/api/amigos/aceptar',{method:'POST',credentials:'same-origin',headers:H(),body:JSON.stringify({c:c})});
+    var d=await r.json().catch(function(){return {};});
+    if(d.estado==='propio'){ msg('Este es tu propio enlace: mándalo a tus amigos para que comparen contigo.'); return false; }
+    if(!d.ok) throw new Error(d.error||'aceptar');
+    try{ localStorage.removeItem('le_amigo'); }catch(e){}
+    location.href='/compatibilidad-personal.html?amigo='+encodeURIComponent(d.amigo&&d.amigo.id||'');
+    return true;
+  }
+
+  (async function(){
+    var r=await fetch('/api/amigos/invitacion?c='+encodeURIComponent(c),{cache:'no-store'}).catch(function(){return null;});
+    var d=r&&r.ok?await r.json():null;
+    if(!d||!d.ok){ msg('Esta invitación ya no está disponible. Pídele a tu amigo que te mande su enlace otra vez.'); return; }
+    // también cuenta para su premio por invitar, si eres nuevo
+    try{ if(d.ref && !localStorage.getItem('le_ref')) localStorage.setItem('le_ref',JSON.stringify({c:d.ref,t:Date.now()})); }catch(e){}
+    $('titulo').textContent=d.nombre+' quiere comparar sus cielos contigo';
+    $('av-el').textContent=(d.nombre||'·').charAt(0).toUpperCase();
+    [].forEach.call(document.querySelectorAll('.quien'),function(q){q.textContent=d.nombre;});
+    var ch=[];
+    if(d.sol) ch.push('☉ '+(SIG[d.sol]||d.sol));
+    if(d.chino) ch.push(CH[d.chino]||d.chino);
+    if(d.numero!=null) ch.push('N.º '+d.numero);
+    if(d.maya) ch.push(d.maya);
+    $('chips').innerHTML=ch.map(function(x){return '<span class="chip">'+esc(x)+'</span>';}).join('');
+    ['inv','si','no','priv'].forEach(function(id){$(id).hidden=false;}); msg('');
+    var yo=await sesion();
+    $('si').textContent= yo ? 'Aceptar y comparar' : 'Aceptar y crear mi carta';
+    $('si').addEventListener('click',async function(){
+      this.disabled=true; msg('Un momento…');
+      if(!yo){
+        // Sin cuenta: se guarda el «sí» y se completa al entrar (mi-dia lo termina).
+        try{ localStorage.setItem('le_amigo',JSON.stringify({c:c,t:Date.now()})); }catch(e){}
+        location.href='/login.html'; return;
+      }
+      try{ var ok=await aceptarYa(); if(!ok) this.disabled=false; }
+      catch(e){ this.disabled=false; msg('No se pudo aceptar. Intenta de nuevo.'); }
+    });
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1211,6 +1211,21 @@ async function reclamarRef(){
   }catch(e){}
 }
 
+// ── Amigos (2026-11-06): quien aceptó una invitación ANTES de tener cuenta (amigo.html guardó su «sí»)
+// la completa aquí en cuanto tiene carta, y se le avisa dónde comparar.
+async function reclamarAmigo(){
+  var g; try{ g=JSON.parse(localStorage.getItem('le_amigo')||'null'); }catch(e){ g=null; }
+  if(!g||!g.c) return;
+  if(Date.now()-(g.t||0)>30*864e5){ try{localStorage.removeItem('le_amigo');}catch(e){} return; }
+  try{
+    var d=await (await api('/api/amigos/aceptar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:g.c})})).json();
+    if(d&&(d.ok||d.estado==='propio'||d.estado==='invalido')){ try{localStorage.removeItem('le_amigo');}catch(e){} }
+    if(d&&d.ok&&d.amigo&&window.LuzEstelar&&LuzEstelar.toast){
+      LuzEstelar.toast('✨ Ya puedes comparar tus cielos con '+(d.amigo.nombre||'tu amigo')+' en Compatibilidad',{duration:8000});
+    }
+  }catch(e){}
+}
+
 // ── Hoja de cada sistema (2026-11-06) ─────────────────────────────
 // Antes, tocar «Caballo» abría /horoscopo-chino/caballo.html con el menú de la web (Inicio, Signos…).
 // Ahora se lee esa misma página y se muestra dentro de la app: encabezado + fichas plegables.
@@ -1423,7 +1438,7 @@ async function init(){
     profilesList=d.birthProfiles||[];
     window._pfList=profilesList;
     if(!profilesList.length){show('setup');return;}
-    reclamarRef();
+    reclamarRef(); reclamarAmigo();
     currentProfile=profilesList[0];
     // Show home FIRST so canvas parent has real offsetWidth for natal chart render.
     // Otherwise canvas.parentElement.offsetWidth === 0 and the chart draws at size 0.
@@ -3586,7 +3601,7 @@ document.getElementById('ap-form').addEventListener('submit',async function(e){
     // Refresh list
     var m=await api('/api/auth/me');var md=await m.json();
     profilesList=md.birthProfiles||profilesList;window._pfList=profilesList;
-    reclamarRef();
+    reclamarRef(); reclamarAmigo();
     // Switch the dashboard to the newly-created profile and re-render
     // everything (natal chart, badges, insights). Without this the UI
     // kept showing the original primary profile's data even after a

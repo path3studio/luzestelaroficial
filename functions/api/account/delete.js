@@ -135,6 +135,21 @@ export async function onRequestPost(context) {
         .bind(userId).run();
       result.deleted[table] = r.meta?.changes ?? 0;
     }
+    // 2026-11-06: tablas nuevas (amigos, referidos, avisos). Cada una por separado: si alguna aún
+    // no existe (migración sin aplicar) el borrado sigue con las demás.
+    const extra = [
+      ['amistades',             'DELETE FROM amistades WHERE user_id = ? OR amigo_id = ?', 2],
+      ['amigo_codigos',         'DELETE FROM amigo_codigos WHERE user_id = ?', 1],
+      ['referidos',             'DELETE FROM referidos WHERE referido_id = ? OR referente_id = ?', 2],
+      ['push_subscriptions',    'DELETE FROM push_subscriptions WHERE user_id = ?', 1],
+      ['avisos_cielo_enviados', 'DELETE FROM avisos_cielo_enviados WHERE user_id = ?', 1],
+    ];
+    for (const [name, sql, n] of extra) {
+      try {
+        const r = await DB.prepare(sql).bind(...Array(n).fill(userId)).run();
+        result.deleted[name] = r.meta?.changes ?? 0;
+      } catch (e) { result.deleted[name] = 0; }
+    }
     const userDel = await DB.prepare('DELETE FROM users WHERE id = ?')
       .bind(userId).run();
     result.deleted.users = userDel.meta?.changes ?? 0;
