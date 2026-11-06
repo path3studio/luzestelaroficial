@@ -1226,6 +1226,37 @@ async function reclamarAmigo(){
   }catch(e){}
 }
 
+// ── Mapa estelar incluido con Plus, uno por perfil (2026-11-06) ──
+window._mapas=null;
+async function cargarMapas(){
+  if(!(currentUser&&currentUser.tier==='premium')) return;
+  try{ var d=await (await api('/api/mapa-estelar/perfil')).json(); if(d&&d.ok&&d.disponible!==false){ window._mapas=d.mapas||{}; renderProfiles(); } }catch(e){}
+}
+async function mapaPerfil(pid){
+  var mp=(window._mapas||{})[pid];
+  if(mp&&mp.estado==='listo'&&mp.urls){
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;z-index:3000;background:rgba(4,4,18,.8);display:flex;align-items:flex-end;justify-content:center';
+    var a=function(u,t){ return u?'<a href="'+u+'" target="_blank" rel="noopener" style="display:block;margin:8px 0;padding:12px;border-radius:12px;background:linear-gradient(135deg,#e2bd62,#c8963a);color:#14102a;font-weight:700;text-decoration:none">'+t+'</a>':''; };
+    ov.innerHTML='<div style="width:100%;max-width:440px;background:#0d0d26;border:1px solid rgba(212,168,73,.25);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0));text-align:center">'
+      +'<p style="font:600 1.2rem \'Cormorant Garamond\',Georgia,serif;color:#f0d078;margin:0 0 4px">Tu mapa estelar</p>'
+      +'<p style="font-size:.8rem;color:var(--text-dim);margin:0 0 10px">Sin marca de agua. Ábrelo y mantenlo presionado para guardarlo.</p>'
+      +a(mp.urls.celular,'Para el celular')+a(mp.urls.escritorio,'Para la computadora')
+      +'<p class="twa-hide" style="font-size:.74rem;color:var(--text-dim);margin:10px 0 0">¿Quieres regalar uno a alguien más? En luzestelaroficial.com/mapa-estelar</p>'
+      +'<button type="button" style="margin-top:8px;background:none;border:none;color:var(--text-dim);font:inherit;padding:8px 16px;cursor:pointer">Cerrar</button></div>';
+    ov.addEventListener('click',function(e){ if(e.target===ov||e.target.tagName==='BUTTON') ov.remove(); });
+    document.body.appendChild(ov); return;
+  }
+  if(mp&&(mp.estado==='pendiente'||mp.estado==='generando')){ if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast('⏳ Tu mapa se está preparando. Estará aquí en menos de una hora.',{duration:6000}); return; }
+  try{
+    var d=await (await api('/api/mapa-estelar/perfil',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:pid})})).json();
+    if(!d.ok) throw new Error(d.error||'');
+    window._mapas=window._mapas||{}; window._mapas[pid]={estado:d.estado,urls:d.urls};
+    renderProfiles();
+    if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast(d.estado==='listo'?'✨ Tu mapa ya está listo':'✨ Pedido. Tu mapa estelar estará aquí en menos de una hora.',{duration:7000});
+  }catch(e){ if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast(e.message||'No se pudo pedir el mapa. Intenta de nuevo.',{duration:6000}); }
+}
+
 // ── Hoja de cada sistema (2026-11-06) ─────────────────────────────
 // Antes, tocar «Caballo» abría /horoscopo-chino/caballo.html con el menú de la web (Inicio, Signos…).
 // Ahora se lee esa misma página y se muestra dentro de la app: encabezado + fichas plegables.
@@ -1438,7 +1469,7 @@ async function init(){
     profilesList=d.birthProfiles||[];
     window._pfList=profilesList;
     if(!profilesList.length){show('setup');return;}
-    reclamarRef(); reclamarAmigo();
+    reclamarRef(); reclamarAmigo(); cargarMapas();
     currentProfile=profilesList[0];
     // Show home FIRST so canvas parent has real offsetWidth for natal chart render.
     // Otherwise canvas.parentElement.offsetWidth === 0 and the chart draws at size 0.
@@ -2725,9 +2756,20 @@ function renderProfiles(){
     h+='<button type="button" class="pf-edit" data-edit-id="'+p.id+'" title="Corregir datos" '
       +'style="margin-left:8px;background:none;border:1px solid rgba(212,168,73,.35);'
       +'border-radius:8px;color:var(--gold,#d4a849);font-size:.72rem;padding:3px 8px;cursor:pointer">✎</button>';
+    // 2026-11-06: Plus incluye un mapa estelar sin marca por perfil (lo genera la Mac, sin Stripe ni correo)
+    if(currentUser&&currentUser.tier==='premium'&&window._mapas){
+      var mp=window._mapas[p.id]||null, et=mp?mp.estado:'';
+      var lbl= et==='listo' ? 'Mapa ↓' : (et==='pendiente'||et==='generando') ? '⏳ Mapa' : 'Pedir mapa';
+      h+='<button type="button" class="pf-mapa" data-mapa-id="'+p.id+'" title="Tu mapa estelar sin marca (incluido con Plus)" '
+        +'style="margin-left:6px;background:none;border:1px solid rgba(212,168,73,.35);border-radius:8px;'
+        +'color:var(--gold,#d4a849);font-size:.7rem;padding:3px 7px;cursor:pointer;white-space:nowrap">'+lbl+'</button>';
+    }
     h+='</div>';
   });
   box.innerHTML=h;
+  box.querySelectorAll('.pf-mapa').forEach(function(b){
+    b.addEventListener('click', function(ev){ ev.stopPropagation(); mapaPerfil(b.getAttribute('data-mapa-id')); });
+  });
   // Wire row clicks to profile-switching. Rows switch currentProfile
   // and re-render the dashboard; greeting stays on the account owner.
   // Lápiz de edición: abre el MISMO modal precargado (caso Sara: hora mal
@@ -3611,7 +3653,7 @@ document.getElementById('ap-form').addEventListener('submit',async function(e){
     // Refresh list
     var m=await api('/api/auth/me');var md=await m.json();
     profilesList=md.birthProfiles||profilesList;window._pfList=profilesList;
-    reclamarRef(); reclamarAmigo();
+    reclamarRef(); reclamarAmigo(); cargarMapas();
     // Switch the dashboard to the newly-created profile and re-render
     // everything (natal chart, badges, insights). Without this the UI
     // kept showing the original primary profile's data even after a

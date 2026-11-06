@@ -143,6 +143,7 @@ export async function onRequestPost(context) {
       ['referidos',             'DELETE FROM referidos WHERE referido_id = ? OR referente_id = ?', 2],
       ['push_subscriptions',    'DELETE FROM push_subscriptions WHERE user_id = ?', 1],
       ['avisos_cielo_enviados', 'DELETE FROM avisos_cielo_enviados WHERE user_id = ?', 1],
+      ['mapas_plus',            'DELETE FROM mapas_plus WHERE user_id = ?', 1],
     ];
     for (const [name, sql, n] of extra) {
       try {
