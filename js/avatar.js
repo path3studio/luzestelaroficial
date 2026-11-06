@@ -124,7 +124,7 @@
     if (!p || !p.id) return;
     var ov = document.createElement('div');
     ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Elegir imagen');
-    ov.style.cssText = 'position:fixed;inset:0;z-index:3000;background:rgba(4,4,18,.78);display:flex;align-items:flex-end;justify-content:center';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:10050;background:rgba(4,4,18,.78);display:flex;align-items:flex-end;justify-content:center';
     var nombre = esc((p.nombre || p.name || p.label || '').split(' ')[0]);
     var mio = slugDe(p);
     var celda = function (val, muestra, titulo, marcado) {

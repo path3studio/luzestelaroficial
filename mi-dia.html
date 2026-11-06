@@ -73,7 +73,7 @@ html.is-twa .twa-hide{display:none !important}
    «Cielo al nacer» volverá cuando se vea IGUAL que el Mapa Estelar (Plus lo descarga sin marca). El código sigue. */
 #chart-toggle,#sky-options{display:none !important}
 /* 2026-11-06: hoja propia para cada sistema (antes abría la página pública con el menú de la web) */
-.sis-ov{position:fixed;inset:0;z-index:2600;background:var(--bg,#06061a);overflow-y:auto;-webkit-overflow-scrolling:touch;
+.sis-ov{position:fixed;inset:0;z-index:10050;background:var(--bg,#06061a);overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:calc(12px + env(safe-area-inset-top,0)) 16px calc(28px + env(safe-area-inset-bottom,0));display:none}
 .sis-ov.on{display:block}
 .sis-top{position:sticky;top:0;display:flex;align-items:center;gap:10px;padding:6px 0 10px;background:var(--bg,#06061a);z-index:1}
@@ -1240,7 +1240,7 @@ async function mapaPerfil(pid){
   var mp=(window._mapas||{})[pid];
   if(mp&&mp.estado==='listo'&&mp.urls){
     var ov=document.createElement('div');
-    ov.style.cssText='position:fixed;inset:0;z-index:3000;background:rgba(4,4,18,.8);display:flex;align-items:flex-end;justify-content:center';
+    ov.style.cssText='position:fixed;inset:0;z-index:10050;background:rgba(4,4,18,.8);display:flex;align-items:flex-end;justify-content:center';
     var a=function(u,t){ return u?'<a href="'+u+'" target="_blank" rel="noopener" style="display:block;margin:8px 0;padding:12px;border-radius:12px;background:linear-gradient(135deg,#e2bd62,#c8963a);color:#14102a;font-weight:700;text-decoration:none">'+t+'</a>':''; };
     ov.innerHTML='<div style="width:100%;max-width:440px;background:#0d0d26;border:1px solid rgba(212,168,73,.25);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0));text-align:center">'
       +'<p style="font:600 1.2rem \'Cormorant Garamond\',Georgia,serif;color:#f0d078;margin:0 0 4px">Tu mapa estelar</p>'
@@ -1274,7 +1274,7 @@ async function mapaPerfil(pid){
     if(!d||!d.ok){ if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast((d&&d.error)||'No se pudo abrir el ranking.',{duration:6000}); return; }
     var ov=document.createElement('div');
     ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Ranking de hoy');
-    ov.style.cssText='position:fixed;inset:0;z-index:3000;background:rgba(4,4,18,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px';
+    ov.style.cssText='position:fixed;inset:0;z-index:10050;background:rgba(4,4,18,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px';
     ov.innerHTML='<img src="'+d.url+'" alt="Ranking de los 12 signos de hoy" style="max-width:100%;max-height:82vh;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.5)">'
       +'<p style="font-size:.8rem;color:var(--text-dim);margin:10px 0 0;text-align:center">Mantén presionada la imagen para guardarla</p>'
       +'<button type="button" style="margin-top:6px;background:none;border:none;color:var(--gold);font:inherit;padding:8px 16px;cursor:pointer">Cerrar</button>';
@@ -3809,7 +3809,7 @@ init();
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js?v=20261106" defer></script>
-<script src="/js/avatar.js?v=6" defer></script>
+<script src="/js/avatar.js?v=7" defer></script>
 <!-- 2026-08-03: este bloque vivía dentro de la etiqueta de bottom-tabs.js,
      que lleva atributo src. Una etiqueta de script con src IGNORA su
      contenido en línea, así que todo el panel de casas era código muerto:

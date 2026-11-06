@@ -537,7 +537,8 @@
 // v125 → v126 (Nov 6): «Subir una foto» también dentro de la app (declaración de Fotos enviada a Google).
 // v126 → v127 (Nov 6): foto propia se acomoda (arrastrar + zoom) y ya no da «imagen no válida» (CSP sin blob:);
 // R2 (podcasts.luzestelaroficial.com) permitido en img-src para ranking y mapas; Mi perfil con «Tu plan» aparte.
-const CACHE_NAME = 'luzestelar-v127';
+// v127 → v128 (Nov 6): hojas (foto, mapa, ranking, sistema) por encima de la barra inferior (z 9999 tapaba «Usar esta foto»).
+const CACHE_NAME = 'luzestelar-v128';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
