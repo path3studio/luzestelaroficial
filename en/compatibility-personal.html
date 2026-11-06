@@ -421,7 +421,7 @@ body{
       <span class="lock-icon text-gold"><span class="le-ic" data-icon="lock"></span></span>
       <h3>Cross-Cultural Compatibility</h3>
       <p style="margin-bottom:10px;">Deep analysis between two profiles across 7 ancestral systems: overview, strengths, tensions, growth, and a personalized shared ritual.</p>
-      <p class="twa-plus" style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 days free</strong> · Then from <strong style="color:#f0d078;">$2.50/month</strong> (annual plan).</p>
+      <p class="twa-plus" id="upgrade-gate-precio" style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:20px;"><strong style="color:#f0d078;">7 days free</strong> · Then from <strong style="color:#f0d078;">$2.50/month</strong> (annual plan).</p>
       <button type="button" class="btn-upgrade" id="btn-upgrade-open">Start 7-day free trial</button>
     </div>
 
@@ -1120,6 +1120,13 @@ body{
 
   // Upgrade button — open inline Plus sheet (stays inside PWA shell)
   var btnUpgrade = document.getElementById('btn-upgrade-open');
+  // 2026-11-06: dentro de la app Android cobra Google Play en la moneda de cada quien y la prueba
+  // gratis depende de la cuenta: sin precios USD fijos ni «7 días gratis» (la hoja de Plus los pone reales).
+  if (document.documentElement.classList.contains('is-twa')) {
+    var gatePrecio = document.getElementById('upgrade-gate-precio');
+    if (gatePrecio) gatePrecio.innerHTML = 'Included in <strong style="color:#f0d078;">Plus</strong>. Google Play shows the price in your currency.';
+    if (btnUpgrade) btnUpgrade.textContent = 'See Plus';
+  }
   // Dentro de la app: visible solo si la caja de Google Play responde (html.twa-pay); la hoja cobra por Play.
   if (btnUpgrade) btnUpgrade.classList.add('twa-plus');
   if (btnUpgrade) {

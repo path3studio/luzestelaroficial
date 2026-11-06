@@ -31,7 +31,7 @@
         'Reporte Cross-Cultural: síntesis de 8 sistemas',
         'Lecturas diarias de los 7 sistemas (no sólo 3)',
         'Compatibilidad profunda entre perfiles',
-        'Hasta 5 perfiles · sin publicidad'
+        'Hasta 5 perfiles'
       ],
       annual:  'Anual',
       monthly: 'Mensual',
@@ -48,6 +48,7 @@
       // Dentro de la app Android: cobra Google Play
       playCta: 'Continuar con Google Play',
       playCtaSinPrueba: 'Suscribirme con Google Play',
+      playTitleSinPrueba: 'Luz Estelar Plus',
       playLoading: 'Abriendo Google Play…',
       playVerifying: 'Confirmando tu compra…',
       playTrial: 'Primeros 7 días gratis. Cancela cuando quieras desde Google Play.',
@@ -62,7 +63,7 @@
         'Cross-Cultural report: synthesis of 8 systems',
         'Daily readings for all 7 systems (not just 3)',
         'Deep compatibility between profiles',
-        'Up to 5 profiles · no ads'
+        'Up to 5 profiles'
       ],
       annual:  'Annual',
       monthly: 'Monthly',
@@ -78,6 +79,7 @@
       fail: 'Could not start the subscription. Please try again.',
       playCta: 'Continue with Google Play',
       playCtaSinPrueba: 'Subscribe with Google Play',
+      playTitleSinPrueba: 'Luz Estelar Plus',
       playLoading: 'Opening Google Play…',
       playVerifying: 'Confirming your purchase…',
       playTrial: 'First 7 days free. Cancel anytime from Google Play.',
@@ -200,13 +202,21 @@
       var pb = ns.PlayBilling;
       var an = d.annual, me = d.monthly;
       var anMes = an && an.price ? { currency: an.price.currency, value: (Number(an.price.value) / 12).toFixed(2) } : null;
+      // 2026-11-06: el ahorro sale de los precios reales de Play (antes, «-37%» fijo de los precios USD).
+      var ahorro = null;
+      if (an && an.price && me && me.price && Number(me.price.value) > 0) {
+        var pct = Math.round((1 - Number(an.price.value) / (Number(me.price.value) * 12)) * 100);
+        if (pct >= 5) ahorro = '-' + pct + '%';
+      }
       opts = [
         {id:'annual',  lbl:c.annual,  price: anMes ? pb.formatear(anMes) : '…',
-         note: an && an.price ? (c.playAnnualNote + ' · ' + pb.formatear(an.price)) : c.playAnnualNote, save:'-37%'},
+         note: an && an.price ? (c.playAnnualNote + ' · ' + pb.formatear(an.price)) : c.playAnnualNote, save: ahorro},
         {id:'monthly', lbl:c.monthly, price: me && me.price ? pb.formatear(me.price) : '…', note:c.monthlyNote, save:null}
       ];
       var sel = state.cadence === 'monthly' ? me : an;
       hayPrueba = !!(sel && sel.freeTrialPeriod);
+      // 2026-11-06: sin prueba gratis para esta cuenta de Play (ya tuvo Plus), el título no la promete.
+      if (!hayPrueba) document.getElementById('le-up-title').textContent = c.playTitleSinPrueba;
     }
     opts.forEach(function(o){
       var d = document.createElement('div');
