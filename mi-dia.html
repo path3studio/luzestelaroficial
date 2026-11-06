@@ -56,6 +56,32 @@ function twaSinPago(){return isTwa() && !document.documentElement.classList.cont
 <style>
 /* Dentro de la app de Google Play (html.is-twa): sin botones ni enlaces de compra */
 html.is-twa .twa-hide{display:none !important}
+/* 2026-11-06: secciones plegables del Inicio */
+.mas-sec{margin:16px 0 4px;border:1px solid var(--glass-b);border-radius:12px;background:var(--glass)}
+.mas-sec>summary{list-style:none;cursor:pointer;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.mas-sec>summary::-webkit-details-marker{display:none}
+.mas-sec .ms-t{font-size:.92rem;color:var(--gold);display:flex;align-items:center;gap:8px}
+.mas-sec .ms-s{grid-column:1;font-size:.76rem;color:var(--text-dim)}
+.mas-sec .ms-chev{grid-row:1/3;grid-column:2;color:var(--text-dim);transition:transform .2s}
+.mas-sec[open] .ms-chev{transform:rotate(180deg)}
+.mas-sec[open]{padding:0 10px 12px}
+/* 2026-11-06: hoja propia para cada sistema (antes abría la página pública con el menú de la web) */
+.sis-ov{position:fixed;inset:0;z-index:2600;background:var(--bg,#06061a);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:calc(12px + env(safe-area-inset-top,0)) 16px calc(28px + env(safe-area-inset-bottom,0));display:none}
+.sis-ov.on{display:block}
+.sis-top{position:sticky;top:0;display:flex;align-items:center;gap:10px;padding:6px 0 10px;background:var(--bg,#06061a);z-index:1}
+.sis-back{background:none;border:1px solid var(--glass-b);color:var(--gold);border-radius:20px;padding:7px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.sis-hero{text-align:center;margin:8px 0 14px}
+.sis-sym{font-size:2.6rem;line-height:1.1;margin-bottom:6px}
+.sis-h1{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);margin:0 0 6px}
+.sis-meta{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.sis-meta span{font-size:.74rem;color:var(--text-dim);border:1px solid var(--glass-b);border-radius:12px;padding:3px 9px}
+.sis-ov details{border:1px solid var(--glass-b);border-radius:12px;background:var(--glass);margin:8px 0}
+.sis-ov details>summary{list-style:none;cursor:pointer;padding:13px 14px;color:var(--text,#e8e4f0);font-size:.95rem;display:flex;justify-content:space-between}
+.sis-ov details>summary::-webkit-details-marker{display:none}
+.sis-ov details>summary::after{content:'\25BE';color:var(--text-dim);transition:transform .2s}
+.sis-ov details[open]>summary::after{transform:rotate(180deg)}
+.sis-ov details p{margin:0 14px 12px;font-size:.9rem;line-height:1.6;color:var(--text-dim)}
 /* Plus sí se vende dentro de la app cuando la caja de Google Play responde (html.twa-pay, js/play-billing.js) */
 html.is-twa:not(.twa-pay) .twa-plus{display:none !important}
 /* :root tokens moved to /css/design-tokens.css (Phase 3.5 cleanup) */
@@ -773,7 +799,11 @@ body.modal-open #le-tabs{display:none !important}
       </div>
     </section>
 
-    <!-- 2. Lectura del día (hábito diario — lo que te trae cada día) -->
+    <!-- 2026-11-06 (recorrido de persona nueva): los 8 sistemas, sus insights, la síntesis y el reporte
+         van juntos y PLEGADOS. Arriba queda lo que se usa cada día: lectura, carta y áreas de vida. -->
+    <details class="mas-sec" id="mas-sistemas">
+      <summary><span class="ms-t"><span class="ic le-ic" data-icon="user"></span> Tu perfil en 8 sistemas</span>
+        <span class="ms-s">Chino, maya, numerología, celta, védico y más</span><span class="ms-chev" aria-hidden="true">&#x25BE;</span></summary>
     <section class="fade d3">
       <!-- 2026-08-05: mismo nombre que la promesa de la portada ("descubre tu
            perfil cósmico") — quien llega desde ahí debe RECONOCER que esto
@@ -815,6 +845,7 @@ body.modal-open #le-tabs{display:none !important}
         <div id="cc-body"><div class="sk sk-block"></div></div>
       </div>
     </section>
+    </details>
 
     <!-- 4. 8 sistemas -->
     <section class="fade d5">
@@ -901,6 +932,9 @@ body.modal-open #le-tabs{display:none !important}
     })();
     </script>
 
+    <details class="mas-sec" id="mas-siguenos">
+      <summary><span class="ms-t"><span class="ic le-ic" data-icon="heart"></span> Síguenos</span>
+        <span class="ms-s">Redes, podcast y resumen semanal por correo</span><span class="ms-chev" aria-hidden="true">&#x25BE;</span></summary>
     <!-- 7.5 Newsletter -->
     <section class="fade d6" style="margin-top:6px">
       <div class="slbl"><span class="ic le-ic" data-icon="mail"></span> Resumen Semanal</div>
@@ -948,7 +982,7 @@ body.modal-open #le-tabs{display:none !important}
 
     <!-- Cafecito (2026-08-05, pedido del usuario): también dentro de la app,
          discreto — quien nos lee a diario es quien más probablemente invite. -->
-    <section class="fade d7">
+    <section class="fade d7 twa-hide">
       <a href="https://ko-fi.com/luzestelaroficial" target="_blank" rel="noopener"
          style="display:flex;align-items:center;gap:12px;padding:13px 16px;
                 border:1px dashed rgba(212,168,73,.35);border-radius:13px;
@@ -959,8 +993,14 @@ body.modal-open #le-tabs{display:none !important}
         si nuestras lecturas te acompañan, ayúdanos a seguir.</span>
       </a>
     </section>
+    </details>
   </main>
 </div>
+</div>
+
+<div class="sis-ov" id="sis-ov" role="dialog" aria-modal="true" aria-labelledby="sis-h1">
+  <div class="sis-top"><button type="button" class="sis-back" id="sis-back">&#8249; Volver</button></div>
+  <div id="sis-body"></div>
 </div>
 
 <!-- Onboarding welcome overlay (first-time users with zero profiles) -->
@@ -1188,6 +1228,60 @@ function openUpgrade(){
 }
 
 var currentUser=null, currentProfile=null, profilesList=[];
+
+// ── Hoja de cada sistema (2026-11-06) ─────────────────────────────
+// Antes, tocar «Caballo» abría /horoscopo-chino/caballo.html con el menú de la web (Inicio, Signos…).
+// Ahora se lee esa misma página y se muestra dentro de la app: encabezado + fichas plegables.
+// Si algo falla, se abre la página como antes.
+function _sisTexto(el){ return (el && el.textContent || '').replace(/\s+/g,' ').replace(/\bAnos\b/g,'Años').trim(); }
+async function abrirSistema(href){
+  var ov=document.getElementById('sis-ov'), body=document.getElementById('sis-body');
+  if(!ov||!body){ location.href=href; return; }
+  body.innerHTML='<p style="text-align:center;color:var(--text-dim);margin-top:40px">Cargando…</p>';
+  ov.classList.add('on'); ov.scrollTop=0; document.body.classList.add('modal-open');
+  try{ history.pushState({sis:1},'',location.href); }catch(e){}
+  try{
+    var r=await fetch(href,{credentials:'same-origin'}); if(!r.ok) throw new Error(r.status);
+    var doc=new DOMParser().parseFromString(await r.text(),'text/html');
+    var hero=doc.querySelector('.hero-sign'); var cards=[].slice.call(doc.querySelectorAll('.content .card'));
+    if(!hero && !cards.length) throw new Error('sin contenido');
+    var esc=function(t){ return t.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
+    var h='<div class="sis-hero">';
+    if(hero){
+      var sym=hero.querySelector('.symbol'); if(sym) h+='<div class="sis-sym">'+esc(_sisTexto(sym))+'</div>';
+      h+='<h1 class="sis-h1" id="sis-h1">'+esc(_sisTexto(hero.querySelector('h1')))+'</h1><div class="sis-meta">';
+      [].forEach.call(hero.querySelectorAll('.meta > span'),function(m){ var t=_sisTexto(m); if(t) h+='<span>'+esc(t)+'</span>'; });
+      h+='</div>';
+    }
+    h+='</div>';
+    var n=0;
+    cards.forEach(function(c){
+      if(c.querySelector('.cta-row')) return;              // «Sigue explorando» → enlaces a la web, fuera
+      var t=_sisTexto(c.querySelector('h2')); var ps=[].slice.call(c.querySelectorAll('p')).map(_sisTexto).filter(Boolean);
+      if(!t||!ps.length) return;
+      h+='<details'+(n===0?' open':'')+'><summary>'+esc(t)+'</summary>'+ps.map(function(x){return '<p>'+esc(x)+'</p>';}).join('')+'</details>';
+      n++;
+    });
+    body.innerHTML=h;
+  }catch(e){
+    cerrarSistema(true); location.href=href;
+  }
+}
+function cerrarSistema(sinHistoria){
+  var ov=document.getElementById('sis-ov'); if(!ov||!ov.classList.contains('on')) return;
+  ov.classList.remove('on'); document.body.classList.remove('modal-open');
+  if(!sinHistoria){ try{ if(history.state&&history.state.sis) history.back(); }catch(e){} }
+}
+function wireSistemas(){
+  var g=document.getElementById('sys-grid'); if(!g||g.dataset.sisWired) return; g.dataset.sisWired='1';
+  g.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a.sys-item'); if(!a) return;
+    var href=a.getAttribute('href')||''; if(!/\.html$/.test(href)) return;   // índices (p. ej. eneagrama/) siguen igual
+    e.preventDefault(); abrirSistema(href);
+  });
+  var b=document.getElementById('sis-back'); if(b) b.addEventListener('click',function(){ cerrarSistema(); });
+  window.addEventListener('popstate',function(){ cerrarSistema(true); });   // botón «atrás» de Android
+}
 
 // ── Tarjeta «¿Te aviso?» (2026-11-06) ─────────────────────────────
 // Tras ver la lectura de hoy, a quien NO tiene avisos: una pregunta, dos botones.
@@ -1433,6 +1527,7 @@ function renderAll(){
     sgh+='<a href="'+it.href+'" class="sys-item"><span class="sbar" style="background:'+(colors[i]||'#7c5cbf')+'"></span><span class="ssym">'+it.sym+'</span><span class="snam">'+it.nam+'</span><span class="sdet">'+it.det+'</span></a>';
   });
   document.getElementById('sys-grid').innerHTML=sgh;
+  wireSistemas();
 
   // Elemental synthesis
   buildSynth(cc);

@@ -520,7 +520,9 @@
 // Ajustes, línea de Semillas en /planes (oculta en la app).
 // v114 → v115 (Nov 6): recorrido de persona nueva — entrada que dice para qué es, bienvenida en 3 pasos
 // (lectura, áreas de vida, avisos), primer perfil sin «Relación», sin barras de relleno y la lectura de ayer de madrugada.
-const CACHE_NAME = 'luzestelar-v115';
+// v115 → v116 (Nov 6): Inicio ordenado — «Tu perfil en 8 sistemas» y «Síguenos» plegables, cafecito fuera
+// de la app, y cada sistema (p. ej. Caballo) se abre en una hoja propia de la app en vez de la página web.
+const CACHE_NAME = 'luzestelar-v116';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
