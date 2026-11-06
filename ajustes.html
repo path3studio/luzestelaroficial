@@ -73,6 +73,15 @@ main{
   -webkit-backdrop-filter:blur(12px);
   margin-bottom:16px;
 }
+.card-destacada{background:linear-gradient(135deg,rgba(212,168,73,.20),rgba(143,116,214,.14)) !important;border-color:rgba(212,168,73,.45) !important}
+.card-destacada .card-label{color:#f0d078}
+.mi-perfil-fila{display:flex;align-items:center;gap:14px;text-align:left}
+.mi-av{background:none;border:none;padding:0;cursor:pointer;border-radius:50%}
+.mi-av:focus-visible,.btn-link-sm:focus-visible{outline:2px solid #8f74d6;outline-offset:2px}
+.mi-signos{font-size:.78rem;color:rgba(236,232,244,.6);margin-top:2px}
+.btn-link-sm{background:none;border:none;color:#d4a849;font:500 .8rem Inter,sans-serif;cursor:pointer;padding:8px 0 4px}
+.pref-plegable summary::-webkit-details-marker{display:none}
+.pref-plegable[open] summary span{display:inline-block;transform:rotate(180deg)}
 .card-label{
   font-size:12px;
   font-weight:500;
@@ -412,20 +421,25 @@ main{
 
 <!-- Account card -->
 <div class="card fade fade-d1" id="account-card">
-  <div class="account-name" id="user-name"></div>
-  <div class="account-email" id="user-email"></div>
+  <div class="card-label">Mi perfil</div>
+  <!-- 2026-11-06: imagen del perfil (criatura de su signo o color neutro) — toca para cambiarla -->
+  <div class="mi-perfil-fila">
+    <button type="button" class="mi-av" id="mi-avatar" aria-label="Cambiar imagen de perfil"></button>
+    <div style="min-width:0;flex:1">
+      <div class="account-name" id="user-name"></div>
+      <div class="account-email" id="user-email"></div>
+      <div class="mi-signos" id="mi-signos"></div>
+    </div>
+  </div>
+  <button type="button" class="btn-link-sm" id="btn-cambiar-imagen">Cambiar imagen</button>
   <div id="tier-badge-wrap"></div>
   <div id="billing-actions"></div>
   <div id="renewal-wrap"></div>
 </div>
 
-<!-- Preferencias card -->
+<!-- 2026-11-06: «Avisos» aparte (antes dentro de Preferencias) -->
 <div class="card fade fade-d2">
-  <div class="card-label">Preferencias</div>
-  <div class="pref-row">
-    <span class="pref-label">Idioma</span>
-    <span class="pref-value">Español</span>
-  </div>
+  <div class="card-label">Avisos</div>
   <div class="pref-row" id="notif-row">
     <div style="flex:1;min-width:0">
       <div class="pref-label">Lectura diaria</div>
@@ -474,6 +488,25 @@ main{
   <div class="notif-status" id="notif-status" role="status" aria-live="polite"></div>
 </div>
 
+<!-- 2026-11-06: compartir la app (pedido del dueño). Mientras la app esté en prueba cerrada se comparte
+     /probar (explica cómo unirse); cuando esté abierta en Play, cambiar APP_COMPARTIR_URL. -->
+<div class="card card-destacada fade fade-d3" style="text-align:center">
+  <div class="card-label">Comparte Luz Estelar</div>
+  <p style="font-size:.85rem;color:var(--text-dim);margin:0 0 12px;line-height:1.5">Por cada amigo que entre con tu enlace y cree su carta, te regalamos <b style="color:var(--gold)">1 mes de Plus</b>, hasta 3 meses.</p>
+  <p id="compartir-cuenta" style="font-size:.8rem;color:var(--text-dim);margin:0 0 12px"></p>
+  <button type="button" class="btn-gold" id="btn-compartir-app" style="width:100%;border:none;cursor:pointer">Compartir la app</button>
+  <div class="notif-status" id="compartir-status" role="status" aria-live="polite" style="text-align:center;margin-top:10px"></div>
+</div>
+
+<!-- Preferencias plegadas (2026-11-06) -->
+<details class="card fade fade-d3 pref-plegable">
+  <summary class="card-label" style="cursor:pointer;list-style:none;margin:0">Preferencias <span aria-hidden="true">&#x25BE;</span></summary>
+  <div class="pref-row" style="margin-top:10px">
+    <span class="pref-label">Idioma</span>
+    <span class="pref-value">Español</span>
+  </div>
+</details>
+
 <!-- Datos y Privacidad card -->
 <div class="card fade fade-d3">
   <div class="card-label">Datos y Privacidad</div>
@@ -496,16 +529,6 @@ main{
     <span class="link-label">Política de privacidad</span>
     <span class="link-arrow">&rarr;</span>
   </a>
-</div>
-
-<!-- 2026-11-06: compartir la app (pedido del dueño). Mientras la app esté en prueba cerrada se comparte
-     /probar (explica cómo unirse); cuando esté abierta en Play, cambiar APP_COMPARTIR_URL. -->
-<div class="card fade fade-d4" style="text-align:center">
-  <div class="card-label">Comparte Luz Estelar</div>
-  <p style="font-size:.85rem;color:var(--text-dim);margin:0 0 12px;line-height:1.5">Por cada amigo que entre con tu enlace y cree su carta, te regalamos <b style="color:var(--gold)">1 mes de Plus</b>, hasta 3 meses.</p>
-  <p id="compartir-cuenta" style="font-size:.8rem;color:var(--text-dim);margin:0 0 12px"></p>
-  <button type="button" class="btn-outline" id="btn-compartir-app">Compartir la app</button>
-  <div class="notif-status" id="compartir-status" role="status" aria-live="polite" style="text-align:center;margin-top:10px"></div>
 </div>
 
 <!-- Follow us — 2026-11-06: el ÚNICO lugar con las redes (antes también al final del Inicio) -->
@@ -631,12 +654,29 @@ async function init(){
     var data = await res.json();
     if(!data.ok) throw new Error('auth');
     renderSettings(data.user);
+    try{ renderMiPerfil(data.birthProfiles || []); }catch(e){}
   }catch(e){
     show('login');
   }
 }
 
 /* --- Render --- */
+/* --- Mi perfil: imagen + signos (2026-11-06) --- */
+var SIG_ES = {Aries:'Aries',Taurus:'Tauro',Gemini:'Géminis',Cancer:'Cáncer',Leo:'Leo',Virgo:'Virgo',Libra:'Libra',Scorpio:'Escorpio',Sagittarius:'Sagitario',Capricorn:'Capricornio',Aquarius:'Acuario',Pisces:'Piscis'};
+function renderMiPerfil(perfiles){
+  var p = perfiles[0], btn = document.getElementById('mi-avatar'), cam = document.getElementById('btn-cambiar-imagen');
+  if(!p || !btn){ if(cam) cam.style.display='none'; return; }
+  var pintar = function(){
+    if(window.LuzEstelar && LuzEstelar.Avatar){ btn.innerHTML = LuzEstelar.Avatar.html(p, 64); }
+    else { setTimeout(pintar, 120); }
+  };
+  pintar();
+  var sg = document.getElementById('mi-signos');
+  if(sg) sg.textContent = [SIG_ES[p.western_sign] || p.western_sign, p.lugar_nacimiento ? '' : ''].filter(Boolean).join(' · ');
+  var abrir = function(){ if(window.LuzEstelar && LuzEstelar.Avatar) LuzEstelar.Avatar.elegir(p, pintar); };
+  btn.addEventListener('click', abrir); cam.addEventListener('click', abrir);
+}
+
 function renderSettings(user){
   document.getElementById('user-name').textContent = user.name || 'Usuario';
   document.getElementById('user-email').textContent = user.email || '';
@@ -1160,5 +1200,6 @@ init();
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
+<script src="/js/avatar.js" defer></script>
 </body>
 </html>

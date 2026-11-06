@@ -16,14 +16,18 @@ function nuevoCodigo() {
 
 /** Perfil principal de una cuenta, SOLO con lo que se puede mostrar a un amigo. */
 export async function perfilPublico(DB, userId) {
-  const p = await DB.prepare(
-    `SELECT id, nombre, western_sign, chinese_animal, numerology_number, mayan_seal, celtic_tree
+  const sel = (extra) => DB.prepare(
+    `SELECT id, nombre, western_sign, chinese_animal, numerology_number, mayan_seal, celtic_tree${extra}
        FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC LIMIT 1`
   ).bind(userId).first();
+  let p;
+  try { p = await sel(', avatar'); }
+  catch (e) { if (!/no such column: avatar/i.test(String(e && e.message))) throw e; p = await sel(''); }
   if (!p) return null;
   const nombre = String(p.nombre || '').trim().split(/\s+/)[0] || 'Tu amigo';   // solo el primer nombre
   return { profileId: p.id, nombre, sol: p.western_sign || null, chino: p.chinese_animal || null,
-           numero: p.numerology_number ?? null, maya: p.mayan_seal || null, celta: p.celtic_tree || null };
+           numero: p.numerology_number ?? null, maya: p.mayan_seal || null, celta: p.celtic_tree || null,
+           avatar: p.avatar || null };
 }
 
 export async function miCodigo(DB, userId) {

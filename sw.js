@@ -527,7 +527,8 @@
 // «Comparte Luz Estelar» con enlace propio + conteo de amigos.
 // v118 → v119 (Nov 6): Ajustes con Compartir centrado y Síguenos en tarjeta; Mapa Estelar fuera de la app.
 // v119 → v120 (Nov 6): compatibilidad con amigos (Compatibilidad + /amigo), planes sin promesas que no existen.
-const CACHE_NAME = 'luzestelar-v120';
+// v120 → v121 (Nov 6): imagen de perfil (criatura/neutro, js/avatar.js), Ajustes reordenado, Compatibilidad sin «agregar perfil» grande.
+const CACHE_NAME = 'luzestelar-v121';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

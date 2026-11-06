@@ -23,9 +23,14 @@ export async function onRequestGet(context) {
     // string (see calculate_natal_chart in consultation_generator.py).
     // Typical size is ~4 KB per profile; with a 5-profile Plus cap the
     // total payload stays well under the 100 KB Worker response ceiling.
-    const profiles = await context.env.DB.prepare(
-      'SELECT id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, natal_chart, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, enneagram_type, enneagram_wing, is_primary FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC'
+    // 2026-11-06: + avatar (migración 0014). Si la columna aún no existe, se lee sin ella.
+    const COLS = 'id, label, nombre, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, natal_chart, western_sign, chinese_animal, numerology_number, celtic_tree, mayan_kin, mayan_seal, mayan_tone, vedic_rashi, vedic_nakshatra, human_design_gate, enneagram_type, enneagram_wing, is_primary';
+    const leerPerfiles = (extra) => context.env.DB.prepare(
+      'SELECT ' + COLS + extra + ' FROM birth_profiles WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC'
     ).bind(user.sub).all();
+    let profiles;
+    try { profiles = await leerPerfiles(', avatar'); }
+    catch (e) { if (!/no such column: avatar/i.test(String(e && e.message))) throw e; profiles = await leerPerfiles(''); }
 
     // Feature flags surfaced to the client so it can decide what to
     // attempt without guessing. Keep the set small — we only expose

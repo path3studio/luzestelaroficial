@@ -45,7 +45,7 @@
   </div>
   <button class="btn oro" id="si" type="button" hidden>Aceptar y comparar</button>
   <a class="btn linea" id="no" href="/" hidden>Ahora no</a>
-  <p class="priv" id="priv" hidden>Al aceptar, <span class="quien">esta persona</span> verá tu primer nombre, tus signos y el resultado de su compatibilidad. Nunca tu fecha, hora ni lugar de nacimiento. Pueden dejar de compartir cuando quieran desde Compatibilidad.</p>
+  <p class="priv" id="priv" hidden>Al aceptar, <span class="quien">esta persona</span> verá tu primer nombre, tu imagen de perfil, tus signos y el resultado de su compatibilidad. Nunca tu fecha, hora ni lugar de nacimiento. Pueden dejar de compartir cuando quieran desde Compatibilidad.</p>
   <p class="msg" id="msg">Cargando invitación…</p>
 </main>
 <script>
@@ -81,6 +81,7 @@
     try{ if(d.ref && !localStorage.getItem('le_ref')) localStorage.setItem('le_ref',JSON.stringify({c:d.ref,t:Date.now()})); }catch(e){}
     $('titulo').textContent=d.nombre+' quiere comparar sus cielos contigo';
     $('av-el').textContent=(d.nombre||'·').charAt(0).toUpperCase();
+    if(window.LuzEstelar&&LuzEstelar.Avatar){ var w=document.createElement('span'); w.innerHTML=LuzEstelar.Avatar.html({nombre:d.nombre,sol:d.sol,avatar:d.avatar},58); var n=w.firstChild; n.style.border='3px solid var(--bg,#06061a)'; $('av-el').replaceWith(n); }
     [].forEach.call(document.querySelectorAll('.quien'),function(q){q.textContent=d.nombre;});
     var ch=[];
     if(d.sol) ch.push('☉ '+(SIG[d.sol]||d.sol));
@@ -104,5 +105,6 @@
   })();
 })();
 </script>
+<script src="/js/avatar.js"></script>
 </body>
 </html>

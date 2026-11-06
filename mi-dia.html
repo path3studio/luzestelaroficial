@@ -2716,7 +2716,9 @@ function renderProfiles(){
     // in the greeting stays the same — the user is navigating between
     // THEIR people's charts without losing their identity.
     h+='<div class="pf-row'+(active?' is-active':'')+'" data-profile-id="'+p.id+'" role="button" tabindex="0">';
-    h+='<span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
+    // 2026-11-06: imagen del perfil (criatura de su signo / color neutro); tocarla la cambia.
+    if(window.LuzEstelar&&LuzEstelar.Avatar) h+='<button type="button" class="pf-av-btn" data-av-id="'+p.id+'" aria-label="Cambiar imagen" style="background:none;border:none;padding:0;cursor:pointer;border-radius:50%">'+LuzEstelar.Avatar.html(p,34)+'</button>';
+    else h+='<span class="pf-av"><span class="le-ic'+(pri?' text-gold':'')+'" data-icon="'+avIcon+'">'+avFallback+'</span></span>';
     h+='<div class="pf-info"><span class="pf-name">'+(p.nombre||p.label||'—')+'</span><span class="pf-sub">'+(p.label||'')+(p.fecha_nacimiento?' · '+p.fecha_nacimiento:'')+'</span></div>';
     if(active) h+='<span class="pf-star" style="background:rgba(93,208,122,.18);color:#8edca0">Viendo</span>';
     else if(pri) h+='<span class="pf-star">Principal</span>';
@@ -2731,6 +2733,14 @@ function renderProfiles(){
   // Lápiz de edición: abre el MISMO modal precargado (caso Sara: hora mal
   // guardada e imposible de corregir). stopPropagation para no disparar
   // el switch de perfil de la fila.
+  box.querySelectorAll('.pf-av-btn').forEach(function(b){
+    b.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      var id=b.getAttribute('data-av-id');
+      var prof=profilesList.filter(function(p){return String(p.id)===String(id);})[0];
+      if(prof&&window.LuzEstelar&&LuzEstelar.Avatar) LuzEstelar.Avatar.elegir(prof, function(){ renderProfiles(); });
+    });
+  });
   box.querySelectorAll('.pf-edit').forEach(function(b){
     b.addEventListener('click', function(ev){
       ev.stopPropagation();
@@ -3721,6 +3731,7 @@ init();
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
+<script src="/js/avatar.js" defer></script>
 <!-- 2026-08-03: este bloque vivía dentro de la etiqueta de bottom-tabs.js,
      que lleva atributo src. Una etiqueta de script con src IGNORA su
      contenido en línea, así que todo el panel de casas era código muerto:

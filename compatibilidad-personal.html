@@ -395,7 +395,7 @@ body{
     <p class="am-sub">Comparte tu perfil y comparen sus cielos en 8 sistemas.</p>
     <div id="am-lista"></div>
     <button type="button" class="btn-cta" id="btn-compartir-perfil" style="margin-top:12px">Compartir mi perfil</button>
-    <p class="am-priv">Quien acepte verá tu primer nombre, tus signos y su compatibilidad contigo. Nunca tu fecha, hora ni lugar de nacimiento.</p>
+    <p class="am-priv">Quien acepte verá tu primer nombre, tu imagen de perfil, tus signos y su compatibilidad contigo. Nunca tu fecha, hora ni lugar de nacimiento.</p>
     <p class="am-nota" id="am-nota"></p>
     <p class="am-msg" id="am-msg" role="status" aria-live="polite"></p>
   </section>
@@ -403,8 +403,9 @@ body{
   <!-- Empty state: fewer than 2 profiles -->
   <div id="empty-profiles" class="glass empty-state hidden">
     <span class="empty-icon text-gold"><span class="le-ic" data-icon="sparkles"></span></span>
-    <p><strong>Agrega a alguien con quien compararte</strong><br><span style="font-size:.85em;opacity:.75">pareja, familiar, amigo/a — cada perfil abre su propia carta natal</span></p>
-    <a href="/mi-dia.html#add-profile" class="btn-cta">Agregar otro perfil</a>
+    <p><strong>Compara tu cielo con tus amigos</strong><br><span style="font-size:.85em;opacity:.75">Toca «Compartir mi perfil» arriba: cada quien crea su carta y aparece aquí.</span></p>
+    <!-- 2026-11-06 (dueño): agregar perfiles a mano queda como opción pequeña; lo principal es compartir -->
+    <a href="/mi-dia.html#add-profile" style="font-size:.78rem;color:rgba(224,220,232,.6);text-decoration:underline">o agrega un perfil a mano (tu mamá, tu bebé…)</a>
   </div>
 
   <!-- Profile selectors -->
@@ -661,7 +662,9 @@ body{
     box.innerHTML = amigos.map(function(a, i){
       var sig = [a.sol ? (SIG_ES[a.sol] || a.sol) : '', a.chino ? (CH_ES[a.chino] || a.chino) : ''].filter(Boolean).join(' · ');
       var bloqueado = !esPlus && i > 0;
-      return '<div class="am-it" data-id="' + escHtml(a.id) + '"><div class="am-av">' + escHtml((a.nombre || '·').charAt(0).toUpperCase()) + '</div>'
+      var av = (window.LuzEstelar && LuzEstelar.Avatar) ? LuzEstelar.Avatar.html({ nombre:a.nombre, sol:a.sol, avatar:a.avatar }, 36)
+             : '<div class="am-av">' + escHtml((a.nombre || '·').charAt(0).toUpperCase()) + '</div>';
+      return '<div class="am-it" data-id="' + escHtml(a.id) + '">' + av
         + '<div><div class="am-n">' + escHtml(a.nombre || 'Tu amigo') + '</div><div class="am-s">' + escHtml(sig) + '</div></div>'
         + '<div class="am-acc">' + (bloqueado ? '<span class="am-lock">🔒 Plus</span>' : '<button type="button" class="am-b" data-acc="comparar">Comparar</button>')
         + '<button type="button" class="am-b q" data-acc="quitar" aria-label="Quitar a ' + escHtml(a.nombre || '') + '">Quitar</button></div></div>';
@@ -1279,5 +1282,6 @@ body{
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
+<script src="/js/avatar.js" defer></script>
 </body>
 </html>
