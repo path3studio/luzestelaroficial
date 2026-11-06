@@ -502,7 +502,8 @@ main{
      /probar (explica cómo unirse); cuando esté abierta en Play, cambiar APP_COMPARTIR_URL. -->
 <div class="card fade fade-d4">
   <div class="card-label">Comparte Luz Estelar</div>
-  <p style="font-size:.85rem;color:var(--text-dim);margin:0 0 12px;line-height:1.5">Si alguien que quieres disfrutaría su lectura de cada día, mándale la app.</p>
+  <p style="font-size:.85rem;color:var(--text-dim);margin:0 0 12px;line-height:1.5">Por cada amigo que entre con tu enlace y cree su carta, te regalamos <b style="color:var(--gold)">1 mes de Plus</b>, hasta 3 meses.</p>
+  <p id="compartir-cuenta" style="font-size:.8rem;color:var(--text-dim);margin:0 0 12px"></p>
   <button type="button" class="btn-outline" id="btn-compartir-app">Compartir la app</button>
   <div class="notif-status" id="compartir-status" role="status" aria-live="polite"></div>
 </div>
@@ -563,6 +564,18 @@ main{
 var APP_COMPARTIR_URL = 'https://luzestelaroficial.com/probar';
 (function(){
   var b = document.getElementById('btn-compartir-app'); if(!b) return;
+  // Enlace propio (?ref=) y cuenta de amigos — /api/referral/status
+  (async function(){
+    try{
+      var tk = localStorage.getItem('le_token');
+      var r = await fetch('/api/referral/status',{credentials:'same-origin',cache:'no-store',headers: tk?{'Authorization':'Bearer '+tk}:{}});
+      var d = await r.json(); if(!d.ok) return;
+      APP_COMPARTIR_URL = d.enlace;
+      var c = document.getElementById('compartir-cuenta');
+      if(c && d.amigos > 0) c.textContent = (d.amigos === 1 ? 'Ya entró 1 amigo' : 'Ya entraron ' + d.amigos + ' amigos') +
+        ' con tu enlace · ' + d.meses + (d.meses === 1 ? ' mes' : ' meses') + ' de Plus ganados' + (d.meses >= d.max ? ' (el máximo) ✨' : '');
+    }catch(e){}
+  })();
   b.addEventListener('click', async function(){
     var st = document.getElementById('compartir-status');
     var texto = 'Te comparto Luz Estelar: tu lectura de cada día con el cielo real y tu carta natal 🌙';
