@@ -16,15 +16,16 @@
  * alert if TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID are configured,
  * and writes to AUTH_KV:sale_notification:last for the admin panel.
  */
-import { hasActiveGooglePlay } from '../../_shared/google-play.js';
+import { hasNonStripeAccess } from '../../_shared/google-play.js';
 
 // 2026-11-05: la misma persona puede tener Plus por Google Play (app Android). Una baja
 // en Stripe no debe quitarle el tier si su suscripción de Play sigue viva.
+// 2026-11-06: ídem si tiene Plus vivo por Semillas (Instagram) o por regalo de probador.
 async function tierTrasBajaStripe(DB, stripeCustomerId, tierPropuesto) {
   if (tierPropuesto === 'premium' || !stripeCustomerId) return tierPropuesto;
   try {
     const u = await DB.prepare('SELECT id FROM users WHERE stripe_customer_id = ?').bind(stripeCustomerId).first();
-    if (u && await hasActiveGooglePlay(DB, u.id)) return 'premium';
+    if (u && await hasNonStripeAccess(DB, u.id)) return 'premium';
   } catch (_) { /* no fatal */ }
   return tierPropuesto;
 }

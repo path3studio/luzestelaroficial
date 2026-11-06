@@ -190,6 +190,29 @@ export async function findByToken(DB, purchaseToken) {
   ).bind(purchaseToken).first();
 }
 
+// 2026-11-06: accesos a Plus que no pasan por Play ni por Stripe.
+//   'semillas' = suscriptores de Instagram (semillas_plus.py renueva la fila cada mañana, +35 d)
+//   'regalo'   = probadores de la app (3 meses)
+// Cuentan como vivos si status = 'active' y current_period_end no ha pasado. Ningún
+// cambio de Play o Stripe debe quitarle Plus a quien tenga uno de estos vivo.
+const SQL_ACCESO_MANUAL =
+  "(provider IN ('semillas','regalo') AND status = 'active' AND current_period_end > ?)";
+
+/** ¿Tiene el usuario Plus vivo por algo que no sea Stripe (Play, Semillas o regalo)? */
+export async function hasNonStripeAccess(DB, userId) {
+  const now = new Date().toISOString();
+  try {
+    const row = await DB.prepare(
+      "SELECT 1 AS ok FROM subscriptions WHERE user_id = ? AND (" +
+      "(provider = 'google_play' AND status IN ('active','past_due','canceled') AND current_period_end > ?) " +
+      "OR " + SQL_ACCESO_MANUAL + ") LIMIT 1",
+    ).bind(userId, now, now).first();
+    return !!row;
+  } catch (_) {
+    return hasActiveGooglePlay(DB, userId);
+  }
+}
+
 export async function hasActiveGooglePlay(DB, userId) {
   try {
     const row = await DB.prepare(
@@ -243,14 +266,19 @@ export async function applySubscription(env, userId, purchaseToken, sub, product
     }
   }
 
-  // tier del usuario: premium si esta compra da acceso o si tiene otra viva (Stripe o Play)
+  // tier del usuario: premium si esta compra da acceso o si tiene otra viva
+  // (otra de Play, Stripe, Semillas o regalo).
+  // 2026-11-06: `IS NULL OR` porque las filas de Stripe/Semillas no tienen token y
+  // `NULL <> ?` en SQL nunca es verdadero: antes la rama de Stripe jamás coincidía.
   let tier = s.entitled ? 'premium' : 'free';
   if (!s.entitled) {
     const other = await DB.prepare(
-      "SELECT 1 AS ok FROM subscriptions WHERE user_id = ? AND google_purchase_token <> ? " +
+      "SELECT 1 AS ok FROM subscriptions WHERE user_id = ? " +
+      "AND (google_purchase_token IS NULL OR google_purchase_token <> ?) " +
       "AND ((provider = 'google_play' AND status IN ('active','past_due','canceled') AND current_period_end > ?) " +
-      " OR (provider = 'stripe' AND status IN ('active','trialing'))) LIMIT 1",
-    ).bind(userId, purchaseToken, now).first().catch(() => null);
+      " OR ((provider = 'stripe' OR provider IS NULL) AND status IN ('active','trialing')) " +
+      " OR " + SQL_ACCESO_MANUAL + ") LIMIT 1",
+    ).bind(userId, purchaseToken, now, now).first().catch(() => null);
     if (other) tier = 'premium';
   }
   await DB.prepare('UPDATE users SET tier = ?, updated_at = ? WHERE id = ?').bind(tier, now, userId).run();
