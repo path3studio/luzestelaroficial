@@ -1188,6 +1188,55 @@ function openUpgrade(){
 
 var currentUser=null, currentProfile=null, profilesList=[];
 
+// ── Tarjeta «¿Te aviso?» (2026-11-06) ─────────────────────────────
+// Tras ver la lectura de hoy, a quien NO tiene avisos: una pregunta, dos botones.
+// «Ahora no» la esconde 14 días. Si el navegador/teléfono ya los negó, no aparece.
+// Alta = mismo /api/notifications/subscribe que Ajustes (lectura 8:00 + tránsitos + cielo).
+var AVISO_CARD_KEY='le_aviso_card_hasta';
+function _b64u8(b){var p='='.repeat((4-b.length%4)%4);var s=(b+p).replace(/-/g,'+').replace(/_/g,'/');var r=atob(s);var o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o;}
+async function maybeAvisoCard(){
+  if(document.getElementById('aviso-card')) return;
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)) return;
+  if(Notification.permission==='denied') return;
+  try{ var hasta=+localStorage.getItem(AVISO_CARD_KEY)||0; if(Date.now()<hasta) return; }catch(e){}
+  var st; try{ st=await (await api('/api/notifications/status')).json(); }catch(e){ return; }
+  if(!st||!st.ok||!st.vapidPublicKey) return;
+  try{
+    var reg=await navigator.serviceWorker.ready; var cur=await reg.pushManager.getSubscription();
+    if(cur && st.hasAny && Notification.permission==='granted') return; // ya los tiene
+  }catch(e){ return; }
+  var host=document.getElementById('rdg-card'); if(!host||!host.parentNode) return;
+  var c=document.createElement('div');
+  c.id='aviso-card'; c.className='card'; c.style.cssText='margin-top:12px;text-align:center';
+  c.innerHTML='<p style="font-size:.95rem;margin:0 0 4px">🔔 ¿Te aviso?</p>'+
+    '<p style="font-size:.85rem;color:var(--text-dim);margin:0 0 12px">Cada mañana con tu lectura, y cuando haya algo que ver en el cielo: lluvias de estrellas, Luna llena, la Luna junto a un planeta.</p>'+
+    '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
+    '<button type="button" class="btn-gold" id="aviso-si">Sí, avísame</button>'+
+    '<button type="button" id="aviso-no" style="background:none;border:none;color:var(--text-dim);font:inherit;font-size:.85rem;cursor:pointer;padding:11px 8px">Ahora no</button></div>'+
+    '<p id="aviso-msg" style="font-size:.8rem;color:var(--text-dim);margin:10px 0 0;min-height:1em"></p>';
+  host.parentNode.insertBefore(c, host.nextSibling);
+  var msg=function(t){var m=document.getElementById('aviso-msg'); if(m) m.textContent=t;};
+  document.getElementById('aviso-no').onclick=function(){
+    try{ localStorage.setItem(AVISO_CARD_KEY, String(Date.now()+14*864e5)); }catch(e){}
+    c.remove();
+  };
+  document.getElementById('aviso-si').onclick=async function(){
+    var b=this; b.disabled=true; msg('Activando…');
+    try{
+      var perm=await Notification.requestPermission();
+      if(perm!=='granted'){ msg('Sin permiso no puedo avisarte. Puedes activarlo después en Ajustes.'); b.disabled=false; return; }
+      var reg=await navigator.serviceWorker.ready;
+      var sub=await reg.pushManager.getSubscription();
+      if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:_b64u8(st.vapidPublicKey)});
+      var tz; try{ tz=Intl.DateTimeFormat().resolvedOptions().timeZone; }catch(e){ tz='America/Mexico_City'; }
+      var r=await (await api('/api/notifications/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({subscription:sub.toJSON(), lang:LANG, timezone:tz, sendHourLocal:8, notifyAspects:true, notifyCielo:true})})).json();
+      if(!r.ok) throw new Error(r.error||'subscribe');
+      c.innerHTML='<p style="font-size:.9rem;margin:0">✨ Listo. Te aviso cada mañana a las 8 y cuando haya algo que ver en el cielo. La hora la cambias en Ajustes.</p>';
+    }catch(e){ msg('No se pudo activar. Intenta de nuevo o desde Ajustes.'); b.disabled=false; }
+  };
+}
+
 async function api(path, opts){
   opts=opts||{};
   opts.credentials='same-origin';
@@ -2738,6 +2787,7 @@ async function loadDaily(offset){
         });
         rdgEl.appendChild(btn);
       })(d.reading);
+      if(_dayOffset===0){ try{ maybeAvisoCard(); }catch(e){} }
     }else if(_dayOffset>0){
       rdgEl.textContent='Las lecturas se generan cada noche. La de mañana estará lista al amanecer.';
     }else if(_dayOffset<0){

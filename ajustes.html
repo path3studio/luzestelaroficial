@@ -462,6 +462,15 @@ main{
     </div>
     <div class="tgl on" id="aspects-tgl" role="switch" aria-checked="true" aria-label="Avisos de tránsitos exactos"></div>
   </div>
+  <!-- 2026-11-06: «sal a mirar el cielo» (lluvias de meteoros, Luna llena, Luna junto a un planeta).
+       Pocos al mes; los manda luzestelar-push-sender a las 18:00 o 21:00 locales. -->
+  <div class="pref-row" id="cielo-row" style="display:none">
+    <div style="flex:1;min-width:0">
+      <div class="pref-label">Avisos del cielo</div>
+      <div class="pref-sub">Te avisamos cuando haya algo que ver a simple vista: lluvias de estrellas, Luna llena, la Luna junto a un planeta.</div>
+    </div>
+    <div class="tgl on" id="cielo-tgl" role="switch" aria-checked="true" aria-label="Avisos del cielo"></div>
+  </div>
   <div class="notif-status" id="notif-status" role="status" aria-live="polite"></div>
 </div>
 
@@ -703,6 +712,20 @@ async function loadRenewal(manageBtn){
     var sub = data.ok && data.subscription;
     if(!sub) return;
     var wrap = document.getElementById('renewal-wrap');
+    // 2026-11-06: Plus que viene de Semillas (Instagram) o del regalo de probadores: no hay nada que
+    // gestionar aquí (/api/billing/portal da 404 sin cliente de Stripe). Dentro de la app no se nombra Semillas.
+    if(sub.provider === 'semillas' || sub.provider === 'regalo'){
+      if(manageBtn) manageBtn.remove();
+      var pi = document.createElement('div');
+      pi.className = 'renewal-text';
+      pi.textContent = sub.provider === 'regalo'
+        ? 'Plus de regalo por probar la app \u2726'
+        : (document.documentElement.classList.contains('is-twa')
+            ? 'Plus incluido en tu suscripci\u00F3n \u2726'
+            : 'Plus incluido en tu suscripci\u00F3n a Semillas Estelares (Instagram) \u2726');
+      if(wrap) wrap.appendChild(pi);
+      return;
+    }
     var porPlay = sub.provider === 'google_play';
     if(porPlay && manageBtn) manageBtn.textContent = 'Gestionar en Google Play';
     if(sub.currentPeriodEnd){
@@ -781,7 +804,7 @@ document.getElementById('btn-delete-confirm').addEventListener('click', async fu
 });
 
 /* --- Push notifications --- */
-var pushState = { sub:null, vapid:null, supported:false, endpoint:null, sendHour:8, notifyAspects:true };
+var pushState = { sub:null, vapid:null, supported:false, endpoint:null, sendHour:8, notifyAspects:true, notifyCielo:true };
 
 function b64UrlToUint8(b64){
   var pad = '='.repeat((4 - b64.length % 4) % 4);
@@ -803,6 +826,15 @@ function setToggle(on){
   document.getElementById('hour-row').style.display = on ? 'flex' : 'none';
   var aspectsRow = document.getElementById('aspects-row');
   if(aspectsRow) aspectsRow.style.display = on ? 'flex' : 'none';
+  var cieloRow = document.getElementById('cielo-row');
+  if(cieloRow) cieloRow.style.display = on ? 'flex' : 'none';
+}
+function setCieloToggle(on){
+  var t = document.getElementById('cielo-tgl');
+  if(!t) return;
+  t.classList.toggle('on', !!on);
+  t.setAttribute('aria-checked', on ? 'true' : 'false');
+  pushState.notifyCielo = !!on;
 }
 function setAspectsToggle(on){
   var t = document.getElementById('aspects-tgl');
@@ -845,6 +877,8 @@ async function initPush(){
       // converts null → 1 on read so we always get a boolean here.
       pushState.notifyAspects = data.subscriptions[0].notifyAspects !== false;
       setAspectsToggle(pushState.notifyAspects);
+      pushState.notifyCielo = data.subscriptions[0].notifyCielo !== false;
+      setCieloToggle(pushState.notifyCielo);
     }
 
     if(!pushState.vapid){
@@ -859,6 +893,44 @@ async function initPush(){
   hourSel.addEventListener('change', onHourChange);
   var aspectsTgl = document.getElementById('aspects-tgl');
   if (aspectsTgl) aspectsTgl.addEventListener('click', onAspectsToggleClick);
+  var cieloTgl = document.getElementById('cielo-tgl');
+  if (cieloTgl) cieloTgl.addEventListener('click', onCieloToggleClick);
+}
+
+// «Avisos del cielo»: igual que el de tránsitos, solo cambia notifyCielo.
+async function onCieloToggleClick(){
+  var tgl = document.getElementById('cielo-tgl');
+  if(!tgl || tgl.classList.contains('loading')) return;
+  var wasOn = tgl.classList.contains('on');
+  tgl.classList.add('loading');
+  var newVal = !wasOn;
+  setCieloToggle(newVal);
+  try{
+    var reg = await navigator.serviceWorker.ready;
+    var sub = await reg.pushManager.getSubscription();
+    if(!sub){ throw new Error('no active subscription'); }
+    var tz; try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone; }catch(e){ tz = 'America/Mexico_City'; }
+    var res = await authFetch('/api/notifications/subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        subscription: sub.toJSON(),
+        lang:'es',
+        timezone: tz,
+        sendHourLocal: pushState.sendHour,
+        notifyCielo: newVal,
+      }),
+    });
+    var data = await res.json();
+    if(!data.ok) throw new Error(data.error || 'failed');
+    notifStatus(newVal
+      ? 'Te avisaremos cuando haya algo que ver en el cielo.'
+      : 'Avisos del cielo desactivados.');
+  }catch(e){
+    setCieloToggle(wasOn);
+    notifStatus('No se pudo actualizar la preferencia.');
+  }
+  tgl.classList.remove('loading');
 }
 
 // Flipping the aspects toggle: re-subscribes with the new flag so the
@@ -950,6 +1022,7 @@ async function enablePush(){
       timezone: tz,
       sendHourLocal: hour,
       notifyAspects: pushState.notifyAspects !== false,
+      notifyCielo: pushState.notifyCielo !== false,
     }),
   });
   var data = await res.json();
@@ -958,6 +1031,7 @@ async function enablePush(){
   pushState.sendHour = hour;
   setToggle(true);
   setAspectsToggle(pushState.notifyAspects !== false);
+  setCieloToggle(pushState.notifyCielo !== false);
   notifStatus('Listo. Te avisaremos cada dia a las ' + String(hour).padStart(2,'0')+':00.');
 }
 

@@ -358,6 +358,8 @@
             }
         }
     </style>
+<script>(function(){try{var k='le_twa',ss=window.sessionStorage,q=/[?&]app=android(&|$)/.test(location.search),r=(document.referrer||'').indexOf('android-app://')===0;if(q||r){ss.setItem(k,'1');}if(q||r||ss.getItem(k)==='1'){document.documentElement.classList.add('is-twa');}}catch(e){}})();</script>
+<style>html.is-twa .twa-hide{display:none !important}</style>
 </head>
 <body>
     <div class="starfield" id="starfield"></div>
@@ -442,6 +444,8 @@
                     </ul>
                     <button type="button" class="plan-btn plan-btn-primary" id="btn-plus">Empezar 7 días gratis</button>
                     <p class="plan-foot">Cancela cuando quieras &middot; Pago seguro por Stripe</p>
+                    <!-- 2026-11-06: Semillas incluye Plus. Oculto dentro de la app Android (regla de Google Play). -->
+                    <p class="plan-foot twa-hide" style="margin-top:10px">&iquest;Eres de Semillas Estelares en Instagram? Ya tienes Plus incluido: m&aacute;ndanos por mensaje el correo con el que entras y te lo activamos.</p>
                 </div>
             </div>
         </section>

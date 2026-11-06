@@ -516,7 +516,9 @@
 // la cabecera vieja y PaymentRequest fallaba dentro de la app.
 // v112 → v113 (Nov 6): /mi-dia y /en/my-day piden la lectura con la fecha LOCAL (antes UTC: en México
 // desde las 18:00 salía la lectura de mañana, vacía, con barras de relleno 5/10).
-const CACHE_NAME = 'luzestelar-v113';
+// v113 → v114 (Nov 6): tarjeta «¿Te aviso?» en /mi-dia, casilla «Avisos del cielo» y «Plus incluido» en
+// Ajustes, línea de Semillas en /planes (oculta en la app).
+const CACHE_NAME = 'luzestelar-v114';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

@@ -21,12 +21,15 @@ export async function onRequestGet(context) {
   let subscriptions = [];
   if (DB) {
     try {
-      const res = await DB.prepare(
-        `SELECT id, endpoint, send_hour_local, timezone, lang, notify_aspects, last_seen_at
+      const leer = (conCielo) => DB.prepare(
+        `SELECT id, endpoint, send_hour_local, timezone, lang, notify_aspects,${conCielo ? ' notify_cielo,' : ''} last_seen_at
            FROM push_subscriptions
           WHERE user_id = ?
           ORDER BY id DESC`
       ).bind(user.sub).all();
+      let res;
+      try { res = await leer(true); }
+      catch (e) { if (!/notify_cielo/i.test(String(e && e.message))) throw e; res = await leer(false); }
       subscriptions = (res.results || []).map(r => ({
         id: r.id,
         endpoint: r.endpoint,
@@ -34,6 +37,7 @@ export async function onRequestGet(context) {
         timezone: r.timezone,
         lang: r.lang,
         notifyAspects: r.notify_aspects == null ? 1 : !!r.notify_aspects,
+        notifyCielo: r.notify_cielo == null ? true : !!r.notify_cielo,
         lastSeenAt: r.last_seen_at,
       }));
     } catch (e) {
