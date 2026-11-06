@@ -518,7 +518,9 @@
 // desde las 18:00 salía la lectura de mañana, vacía, con barras de relleno 5/10).
 // v113 → v114 (Nov 6): tarjeta «¿Te aviso?» en /mi-dia, casilla «Avisos del cielo» y «Plus incluido» en
 // Ajustes, línea de Semillas en /planes (oculta en la app).
-const CACHE_NAME = 'luzestelar-v114';
+// v114 → v115 (Nov 6): recorrido de persona nueva — entrada que dice para qué es, bienvenida en 3 pasos
+// (lectura, áreas de vida, avisos), primer perfil sin «Relación», sin barras de relleno y la lectura de ayer de madrugada.
+const CACHE_NAME = 'luzestelar-v115';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

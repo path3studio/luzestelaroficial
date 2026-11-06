@@ -135,14 +135,14 @@ body{
   <div class="logo-section">
     <img class="logo-star" src="/app_icon.png" alt="Luz Estelar" width="72" height="72">
     <h1 class="logo-title">Luz Estelar</h1>
-    <p class="logo-subtitle">Tu guía cósmica personal</p>
+    <p class="logo-subtitle">Tu lectura de cada día, con el cielo real y tu carta natal</p>
   </div>
 
   <!-- Sent confirmation (hidden by default) -->
   <div class="sent-card hidden" id="sent-state">
     <span class="sent-icon">&#x2709;&#xFE0F;</span>
     <h2 class="sent-title">Revisa tu correo</h2>
-    <p class="sent-text">Enviamos un link mágico a <strong id="sent-email"></strong>. Haz clic en el link para entrar.</p>
+    <p class="sent-text">Te mandamos un enlace a <strong id="sent-email"></strong>. Ábrelo desde este teléfono para entrar.</p>
     <button class="btn-subtle" id="btn-retry">Usar otro correo</button>
   </div>
 
@@ -164,7 +164,7 @@ body{
     <!-- Magic Link -->
     <form class="magic-form" id="magic-form">
       <input type="email" class="email-input" id="magic-email" placeholder="tu@email.com" required autocomplete="email" inputmode="email">
-      <button type="submit" class="btn-gold" id="magic-btn">Enviar link mágico</button>
+      <button type="submit" class="btn-gold" id="magic-btn">Recibir enlace por correo</button>
     </form>
 
     <p class="error-text hidden" id="error-msg"></p>
@@ -235,12 +235,12 @@ body{
       }else{
         var msg=r.status===429?'Demasiados intentos. Espera unos minutos.':'Error al enviar el link. Intenta de nuevo.';
         errorEl.textContent=msg;errorEl.classList.remove('hidden');
-        btn.disabled=false;btn.textContent='Enviar link mágico';
+        btn.disabled=false;btn.textContent='Recibir enlace por correo';
       }
     }catch(err){
       errorEl.textContent='Error de conexión. Intenta de nuevo.';
       errorEl.classList.remove('hidden');
-      btn.disabled=false;btn.textContent='Enviar link mágico';
+      btn.disabled=false;btn.textContent='Recibir enlace por correo';
     }
   });
 
@@ -248,7 +248,7 @@ body{
   btnRetry.addEventListener('click',function(){
     sentState.classList.add('hidden');
     loginState.classList.remove('hidden');
-    emailInput.value='';btn.disabled=false;btn.textContent='Enviar link mágico';
+    emailInput.value='';btn.disabled=false;btn.textContent='Recibir enlace por correo';
   });
 })();
 </script>
