@@ -522,7 +522,8 @@
 // (lectura, áreas de vida, avisos), primer perfil sin «Relación», sin barras de relleno y la lectura de ayer de madrugada.
 // v115 → v116 (Nov 6): Inicio ordenado — «Tu perfil en 8 sistemas» y «Síguenos» plegables, cafecito fuera
 // de la app, y cada sistema (p. ej. Caballo) se abre en una hoja propia de la app en vez de la página web.
-const CACHE_NAME = 'luzestelar-v116';
+// v116 → v117 (Nov 6): «Síguenos» solo en Ajustes (+ cafecito fuera de la app), «Compartir la app» y acentos en Ajustes.
+const CACHE_NAME = 'luzestelar-v117';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
