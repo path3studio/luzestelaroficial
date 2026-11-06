@@ -392,13 +392,19 @@ body{
 <div class="page">
   <h1 class="page-title">Compatibilidad</h1>
 
+  <!-- 2026-11-06: compatibilidad con amigos — solo por invitación (maqueta aprobada por el dueño) -->
+  <section id="amigos-card" class="glass amigos-card">
+    <h2><span class="le-ic" data-icon="constelacion" aria-hidden="true"></span> Tus amigos</h2>
+    <p class="am-sub" id="am-sub">¿Tus amigos tienen la app? Comparte tu perfil y comparen sus cielos.</p>
+    <div id="am-lista"></div>
+    <button type="button" class="btn-cta" id="btn-compartir-perfil" style="margin-top:10px">Compartir mi perfil</button>
+    <p class="am-priv">Quien acepte verá tu primer nombre, tu imagen de perfil, tus signos y su compatibilidad contigo. Nunca tu fecha, hora ni lugar de nacimiento.</p>
+    <p class="am-nota" id="am-nota"></p>
+    <p class="am-msg" id="am-msg" role="status" aria-live="polite"></p>
+  </section>
+
 
   <!-- Empty state: fewer than 2 profiles -->
-  <div id="empty-profiles" class="glass empty-state hidden">
-    <span class="empty-icon text-gold"><span class="le-ic" data-icon="sparkles"></span></span>
-    <p><strong>Agrega a alguien con quien compararte</strong><br><span style="font-size:.85em;opacity:.75">tu pareja, tu mamá, tu bebé… con Plus guardas hasta 5 perfiles</span></p>
-    <a href="/mi-dia.html#add-profile" class="btn-cta">Agregar otro perfil</a>
-  </div>
 
   <!-- Profile selectors -->
   <div id="selector-section" class="hidden">
@@ -500,16 +506,13 @@ body{
       </div>
     </div>
   </div>
-  <!-- 2026-11-06: compatibilidad con amigos — solo por invitación (maqueta aprobada por el dueño) -->
-  <section id="amigos-card" class="glass amigos-card am-compacta">
-    <h2>👥 Tus amigos</h2>
-    <p class="am-sub" id="am-sub">¿Tus amigos tienen la app? Comparte tu perfil y comparen sus cielos.</p>
-    <div id="am-lista"></div>
-    <button type="button" class="am-b" id="btn-compartir-perfil" style="margin-top:8px;padding:8px 16px">Compartir mi perfil</button>
-    <p class="am-priv">Quien acepte verá tu primer nombre, tu imagen de perfil, tus signos y su compatibilidad contigo. Nunca tu fecha, hora ni lugar de nacimiento.</p>
-    <p class="am-nota" id="am-nota"></p>
-    <p class="am-msg" id="am-msg" role="status" aria-live="polite"></p>
-  </section>
+  <!-- 2026-11-06 (dueño): agregar perfiles a mano = opción pequeña, abajo -->
+  <div id="empty-profiles" class="hidden" style="text-align:center;margin:14px 0 0;font-size:.82rem;color:rgba(224,220,232,.62)">
+    Aún no hay con quién comparar: comparte tu perfil arriba y, en cuanto tus amigos acepten, aparecerán aquí.
+  </div>
+  <p class="agregar-chico" style="text-align:center;margin:18px 0 8px">
+    <a href="/mi-dia.html#add-profile" style="font-size:.8rem;color:rgba(224,220,232,.62);text-decoration:underline">＋ Agregar un perfil a mano (tu mamá, tu bebé…) · hasta 5 con Plus</a>
+  </p>
 </div>
 
 <script>
@@ -1284,6 +1287,6 @@ body{
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js" defer></script>
-<script src="/js/avatar.js" defer></script>
+<script src="/js/avatar.js?v=3" defer></script>
 </body>
 </html>

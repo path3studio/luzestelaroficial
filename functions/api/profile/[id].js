@@ -158,12 +158,40 @@ export async function onRequestPatch(context) {
   // the complete (new + old) record. Ownership check is implicit in
   // the WHERE user_id clause.
   const existing = await context.env.DB.prepare(
-    `SELECT id, fecha_nacimiento, hora_nacimiento, lat, lon, timezone, natal_chart
+    `SELECT id, fecha_nacimiento, hora_nacimiento, lugar_nacimiento, lat, lon, timezone, natal_chart, is_primary
      FROM birth_profiles WHERE id = ? AND user_id = ?`
   ).bind(profileId, user.sub).first();
 
   if (!existing) {
     return Response.json({ ok: false, error: 'Profile not found' }, { status: 404 });
+  }
+
+  // 2026-11-06 (dueño): el perfil principal es la persona misma → su «relación» no se cambia.
+  if (existing.is_primary) delete changes.label;
+  // 2026-11-06 (dueño, anti-abuso): fecha/hora/lugar de nacimiento se corrigen UNA vez por perfil cada 30 días
+  // (corregir sí; convertir el perfil en el de otra persona una y otra vez, no). El nombre sigue libre.
+  const norm = (v) => (v == null ? '' : String(v).trim());
+  const cambiaNacimiento =
+    ('fecha_nacimiento' in changes && norm(changes.fecha_nacimiento).slice(0, 10) !== norm(existing.fecha_nacimiento).slice(0, 10)) ||
+    ('hora_nacimiento' in changes && norm(changes.hora_nacimiento).slice(0, 5) !== norm(existing.hora_nacimiento).slice(0, 5)) ||
+    ('lugar_nacimiento' in changes && norm(changes.lugar_nacimiento) !== norm(existing.lugar_nacimiento));
+  const KV = context.env.AUTH_KV;
+  const kvKey = 'datos_edit:' + profileId;
+  if (cambiaNacimiento && KV) {
+    try {
+      const prev = await KV.get(kvKey);
+      if (prev) {
+        return Response.json({
+          ok: false, error: 'datos_limit',
+          message: 'Los datos de nacimiento de este perfil ya se corrigieron este mes. Podrás volver a corregirlos el ' +
+            new Date(new Date(prev).getTime() + 30 * 86400000).toLocaleDateString('es-MX', { day: 'numeric', month: 'long' }) +
+            '. Si es un error, escríbenos.'
+        }, { status: 429 });
+      }
+    } catch (e) { /* fail-open */ }
+  }
+  if (Object.keys(changes).length === 0) {
+    return Response.json({ ok: false, error: 'Nothing to update' }, { status: 400 });
   }
 
   // Decide whether the natal_chart needs to be recomputed.
@@ -239,6 +267,9 @@ export async function onRequestPatch(context) {
 
   // registrar la edición para el tope anti-granja (solo tras éxito real)
   if (context.data._registrarEdicion) await context.data._registrarEdicion();
+  if (cambiaNacimiento && KV) {
+    try { await KV.put(kvKey, new Date().toISOString(), { expirationTtl: 30 * 86400 }); } catch (e) { /* fail-open */ }
+  }
   return Response.json({ ok: true, recomputed: shouldRecompute });
 }
 
