@@ -903,7 +903,9 @@ function fmtDate(s){
   return days[d.getDay()]+', '+mos[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
 }
 
-function todayStr(){var d=new Date();return d.toISOString().split('T')[0];}
+// 2026-11-06: LOCAL date (was UTC: in the Americas, evenings asked for tomorrow's empty reading).
+function _ymdLocal(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0'+m:m)+'-'+(dd<10?'0'+dd:dd);}
+function todayStr(){return _ymdLocal(new Date());}
 
 // Monochrome SVG icons for the cross-cultural system grid.
 // Returns an inline <svg> string sized to match .ssym font-size (1.3rem ≈ 21px).
@@ -2037,7 +2039,7 @@ async function loadDaily(offset){
     title.textContent = _dayOffset===0?'Your reading today':_dayOffset===-1?'Yesterday\u2019s reading':_dayOffset===1?'Tomorrow\u2019s reading':'Reading · '+_dayLabel(_dayOffset);
   }
   try{
-    var qs='?lang='+LANG+(_dayOffset!==0?('&date='+dk):'');
+    var qs='?lang='+LANG+'&date='+dk; // always: the server's «today» is UTC
     var r=await api('/api/dashboard/daily-reading'+qs);
     if(!r.ok)return;
     var d=await r.json();
@@ -2122,7 +2124,7 @@ var _ondemandAttempted = {};
 var _ondemandInFlight  = {};
 
 async function maybeLoadOnDemandReading(profileId, rdgEl) {
-  var dateKey = new Date().toISOString().split('T')[0];
+  var dateKey = todayStr();
   var key = profileId + '|' + dateKey;
   if (_ondemandAttempted[key] || _ondemandInFlight[key]) return;
   _ondemandInFlight[key] = true;
@@ -2140,7 +2142,7 @@ async function maybeLoadOnDemandReading(profileId, rdgEl) {
     var r = await api('/api/readings/on-demand', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profile_id: profileId, lang: LANG })
+      body: JSON.stringify({ profile_id: profileId, lang: LANG, date: dateKey })
     });
     if (!r.ok) return;
     var j = await r.json();

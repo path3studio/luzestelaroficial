@@ -514,7 +514,9 @@
 // (GET /api/billing/google-play/verify → ready) y Play devuelve los productos.
 // v111 → v112 (Nov 5): la CSP cambió (connect-src https://play.google.com); el caché previo guardaba
 // la cabecera vieja y PaymentRequest fallaba dentro de la app.
-const CACHE_NAME = 'luzestelar-v112';
+// v112 → v113 (Nov 6): /mi-dia y /en/my-day piden la lectura con la fecha LOCAL (antes UTC: en México
+// desde las 18:00 salía la lectura de mañana, vacía, con barras de relleno 5/10).
+const CACHE_NAME = 'luzestelar-v113';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

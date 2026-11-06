@@ -907,7 +907,7 @@ body.modal-open #le-tabs{display:none !important}
       <div class="card news-card">
         <div class="news-hd">
           <span class="nh-ic"><span class="le-ic" data-icon="sparkles"></span></span>
-          <span class="nh-tt">Tu horoscopo, cada semana</span>
+          <span class="nh-tt">Tu horóscopo, cada semana</span>
         </div>
         <p class="news-sub">Recibe los movimientos clave del cosmos y una lectura personal en tu correo. Sin spam, cancelas cuando quieras.</p>
         <form id="news-form" class="news-form" autocomplete="on">
@@ -1133,7 +1133,9 @@ function fmtDate(s){
   return days[d.getDay()]+', '+d.getDate()+' de '+mos[d.getMonth()]+' '+d.getFullYear();
 }
 
-function todayStr(){var d=new Date();return d.toISOString().split('T')[0];}
+// 2026-11-06: fecha LOCAL (antes UTC: en México desde las 18:00 pedía la lectura de mañana, vacía).
+function _ymdLocal(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0'+m:m)+'-'+(dd<10?'0'+dd:dd);}
+function todayStr(){return _ymdLocal(new Date());}
 
 // Monochrome SVG icons for the cross-cultural system grid.
 // Returns an inline <svg> string sized to match .ssym font-size (1.3rem ≈ 21px).
@@ -1204,7 +1206,7 @@ function bumpStreak(){
   try{
     var today=todayStr();
     var d=new Date();
-    var yest=new Date(d.getTime()-86400000).toISOString().split('T')[0];
+    var _y=new Date(d); _y.setDate(_y.getDate()-1); var yest=_ymdLocal(_y);
     var s={last:null,count:0};
     try{var raw=localStorage.getItem('le_streak'); if(raw) s=JSON.parse(raw);}catch(e){}
     if(s.last===today){ /* keep */ }
@@ -1318,7 +1320,7 @@ function renderAll(){
   // elements don't throw.
   var hdrDt=document.getElementById('hdr-dt'); if(hdrDt) hdrDt.textContent=todayStr();
   var tier=document.getElementById('tier-pill');
-  var lab='Free';
+  var lab='Gratis';
   if(currentUser.tier==='premium'){lab='Plus';tier.classList.add('plus');}
   else if(currentUser.tier&&currentUser.tier!=='free'){lab=currentUser.tier[0].toUpperCase()+currentUser.tier.slice(1);}
   tier.textContent=lab;
@@ -2634,7 +2636,7 @@ function _dayLabel(offset){
 function _dateKeyForOffset(offset){
   var d=new Date();
   d.setDate(d.getDate()+offset);
-  return d.toISOString().split('T')[0];
+  return _ymdLocal(d);
 }
 
 async function loadDaily(offset){
@@ -2662,7 +2664,7 @@ async function loadDaily(offset){
     else titleEl.textContent='Lectura del '+_fmtFecha(offset);
   }
   try{
-    var dateParam = offset===0 ? '' : '&date='+_dateKeyForOffset(offset);
+    var dateParam = '&date='+_dateKeyForOffset(offset); // siempre: el servidor calcula «hoy» en UTC
     var r=await api('/api/dashboard/daily-reading?lang='+LANG+dateParam);
     // 2026-08-05 (user: "la barra de amor y la de energía no carga"):
     // antes un fallo aquí dejaba anillo y barras VACÍOS sin decir nada —
@@ -2744,7 +2746,7 @@ async function loadDaily(offset){
       // Today with no reading — likely a brand-new profile before the
       // nightly pipeline has run for it. Set expectation + hours ETA.
       var hrsLeft = (function(){ var n=new Date(); var nx=new Date(n); nx.setHours(3,0,0,0); if(nx<=n) nx.setDate(nx.getDate()+1); return Math.max(1, Math.round((nx-n)/3600000)); })();
-      rdgEl.textContent='Tu lectura de hoy se genera cada noche. La próxima llega en ~'+hrsLeft+'h. Mientras tanto puedes explorar tu carta natal arriba.';
+      rdgEl.textContent='Tu lectura de hoy se genera cada noche. La próxima llega en ~'+hrsLeft+'h. Mientras tanto, explora tu carta natal aquí abajo.';
     }
 
     // ── Arco 1: on-demand chart-level reading (Plus + today only) ──
@@ -2813,7 +2815,7 @@ var _ondemandAttempted = {};   // map "profile|date" → true
 var _ondemandInFlight  = {};   // same key → true while request is in flight
 
 async function maybeLoadOnDemandReading(profileId, rdgEl) {
-  var dateKey = new Date().toISOString().split('T')[0];
+  var dateKey = todayStr();
   var key = profileId + '|' + dateKey;
   if (_ondemandAttempted[key] || _ondemandInFlight[key]) return;
   _ondemandInFlight[key] = true;
@@ -2859,7 +2861,7 @@ async function maybeLoadOnDemandReading(profileId, rdgEl) {
     var r = await api('/api/readings/on-demand', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profile_id: profileId, lang: LANG })
+      body: JSON.stringify({ profile_id: profileId, lang: LANG, date: dateKey })
     });
     // 403 = no es Plus y 503 = función apagada: ahí no hay nada que prometer,
     // se calla. Cualquier otro fallo SÍ es una promesa incumplida → se avisa.
@@ -3744,7 +3746,7 @@ function casaDeLongitud(chart, lon){
 
 function renderEclipse(chart){
   try{
-    var hoy = new Date().toISOString().slice(0,10);
+    var hoy = todayStr();
     if(hoy < ECLIPSE_VENTANA[0] || hoy > ECLIPSE_VENTANA[1]) return;
     var el = document.getElementById('eclipse-banner');
     if(!el) return;
