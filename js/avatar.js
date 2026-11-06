@@ -13,7 +13,8 @@
   // la sesión de Play la declare en «Seguridad de los datos» (subir = recopilar desde la app). Mostrar fotos subidas
   // desde la web sí se permite en la app.
   var EN_APP = document.documentElement.classList.contains('is-twa');
-  var FOTO_SUBIR = !EN_APP;
+  // 6/nov 16:xx: declaración «Fotos» ENVIADA a revisión de Google con el OK del dueño (sesión Play) → también en la app.
+  var FOTO_SUBIR = true;
   var FOTO_PERFIL = true;      // mostrar fotos ya guardadas
   var SLUG = {
     aries: 'aries', taurus: 'tauro', tauro: 'tauro', gemini: 'geminis', 'géminis': 'geminis', geminis: 'geminis',

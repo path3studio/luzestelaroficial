@@ -534,7 +534,8 @@
 // perfil principal sin «relación», corrección de datos de nacimiento 1 vez al mes, avatar.js?v=3.
 // v124 → v125 (Nov 6): botón «ranking de hoy», energía con decimal, Síguenos plegado, foto propia en la web,
 // icons.js y bottom-tabs.js con ?v= (antes el teléfono seguía con los viejos).
-const CACHE_NAME = 'luzestelar-v125';
+// v125 → v126 (Nov 6): «Subir una foto» también dentro de la app (declaración de Fotos enviada a Google).
+const CACHE_NAME = 'luzestelar-v126';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
