@@ -535,7 +535,9 @@
 // v124 → v125 (Nov 6): botón «ranking de hoy», energía con decimal, Síguenos plegado, foto propia en la web,
 // icons.js y bottom-tabs.js con ?v= (antes el teléfono seguía con los viejos).
 // v125 → v126 (Nov 6): «Subir una foto» también dentro de la app (declaración de Fotos enviada a Google).
-const CACHE_NAME = 'luzestelar-v126';
+// v126 → v127 (Nov 6): foto propia se acomoda (arrastrar + zoom) y ya no da «imagen no válida» (CSP sin blob:);
+// R2 (podcasts.luzestelaroficial.com) permitido en img-src para ranking y mapas; Mi perfil con «Tu plan» aparte.
+const CACHE_NAME = 'luzestelar-v127';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

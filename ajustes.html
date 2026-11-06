@@ -75,7 +75,10 @@ main{
 }
 .card-destacada{background:linear-gradient(135deg,rgba(212,168,73,.20),rgba(143,116,214,.14)) !important;border-color:rgba(212,168,73,.45) !important}
 .card-destacada .card-label{color:#f0d078}
-.mi-perfil-fila{display:flex;align-items:center;gap:14px;text-align:left}
+.mi-perfil-fila{display:flex;align-items:center;gap:16px;text-align:left}
+.mi-av-col{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none}
+.mi-plan{margin-top:16px;padding-top:14px;border-top:1px solid rgba(212,168,73,.15);display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.mi-plan-l{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(236,232,244,.5)}
 .mi-av{background:none;border:none;padding:0;cursor:pointer;border-radius:50%}
 .mi-av:focus-visible,.btn-link-sm:focus-visible{outline:2px solid #8f74d6;outline-offset:2px}
 .mi-signos{font-size:.78rem;color:rgba(236,232,244,.6);margin-top:2px}
@@ -424,17 +427,23 @@ main{
   <div class="card-label">Mi perfil</div>
   <!-- 2026-11-06: imagen del perfil (criatura de su signo o color neutro) — toca para cambiarla -->
   <div class="mi-perfil-fila">
-    <button type="button" class="mi-av" id="mi-avatar" aria-label="Cambiar imagen de perfil"></button>
+    <div class="mi-av-col">
+      <button type="button" class="mi-av" id="mi-avatar" aria-label="Cambiar imagen de perfil"></button>
+      <button type="button" class="btn-link-sm" id="btn-cambiar-imagen">Cambiar imagen</button>
+    </div>
     <div style="min-width:0;flex:1">
       <div class="account-name" id="user-name"></div>
       <div class="account-email" id="user-email"></div>
       <div class="mi-signos" id="mi-signos"></div>
     </div>
   </div>
-  <button type="button" class="btn-link-sm" id="btn-cambiar-imagen">Cambiar imagen</button>
+  <!-- 2026-11-06 (dueño): el plan va aparte, con aire, no pegado a «Cambiar imagen» -->
+  <div class="mi-plan">
+    <div class="mi-plan-l">Tu plan</div>
   <div id="tier-badge-wrap"></div>
   <div id="billing-actions"></div>
   <div id="renewal-wrap"></div>
+  </div>
 </div>
 
 <!-- 2026-11-06: «Avisos» aparte (antes dentro de Preferencias) -->
@@ -1215,6 +1224,6 @@ init();
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
 <script src="/js/bottom-tabs.js?v=20261106" defer></script>
-<script src="/js/avatar.js?v=5" defer></script>
+<script src="/js/avatar.js?v=6" defer></script>
 </body>
 </html>

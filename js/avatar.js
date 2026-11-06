@@ -61,18 +61,62 @@
     return fetch('/api/profile/avatar', { method: 'POST', credentials: 'same-origin', headers: h, body: JSON.stringify({ profile_id: pid, avatar: avatar }) })
       .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.ok) throw new Error(d.error || 'No se pudo guardar'); return d; }); });
   }
-  // Foto propia: se reduce en el teléfono a 160 px JPEG (~10-20 KB) antes de subirla.
-  function reducir(file) {
+  // Foto propia (2026-11-06): se lee como data: (la CSP no permite blob: en img-src → antes «Imagen no válida»),
+  // la persona la ACOMODA (arrastrar + zoom) dentro del círculo, y se guarda a 160 px JPEG (~10-20 KB).
+  function leer(file) {
     return new Promise(function (ok, no) {
-      var img = new Image(), url = URL.createObjectURL(file);
-      img.onload = function () {
-        var L = 160, c = document.createElement('canvas'); c.width = c.height = L;
-        var m = Math.min(img.width, img.height), sx = (img.width - m) / 2, sy = (img.height - m) / 2;
-        c.getContext('2d').drawImage(img, sx, sy, m, m, 0, 0, L, L); URL.revokeObjectURL(url);
-        ok(c.toDataURL('image/jpeg', 0.82));
+      if (!file || !/^image\//.test(file.type || 'image/')) return no(new Error('Ese archivo no es una imagen'));
+      var fr = new FileReader();
+      fr.onload = function () {
+        var img = new Image();
+        img.onload = function () { ok(img); };
+        img.onerror = function () { no(new Error('No pude abrir esa imagen. Prueba con una foto JPG o PNG.')); };
+        img.src = fr.result;
       };
-      img.onerror = function () { URL.revokeObjectURL(url); no(new Error('Imagen no válida')); };
-      img.src = url;
+      fr.onerror = function () { no(new Error('No pude leer la imagen')); };
+      fr.readAsDataURL(file);
+    });
+  }
+  function acomodar(img, contenedor, alListo, alCancelar) {
+    var V = 240, z = 1, w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+    var s0 = V / Math.min(w, h), ox, oy;
+    var esc2 = function () { return s0 * z; };
+    var centrar = function () { ox = (V - w * esc2()) / 2; oy = (V - h * esc2()) / 2; };
+    var limitar = function () {
+      var W = w * esc2(), H = h * esc2();
+      ox = Math.min(0, Math.max(V - W, ox)); oy = Math.min(0, Math.max(V - H, oy));
+    };
+    centrar();
+    contenedor.innerHTML = '<p style="font:600 1.15rem \'Cormorant Garamond\',Georgia,serif;color:#f0d078;margin:0 0 4px">Acomoda tu foto</p>' +
+      '<p style="font-size:.8rem;color:rgba(236,232,244,.6);margin:0 0 12px">Arrastra para moverla y usa la barra para acercar.</p>' +
+      '<canvas id="le-crop" width="' + V + '" height="' + V + '" style="width:' + V + 'px;height:' + V + 'px;border-radius:50%;' +
+      'border:2px solid #d4a849;touch-action:none;cursor:grab;background:#1a1838"></canvas>' +
+      '<input id="le-zoom" type="range" min="1" max="3" step="0.01" value="1" aria-label="Acercar" style="display:block;width:220px;margin:14px auto 4px;accent-color:#d4a849">' +
+      '<div style="display:flex;gap:10px;justify-content:center;margin-top:10px">' +
+      '<button type="button" id="le-crop-no" style="background:none;border:1px solid rgba(212,168,73,.35);color:#ece8f4;border-radius:12px;padding:10px 16px;font:500 .9rem Inter,sans-serif;cursor:pointer">Otra imagen</button>' +
+      '<button type="button" id="le-crop-si" style="background:linear-gradient(135deg,#e2bd62,#c8963a);color:#14102a;border:none;border-radius:12px;padding:10px 18px;font:700 .9rem Inter,sans-serif;cursor:pointer">Usar esta foto</button></div>';
+    var cv = contenedor.querySelector('#le-crop'), ctx = cv.getContext('2d');
+    var pintar = function () { ctx.clearRect(0, 0, V, V); ctx.drawImage(img, ox, oy, w * esc2(), h * esc2()); };
+    pintar();
+    var arrastre = null;
+    cv.addEventListener('pointerdown', function (e) { arrastre = { x: e.clientX, y: e.clientY, ox: ox, oy: oy }; cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; });
+    cv.addEventListener('pointermove', function (e) {
+      if (!arrastre) return;
+      ox = arrastre.ox + (e.clientX - arrastre.x); oy = arrastre.oy + (e.clientY - arrastre.y); limitar(); pintar();
+    });
+    var soltar = function () { arrastre = null; cv.style.cursor = 'grab'; };
+    cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+    contenedor.querySelector('#le-zoom').addEventListener('input', function () {
+      var cx = (V / 2 - ox) / esc2(), cy = (V / 2 - oy) / esc2();   // punto de la imagen en el centro
+      z = parseFloat(this.value) || 1;
+      ox = V / 2 - cx * esc2(); oy = V / 2 - cy * esc2(); limitar(); pintar();
+    });
+    contenedor.querySelector('#le-crop-no').addEventListener('click', alCancelar);
+    contenedor.querySelector('#le-crop-si').addEventListener('click', function () {
+      var L = 160, k = L / V, out = document.createElement('canvas'); out.width = out.height = L;
+      var c2 = out.getContext('2d'); c2.fillStyle = '#1a1838'; c2.fillRect(0, 0, L, L);
+      c2.drawImage(img, ox * k, oy * k, w * esc2() * k, h * esc2() * k);
+      alListo(out.toDataURL('image/jpeg', 0.85));
     });
   }
 
@@ -124,8 +168,12 @@
     });
     ov.querySelector('#le-av-file').addEventListener('change', function () {
       var f = this.files && this.files[0]; if (!f) return;
-      msg('Preparando la foto…');
-      reducir(f).then(aplicar).catch(function (e) { msg(e.message); });
+      var input = this; msg('Abriendo la foto…');
+      leer(f).then(function (img) {
+        var hoja = ov.firstElementChild, antes = hoja.innerHTML;
+        acomodar(img, hoja, function (dataUrl) { hoja.innerHTML = antes + ''; aplicar(dataUrl); },
+          function () { input.value = ''; cerrar(); elegir(p, alGuardar); });
+      }).catch(function (e) { msg(e.message); });
     });
     document.body.appendChild(ov);
   }
