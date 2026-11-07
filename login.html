@@ -214,7 +214,8 @@ body{
   var token=params.get('token');
   if(token){
     localStorage.setItem('le_token',token);
-    window.location.href=params.get('redirect')||'/mi-dia.html';
+    var _r=params.get('redirect')||''; // 2026-11-06 QA: solo rutas propias (nada de //otro-sitio ni javascript:)
+    window.location.href=(/^\/(?!\/)[^\s]*$/.test(_r)?_r:'/mi-dia.html');
   }
 
   // Magic link form

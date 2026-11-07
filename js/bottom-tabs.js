@@ -39,13 +39,13 @@
   // emoji character if the registry isn't present (defensive — e.g.
   // a page that includes bottom-tabs.js but skipped icons.js).
   var tabs = isEn ? [
-    { id:'inicio', label:'Home',     icon:'estrella-le', fallback:'\u2726',       href:'/en/my-day.html',                   paths:['/en/my-day.html','/en/dashboard.html'] },
-    { id:'compat', label:'Compatibility', icon:'sinastria', fallback:'\uD83D\uDC96', href:'/en/compatibility-personal.html',   paths:['/en/compatibility-personal.html'] },
-    { id:'ajustes',label:'Settings', icon:'astrolabio', fallback:'\u2699\uFE0F', href:'/ajustes.html',                     paths:['/ajustes.html'] }
+    { id:'inicio', label:'Home',     icon:'estrella-le', fallback:'\u2726',       href:'/en/my-day.html',                   paths:['/en/my-day.html','/en/my-day','/en/dashboard.html','/en/dashboard'] },
+    { id:'compat', label:'Compatibility', icon:'sinastria', fallback:'\uD83D\uDC96', href:'/en/compatibility-personal.html',   paths:['/en/compatibility-personal.html','/en/compatibility-personal'] },
+    { id:'ajustes',label:'Settings', icon:'astrolabio', fallback:'\u2699\uFE0F', href:'/ajustes.html',                     paths:['/ajustes.html','/ajustes'] }
   ] : [
-    { id:'inicio', label:'Inicio',  icon:'estrella-le', fallback:'\u2726',       href:'/mi-dia.html',                   paths:['/mi-dia.html','/dashboard.html'] },
-    { id:'compat', label:'Compatibilidad', icon:'sinastria', fallback:'\uD83D\uDC96', href:'/compatibilidad-personal.html',  paths:['/compatibilidad-personal.html'] },
-    { id:'ajustes',label:'Ajustes', icon:'astrolabio', fallback:'\u2699\uFE0F', href:'/ajustes.html',                  paths:['/ajustes.html'] }
+    { id:'inicio', label:'Inicio',  icon:'estrella-le', fallback:'\u2726',       href:'/mi-dia.html',                   paths:['/mi-dia.html','/mi-dia','/dashboard.html','/dashboard'] },
+    { id:'compat', label:'Compatibilidad', icon:'sinastria', fallback:'\uD83D\uDC96', href:'/compatibilidad-personal.html',  paths:['/compatibilidad-personal.html','/compatibilidad-personal'] },
+    { id:'ajustes',label:'Ajustes', icon:'astrolabio', fallback:'\u2699\uFE0F', href:'/ajustes.html',                  paths:['/ajustes.html','/ajustes'] }
   ];
   var active = '';
   for(var i=0;i<tabs.length;i++){

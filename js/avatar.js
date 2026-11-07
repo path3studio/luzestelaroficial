@@ -151,7 +151,15 @@
       '<input type="file" accept="image/*" id="le-av-file" hidden>' +
       '<p id="le-av-msg" style="font-size:.8rem;color:#f0d078;min-height:1.1em;margin:12px 0 0"></p>' +
       '<button type="button" data-av="cerrar" style="margin-top:4px;background:none;border:none;color:rgba(236,232,244,.6);font:500 .9rem Inter,sans-serif;padding:8px 16px;cursor:pointer">Cancelar</button></div>';
-    var cerrar = function () { try { ov.remove(); } catch (e) {} };
+    // 2026-11-06 QA: el botón «atrás» de Android cierra la hoja (antes salía de la página)
+    var cerrada = false;
+    var alAtras = function () { cerrar(true); };
+    var cerrar = function (desdeAtras) {
+      if (cerrada) return; cerrada = true;
+      try { ov.remove(); } catch (e) {}
+      window.removeEventListener('popstate', alAtras);
+      if (desdeAtras !== true) { try { if (history.state && history.state.capaAv) history.back(); } catch (e) {} }
+    };
     var msg = function (t) { var m = ov.querySelector('#le-av-msg'); if (m) m.textContent = t; };
     var aplicar = function (val) {
       msg('Guardando…');
@@ -172,10 +180,12 @@
       leer(f).then(function (img) {
         var hoja = ov.firstElementChild, antes = hoja.innerHTML;
         acomodar(img, hoja, function (dataUrl) { hoja.innerHTML = antes + ''; aplicar(dataUrl); },
-          function () { input.value = ''; cerrar(); elegir(p, alGuardar); });
+          function () { input.value = ''; cerrar(true); elegir(p, alGuardar); });
       }).catch(function (e) { msg(e.message); });
     });
     document.body.appendChild(ov);
+    try { history.pushState({ capaAv: 1 }, '', location.href); } catch (e) {}
+    window.addEventListener('popstate', alAtras);
   }
 
   window.LuzEstelar = window.LuzEstelar || {};

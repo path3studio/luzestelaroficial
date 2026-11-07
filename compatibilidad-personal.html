@@ -1252,8 +1252,8 @@ body{
     btnUpgrade.addEventListener('click', function(){
       if (window.LuzEstelar && LuzEstelar.UpgradeSheet) {
         LuzEstelar.UpgradeSheet.open({ lang: 'es' });
-      } else {
-        window.location.assign('/planes.html');
+      } else if (!document.documentElement.classList.contains('is-twa')) {
+        window.location.assign('/planes.html');   // en la app nunca a /planes (Stripe)
       }
     });
   }
@@ -1280,13 +1280,13 @@ body{
 <script src="/js/astro-glyphs.js?v=2"></script>
 <script src="/js/natal-chart.js?v=32"></script>
 <script src="/js/icons.js?v=20261106" defer></script>
-<script src="/js/toast.js" defer></script>
+<script src="/js/toast.js?v=20261106" defer></script>
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
 <script src="/js/stars.js" defer></script>
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
-<script src="/js/bottom-tabs.js?v=20261106" defer></script>
-<script src="/js/avatar.js?v=7" defer></script>
+<script src="/js/bottom-tabs.js?v=20261106b" defer></script>
+<script src="/js/avatar.js?v=8" defer></script>
 </body>
 </html>

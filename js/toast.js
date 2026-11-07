@@ -43,7 +43,7 @@
     s.id = 'le-toast-styles';
     s.textContent = [
       '#le-toast-stack{',
-      '  position:fixed;left:0;right:0;z-index:3000;pointer-events:none;',
+      '  position:fixed;left:0;right:0;z-index:10100;pointer-events:none;',
       '  display:flex;flex-direction:column;align-items:center;gap:10px;',
       '  padding:16px;',
       // Mobile: stack above bottom tabs (62px) + safe area

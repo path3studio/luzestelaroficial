@@ -538,7 +538,10 @@
 // v126 → v127 (Nov 6): foto propia se acomoda (arrastrar + zoom) y ya no da «imagen no válida» (CSP sin blob:);
 // R2 (podcasts.luzestelaroficial.com) permitido en img-src para ranking y mapas; Mi perfil con «Tu plan» aparte.
 // v127 → v128 (Nov 6): hojas (foto, mapa, ranking, sistema) por encima de la barra inferior (z 9999 tapaba «Usar esta foto»).
-const CACHE_NAME = 'luzestelar-v128';
+// v128 → v129 (Nov 6): el SW ya no intercepta otros dominios (imágenes de R2 en blanco en la app).
+// v129 → v130 (Nov 6): QA — Plus se reconoce en marca de agua y capa de casas, nada de /planes (Stripe) en la app,
+// capas sobre la barra y con «atrás», pestaña activa en /mi-dia, login sin redirecciones a otros sitios.
+const CACHE_NAME = 'luzestelar-v130';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".
@@ -626,6 +629,11 @@ self.addEventListener('fetch', (event) => {
 
   // Skip non-GET requests and cross-origin (fonts loaded via CDN will cache naturally)
   if (request.method !== 'GET') return;
+  // 2026-11-06: el comentario de arriba decía «cross-origin» pero el código no lo hacía. Las imágenes de R2
+  // (podcasts.luzestelaroficial.com: ranking de hoy, mapas Plus) caían en el cache-first de abajo; el fetch()
+  // del service worker se rige por la CSP de sw.js (connect-src sin ese dominio) → la imagen salía en blanco
+  // dentro de la app. Lo de otros dominios lo resuelve el navegador directamente.
+  if (new URL(request.url).origin !== self.location.origin) return;
 
   // For navigation requests (HTML pages): network-first.
   if (request.mode === 'navigate') {

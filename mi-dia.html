@@ -261,7 +261,7 @@ main{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .sys-item .ssym svg.sysv{width:20px;height:20px}
 
 /* Onboarding tour overlay */
-.tour-overlay{position:fixed;inset:0;z-index:300;background:rgba(6,6,26,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
+.tour-overlay{position:fixed;inset:0;z-index:10040;background:rgba(6,6,26,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
 .tour-overlay.show{display:flex;opacity:1}
 .tour-card{max-width:340px;width:100%;background:linear-gradient(135deg,#140f30,#0a0a20);border:1px solid rgba(212,168,73,.25);border-radius:20px;padding:28px 24px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .tour-ic{font-size:2.4rem;color:var(--gold);margin-bottom:8px;line-height:1}
@@ -471,7 +471,7 @@ body.modal-open #le-tabs{display:none !important}
    a single primary action, and auto-dismisses once the first profile
    is created. If the user prefers to poke around empty-handed, a
    small "Explorar primero" link bypasses. */
-.ob-overlay{position:fixed;inset:0;z-index:2500;background:linear-gradient(180deg,#05051a 0%,#0a0a2a 35%,#0c0c3a 70%,#05051a 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0));padding-bottom:calc(24px + env(safe-area-inset-bottom,0));animation:obFadeIn .4s ease-out}
+.ob-overlay{position:fixed;inset:0;z-index:10040;overflow-y:auto;background:linear-gradient(180deg,#05051a 0%,#0a0a2a 35%,#0c0c3a 70%,#05051a 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0));padding-bottom:calc(24px + env(safe-area-inset-bottom,0));animation:obFadeIn .4s ease-out}
 .ob-overlay.is-open{display:flex}
 .ob-starfield{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.6}
 .ob-content{position:relative;z-index:1;max-width:360px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
@@ -1196,8 +1196,10 @@ function openUpgrade(){
   if(twaSinPago()) return;
   if(window.LuzEstelar&&LuzEstelar.UpgradeSheet){
     LuzEstelar.UpgradeSheet.open({lang:'es'});
-  }else{
-    window.location.assign('/planes.html');
+  }else if(!(window.isTwa&&isTwa())){
+    window.location.assign('/planes.html');   // en la app nunca a /planes (Stripe): Plus solo por Google Play
+  }else if(window.LuzEstelar&&LuzEstelar.toast){
+    LuzEstelar.toast('Plus se activa desde Ajustes ✦',{duration:5000});
   }
 }
 
@@ -1232,6 +1234,7 @@ async function reclamarAmigo(){
 
 // ── Mapa estelar incluido con Plus, uno por perfil (2026-11-06) ──
 window._mapas=null;
+window.addEventListener('load',function(){ try{ if(profilesList&&profilesList.length&&window.LuzEstelar&&LuzEstelar.Avatar) renderProfiles(); }catch(e){} });
 async function cargarMapas(){
   if(!(currentUser&&currentUser.tier==='premium')) return;
   try{ var d=await (await api('/api/mapa-estelar/perfil')).json(); if(d&&d.ok&&d.disponible!==false){ window._mapas=d.mapas||{}; renderProfiles(); } }catch(e){}
@@ -1248,8 +1251,7 @@ async function mapaPerfil(pid){
       +a(mp.urls.celular,'Para el celular')+a(mp.urls.escritorio,'Para la computadora')
       +'<p class="twa-hide" style="font-size:.74rem;color:var(--text-dim);margin:10px 0 0">¿Quieres regalar uno a alguien más? En luzestelaroficial.com/mapa-estelar</p>'
       +'<button type="button" style="margin-top:8px;background:none;border:none;color:var(--text-dim);font:inherit;padding:8px 16px;cursor:pointer">Cerrar</button></div>';
-    ov.addEventListener('click',function(e){ if(e.target===ov||e.target.tagName==='BUTTON') ov.remove(); });
-    document.body.appendChild(ov); return;
+    capaConAtras(ov); return;
   }
   if(mp&&(mp.estado==='pendiente'||mp.estado==='generando')){ if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast('⏳ Tu mapa se está preparando. Estará aquí en menos de una hora.',{duration:6000}); return; }
   try{
@@ -1267,8 +1269,10 @@ async function mapaPerfil(pid){
   b.addEventListener('click', async function(){
     var d=null; try{ d=await (await api('/api/ranking-hoy')).json(); }catch(e){}
     if(d&&d.plus){
-      if(window.LuzEstelar&&LuzEstelar.UpgradeSheet) LuzEstelar.UpgradeSheet.open({lang:'es'});
-      else if(LuzEstelar.toast) LuzEstelar.toast('El ranking diario de los 12 signos es parte de Plus ✦',{duration:6000});
+      // en la app sin caja de Play la hoja de Plus no se abre: entonces avisamos con un mensaje
+      var sinCaja = (window.twaSinPago&&twaSinPago());
+      if(!sinCaja&&window.LuzEstelar&&LuzEstelar.UpgradeSheet) LuzEstelar.UpgradeSheet.open({lang:'es'});
+      else if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast('El ranking diario de los 12 signos es parte de Plus ✦',{duration:6000});
       return;
     }
     if(!d||!d.ok){ if(window.LuzEstelar&&LuzEstelar.toast) LuzEstelar.toast((d&&d.error)||'No se pudo abrir el ranking.',{duration:6000}); return; }
@@ -1278,10 +1282,21 @@ async function mapaPerfil(pid){
     ov.innerHTML='<img src="'+d.url+'" alt="Ranking de los 12 signos de hoy" style="max-width:100%;max-height:82vh;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.5)">'
       +'<p style="font-size:.8rem;color:var(--text-dim);margin:10px 0 0;text-align:center">Mantén presionada la imagen para guardarla</p>'
       +'<button type="button" style="margin-top:6px;background:none;border:none;color:var(--gold);font:inherit;padding:8px 16px;cursor:pointer">Cerrar</button>';
-    ov.addEventListener('click',function(e){ if(e.target===ov||e.target.tagName==='BUTTON') ov.remove(); });
-    document.body.appendChild(ov);
+    capaConAtras(ov);
   });
 })();
+
+// 2026-11-06 QA: las capas (ranking, mapa) se cierran también con el botón «atrás» de Android.
+function capaConAtras(ov){
+  var cerrada=false;
+  var cerrar=function(desdeAtras){ if(cerrada) return; cerrada=true; ov.remove(); window.removeEventListener('popstate',alAtras);
+    if(!desdeAtras){ try{ if(history.state&&history.state.capa) history.back(); }catch(e){} } };
+  var alAtras=function(){ cerrar(true); };
+  try{ history.pushState({capa:1},'',location.href); }catch(e){}
+  window.addEventListener('popstate',alAtras);
+  ov.addEventListener('click',function(e){ if(e.target===ov||e.target.tagName==='BUTTON') cerrar(false); });
+  document.body.appendChild(ov);
+}
 
 // ── Hoja de cada sistema (2026-11-06) ─────────────────────────────
 // Antes, tocar «Caballo» abría /horoscopo-chino/caballo.html con el menú de la web (Inicio, Signos…).
@@ -1486,7 +1501,7 @@ async function init(){
     if(!r.ok){show('login');return;}
     var d=await r.json();
     if(!d.ok){show('login');return;}
-    currentUser=d.user;
+    currentUser=d.user; window.currentUser=currentUser;   // 2026-11-06 QA: otros <script> leen el plan (marca de agua, capa Plus)
     restaurarPlay();
     // Feature flags — decides which extras the client should try.
     // Arco 1: flags.ondemandReadings turns on chart-level Gemini Pro
@@ -2546,7 +2561,7 @@ function renderAll(){
         // 2026-08-05 (user): el mapa natal de alta resolución es producto
         // Plus; la vista gratuita lleva marca de agua discreta.
         var isPlus = false;
-        try { isPlus = window.currentUser && currentUser.tier === 'premium'; } catch(e){}
+        try { isPlus = !!(window.currentUser && window.currentUser.tier === 'premium'); } catch(e){}
         window.LuzEstelar.SkyMap.render(skyCanv, {
           lat: p.lat,
           lng: p.lon,
@@ -2582,7 +2597,7 @@ function renderAll(){
             upsell = document.createElement('div');
             upsell.id = 'sky-upsell';
             upsell.style.cssText = 'margin-top:6px;font-size:.72rem;line-height:1.5;color:var(--text-dim)';
-            upsell.innerHTML = '\u2726 Con <a href="/planes.html" style="color:var(--gold)">Plus</a> recibes tu Mapa Estelar de nacimiento sin marca de agua y en varios formatos: alta resoluci\u00f3n para imprimir, fondo de pantalla y m\u00e1s \u2014 incluida la versi\u00f3n con las franjas zodiacales y tu signo resaltado.';
+            upsell.innerHTML = '\u2726 Con <a href="#" onclick="event.preventDefault();openUpgrade();" style="color:var(--gold)">Plus</a> recibes tu Mapa Estelar de nacimiento sin marca de agua y en varios formatos: alta resoluci\u00f3n para imprimir, fondo de pantalla y m\u00e1s \u2014 incluida la versi\u00f3n con las franjas zodiacales y tu signo resaltado.';
             cmEl.insertAdjacentElement('afterend', upsell);
           }
           if (upsell) upsell.hidden = false;
@@ -3800,7 +3815,7 @@ init();
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 <script src="/js/icons.js?v=20261106" defer></script>
 <script>function LEIC(n){return window.LuzEstelarIcons?'<span class="le-ic">'+LuzEstelarIcons.render(n)+'</span>':''}</script>
-<script src="/js/toast.js" defer></script>
+<script src="/js/toast.js?v=20261106" defer></script>
 <script src="/js/sw-update.js" defer></script>
 <script src="/js/haptic.js" defer></script>
 <script src="/js/stars.js" defer></script>
@@ -3808,8 +3823,8 @@ init();
 <script src="/js/install-prompt.js" defer></script>
 <script src="/js/play-billing.js" defer></script>
 <script src="/js/upgrade-sheet.js" defer></script>
-<script src="/js/bottom-tabs.js?v=20261106" defer></script>
-<script src="/js/avatar.js?v=7" defer></script>
+<script src="/js/bottom-tabs.js?v=20261106b" defer></script>
+<script src="/js/avatar.js?v=8" defer></script>
 <!-- 2026-08-03: este bloque vivía dentro de la etiqueta de bottom-tabs.js,
      que lleva atributo src. Una etiqueta de script con src IGNORA su
      contenido en línea, así que todo el panel de casas era código muerto:
@@ -4152,8 +4167,7 @@ function renderHouses(chart){
         // retiró por confusa; el usuario decidió después: "que se desbloquee
         // con el premium". Plus la ve completa; el gratuito ve UNA línea de
         // qué se abre — la capa avanzada como razón de pago, no como estorbo.
-        var esPlus = (typeof currentUser !== 'undefined') && currentUser &&
-                     currentUser.tier === 'premium';
+        var esPlus = !!(window.currentUser && window.currentUser.tier === 'premium');
         var reg = SIGN_RULER[h.sign];
         var dondeReg = (esPlus && reg) ? posicionPlaneta(chart, reg) : null;
         if(esPlus && reg && dondeReg && dondeReg.casa === n){
