@@ -541,7 +541,7 @@
 // v128 → v129 (Nov 6): el SW ya no intercepta otros dominios (imágenes de R2 en blanco en la app).
 // v129 → v130 (Nov 6): QA — Plus se reconoce en marca de agua y capa de casas, nada de /planes (Stripe) en la app,
 // capas sobre la barra y con «atrás», pestaña activa en /mi-dia, login sin redirecciones a otros sitios.
-const CACHE_NAME = 'luzestelar-v130';
+const CACHE_NAME = 'luzestelar-v131';
 const OFFLINE_URL = '/offline.html';
 // English readers used to fall back to the Spanish offline page — it is the
 // fallback for the whole site, so /en/ visitors got "Sin conexión".

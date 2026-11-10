@@ -205,7 +205,7 @@
   // Cloudflare guarda los assets 4 horas en el borde. Sin una marca en la URL
   // se puede regenerar una textura, desplegarla, y seguir viendo la vieja
   // media tarde. SÚBELO cada vez que cambie cualquier PNG de esa carpeta.
-  var _texVer = '?v=4';   // v4 = 2/sep: Saturno 2.05x con pluma (anillos sin corte)   // v3 = 7/ago: Saturno recortado a 1.20x (antes 1.35)
+  var _texVer = '?v=5';   // v5 = 10/nov: fuera el aro negro del Sol y el filo oscuro de los demás (preparar_texturas_web.py)   // v4 = 2/sep: Saturno 2.05x con pluma (anillos sin corte)   // v3 = 7/ago: Saturno recortado a 1.20x (antes 1.35)
   // Oyentes de "ya cargó una textura". El módulo NO se repinta solo: si lo
   // hiciera tendría que reusar las opciones del render anterior, y esas
   // caducan (basta que la ventana cambie de tamaño para que el lienzo se
