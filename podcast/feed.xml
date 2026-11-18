@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Tue, 17 Nov 2026 06:11:00 -0600</lastBuildDate>
+    <lastBuildDate>Wed, 18 Nov 2026 15:07:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 17 de noviembre de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 17 de noviembre de 2026
+      <title>Horóscopo del 18 de noviembre de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 18 de noviembre de 2026
 
 Biorritmo Astral:
-Aries: ★★☆☆☆ (5.9/10)
-Tauro: ★★☆☆☆ (5.1/10)
-Géminis: ★★☆☆☆ (5.8/10)
-Cáncer: ★★☆☆☆ (5.5/10)
-Leo: ★★☆☆☆ (4.5/10)
-Virgo: ★★☆☆☆ (5.2/10)
-Libra: ★★★☆☆ (6.6/10)
-Escorpio: ★★☆☆☆ (4.9/10)
-Sagitario: ★★☆☆☆ (6.0/10)
-Capricornio: ★★☆☆☆ (5.3/10)
-Acuario: ★★★☆☆ (6.2/10)
-Piscis: ★★☆☆☆ (5.3/10)
+Aries: ★★☆☆☆ (5.8/10)
+Tauro: ★★★☆☆ (6.3/10)
+Géminis: ★★☆☆☆ (5.4/10)
+Cáncer: ★★★☆☆ (6.4/10)
+Leo: ★★☆☆☆ (5.8/10)
+Virgo: ★★☆☆☆ (5.6/10)
+Libra: ★★☆☆☆ (5.9/10)
+Escorpio: ★★★☆☆ (6.7/10)
+Sagitario: ★★☆☆☆ (5.4/10)
+Capricornio: ★★★☆☆ (6.3/10)
+Acuario: ★★☆☆☆ (5.5/10)
+Piscis: ★★★☆☆ (6.7/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-18.mp3" length="20207276" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-18.mp3</guid>
+      <pubDate>Wed, 18 Nov 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-18.jpg"/>
+      <itunes:duration>00:14:01</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 17 de noviembre de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 17 de noviembre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-17.mp3" length="19870892" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-17.mp3</guid>
       <pubDate>Tue, 17 Nov 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Thu, 05 Nov 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-05.jpg"/>
       <itunes:duration>00:14:07</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 4 de noviembre de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 4 de noviembre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-04.mp3" length="20171564" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-04.mp3</guid>
-      <pubDate>Wed, 04 Nov 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-04.jpg"/>
-      <itunes:duration>00:14:00</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
