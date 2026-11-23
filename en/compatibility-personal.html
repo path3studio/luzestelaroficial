@@ -939,7 +939,8 @@ body{
         var parts = p.fecha_nacimiento.split('-').map(Number);
         var hT = (p.hora_nacimiento || '12:00').split(':').map(Number);
         var tzOff = (typeof p.tz_offset === 'number') ? p.tz_offset : -6;
-        var utcH = (hT[0] || 12) - tzOff;
+        // 2026-11-23: "00:35" gave hT[0] = 0 and "|| 12" turned it into noon.
+        var utcH = (isNaN(hT[0]) ? 12 : hT[0]) - tzOff;
         var birthUTC = new Date(Date.UTC(parts[0], parts[1]-1, parts[2], utcH, hT[1] || 0));
         var bodies = window.LuzEstelar.Transits.computeTransits(birthUTC);
         var chart = {

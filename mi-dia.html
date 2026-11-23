@@ -1633,7 +1633,8 @@ function renderAll(){
       try {
         var hT = (currentProfile.hora_nacimiento || '12:00').split(':').map(Number);
         var tzOff = (typeof currentProfile.tz_offset === 'number') ? currentProfile.tz_offset : -6;
-        var utcHour = (hT[0] || 12) - tzOff;
+        // 2026-11-23: «00:35» daba hT[0] = 0 y el «|| 12» lo volvía mediodía (Ascendente de otro signo).
+        var utcHour = (isNaN(hT[0]) ? 12 : hT[0]) - tzOff;
         var birthUTC = new Date(Date.UTC(parts[0], parts[1]-1, parts[2], utcHour, hT[1] || 0));
         var bodies = window.LuzEstelar.Transits.computeTransits(birthUTC);
         chartData.planets = bodies.map(function(p){
