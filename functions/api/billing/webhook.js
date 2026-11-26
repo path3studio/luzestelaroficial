@@ -180,7 +180,7 @@ export async function onRequestPost(context) {
 
         // ── Notifications (non-fatal) ──
         // Telegram alert (pass isSubscription so a $0 trial isn't called a "sale")
-        await notifyTelegram(context.env, plan, amountCents, customerEmail, isSubscription).catch(() => {});
+        await notifyTelegram(context.env, plan, amountCents, customerEmail, isSubscription, null, session.currency).catch(() => {});
 
         // Write to KV for admin panel instant visibility
         if (AUTH_KV) {
@@ -283,7 +283,7 @@ export async function onRequestPost(context) {
             }
           } catch (e) { /* non-fatal — fall back to 'premium' */ }
 
-          await notifyTelegram(context.env, plan, amountCents, email, true, 'payment').catch(() => {});
+          await notifyTelegram(context.env, plan, amountCents, email, true, 'payment', invoice.currency).catch(() => {});
 
           if (AUTH_KV) {
             await AUTH_KV.put('sale_notification:last', JSON.stringify({
@@ -346,13 +346,16 @@ const PRODUCT_NAMES = {
   premium: 'Suscripción Premium',
 };
 
-async function notifyTelegram(env, plan, amountCents, email, isSubscription = false, kind = null) {
+// 2026-11-26: el aviso decía siempre «USD» aunque el cobro fuera en pesos (79 MXN salió
+// como «$79.00 USD»). Ahora dice la moneda real del cobro.
+async function notifyTelegram(env, plan, amountCents, email, isSubscription = false, kind = null, currency = 'usd') {
   const token = env.TELEGRAM_BOT_TOKEN;
   const chatId = env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return; // Telegram not configured — skip silently
 
   const productName = PRODUCT_NAMES[plan] || plan;
   const amount = (amountCents / 100).toFixed(2);
+  const moneda = String(currency || 'usd').toUpperCase();
   const escapedEmail = (email || 'anónimo').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const when = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
 
@@ -374,14 +377,14 @@ async function notifyTelegram(env, plan, amountCents, email, isSubscription = fa
   } else if (kind === 'payment') {
     text = [
       `💰 <b>Pago de suscripción recibido</b>`,
-      `${productName} — $${amount} USD`,
+      `${productName} — $${amount} ${moneda}`,
       `<i>${escapedEmail}</i>`,
       `<i>${when}</i>`,
     ].join('\n');
   } else {
     text = [
       `💰 <b>¡Nueva venta!</b>`,
-      `${productName} — $${amount} USD`,
+      `${productName} — $${amount} ${moneda}`,
       `<i>${escapedEmail}</i>`,
       `<i>${when}</i>`,
     ].join('\n');
