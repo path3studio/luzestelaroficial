@@ -10,7 +10,7 @@
     <language>es</language>
     <copyright>&#x2117; 2026 Luz Estelar Oficial — Path3 Studio</copyright>
     <atom:link href="https://luzestelaroficial.com/podcast/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Thu, 26 Nov 2026 05:51:00 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 27 Nov 2026 07:09:00 -0600</lastBuildDate>
     <itunes:author>Luz Estelar Oficial</itunes:author>
     <itunes:summary>Tu horóscopo técnico diario basado en datos astronómicos reales. Cada mañana, Luz Estelar analiza las posiciones planetarias exactas, aspectos mayores y fases lunares para los 12 signos del zodiaco. Incluye Biorritmo Astral: Amor, Trabajo, Salud y Energía.</itunes:summary>
     <itunes:owner>
@@ -29,26 +29,37 @@
       <link>https://luzestelaroficial.com</link>
     </image>
     <item>
-      <title>Horóscopo del 26 de noviembre de 2026</title>
-      <description><![CDATA[Horóscopo Técnico del 26 de noviembre de 2026
+      <title>Horóscopo del 27 de noviembre de 2026</title>
+      <description><![CDATA[Horóscopo Técnico del 27 de noviembre de 2026
 
 Biorritmo Astral:
-Aries: ★★☆☆☆ (5.9/10)
+Aries: ★★★☆☆ (6.3/10)
 Tauro: ★★★☆☆ (7.3/10)
-Géminis: ★★★☆☆ (6.6/10)
-Cáncer: ★★★☆☆ (6.7/10)
-Leo: ★★★☆☆ (6.8/10)
-Virgo: ★★★☆☆ (6.8/10)
-Libra: ★★★☆☆ (7.4/10)
-Escorpio: ★★★☆☆ (7.0/10)
-Sagitario: ★★★☆☆ (7.3/10)
-Capricornio: ★★★☆☆ (6.1/10)
-Acuario: ★★★☆☆ (6.4/10)
-Piscis: ★★★☆☆ (6.8/10)
+Géminis: ★★★☆☆ (7.3/10)
+Cáncer: ★★★☆☆ (7.5/10)
+Leo: ★★★☆☆ (7.1/10)
+Virgo: ★★★☆☆ (7.6/10)
+Libra: ★★★☆☆ (6.3/10)
+Escorpio: ★★★☆☆ (7.6/10)
+Sagitario: ★★★☆☆ (7.6/10)
+Capricornio: ★★★☆☆ (6.6/10)
+Acuario: ★★★★☆ (8.1/10)
+Piscis: ★★★☆☆ (7.9/10)
 
 Consultas personalizadas desde $9.99 USD: https://luzestelaroficial.com/planes.html
 
 Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
+      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-27.mp3" length="19637612" type="audio/mpeg"/>
+      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-27.mp3</guid>
+      <pubDate>Fri, 27 Nov 2026 07:00:00 -0600</pubDate>
+      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-27.jpg"/>
+      <itunes:duration>00:13:38</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <title>Horóscopo del 26 de noviembre de 2026</title>
+      <description><![CDATA[Horóscopo técnico diario — 26 de noviembre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
       <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-26.mp3" length="20401388" type="audio/mpeg"/>
       <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-26.mp3</guid>
       <pubDate>Thu, 26 Nov 2026 07:00:00 -0600</pubDate>
@@ -186,17 +197,6 @@ Los astros inclinan, pero no obligan. El poder está en ti.]]></description>
       <pubDate>Sat, 14 Nov 2026 07:00:00 -0600</pubDate>
       <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-14.jpg"/>
       <itunes:duration>00:13:38</itunes:duration>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-    </item>
-    <item>
-      <title>Horóscopo del 13 de noviembre de 2026</title>
-      <description><![CDATA[Horóscopo técnico diario — 13 de noviembre de 2026. Biorritmo Astral de los 12 signos. Más en https://luzestelaroficial.com/planes.html]]></description>
-      <enclosure url="https://podcasts.luzestelaroficial.com/ep-2026-11-13.mp3" length="19321388" type="audio/mpeg"/>
-      <guid isPermaLink="false">https://luzestelaroficial.com/podcast/episodes/ep-2026-11-13.mp3</guid>
-      <pubDate>Fri, 13 Nov 2026 07:00:00 -0600</pubDate>
-      <itunes:image href="https://podcasts.luzestelaroficial.com/episode-covers/2026-11-13.jpg"/>
-      <itunes:duration>00:13:25</itunes:duration>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
     </item>
